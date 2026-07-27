@@ -1688,12 +1688,21 @@ document.getElementById("popupTo").value="";
 
 function createExam(){
 
-    examQuestions = shuffleArray(
+    const twoChoice =
+        parsedQuestionsDS.filter(q => q.arr.length == 2);
 
-        [...parsedQuestionsDS]
+    const fourChoice =
+        parsedQuestionsDS.filter(q => q.arr.length >= 4);
 
-    ).slice(0,80);
+    examQuestions = [
 
+        ...shuffleArray(twoChoice).slice(0,40),
+
+        ...shuffleArray(fourChoice).slice(0,40)
+
+    ];
+
+    examQuestions = shuffleArray(examQuestions);
 }
 
 function startExam(){
