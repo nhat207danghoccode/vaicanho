@@ -358,12 +358,8 @@ document.getElementById(
 <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
 
 
-<button class="btn activeTab" id="tabDN" onclick="switchTab('DN')">
-    Câu Hỏi Đúng Nhất
-</button>
-
-<button class="btn gray" id="tabDS" onclick="switchTab('DS')">
-    Câu Hỏi Đúng Sai
+<button class="btn activeTab" id="tabDS" onclick="switchTab('DS')">
+    Lỗi
 </button>
 
 
@@ -474,8 +470,45 @@ onclick="goToQuestion()">
 </button>
 
 <button class="btn"
+id="shuffleBtn"
 onclick="toggleShuffle(this)">
-Xáo Trộn: OFF
+🔀 Xáo Full: OFF
+</button>
+
+<input
+type="number"
+id="shuffleFrom"
+placeholder="Từ câu..."
+min="1"
+style="
+padding:12px;
+border:none;
+border-radius:12px;
+width:110px;
+font-size:15px;
+font-weight:bold;
+outline:none;
+">
+
+<input
+type="number"
+id="shuffleTo"
+placeholder="Đến câu..."
+min="1"
+style="
+padding:12px;
+border:none;
+border-radius:12px;
+width:110px;
+font-size:15px;
+font-weight:bold;
+outline:none;
+">
+
+<button
+class="btn"
+onclick="shuffleCustom()">
+🎯 Xáo Đoạn
 </button>
 
 </div>
@@ -867,50 +900,43 @@ const SUBJECTS = {
 
 GPSL:{
     name:"GPSL",
-    dn:"DN.txt",
     ds:"DS.txt"
 },
 
 DDCS:{
     name:"ĐDCS",
-    dn:"DN1.txt",
     ds:"DS1.txt"
 },
 
 NOI:{
     name:"Điều dưỡng Nội",
-    dn:"DN2.txt",
     ds:"DS2.txt"
 },
 
 NGOAI:{
     name:"Điều dưỡng Ngoại",
-    dn:"DN3.txt",
     ds:"DS3.txt"
 },
 
 NHI:{
     name:"Điều dưỡng Nhi",
-    dn:"DN4.txt",
     ds:"DS4.txt"
 },
 
 SAN:{
     name:"Điều dưỡng Sản",
-    dn:"DN5.txt",
     ds:"DS5.txt"
 },
 
 KSNK:{
     name:"Kiểm soát nhiễm khuẩn",
-    dn:"DN6.txt",
     ds:"DS6.txt"
 }
 
 };
 
     
-let parsedQuestionsDN = [];
+
 let parsedQuestionsDS = [];
 
 let examQuestions = [];
@@ -989,20 +1015,13 @@ async function loadQuestionFiles(){
 
         const subject = SUBJECTS[currentSubject];
 
-        const dn = await fetch(subject.dn).then(r=>r.text());
-
-const ds = await fetch(subject.ds).then(r=>r.text());
-
-
-
-
-parsedQuestionsDN = parseRawText(dn);
+        const ds = await fetch(subject.ds).then(r=>r.text());
 
 parsedQuestionsDS = parseRawText(ds);
         document.querySelector(".header h1").innerText =
         "Môn " + subject.name + " - @Nhat2007";
 
-        switchTab("DN");
+        switchTab("DS");
 
     }
 
@@ -1082,13 +1101,10 @@ function switchTab(type){
 
 currentTab = type;
 
-document.getElementById("tabDN").classList.remove("activeTab");
 document.getElementById("tabDS").classList.remove("activeTab");
 document.getElementById("tabNOTE").classList.remove("activeTab");
 document.getElementById("tabEXAM").classList.remove("activeTab");
 
-
-document.getElementById("tabDN").classList.add("gray");
 document.getElementById("tabDS").classList.add("gray");
 document.getElementById("tabNOTE").classList.add("gray");
 document.getElementById("tabEXAM").classList.add("gray");
@@ -1262,24 +1278,18 @@ function buildQuizHTML(){
 
 let questions;
 
-if(currentTab==="DN"){
+if(currentTab==="DS"){
 
-questions=[...parsedQuestionsDN];
-
-}
-
-else if(currentTab==="DS"){
-
-questions=[...parsedQuestionsDS];
+    questions=[...parsedQuestionsDS];
 
 }
-
 
 else if(currentTab==="EXAM"){
 
-questions=[...examQuestions];
+    questions=[...examQuestions];
 
 }
+
 else{
 
     return;
@@ -1288,7 +1298,41 @@ else{
 
     if(shuffleMode){
 
-      questions = shuffleArray(questions);
+    questions = shuffleArray(questions);
+
+}
+
+else if(customShuffle){
+
+    let start = customFrom - 1;
+
+    let end = customTo - 1;
+
+    start = Math.max(0,start);
+
+    end = Math.min(end,questions.length-1);
+
+    if(start<=end){
+
+        const before = questions.slice(0,start);
+
+        const middle = shuffleArray(
+            questions.slice(start,end+1)
+        );
+
+        const after = questions.slice(end+1);
+
+        questions = [
+
+            ...before,
+
+            ...middle,
+
+            ...after
+
+        ];
+
+    }
 
 }
 
@@ -1348,11 +1392,7 @@ ${bookmarks.includes(qIndex)?"⭐":"☆"}
 
         optionsList.className="options";
 
-        const inputType=currentTab==="DN"
-
-        ? "checkbox"
-
-        : "radio";
+        const inputType = "radio";
 
         optionsData.forEach((opt)=>{
 
@@ -1504,51 +1544,90 @@ window.scrollTo({
 
 }
 let shuffleMode = false;
+let customShuffle = false;
+
+let customFrom = 0;
+
+let customTo = 0;
 
 function toggleShuffle(btn){
 
     shuffleMode = !shuffleMode;
 
+    customShuffle = false;
+
     btn.innerText =
+
     shuffleMode
-    ? "Xáo Trộn: ON"
-    : "Xáo Trộn: OFF";
+
+    ? "🔀 Xáo Full: ON"
+
+    : "🔀 Xáo Full: OFF";
 
     buildQuizHTML();
+
+    buildNavPanel();
+
 }
 
+function shuffleCustom(){
 
-function createExam(){
+    const from = parseInt(
+        document.getElementById("shuffleFrom").value
+    );
 
-    const dn = shuffleArray([...parsedQuestionsDN]).slice(0,40);
+    const to = parseInt(
+        document.getElementById("shuffleTo").value
+    );
 
-    const ds = shuffleArray([...parsedQuestionsDS]).slice(0,40);
+    if(isNaN(from)||isNaN(to)){
 
-    examQuestions=[];
+        alert("Nhập khoảng câu.");
 
-    while(dn.length || ds.length){
-
-        if(dn.length){
-
-            examQuestions.push({
-                ...dn.shift(),
-                mode:"DN"
-            });
-
-        }
-
-        if(ds.length){
-
-            examQuestions.push({
-                ...ds.shift(),
-                mode:"DS"
-            });
-
-        }
+        return;
 
     }
 
-    examQuestions=shuffleArray(examQuestions);
+    if(from<1){
+
+        alert("Từ câu phải >=1");
+
+        return;
+
+    }
+
+    if(to<from){
+
+        alert("Đến câu phải lớn hơn.");
+
+        return;
+
+    }
+
+    customShuffle = true;
+
+    shuffleMode = false;
+
+    customFrom = from;
+
+    customTo = to;
+
+    document.getElementById("shuffleBtn").innerText =
+    "🔀 Xáo Full: OFF";
+
+    buildQuizHTML();
+
+    buildNavPanel();
+
+}
+
+function createExam(){
+
+    examQuestions = shuffleArray(
+
+        [...parsedQuestionsDS]
+
+    ).slice(0,80);
 
 }
 
