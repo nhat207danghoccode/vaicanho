@@ -475,39 +475,11 @@ onclick="toggleShuffle(this)">
 🔀 Xáo Full: OFF
 </button>
 
-<input
-type="number"
-id="shuffleFrom"
-placeholder="Từ câu..."
-min="1"
-style="
-padding:12px;
-border:none;
-border-radius:12px;
-width:110px;
-font-size:15px;
-font-weight:bold;
-outline:none;
-">
 
-<input
-type="number"
-id="shuffleTo"
-placeholder="Đến câu..."
-min="1"
-style="
-padding:12px;
-border:none;
-border-radius:12px;
-width:110px;
-font-size:15px;
-font-weight:bold;
-outline:none;
-">
 
 <button
 class="btn"
-onclick="shuffleCustom()">
+onclick="openShufflePopup()">
 🎯 Xáo Đoạn
 </button>
 
@@ -532,6 +504,37 @@ onclick="shuffleCustom()">
 
 </div>
   <div id="popup" class="popup">
+<div id="shufflePopup" class="popup">
+
+<div class="popup-box">
+
+<div class="popup-icon">🎯</div>
+
+<h2>Xáo đoạn câu</h2>
+
+<p>Nhập phạm vi cần xáo</p>
+
+<input id="popupFrom" type="number" placeholder="Từ câu">
+
+<input id="popupTo" type="number" placeholder="Đến câu">
+
+<div class="popup-buttons">
+
+<button class="popup-btn cancel"
+onclick="closeShufflePopup()">
+Huỷ
+</button>
+
+<button class="popup-btn ok"
+onclick="shuffleCustom()">
+Xáo ngay
+</button>
+
+</div>
+
+</div>
+
+</div>
 
 <div class="popup-box">
 
@@ -1590,6 +1593,18 @@ function toggleShuffle(btn){
 
 }
 
+function openShufflePopup(){
+
+document.getElementById("shufflePopup").style.display="flex";
+
+}
+
+function closeShufflePopup(){
+
+document.getElementById("shufflePopup").style.display="none";
+
+}
+
 function shuffleCustom(){
 
 if(shuffleMode){
@@ -1600,13 +1615,11 @@ if(shuffleMode){
     "🔀 Xáo Full: OFF";
 
 }
-    const from = parseInt(
-        document.getElementById("shuffleFrom").value
-    );
+    const from =
+parseInt(document.getElementById("popupFrom").value);
 
-    const to = parseInt(
-        document.getElementById("shuffleTo").value
-    );
+const to =
+parseInt(document.getElementById("popupTo").value);
 
     if(isNaN(from)||isNaN(to)){
 
@@ -1663,6 +1676,11 @@ if(to > total){
     buildQuizHTML();
 
     buildNavPanel();
+closeShufflePopup();
+
+document.getElementById("popupFrom").value="";
+
+document.getElementById("popupTo").value="";
 
 }
 
@@ -2877,6 +2895,36 @@ color:#fff;
 .popup-btn.cancel{
 
 background:#e5e7eb;
+}
+
+#shufflePopup input{
+
+width:100%;
+
+padding:14px;
+
+margin:10px 0;
+
+font-size:16px;
+
+border-radius:12px;
+
+border:2px solid #ddd;
+
+outline:none;
+
+transition:.2s;
+
+box-sizing:border-box;
+
+}
+
+#shufflePopup input:focus{
+
+border-color:#2563eb;
+
+box-shadow:0 0 10px rgba(37,99,235,.25);
+
 }
 
 .popup-btn:active{
