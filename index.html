@@ -1527,11 +1527,31 @@ if(!ok) return;
 
     
     progress = {};
-    correctCount = 0;
 
-    document.getElementById("correctAnswer").innerText = 0;
+correctCount = 0;
 
-    buildQuizHTML();
+
+shuffleMode = false;
+
+
+customShuffle = false;
+
+customFrom = 0;
+
+customTo = 0;
+
+
+document.getElementById("shuffleFrom").value = "";
+
+document.getElementById("shuffleTo").value = "";
+
+
+document.getElementById("shuffleBtn").innerText =
+"🔀 Xáo Full: OFF";
+
+document.getElementById("correctAnswer").innerText = 0;
+
+buildQuizHTML();
 
 buildNavPanel();
 
@@ -1572,6 +1592,14 @@ function toggleShuffle(btn){
 
 function shuffleCustom(){
 
+if(shuffleMode){
+
+    shuffleMode = false;
+
+    document.getElementById("shuffleBtn").innerText =
+    "🔀 Xáo Full: OFF";
+
+}
     const from = parseInt(
         document.getElementById("shuffleFrom").value
     );
@@ -1604,6 +1632,23 @@ function shuffleCustom(){
 
     }
 
+const total = parsedQuestionsDS.length;
+
+if(from > total){
+
+    alert("Vượt quá số câu.");
+
+    return;
+
+}
+
+if(to > total){
+
+    alert("Vượt quá số câu.");
+
+    return;
+
+}
     customShuffle = true;
 
     shuffleMode = false;
