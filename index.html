@@ -5,40 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trắc Nghiệm By Nhật · 6 Môn + AI Pro</title>
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4ff;
-            padding: 20px;
-            color: #111827;
-            overflow-x: hidden;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
+            padding: 24px;
+            color: #1e293b;
         }
+
         .container {
-            max-width: 1000px;
-            margin: auto;
+            max-width: 1024px;
+            margin: 0 auto;
         }
-        .header {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(5px);
-            padding: 28px 20px;
-            border-radius: 24px;
+
+        /* ===== SUBJECT SELECT ===== */
+        #subjectSelect {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999999;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .subject-card {
+            width: 440px;
+            max-width: 94%;
+            background: white;
+            border-radius: 40px;
+            padding: 40px 36px 32px;
             text-align: center;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+        }
+
+        .subject-card .logo {
+            font-size: 52px;
+            margin-bottom: 4px;
+        }
+
+        .subject-card h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .subject-card .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .subject-btn {
+            padding: 14px 12px;
+            border: none;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .subject-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .subject-btn.full {
+            grid-column: 1 / -1;
+        }
+
+        .btn-ai-pro {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            margin-top: 4px;
+        }
+
+        .btn-ai-pro:hover {
+            background: linear-gradient(135deg, #6d28d9, #1d4ed8);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 28px 32px;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             margin-bottom: 20px;
         }
+
         .header h1 {
-            font-size: 30px;
-            color: #111827;
-            margin-bottom: 6px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
         }
-        .creator {
-            color: #64748b;
+
+        .header h1 span {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .creator {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* ===== TAB BAR ===== */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 14px;
             font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: transparent;
+            color: #64748b;
         }
+
+        .tab-btn:hover {
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563eb;
+        }
+
+        .tab-btn.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .tab-btn.active:hover {
+            background: #1d4ed8;
+        }
+
+        .tab-btn.tab-ai {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            color: white;
+            margin-left: auto;
+        }
+
+        .tab-btn.tab-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+        }
+
+        /* ===== TOPBAR ===== */
         .topbar {
             display: flex;
             justify-content: space-between;
@@ -46,126 +201,259 @@
             flex-wrap: wrap;
             gap: 12px;
             margin-bottom: 20px;
-        }
-        .stats {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
             padding: 14px 22px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .stats {
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
+            color: #1e293b;
         }
-        .buttons {
+
+        .stats span {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .topbar-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
+            align-items: center;
         }
+
         .btn {
+            padding: 10px 18px;
             border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
             background: #2563eb;
             color: white;
-            padding: 12px 20px;
-            border-radius: 14px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s;
-            box-shadow: 0 2px 6px rgba(37,99,235,0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
+
         .btn:hover {
             background: #1d4ed8;
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
         }
-        .btn.gray {
-            background: #e2e8f0;
-            color: #1e293b;
+
+        .btn-outline {
+            background: transparent;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            transform: translateY(-2px);
             box-shadow: none;
         }
-        .btn.gray:hover {
-            background: #cbd5e1;
-        }
-        .btn.green {
+
+        .btn-green {
             background: #16a34a;
         }
-        .btn.green:hover {
+
+        .btn-green:hover {
             background: #15803d;
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.25);
         }
-        .activeTab {
-            background: #16a34a !important;
-            color: white;
+
+        .btn-danger {
+            background: #ef4444;
         }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+        }
+
+        .btn-purple:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        .goto-input {
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            width: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: 0.2s;
+            background: white;
+        }
+
+        .goto-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        /* ===== QUESTION CARD ===== */
         .question {
-            background: rgba(255,255,255,0.94);
-            backdrop-filter: blur(4px);
-            padding: 22px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
             border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-            border: 1px solid rgba(255,255,255,0.6);
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
         }
+
+        .question:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+
         .question-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
             color: #0f172a;
             margin-bottom: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
         }
+
+        .question-title .bookmark-btn {
+            cursor: pointer;
+            font-size: 22px;
+            flex-shrink: 0;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            padding: 0 4px;
+        }
+
+        .question-title .bookmark-btn:hover {
+            transform: scale(1.2);
+        }
+
         .options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
+
         .option {
-            border: 2px solid #e9edf2;
-            border-radius: 14px;
-            padding: 14px;
-            cursor: pointer;
-            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 12px 16px;
+            border: 2px solid #e9edf2;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
             background: white;
         }
-        .option:hover {
+
+        .option:hover:not(.correct):not(.wrong) {
             background: #f8fafc;
+            border-color: #94a3b8;
         }
+
+        .option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2563eb;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option .label-text {
+            font-size: 15px;
+            color: #1e293b;
+        }
+
         .option.correct {
             background: #dcfce7;
             border-color: #22c55e;
+        }
+
+        .option.correct .label-text {
             color: #166534;
             font-weight: 600;
         }
+
         .option.wrong {
             background: #fee2e2;
             border-color: #ef4444;
+        }
+
+        .option.wrong .label-text {
             color: #991b1b;
             font-weight: 600;
         }
-        .option input {
-            transform: scale(1.2);
-            accent-color: #2563eb;
+
+        .question .btn-submit {
+            margin-top: 16px;
+            padding: 10px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #2563eb;
+            color: white;
         }
-        .footer {
-            text-align: center;
-            color: #334155;
-            margin-top: 30px;
-            font-size: 13px;
+
+        .question .btn-submit:hover:not(:disabled) {
+            background: #1d4ed8;
+            transform: translateY(-2px);
         }
-        .tab-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+
+        .question .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
+
+        .question.answered {
+            border-left: 4px solid #2563eb;
+        }
+
+        .question.wrong-question {
+            border-left: 4px solid #ef4444;
+        }
+
+        /* ===== NOTE ===== */
         #noteBox {
-            background: rgba(255,255,255,0.94);
-            backdrop-filter: blur(5px);
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
             border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
+
+        #noteBox h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #0f172a;
+        }
+
         #noteArea {
             width: 100%;
             height: 340px;
@@ -178,133 +466,271 @@
             background: #f8fafc;
             line-height: 1.7;
             font-family: inherit;
+            border: 2px solid transparent;
+            transition: 0.2s;
         }
+
+        #noteArea:focus {
+            border-color: #2563eb;
+            background: white;
+        }
+
+        /* ===== EXAM ===== */
         #examTop {
-            background: rgba(255,255,255,0.94);
-            padding: 18px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
             border-radius: 20px;
+            padding: 20px 24px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
+
         #examTimer {
-            font-size: 30px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: 800;
             color: #ef4444;
+            font-variant-numeric: tabular-nums;
         }
-        #examProgressBar {
-            height: 10px;
-            background: #22c55e;
+
+        .exam-progress-wrap {
+            height: 8px;
+            background: #e9edf2;
             border-radius: 999px;
-            transition: 0.3s;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .exam-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            border-radius: 999px;
+            transition: width 0.4s ease;
             width: 0%;
         }
+
+        /* ===== CREATE TEST ===== */
+        #createBox {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        #createBox h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        #createBox .desc {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        #testInput {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 14px;
+            font-family: 'Fira Code', monospace, 'Segoe UI';
+            resize: vertical;
+            outline: none;
+            transition: 0.2s;
+            background: white;
+        }
+
+        #testInput:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e9edf2;
+            padding: 2px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .test-preview {
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .test-preview .q-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .test-preview .q-item:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== NAV PANEL ===== */
         #navHandle {
             position: fixed;
             right: 0;
-            top: 45%;
-            width: 28px;
-            height: 90px;
-            background: #2563eb;
-            color: #fff;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 100px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px 0 0 14px;
+            border-radius: 16px 0 0 16px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 22px;
             z-index: 999999;
-            box-shadow: 0 0 20px rgba(37,99,235,0.3);
+            box-shadow: -4px 0 24px rgba(37, 99, 235, 0.25);
+            transition: 0.3s ease;
         }
+
+        #navHandle:hover {
+            width: 38px;
+        }
+
         #navPanel {
             position: fixed;
-            right: 15px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
-            width: 280px;
-            height: 420px;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+            width: 290px;
+            max-height: 460px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 999999;
             overflow: hidden;
+            animation: slideIn 0.3s ease;
         }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50%) scale(0.95); right: 0; }
+            to { opacity: 1; transform: translateY(-50%) scale(1); right: 16px; }
+        }
+
         #navHeader {
-            height: 50px;
-            background: #2563eb;
-            color: #fff;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
-            font-weight: 600;
+            align-items: center;
+            font-weight: 700;
+            font-size: 15px;
         }
+
         #navHeader button {
             border: none;
-            background: none;
-            color: #fff;
-            font-size: 22px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
             cursor: pointer;
+            transition: 0.2s;
         }
+
+        #navHeader button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         #navGrid {
-            padding: 12px;
+            padding: 14px;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
             overflow-y: auto;
-            height: 370px;
+            max-height: 400px;
         }
+
         .navBtn {
             height: 40px;
             border: none;
             border-radius: 10px;
-            background: #e9edf2;
             font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
             transition: 0.2s;
-            font-size: 13px;
+            background: #f1f5f9;
+            color: #1e293b;
         }
-        .navBtn.todo { background: #e9edf2; color: #1e293b; }
-        .navBtn.correct { background: #22c55e; color: #fff; }
-        .navBtn.wrong { background: #ef4444; color: #fff; }
-        .navBtn.bookmark { background: #facc15 !important; color: #111; }
+
+        .navBtn:hover {
+            background: #2563eb;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .navBtn.todo { background: #f1f5f9; color: #1e293b; }
+        .navBtn.correct { background: #22c55e; color: white; }
+        .navBtn.wrong { background: #ef4444; color: white; }
+        .navBtn.bookmark { background: #facc15 !important; color: #0f172a; }
         .navBtn.current { box-shadow: 0 0 0 3px #2563eb inset; }
-        .navBtn:hover { background: #2563eb; color: white; }
+
+        /* ===== POPUP ===== */
         .popup {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 999999999;
-            backdrop-filter: blur(4px);
+            animation: fadeIn 0.25s ease;
         }
+
         .popup-box {
-            width: 330px;
+            width: 360px;
             max-width: 92%;
-            background: #fff;
-            border-radius: 28px;
-            padding: 28px;
+            background: white;
+            border-radius: 32px;
+            padding: 32px 28px;
             text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+            animation: popupScale 0.3s ease;
         }
-        .popup-icon { font-size: 56px; margin-bottom: 12px; }
-        .popup-box h2 { font-size: 24px; margin-bottom: 8px; color: #111827; }
-        .popup-box p { font-size: 16px; line-height: 1.6; color: #475569; margin-bottom: 20px; }
-        .popup-buttons { display: flex; gap: 12px; }
+
+        @keyframes popupScale {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .popup-icon { font-size: 56px; margin-bottom: 8px; }
+        .popup-box h2 { font-size: 22px; color: #0f172a; margin-bottom: 6px; }
+        .popup-box p { font-size: 16px; color: #64748b; line-height: 1.6; white-space: pre-line; }
+        .popup-buttons { display: flex; gap: 12px; margin-top: 20px; }
         .popup-btn {
             flex: 1;
-            border: none;
             padding: 14px;
-            border-radius: 16px;
+            border: none;
+            border-radius: 14px;
             font-weight: 600;
-            cursor: pointer;
             font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .popup-btn.ok { background: #2563eb; color: #fff; }
-        .popup-btn.cancel { background: #e9edf2; color: #1e293b; }
-        #shufflePopup input {
+        .popup-btn.ok { background: #2563eb; color: white; }
+        .popup-btn.ok:hover { background: #1d4ed8; }
+        .popup-btn.cancel { background: #f1f5f9; color: #475569; }
+        .popup-btn.cancel:hover { background: #e2e8f0; }
+
+        /* ===== SHUFFLE POPUP ===== */
+        #shufflePopup .popup-box input {
             width: 100%;
             padding: 14px;
             margin: 8px 0;
@@ -312,205 +738,154 @@
             border: 2px solid #e2e8f0;
             font-size: 15px;
             outline: none;
-        }
-        #subjectSelect {
-            position: fixed;
-            inset: 0;
-            background: rgba(15,23,42,0.92);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999999999;
-        }
-        .subject-card {
-            width: 400px;
-            max-width: 92%;
-            background: white;
-            border-radius: 32px;
-            padding: 32px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-        }
-        .subject-card h1 { margin-bottom: 8px; color: #111827; }
-        .subject-card p { color: #64748b; margin-bottom: 24px; }
-        .subject-btn {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 10px;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
             transition: 0.2s;
-            color: white;
         }
-        .subject-btn:hover { transform: scale(1.02); }
-        .ai-pro-tab-btn {
-            background: linear-gradient(135deg, #7c3aed, #2563eb);
-            color: white;
+
+        #shufflePopup .popup-box input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
         }
-        .ai-pro-tab-btn:hover { background: linear-gradient(135deg, #6d28d9, #1d4ed8); }
+
+        /* ===== BACK TO TOP ===== */
         #backToTop {
             position: fixed;
-            left: 20px;
-            bottom: 100px;
+            left: 24px;
+            bottom: 24px;
             width: 52px;
             height: 52px;
             border: none;
             border-radius: 50%;
             background: linear-gradient(135deg, #2563eb, #7c3aed);
             color: white;
-            font-size: 22px;
+            font-size: 24px;
             cursor: pointer;
             z-index: 999999;
             display: none;
-            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.35);
+            transition: all 0.3s ease;
         }
-        #backToTop:hover { transform: translateY(-4px); }
-        .create-test-area {
-            background: rgba(255,255,255,0.94);
-            border-radius: 24px;
-            padding: 24px;
-            margin-top: 0px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+
+        #backToTop:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(37, 99, 235, 0.45);
         }
-        .create-test-area textarea {
-            width: 100%;
-            height: 200px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 16px;
-            font-size: 14px;
-            font-family: monospace;
-            resize: vertical;
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 30px;
+            padding: 16px 0;
         }
-        .create-test-area .row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin: 16px 0;
+
+        .footer strong {
+            color: #64748b;
         }
-        .badge {
-            background: #e9edf2;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #1e293b;
-        }
-        .tab-ai-pro {
-            background: linear-gradient(135deg, #7c3aed, #2563eb) !important;
-            color: #fff !important;
-        }
-        .tab-ai-pro:hover {
-            background: linear-gradient(135deg, #6d28d9, #1d4ed8) !important;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .test-questions {
-            margin-top: 16px;
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: 16px;
-            border: 2px dashed #94a3b8;
-        }
-        .test-questions .q-item {
-            padding: 10px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .test-questions .q-item:last-child {
-            border-bottom: none;
-        }
-        .correct-answer {
-            color: #16a34a;
-            font-weight: 600;
+
+        /* ===== HIDDEN ===== */
+        .hidden { display: none !important; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 22px; }
+            .subject-card { padding: 28px 20px; }
+            .subject-grid { grid-template-columns: 1fr; }
+            .topbar { flex-direction: column; align-items: stretch; }
+            .topbar-actions { justify-content: center; }
+            .tab-bar { gap: 4px; padding: 6px; }
+            .tab-btn { padding: 8px 14px; font-size: 12px; }
+            .question { padding: 18px 16px; }
+            #navPanel { width: 250px; right: 8px; }
+            #navGrid { grid-template-columns: repeat(4, 1fr); }
+            #navHandle { height: 70px; font-size: 18px; }
         }
     </style>
 </head>
 <body>
 
-<!-- SUBJECT SELECT - 6 môn + AI Pro -->
+<!-- ===== SUBJECT SELECT ===== -->
 <div id="subjectSelect">
     <div class="subject-card">
-        <h1>📚 Trắc Nghiệm By Nhật</h1>
-        <p>Chọn môn học</p>
-        <button class="subject-btn" style="background:#2563eb;" onclick="chooseSubject('GPSL')">📘 Pháp luật</button>
-        <button class="subject-btn" style="background:#16a34a;" onclick="chooseSubject('DDCS')">📗 ĐD cơ sở 2</button>
-        <button class="subject-btn" style="background:#3b82f6;" onclick="chooseSubject('NOI')">💙 CSSK người lớn - Nội khoa</button>
-        <button class="subject-btn" style="background:#ef4444;" onclick="chooseSubject('NGOAI')">❤️ CSSK người lớn - Ngoại khoa</button>
-        <button class="subject-btn" style="background:#f59e0b;" onclick="chooseSubject('NHI')">👶 Sức khỏe - NCSK và Hành vi</button>
-        <button class="subject-btn" style="background:#ec4899;" onclick="chooseSubject('SAN')">🤰 Giao tiếp GDSK trong thực hành ĐD</button>
-        <!-- AI Pro -->
-        <button class="subject-btn ai-pro-tab-btn" onclick="window.open('https://vainhogpt.netlify.app/','_blank')">🤖 AI Cá Nhân Pro</button>
+        <div class="logo">📚</div>
+        <h1>Trắc Nghiệm By Nhật</h1>
+        <p class="subtitle">Chọn môn học để bắt đầu</p>
+        <div class="subject-grid">
+            <button class="subject-btn" style="background:#2563eb;" onclick="chooseSubject('GPSL')">📘 Pháp luật</button>
+            <button class="subject-btn" style="background:#16a34a;" onclick="chooseSubject('DDCS')">📗 ĐD cơ sở 2</button>
+            <button class="subject-btn" style="background:#3b82f6;" onclick="chooseSubject('NOI')">💙 Nội khoa</button>
+            <button class="subject-btn" style="background:#ef4444;" onclick="chooseSubject('NGOAI')">❤️ Ngoại khoa</button>
+            <button class="subject-btn" style="background:#f59e0b;" onclick="chooseSubject('NHI')">👶 NCSK & Hành vi</button>
+            <button class="subject-btn" style="background:#ec4899;" onclick="chooseSubject('SAN')">🤰 Giao tiếp ĐD</button>
+            <button class="subject-btn full btn-ai-pro" onclick="window.open('https://vainhogpt.netlify.app/','_blank')">🤖 AI Cá Nhân Pro</button>
+        </div>
     </div>
 </div>
 
+<!-- ===== MAIN ===== -->
 <div class="container">
+
+    <!-- HEADER -->
     <div class="header">
-        <h1 id="subjectTitle">Môn Pháp luật · @Nhat2007</h1>
+        <h1>📖 <span id="subjectTitle">Pháp luật</span></h1>
         <div class="creator">Nguyễn Phi Nhật · Tự động cập nhật</div>
     </div>
 
-    <!-- TAB BAR: 6 môn + AI Pro + Tạo đề -->
+    <!-- TAB BAR -->
     <div class="tab-bar">
-        <button class="btn activeTab" id="tabDS" onclick="switchTab('DS')">📖 Trắc nghiệm</button>
-        <button class="btn gray" id="tabNOTE" onclick="switchTab('NOTE')">📒 Ghi chú</button>
-        <button class="btn gray" id="tabEXAM" onclick="switchTab('EXAM')">📝 Thi thử</button>
-        <button class="btn gray" id="tabCREATE" onclick="switchTab('CREATE')">🧪 Tạo đề</button>
-        <button class="btn tab-ai-pro" onclick="window.open('https://vainhogpt.netlify.app/','_blank')">🤖 AI Pro</button>
+        <button class="tab-btn active" id="tabDS" onclick="switchTab('DS')">📖 Trắc nghiệm</button>
+        <button class="tab-btn" id="tabNOTE" onclick="switchTab('NOTE')">📒 Ghi chú</button>
+        <button class="tab-btn" id="tabEXAM" onclick="switchTab('EXAM')">📝 Thi thử</button>
+        <button class="tab-btn" id="tabCREATE" onclick="switchTab('CREATE')">🧪 Tạo đề</button>
+        <button class="tab-btn tab-ai" onclick="window.open('https://vainhogpt.netlify.app/','_blank')">🤖 AI Pro</button>
     </div>
 
     <!-- NOTE -->
     <div id="noteBox" class="hidden">
-        <h2 style="margin-bottom:14px;">📒 Ghi chú kiến thức</h2>
-        <textarea id="noteArea" placeholder="Nhập ghi chú ..."></textarea>
-        <div style="display:flex;gap:12px;margin-top:16px;">
-            <button class="btn" onclick="saveNote()">💾 Lưu</button>
-            <button class="btn gray" onclick="clearNote()">🗑 Xóa</button>
+        <h2>📒 Ghi chú kiến thức</h2>
+        <textarea id="noteArea" placeholder="Nhập ghi chú của bạn..."></textarea>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+            <button class="btn" onclick="saveNote()">💾 Lưu ghi chú</button>
+            <button class="btn btn-outline" onclick="clearNote()">🗑 Xóa</button>
         </div>
     </div>
 
-    <!-- TẠO ĐỀ (TAB RIÊNG) -->
+    <!-- CREATE TEST -->
     <div id="createBox" class="hidden">
-        <div class="create-test-area">
-            <h3 style="margin-bottom:10px;">🧪 Tạo đề trắc nghiệm (độc lập, không ảnh hưởng bài học)</h3>
-            <p style="color:#475569;font-size:14px;margin-bottom:12px;">
-                Nhập câu hỏi dạng: <span class="badge">1. Câu hỏi</span> <span class="badge">*A. Đáp án đúng</span> <span class="badge">B. Sai</span> (dấu * là đáp án đúng)
-            </p>
-            <textarea id="testInput" placeholder="1. Hà Nội là thủ đô của Việt Nam?&#10;*A. Đúng&#10;B. Sai&#10;2. 2+2=5?&#10;*A. Sai&#10;B. Đúng"></textarea>
-            <div class="row">
-                <button class="btn green" onclick="generateTest()">📝 Tạo đề từ văn bản</button>
-                <button class="btn gray" onclick="document.getElementById('fileInput').click()">📤 Upload file (.txt)</button>
-                <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="uploadFile(event)">
-                <button class="btn gray" onclick="clearTest()">🗑 Xóa đề</button>
+        <h3>🧪 Tạo đề trắc nghiệm</h3>
+        <p class="desc">Nhập câu hỏi theo định dạng bên dưới. <span class="badge">1. Câu hỏi</span> <span class="badge">*A. Đáp án đúng</span> <span class="badge">B. Đáp án sai</span></p>
+        <textarea id="testInput" placeholder="1. Hà Nội là thủ đô của Việt Nam?&#10;*A. Đúng&#10;B. Sai&#10;2. 2+2=5?&#10;*A. Sai&#10;B. Đúng"></textarea>
+        <div style="display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;">
+            <button class="btn btn-green" onclick="generateTest()">📝 Tạo đề</button>
+            <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">📤 Upload file .txt</button>
+            <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="uploadFile(event)">
+            <button class="btn btn-outline" onclick="clearTest()">🗑 Xóa đề</button>
+        </div>
+        <div id="testResult" style="font-weight:600;color:#16a34a;"></div>
+        <div id="testPreview" class="test-preview hidden"></div>
+        <div id="testQuizContainer" class="hidden" style="margin-top:20px;border-top:2px solid #e2e8f0;padding-top:20px;">
+            <h4 style="margin-bottom:12px;">📝 Làm bài test</h4>
+            <div id="testQuizInner"></div>
+            <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+                <button class="btn btn-green" onclick="checkTestAnswers()">✅ Kiểm tra</button>
+                <button class="btn btn-outline" onclick="resetTestQuiz()">🔄 Làm lại</button>
             </div>
-            <div id="testResult" style="margin-top:12px;font-weight:600;color:#16a34a;"></div>
-            <div id="testPreview" class="hidden"></div>
-            <!-- Khu vực hiển thị đề đã tạo để làm bài -->
-            <div id="testQuizContainer" class="hidden" style="margin-top:20px;border-top:2px solid #e2e8f0;padding-top:20px;">
-                <h4>📝 Đề đã tạo - Làm bài ngay</h4>
-                <div id="testQuizInner"></div>
-                <div style="margin-top:16px;">
-                    <button class="btn green" onclick="checkTestAnswers()">✅ Kiểm tra đáp án</button>
-                    <button class="btn gray" onclick="resetTestQuiz()">🔄 Làm lại</button>
-                </div>
-                <div id="testResultScore" style="margin-top:12px;font-weight:700;"></div>
-            </div>
+            <div id="testResultScore" style="margin-top:12px;font-weight:700;"></div>
         </div>
     </div>
 
     <!-- TOPBAR -->
     <div class="topbar" id="mainTopbar">
-        <div class="stats">Tổng: <span id="totalQuestion">0</span> · Đúng: <span id="correctAnswer">0</span></div>
-        <div class="buttons">
-            <input type="number" id="gotoQuestion" placeholder="Đến câu..." min="1" style="padding:10px 14px;border-radius:14px;border:2px solid #e2e8f0;width:120px;font-weight:600;">
-            <button class="btn" onclick="goToQuestion()">Đến</button>
-            <button class="btn" id="shuffleBtn" onclick="toggleShuffle(this)">🔀 Xáo Full: OFF</button>
-            <button class="btn" onclick="openShufflePopup()">🎯 Xáo đoạn</button>
-            <button class="btn" onclick="reloadQuiz()">🔄 Làm lại</button>
-            <button class="btn gray" onclick="changeSubject()">📚 Đổi môn</button>
+        <div class="stats">📊 Tổng: <span id="totalQuestion">0</span> · ✅ Đúng: <span id="correctAnswer">0</span></div>
+        <div class="topbar-actions">
+            <input class="goto-input" type="number" id="gotoQuestion" placeholder="Đến câu..." min="1">
+            <button class="btn btn-sm" onclick="goToQuestion()">Đến</button>
+            <button class="btn btn-sm btn-outline" id="shuffleBtn" onclick="toggleShuffle(this)">🔀 Xáo: OFF</button>
+            <button class="btn btn-sm btn-outline" onclick="openShufflePopup()">🎯 Xáo đoạn</button>
+            <button class="btn btn-sm btn-outline" onclick="reloadQuiz()">🔄 Làm lại</button>
+            <button class="btn btn-sm btn-outline" onclick="changeSubject()">📚 Đổi môn</button>
         </div>
     </div>
 
@@ -519,33 +894,43 @@
 
     <!-- EXAM TOP -->
     <div id="examTop" class="hidden">
-        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;">
-            <div><h3>📝 Thi thử</h3><div id="examTimer" style="font-size:30px;font-weight:700;color:#ef4444;">45:00</div></div>
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center;">
+            <div>
+                <h3 style="font-size:16px;color:#64748b;">⏱ Thi thử</h3>
+                <div id="examTimer">45:00</div>
+            </div>
             <div style="flex:1;min-width:160px;">
-                <div style="height:10px;background:#e9edf2;border-radius:999px;overflow:hidden;"><div id="examProgressBar" style="height:100%;background:#22c55e;width:0%;"></div></div>
-                <div id="examProgressText" style="margin-top:6px;font-weight:600;">0 / 0 (0%)</div>
+                <div class="exam-progress-wrap">
+                    <div class="exam-progress-bar" id="examProgressBar"></div>
+                </div>
+                <div id="examProgressText" style="margin-top:6px;font-weight:600;font-size:14px;">0 / 0 (0%)</div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="btn" onclick="filterExam('all')">📋 Tất cả</button>
-                <button class="btn" onclick="filterExam('todo')">⬜ Chưa làm</button>
-                <button class="btn" onclick="filterExam('wrong')">❌ Sai</button>
-                <button class="btn" onclick="filterExam('bookmark')">⭐ Bookmark</button>
-                <button class="btn" onclick="finishExam()">📤 Nộp bài</button>
+                <button class="btn btn-sm btn-outline" onclick="filterExam('all')">📋 Tất cả</button>
+                <button class="btn btn-sm btn-outline" onclick="filterExam('todo')">⬜ Chưa làm</button>
+                <button class="btn btn-sm btn-outline" onclick="filterExam('wrong')">❌ Sai</button>
+                <button class="btn btn-sm btn-outline" onclick="filterExam('bookmark')">⭐ Đã đánh dấu</button>
+                <button class="btn btn-sm btn-danger" onclick="finishExam()">📤 Nộp bài</button>
             </div>
         </div>
     </div>
 
-    <div class="footer">Create @Nhat2007 · Học làm gì ngủ đi đừng học</div>
+    <div class="footer">
+        <strong>@Nhat2007</strong> · Nguyễn Phi Nhật · Học làm gì ngủ đi đừng học 😴
+    </div>
 </div>
 
-<!-- NAV -->
+<!-- ===== NAV PANEL ===== -->
 <div id="navHandle">😻</div>
 <div id="navPanel">
-    <div id="navHeader"><span>Đi đến câu</span><button onclick="toggleNav()">✕</button></div>
+    <div id="navHeader">
+        <span>📌 Đi đến câu</span>
+        <button onclick="toggleNav()">✕</button>
+    </div>
     <div id="navGrid"></div>
 </div>
 
-<!-- POPUP -->
+<!-- ===== POPUP ===== -->
 <div class="popup" id="popup">
     <div class="popup-box">
         <div class="popup-icon" id="popupIcon">🎉</div>
@@ -558,12 +943,12 @@
     </div>
 </div>
 
-<!-- SHUFFLE POPUP -->
+<!-- ===== SHUFFLE POPUP ===== -->
 <div class="popup" id="shufflePopup">
     <div class="popup-box">
         <div class="popup-icon">🎯</div>
         <h2>Xáo đoạn câu</h2>
-        <p>Nhập phạm vi</p>
+        <p style="font-size:14px;color:#94a3b8;">Nhập phạm vi cần xáo trộn</p>
         <input id="popupFrom" type="number" placeholder="Từ câu">
         <input id="popupTo" type="number" placeholder="Đến câu">
         <div class="popup-buttons">
@@ -573,11 +958,11 @@
     </div>
 </div>
 
-<!-- BACK TO TOP -->
+<!-- ===== BACK TO TOP ===== -->
 <button id="backToTop">↑</button>
 
 <script>
-    // ======================== DATA ========================
+    // ======================== CONFIG ========================
     const SUBJECTS = {
         GPSL: { name: "Pháp luật", ds: "DS.txt" },
         DDCS: { name: "ĐD cơ sở 2", ds: "DS1.txt" },
@@ -587,8 +972,9 @@
         SAN: { name: "Giao tiếp GDSK trong thực hành ĐD", ds: "DS5.txt" }
     };
 
+    // ======================== STATE ========================
     let currentSubject = "";
-    let parsedQuestionsDS = [];      // Dữ liệu gốc của môn học
+    let parsedQuestionsDS = [];
     let examQuestions = [];
     let examSeconds = 2700;
     let examInterval = null;
@@ -602,12 +988,10 @@
     let customFrom = 0;
     let customTo = 0;
     let popupCallback = null;
-
-    // Dữ liệu cho phần tạo đề (riêng biệt, không ảnh hưởng)
     let testQuestions = [];
     let testAnswers = {};
 
-    // ======================== SUBJECT SELECT ========================
+    // ======================== SUBJECT ========================
     function chooseSubject(subject) {
         currentSubject = subject;
         localStorage.setItem("currentSubject", subject);
@@ -621,50 +1005,46 @@
         document.getElementById("subjectSelect").style.display = "flex";
     }
 
-    // ======================== LOAD DATA ========================
     async function loadQuestionFiles() {
         try {
             const subject = SUBJECTS[currentSubject];
-            const response = await fetch(subject.ds);
-            const text = await response.text();
+            const res = await fetch(subject.ds);
+            const text = await res.text();
             parsedQuestionsDS = parseRawText(text);
-            document.getElementById("subjectTitle").innerText = "Môn " + subject.name + " · @Nhat2007";
+            document.getElementById("subjectTitle").textContent = subject.name;
             switchTab("DS");
         } catch (err) {
-            alert("Không tìm thấy file: " + SUBJECTS[currentSubject].ds);
-            console.log(err);
+            alert("❌ Không tìm thấy file: " + SUBJECTS[currentSubject].ds);
+            console.error(err);
         }
     }
 
     function parseRawText(text) {
         const lines = text.split('\n');
-        let questions = [];
-        let currentQ = null;
+        let questions = [], current = null;
         lines.forEach(line => {
-            let trimmed = line.trim();
-            if (!trimmed) return;
-            if (/^(#?\d+[\.\:\s])/.test(trimmed)) {
-                if (currentQ) questions.push(currentQ);
-                let clean = trimmed.replace(/^(#?\d+[\.\:\s]\s*)/, '');
-                currentQ = { q: clean, arr: [] };
-            } else if (/^(\*?[A-E]\s*[\.\:\s])/.test(trimmed)) {
-                if (currentQ) currentQ.arr.push(trimmed);
+            let t = line.trim();
+            if (!t) return;
+            if (/^(#?\d+[\.\:\s])/.test(t)) {
+                if (current) questions.push(current);
+                current = { q: t.replace(/^(#?\d+[\.\:\s]\s*)/, ''), arr: [] };
+            } else if (/^(\*?[A-E]\s*[\.\:\s])/.test(t)) {
+                if (current) current.arr.push(t);
             }
         });
-        if (currentQ) questions.push(currentQ);
+        if (current) questions.push(current);
         return questions;
     }
 
-    // ======================== TAB SWITCH ========================
+    // ======================== TAB ========================
     function switchTab(type) {
         currentTab = type;
-        document.querySelectorAll(".tab-bar .btn").forEach(b => b.classList.remove("activeTab"));
-        if (type === "DS") document.getElementById("tabDS").classList.add("activeTab");
-        else if (type === "NOTE") document.getElementById("tabNOTE").classList.add("activeTab");
-        else if (type === "EXAM") document.getElementById("tabEXAM").classList.add("activeTab");
-        else if (type === "CREATE") document.getElementById("tabCREATE").classList.add("activeTab");
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        if (type === "DS") document.getElementById("tabDS").classList.add("active");
+        else if (type === "NOTE") document.getElementById("tabNOTE").classList.add("active");
+        else if (type === "EXAM") document.getElementById("tabEXAM").classList.add("active");
+        else if (type === "CREATE") document.getElementById("tabCREATE").classList.add("active");
 
-        // Ẩn tất cả
         document.getElementById("noteBox").classList.add("hidden");
         document.getElementById("createBox").classList.add("hidden");
         document.getElementById("examTop").classList.add("hidden");
@@ -676,16 +1056,12 @@
             loadNote();
             return;
         }
-
         if (type === "CREATE") {
             document.getElementById("createBox").classList.remove("hidden");
             document.getElementById("mainTopbar").classList.add("hidden");
-            document.getElementById("quiz-container").classList.add("hidden");
             return;
         }
-
         document.getElementById("quiz-container").classList.remove("hidden");
-
         if (type === "EXAM") {
             document.getElementById("examTop").classList.remove("hidden");
             createExam();
@@ -700,13 +1076,13 @@
     // ======================== NOTE ========================
     function saveNote() {
         localStorage.setItem("nhat_note", document.getElementById("noteArea").value);
-        alert("Đã lưu ghi chú!");
+        showPopup("💾 Đã lưu", "Ghi chú đã được lưu thành công!");
     }
     function loadNote() {
         document.getElementById("noteArea").value = localStorage.getItem("nhat_note") || "";
     }
     function clearNote() {
-        if (confirm("Xóa ghi chú?")) {
+        if (confirm("Xóa toàn bộ ghi chú?")) {
             localStorage.removeItem("nhat_note");
             document.getElementById("noteArea").value = "";
         }
@@ -736,7 +1112,7 @@
     function updateExamTimer() {
         let m = Math.floor(examSeconds / 60);
         let s = examSeconds % 60;
-        document.getElementById("examTimer").innerHTML = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+        document.getElementById("examTimer").textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
     }
 
     function updateProgress() {
@@ -744,7 +1120,7 @@
         let done = document.querySelectorAll("#quiz-container .question.answered").length;
         let pct = total ? (done / total * 100) : 0;
         document.getElementById("examProgressBar").style.width = pct + "%";
-        document.getElementById("examProgressText").innerHTML = done + " / " + total + " (" + Math.round(pct) + "%)";
+        document.getElementById("examProgressText").textContent = done + " / " + total + " (" + Math.round(pct) + "%)";
     }
 
     async function finishExam() {
@@ -758,13 +1134,13 @@
             else correct++;
         });
         const score = (correct / (correct + wrong + todo || 1) * 10).toFixed(2);
-        await showPopup("🎉 Kết quả", `Điểm: ${score}/10\n✅ Đúng: ${correct}\n❌ Sai: ${wrong}\n⏳ Chưa làm: ${todo}`, "🏆");
+        await showPopup("🎉 Kết quả thi", `Điểm: ${score}/10\n✅ Đúng: ${correct}\n❌ Sai: ${wrong}\n⏳ Chưa làm: ${todo}`);
         showAllAnswers();
     }
 
     function showAllAnswers() {
         document.querySelectorAll("#quiz-container .question").forEach(q => {
-            const btn = q.querySelector(".btn");
+            const btn = q.querySelector(".btn-submit");
             if (btn && !btn.disabled) btn.click();
         });
     }
@@ -778,12 +1154,12 @@
         });
     }
 
-    // ======================== QUIZ ENGINE (cho môn học chính) ========================
+    // ======================== QUIZ ========================
     function buildQuizHTML() {
         const container = document.getElementById("quiz-container");
         container.innerHTML = "";
         correctCount = 0;
-        document.getElementById("correctAnswer").innerText = "0";
+        document.getElementById("correctAnswer").textContent = "0";
 
         let questions = currentTab === "EXAM" ? [...examQuestions] : [...parsedQuestionsDS];
         if (shuffleMode) questions = shuffleArray(questions);
@@ -797,62 +1173,60 @@
                 questions = [...before, ...middle, ...after];
             }
         }
-        document.getElementById("totalQuestion").innerText = questions.length;
+        document.getElementById("totalQuestion").textContent = questions.length;
 
-        questions.forEach((item, qIndex) => {
-            const qBlock = document.createElement("div");
-            qBlock.className = "question";
+        questions.forEach((item, idx) => {
+            const block = document.createElement("div");
+            block.className = "question";
 
-            const qText = document.createElement("div");
-            qText.className = "question-title";
-            qText.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;">
-                <span>Câu ${qIndex+1}: ${item.q}</span>
-                <span style="cursor:pointer;font-size:24px;" onclick="toggleBookmark(${qIndex},this)">${bookmarks.includes(qIndex) ? "⭐" : "☆"}</span>
-            </div>`;
-            qBlock.appendChild(qText);
+            const title = document.createElement("div");
+            title.className = "question-title";
+            title.innerHTML = `
+                <span>Câu ${idx+1}: ${item.q}</span>
+                <button class="bookmark-btn" onclick="toggleBookmark(${idx},this)">${bookmarks.includes(idx) ? "⭐" : "☆"}</button>
+            `;
+            block.appendChild(title);
 
-            let optionsData = item.arr.map(opt => {
-                let isCorrect = opt.startsWith('*');
-                let label = opt.match(/^\*?([A-E])/)[1];
-                let clean = opt.replace(/^\*?[A-E]\s*[\.\:\s]\s*/, '');
+            let opts = item.arr.map(o => {
+                let isCorrect = o.startsWith('*');
+                let label = o.match(/^\*?([A-E])/)[1];
+                let clean = o.replace(/^\*?[A-E]\s*[\.\:\s]\s*/, '');
                 return { label, text: clean, isCorrect };
             });
-            optionsData = shuffleArray(optionsData);
+            opts = shuffleArray(opts);
 
-            const optionsList = document.createElement("div");
-            optionsList.className = "options";
-            optionsData.forEach(opt => {
+            const optDiv = document.createElement("div");
+            optDiv.className = "options";
+            opts.forEach(opt => {
                 const label = document.createElement("label");
                 label.className = "option" + (opt.isCorrect ? " correct-target" : "");
                 const inp = document.createElement("input");
                 inp.type = "radio";
-                inp.name = `q_${qIndex}`;
+                inp.name = `q_${idx}`;
                 const saved = JSON.parse(localStorage.getItem("answers") || "{}");
-                if (saved[currentTab] && saved[currentTab][qIndex] && saved[currentTab][qIndex].includes(opt.text)) {
-                    inp.checked = true;
-                }
+                if (saved[currentTab]?.[idx]?.includes(opt.text)) inp.checked = true;
                 inp.addEventListener("change", () => {
                     let ans = JSON.parse(localStorage.getItem("answers") || "{}");
                     if (!ans[currentTab]) ans[currentTab] = {};
-                    ans[currentTab][qIndex] = [opt.text];
+                    ans[currentTab][idx] = [opt.text];
                     localStorage.setItem("answers", JSON.stringify(ans));
                 });
                 const span = document.createElement("span");
-                span.innerText = opt.text;
+                span.className = "label-text";
+                span.textContent = opt.text;
                 label.appendChild(inp);
                 label.appendChild(span);
-                optionsList.appendChild(label);
+                optDiv.appendChild(label);
             });
-            qBlock.appendChild(optionsList);
+            block.appendChild(optDiv);
 
             const submitBtn = document.createElement("button");
-            submitBtn.className = "btn";
-            submitBtn.style.marginTop = "15px";
-            submitBtn.innerText = "Trả Lời";
+            submitBtn.className = "btn-submit";
+            submitBtn.textContent = "Trả lời";
             submitBtn.onclick = function() {
-                if (qBlock.classList.contains("answered")) return;
-                qBlock.classList.add("answered");
-                const allOpts = optionsList.querySelectorAll(".option");
+                if (block.classList.contains("answered")) return;
+                block.classList.add("answered");
+                const allOpts = optDiv.querySelectorAll(".option");
                 let allCorrect = true;
                 allOpts.forEach(li => {
                     const inp = li.querySelector("input");
@@ -863,20 +1237,18 @@
                     if (!inp.checked && isCorrect) allCorrect = false;
                 });
                 submitBtn.disabled = true;
-                if (allCorrect) { correctCount++; document.getElementById("correctAnswer").innerText = correctCount; }
+                if (allCorrect) { correctCount++; document.getElementById("correctAnswer").textContent = correctCount; }
                 if (!progress[currentTab]) progress[currentTab] = {};
-                progress[currentTab][qIndex] = true;
+                progress[currentTab][idx] = true;
                 localStorage.setItem("progress", JSON.stringify(progress));
-                if (!allCorrect) qBlock.classList.add("wrong-question");
+                if (!allCorrect) block.classList.add("wrong-question");
                 updateNavColors();
                 if (currentTab === "EXAM") updateProgress();
             };
-            qBlock.appendChild(submitBtn);
-            container.appendChild(qBlock);
+            block.appendChild(submitBtn);
+            container.appendChild(block);
 
-            if (progress[currentTab] && progress[currentTab][qIndex]) {
-                submitBtn.click();
-            }
+            if (progress[currentTab]?.[idx]) submitBtn.click();
         });
         updateNavColors();
     }
@@ -888,8 +1260,8 @@
         correctCount = 0;
         shuffleMode = false;
         customShuffle = false;
-        document.getElementById("shuffleBtn").innerText = "🔀 Xáo Full: OFF";
-        document.getElementById("correctAnswer").innerText = "0";
+        document.getElementById("shuffleBtn").textContent = "🔀 Xáo: OFF";
+        document.getElementById("correctAnswer").textContent = "0";
         buildQuizHTML();
         buildNavPanel();
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -898,21 +1270,16 @@
     function toggleShuffle(btn) {
         shuffleMode = !shuffleMode;
         customShuffle = false;
-        btn.innerText = shuffleMode ? "🔀 Xáo Full: ON" : "🔀 Xáo Full: OFF";
+        btn.textContent = shuffleMode ? "🔀 Xáo: ON" : "🔀 Xáo: OFF";
         buildQuizHTML();
         buildNavPanel();
     }
 
-    function openShufflePopup() {
-        document.getElementById("shufflePopup").style.display = "flex";
-    }
-
-    function closeShufflePopup() {
-        document.getElementById("shufflePopup").style.display = "none";
-    }
+    function openShufflePopup() { document.getElementById("shufflePopup").style.display = "flex"; }
+    function closeShufflePopup() { document.getElementById("shufflePopup").style.display = "none"; }
 
     function shuffleCustom() {
-        if (shuffleMode) { shuffleMode = false; document.getElementById("shuffleBtn").innerText = "🔀 Xáo Full: OFF"; }
+        if (shuffleMode) { shuffleMode = false; document.getElementById("shuffleBtn").textContent = "🔀 Xáo: OFF"; }
         const from = parseInt(document.getElementById("popupFrom").value);
         const to = parseInt(document.getElementById("popupTo").value);
         if (isNaN(from) || isNaN(to) || from < 1 || to < from) { alert("Nhập khoảng hợp lệ."); return; }
@@ -931,22 +1298,22 @@
         if (!num) return;
         const qs = document.querySelectorAll("#quiz-container .question");
         if (num < 1 || num > qs.length) { alert("Không tồn tại câu này"); return; }
-        qs[num - 1].scrollIntoView({ behavior: "smooth", block: "start" });
+        qs[num - 1].scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
     function toggleBookmark(id, el) {
         if (bookmarks.includes(id)) {
             bookmarks = bookmarks.filter(x => x !== id);
-            el.innerHTML = "☆";
+            el.textContent = "☆";
         } else {
             bookmarks.push(id);
-            el.innerHTML = "⭐";
+            el.textContent = "⭐";
         }
         localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
         updateNavColors();
     }
 
-    // ======================== NAV PANEL ========================
+    // ======================== NAV ========================
     function toggleNav() {
         const panel = document.getElementById("navPanel");
         panel.style.display = panel.style.display === "block" ? "none" : "block";
@@ -960,9 +1327,9 @@
         qs.forEach((q, i) => {
             const btn = document.createElement("button");
             btn.className = "navBtn";
-            btn.innerText = i + 1;
+            btn.textContent = i + 1;
             btn.onclick = function() {
-                q.scrollIntoView({ behavior: "smooth", block: "start" });
+                q.scrollIntoView({ behavior: "smooth", block: "center" });
                 toggleNav();
             };
             grid.appendChild(btn);
@@ -980,25 +1347,20 @@
             if (q.classList.contains("answered")) {
                 if (q.classList.contains("wrong-question")) btn.classList.add("wrong");
                 else btn.classList.add("correct");
-            } else {
-                btn.classList.add("todo");
-            }
-            if (bookmarks.includes(i)) {
-                btn.className = "navBtn bookmark";
-            }
+            } else btn.classList.add("todo");
+            if (bookmarks.includes(i)) btn.className = "navBtn bookmark";
         });
     }
 
     // ======================== POPUP ========================
     function showPopup(title, text, icon = "🎉", confirmMode = false) {
-        document.getElementById("popupTitle").innerText = title;
-        document.getElementById("popupText").innerText = text;
-        document.getElementById("popupIcon").innerText = icon;
+        document.getElementById("popupTitle").textContent = title;
+        document.getElementById("popupText").textContent = text;
+        document.getElementById("popupIcon").textContent = icon;
         document.getElementById("cancelBtn").style.display = confirmMode ? "block" : "none";
         document.getElementById("popup").style.display = "flex";
         return new Promise(resolve => { popupCallback = resolve; });
     }
-
     function closePopup(result) {
         document.getElementById("popup").style.display = "none";
         if (popupCallback) { popupCallback(result); popupCallback = null; }
@@ -1014,13 +1376,12 @@
         return a;
     }
 
-    // ======================== TẠO ĐỀ (TAB RIÊNG, ĐỘC LẬP) ========================
+    // ======================== CREATE TEST ========================
     function generateTest() {
         const input = document.getElementById("testInput").value;
-        if (!input.trim()) { alert("Vui lòng nhập nội dung câu hỏi."); return; }
+        if (!input.trim()) { alert("Vui lòng nhập câu hỏi."); return; }
         const lines = input.split('\n').map(l => l.trim()).filter(l => l);
-        let questions = [];
-        let current = null;
+        let questions = [], current = null;
         lines.forEach(line => {
             if (/^\d+[\.\:\s]/.test(line)) {
                 if (current) questions.push(current);
@@ -1030,36 +1391,32 @@
             }
         });
         if (current) questions.push(current);
+        if (questions.length === 0) { alert("Không tìm thấy câu hỏi. Kiểm tra định dạng."); return; }
 
-        if (questions.length === 0) { alert("Không tìm thấy câu hỏi. Vui lòng đúng định dạng."); return; }
-
-        // Lưu vào biến riêng (không ảnh hưởng parsedQuestionsDS)
         testQuestions = questions;
         testAnswers = {};
 
-        // Hiển thị preview
-        let previewHtml = `<div class="test-questions">`;
-        previewHtml += `<strong>✅ Đã tạo ${questions.length} câu hỏi (độc lập, không ảnh hưởng bài học chính)</strong><br><br>`;
+        let html = `<div class="test-preview">`;
+        html += `<strong>✅ Đã tạo ${questions.length} câu hỏi</strong><br><br>`;
         questions.forEach((q, i) => {
-            previewHtml += `<div class="q-item">`;
-            previewHtml += `<b>Câu ${i+1}:</b> ${q.q}<br>`;
+            html += `<div class="q-item">`;
+            html += `<b>Câu ${i+1}:</b> ${q.q}<br>`;
             q.arr.forEach(a => {
                 const isCorrect = a.startsWith('*');
                 const text = a.replace(/^\*?[A-E]\s*[\.\:\s]\s*/, '');
-                previewHtml += `<span style="color:${isCorrect ? '#16a34a' : '#475569'};">${isCorrect ? '✅' : '○'} ${text}</span><br>`;
+                html += `<span style="color:${isCorrect ? '#16a34a' : '#475569'};">${isCorrect ? '✅' : '○'} ${text}</span><br>`;
                 if (isCorrect) {
                     if (!testAnswers[i]) testAnswers[i] = [];
                     testAnswers[i].push(text);
                 }
             });
-            previewHtml += `</div>`;
+            html += `</div>`;
         });
-        previewHtml += `</div>`;
-        document.getElementById("testPreview").innerHTML = previewHtml;
+        html += `</div>`;
+        document.getElementById("testPreview").innerHTML = html;
         document.getElementById("testPreview").classList.remove("hidden");
-        document.getElementById("testResult").innerHTML = `✅ Đã tạo ${questions.length} câu hỏi thành công!`;
+        document.getElementById("testResult").textContent = `✅ Đã tạo ${questions.length} câu hỏi thành công!`;
 
-        // Hiển thị đề để làm bài (riêng biệt)
         renderTestQuiz();
         document.getElementById("testQuizContainer").classList.remove("hidden");
     }
@@ -1068,14 +1425,13 @@
         const container = document.getElementById("testQuizInner");
         container.innerHTML = "";
         if (testQuestions.length === 0) {
-            container.innerHTML = "<p style='color:#94a3b8;'>Chưa có đề nào. Hãy tạo đề trước.</p>";
+            container.innerHTML = "<p style='color:#94a3b8;'>Chưa có đề nào.</p>";
             return;
         }
         testQuestions.forEach((item, idx) => {
             const div = document.createElement("div");
             div.className = "question";
-            div.style.marginBottom = "16px";
-            div.setAttribute("data-q", idx);
+            div.style.marginBottom = "14px";
 
             const title = document.createElement("div");
             title.className = "question-title";
@@ -1084,15 +1440,12 @@
 
             const optDiv = document.createElement("div");
             optDiv.className = "options";
-
             let opts = item.arr.map(a => {
                 let clean = a.replace(/^\*?[A-E]\s*[\.\:\s]\s*/, '');
                 let isCorrect = a.startsWith('*');
-                let label = a.match(/^\*?([A-E])/)[1];
-                return { label, text: clean, isCorrect };
+                return { text: clean, isCorrect };
             });
             opts = shuffleArray(opts);
-
             opts.forEach(opt => {
                 const label = document.createElement("label");
                 label.className = "option";
@@ -1102,7 +1455,8 @@
                 inp.value = opt.text;
                 label.appendChild(inp);
                 const span = document.createElement("span");
-                span.innerText = opt.text;
+                span.className = "label-text";
+                span.textContent = opt.text;
                 label.appendChild(span);
                 optDiv.appendChild(label);
             });
@@ -1113,57 +1467,48 @@
 
     function checkTestAnswers() {
         const qs = document.querySelectorAll("#testQuizInner .question");
-        let correct = 0;
-        let total = qs.length;
+        let correct = 0, total = qs.length;
         qs.forEach((q, idx) => {
             const selected = q.querySelector('input:checked');
             const correctAns = testAnswers[idx] || [];
-            // Reset styles
             q.querySelectorAll('.option').forEach(li => {
                 li.classList.remove('correct', 'wrong');
                 const inp = li.querySelector('input');
-                if (inp && correctAns.includes(inp.value)) {
-                    li.classList.add('correct');
-                }
+                if (inp && correctAns.includes(inp.value)) li.classList.add('correct');
             });
             if (selected) {
-                if (correctAns.includes(selected.value)) {
-                    correct++;
-                } else {
-                    selected.closest('.option').classList.add('wrong');
-                }
+                if (correctAns.includes(selected.value)) correct++;
+                else selected.closest('.option').classList.add('wrong');
             }
         });
         const score = (correct / total * 10).toFixed(2);
-        document.getElementById("testResultScore").innerHTML = `✅ Kết quả: ${correct}/${total} đúng · Điểm: ${score}/10`;
+        document.getElementById("testResultScore").textContent = `✅ Kết quả: ${correct}/${total} đúng · Điểm: ${score}/10`;
     }
 
     function resetTestQuiz() {
         document.querySelectorAll("#testQuizInner .question input").forEach(inp => inp.checked = false);
-        document.querySelectorAll("#testQuizInner .option").forEach(li => {
-            li.classList.remove('correct', 'wrong');
-        });
-        document.getElementById("testResultScore").innerHTML = "";
+        document.querySelectorAll("#testQuizInner .option").forEach(li => li.classList.remove('correct', 'wrong'));
+        document.getElementById("testResultScore").textContent = "";
     }
 
-    function uploadFile(event) {
-        const file = event.target.files[0];
+    function uploadFile(e) {
+        const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById("testInput").value = e.target.result;
+        reader.onload = function(ev) {
+            document.getElementById("testInput").value = ev.target.result;
             generateTest();
         };
         reader.readAsText(file);
-        event.target.value = "";
+        e.target.value = "";
     }
 
     function clearTest() {
         document.getElementById("testInput").value = "";
         document.getElementById("testPreview").innerHTML = "";
         document.getElementById("testPreview").classList.add("hidden");
-        document.getElementById("testResult").innerHTML = "";
-        document.getElementById("testResultScore").innerHTML = "";
+        document.getElementById("testResult").textContent = "";
+        document.getElementById("testResultScore").textContent = "";
         document.getElementById("testQuizContainer").classList.add("hidden");
         testQuestions = [];
         testAnswers = {};
@@ -1172,7 +1517,7 @@
     // ======================== BACK TO TOP ========================
     const backBtn = document.getElementById("backToTop");
     window.addEventListener("scroll", () => {
-        backBtn.style.display = window.scrollY > 300 ? "block" : "none";
+        backBtn.style.display = window.scrollY > 400 ? "flex" : "none";
     });
     backBtn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
