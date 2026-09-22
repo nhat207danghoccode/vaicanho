@@ -1960,9 +1960,7 @@ async function editAnswer(item,qBlock){
             "🔐 Nhập mật khẩu sửa đáp án:"
         );
 
-
     if(password===null)return;
-
 
     if(password!=="19D"){
 
@@ -1971,7 +1969,6 @@ async function editAnswer(item,qBlock){
         );
 
         return;
-
     }
 
 
@@ -1984,6 +1981,30 @@ async function editAnswer(item,qBlock){
 
 
     /*
+     * Hiển thị toàn bộ nội dung đáp án
+     */
+
+    const optionText=
+        item.arr
+            .map(opt=>{
+
+                const match=
+                    opt.match(
+                        /^\*?([A-E])\s*[\.\:\s]\s*(.*)$/
+                    );
+
+                if(!match)return opt;
+
+                const label=match[1];
+                const text=match[2];
+
+                return label+". "+text;
+
+            })
+            .join("\n");
+
+
+    /*
      * Chọn đáp án mới
      */
 
@@ -1992,6 +2013,8 @@ async function editAnswer(item,qBlock){
             "🛠 Sửa đáp án câu này.\n\n"+
             "Đáp án hiện tại: "+
             (oldAnswer||"?")+
+            "\n"+
+            optionText+
             "\n\n"+
             "Nhập A, B, C, D hoặc E:"
         );
@@ -2016,7 +2039,6 @@ async function editAnswer(item,qBlock){
         );
 
         return;
-
     }
 
 
@@ -2029,7 +2051,6 @@ async function editAnswer(item,qBlock){
     ){
 
         return;
-
     }
 
 
