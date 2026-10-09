@@ -10,7 +10,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   /* ============================================================
-     GATE (LOADING + LOGIN) — giữ nguyên gốc
+     GATE (LOADING + LOGIN)
      ============================================================ */
   #gateRoot {
     position: fixed;
@@ -763,7 +763,7 @@
   }
 
   /* ============================================================
-     WEB TRẮC NGHIỆM — ĐẸP HƠN, XOÁ TAB AI
+     WEB TRẮC NGHIỆM
      ============================================================ */
   #mainApp *{box-sizing:border-box;}
 
@@ -858,7 +858,6 @@
       box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
   }
 
-  /* HEADER đẹp hơn */
   #mainApp .header{
       background:rgba(10,40,70,.55);
       backdrop-filter:blur(22px) saturate(180%);
@@ -938,7 +937,6 @@
       50%{opacity:1;transform:scale(1.5);}
   }
 
-  /* TOPBAR đẹp hơn */
   #mainApp .topbar{
       display:flex;
       justify-content:space-between;
@@ -1044,7 +1042,6 @@
       border-color:rgba(39,209,184,.5)!important;
   }
 
-  /* TAB BAR — đẹp hơn, 6 tab thôi (xoá AI Pro) */
   #mainApp .tab-bar{
       display:grid;
       grid-template-columns:repeat(6,1fr);
@@ -1095,7 +1092,6 @@
       border-color:rgba(39,209,184,.5)!important;
   }
 
-  /* QUESTION đẹp hơn */
   #mainApp .question{
       background:rgba(10,40,70,.55);
       backdrop-filter:blur(16px);
@@ -1507,6 +1503,7 @@
       box-shadow:0 0 0 4px rgba(42,157,244,.2);
   }
 
+  /* ===== SUBJECT SELECT — FIX LỖI ĐỔI MÔN ===== */
   #mainApp #subjectSelect{
       position:fixed;
       inset:0;
@@ -1517,7 +1514,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      z-index:999999999;
+      z-index:999999999 !important;
       backdrop-filter:blur(8px);
       -webkit-backdrop-filter:blur(8px);
       padding:1.5rem;
@@ -1720,10 +1717,9 @@
 <body>
 
 <!-- ============================================================
-     GATE ROOT: LOADING + LOGIN
+     GATE ROOT
      ============================================================ -->
 <div id="gateRoot">
-
   <i class="fas fa-plus med-cross"></i>
   <i class="fas fa-plus med-cross"></i>
   <i class="fas fa-plus med-cross"></i>
@@ -1732,7 +1728,6 @@
   <i class="fas fa-plus med-cross"></i>
 
   <div class="app-stage">
-
     <div class="screen" id="loadingScreen">
       <div class="loader-wrap">
         <div class="center-core">
@@ -1779,7 +1774,6 @@
 
     <div class="screen hidden" id="loginScreen">
       <div class="login-wrap">
-
         <div class="login-logo">
           <div class="login-logo-circle">
             <i class="fas fa-heart-pulse"></i>
@@ -1831,10 +1825,8 @@
         <div class="footer-note">
           <i class="fas fa-heart-pulse"></i> Chúc bạn thi tốt • Stay healthy
         </div>
-
       </div>
     </div>
-
   </div>
 
   <div class="admin-badge">
@@ -1846,13 +1838,10 @@
       <div class="name">Nguyễn Phi Nhật</div>
     </div>
   </div>
-
 </div>
-<!-- ===== /GATE ROOT ===== -->
-
 
 <!-- ============================================================
-     WEB TRẮC NGHIỆM — ĐÃ XOÁ TAB AI PRO
+     WEB TRẮC NGHIỆM
      ============================================================ -->
 <div id="mainApp" style="display:none;">
 
@@ -1862,7 +1851,7 @@
 <div class="bg-deco d4">+</div>
 <div class="bg-deco d5">+</div>
 
-<!-- SUBJECT SELECT — xoá nút AI Pro -->
+<!-- SUBJECT SELECT -->
 <div id="subjectSelect">
     <div class="subject-card">
         <h1>🩺 Trắc Nghiệm</h1>
@@ -1936,7 +1925,6 @@
     </div>
 </div>
 
-<!-- TAB BAR — xoá AI Pro, còn 6 tab -->
 <div class="tab-bar">
     <button class="tab-btn activeTab" id="tabDS" onclick="switchTab('DS')">
         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -2158,8 +2146,6 @@ B. Đúng"></textarea>
 </button>
 
 </div>
-<!-- ===== /MAIN APP ===== -->
-
 
 <!-- ============================================================
      GATE SCRIPT
@@ -2188,7 +2174,6 @@ B. Đúng"></textarea>
       progressFill.style.width = '100%';
       progressText.textContent = '100%';
       clearInterval(loadingInterval);
-
       setTimeout(() => {
         if (localStorage.getItem(STORAGE_KEY) === 'true') {
           switchToWelcome();
@@ -2394,6 +2379,23 @@ let testAnswers={};
 
 window.firebaseCorrections={};
 
+/* ===== FIX: ẩn/hiện subjectSelect rõ ràng ===== */
+function hideSubjectSelect(){
+    const sel = document.getElementById("subjectSelect");
+    sel.style.display = "none";
+    sel.style.visibility = "hidden";
+    sel.style.opacity = "0";
+    sel.style.pointerEvents = "none";
+}
+
+function showSubjectSelect(){
+    const sel = document.getElementById("subjectSelect");
+    sel.style.display = "flex";
+    sel.style.visibility = "visible";
+    sel.style.opacity = "1";
+    sel.style.pointerEvents = "auto";
+}
+
 function chooseSubject(subject){
     answersRevealed=false;
     subjectLoadToken++;
@@ -2404,14 +2406,15 @@ function chooseSubject(subject){
     window.firebaseCorrections={};
     currentSubject=subject;
     localStorage.setItem("currentSubject", subject);
-    document.getElementById("subjectSelect").style.display="none";
+    hideSubjectSelect();
     loadQuestionFiles();
 }
 
 function changeSubject(){
     localStorage.removeItem("currentSubject");
     currentSubject="";
-    document.getElementById("subjectSelect").style.display="flex";
+    showSubjectSelect();
+    window.scrollTo({top: 0, behavior: "instant"});
 }
 
 async function loadQuestionFiles(){
@@ -3000,7 +3003,7 @@ window.onload=function(){
     const saved=localStorage.getItem("currentSubject");
     if(saved && SUBJECTS[saved]){
         currentSubject=saved;
-        document.getElementById("subjectSelect").style.display="none";
+        hideSubjectSelect();
         loadQuestionFiles();
     }
 };
