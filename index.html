@@ -1467,29 +1467,24 @@
       border:1px solid rgba(245,158,11,.35);
   }
 
+  /* ===== SUBJECT SELECT — FIX TRIỆT ĐỂ: mặc định ẩn ===== */
   #subjectSelect {
-      position: fixed !important;
-      inset: 0 !important;
+      position: fixed;
+      inset: 0;
       background:
           radial-gradient(circle at 20% 30%, rgba(30,130,220,.35), transparent 45%),
           radial-gradient(circle at 80% 70%, rgba(20,190,180,.28), transparent 45%),
-          #061a2e !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      z-index: 2147483647 !important;
+          #061a2e;
+      align-items: center;
+      justify-content: center;
+      z-index: 2147483647;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       padding: 1.5rem;
-      visibility: visible !important;
-      opacity: 1 !important;
-      pointer-events: auto !important;
+      display: none;
   }
-  #subjectSelect.hidden {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
+  #subjectSelect.show {
+      display: flex;
   }
   .subject-card{
       width:450px;
@@ -1979,7 +1974,7 @@ B. Đúng"></textarea>
 
 </div>
 
-<div id="subjectSelect" class="hidden">
+<div id="subjectSelect">
     <div class="subject-card">
         <h1>🩺 Trắc Nghiệm</h1>
         <p>Chọn môn học</p>
@@ -2292,25 +2287,18 @@ window.preloadAllSubjects = function(){
     });
 };
 
+/* ===== SHOW/HIDE SUBJECT SELECT — DÙNG CLASS .show ===== */
 window.showSubjectSelect = function(){
     const sel = document.getElementById("subjectSelect");
     if(!sel) return;
-    sel.classList.remove("hidden");
-    sel.style.display = "flex";
-    sel.style.visibility = "visible";
-    sel.style.opacity = "1";
-    sel.style.pointerEvents = "auto";
+    sel.classList.add("show");
     window.scrollTo(0,0);
 };
 
 window.hideSubjectSelect = function(){
     const sel = document.getElementById("subjectSelect");
     if(!sel) return;
-    sel.classList.add("hidden");
-    sel.style.display = "none";
-    sel.style.visibility = "hidden";
-    sel.style.opacity = "0";
-    sel.style.pointerEvents = "none";
+    sel.classList.remove("show");
 };
 
 window.scheduleBuild = function(){
@@ -2331,7 +2319,6 @@ window.chooseSubject = function(subject){
     window.answersRevealed=false;
     window.subjectLoadToken++;
 
-    // Xoá DOM cũ ngay
     document.getElementById("quiz-container").innerHTML = "";
     document.getElementById("navGrid").innerHTML = "";
 
@@ -2378,7 +2365,6 @@ window.loadQuestionFiles = async function(){
         window.parsedQuestionsDS=window.parseRawText(text);
         window.parsedQuestionsDS.forEach((question,index)=>{ question.id="q_"+(index+1); });
 
-        // KHÔNG CHỜ FIREBASE — dùng cache cũ trước
         window.firebaseCorrections = window._correctionsCache[loadingSubject] || {};
 
         if(loadToken!==window.subjectLoadToken || window.currentSubject!==loadingSubject){
@@ -2400,7 +2386,6 @@ window.loadQuestionFiles = async function(){
         window.hideLoadingPill();
         window.scheduleBuild();
 
-        // Gọi Firebase chạy nền
         window.getFirebaseCorrections(loadingSubject).then(corrections=>{
             if(loadToken!==window.subjectLoadToken || window.currentSubject!==loadingSubject)return;
             window._correctionsCache[loadingSubject] = corrections || {};
@@ -2408,7 +2393,6 @@ window.loadQuestionFiles = async function(){
             window.applyFirebaseCorrections();
         }).catch(e=>console.warn("Firebase background fail:", e));
 
-        // Lắng nghe realtime
         window.listenFirebaseCorrections(loadingSubject, corrections=>{
             if(loadToken!==window.subjectLoadToken || window.currentSubject!==loadingSubject)return;
             window._correctionsCache[loadingSubject] = corrections || {};
@@ -2452,7 +2436,6 @@ window.getCorrectAnswer = function(item){
     return match ? match[1] : null;
 };
 
-/* ===== UPDATE ĐÁP ÁN FIREBASE NHẸ NHÀNG ===== */
 window.applyFirebaseCorrections = function(){
     const qs = document.querySelectorAll("#quiz-container .question");
     qs.forEach(qBlock=>{
@@ -2606,11 +2589,9 @@ window.editAnswer = async function(item,qBlock){
     if(!["A","B","C","D","E"].includes(answer)){ alert("Chỉ được nhập A, B, C, D hoặc E."); return; }
     if(!confirm("Xác nhận sửa đáp án thành "+answer+"?")){ return; }
 
-    // 1. Lưu lên Firebase
     const success=await window.saveFirebaseCorrection(window.currentSubject,item.id,answer);
     if(!success)return;
 
-    // 2. Update cache local
     if(!window.firebaseCorrections){ window.firebaseCorrections={}; }
     window.firebaseCorrections[item.id]={answer:answer,updatedAt:Date.now()};
     if(!window._correctionsCache[window.currentSubject]){
@@ -2620,10 +2601,8 @@ window.editAnswer = async function(item,qBlock){
 
     alert("Đã sửa đáp án thành "+answer+"!\n\nFirebase đã lưu đáp án mới.");
 
-    // 3. Update DOM nhẹ — không rebuild
     window.applyFirebaseCorrections();
 
-    // 4. Nếu đang ở EXAM/CREATE thì rebuild
     if(window.currentTab==="EXAM" || window.currentTab==="CREATE"){
         window.scheduleBuild();
     }
