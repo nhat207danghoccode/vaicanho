@@ -1462,7 +1462,7 @@
       border:1px solid rgba(245,158,11,.35);
   }
 
-  /* ===== SUBJECT SELECT — FIX TRIỆT ĐỂ ===== */
+  /* ===== SUBJECT SELECT — NHỎ GỌN ===== */
   #subjectSelect {
       position: fixed;
       inset: 0;
@@ -1476,28 +1476,28 @@
       z-index: 2147483647;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      padding: 1.5rem;
+      padding: 1rem;
   }
   #subjectSelect.hidden {
       display: none !important;
   }
   .subject-card{
-      width:450px;
-      max-width:100%;
-      background:rgba(10,40,70,.75);
+      width: 340px;
+      max-width: 100%;
+      background:rgba(10,40,70,.85);
       backdrop-filter:blur(22px) saturate(180%);
       -webkit-backdrop-filter:blur(22px) saturate(180%);
-      border-radius:32px;
-      padding:38px 34px;
+      border-radius: 22px;
+      padding: 22px 18px 18px;
       text-align:center;
-      box-shadow:0 30px 70px -10px rgba(0,0,0,.8), 0 0 40px rgba(42,157,244,.3);
+      box-shadow:0 20px 50px -10px rgba(0,0,0,.7), 0 0 30px rgba(42,157,244,.25);
       border:1px solid rgba(90,180,255,.35);
-      max-height:92vh;
+      max-height: 92vh;
       overflow-y:auto;
   }
   .subject-card h1{
-      margin-bottom:8px;
-      font-size:28px;
+      margin-bottom: 4px;
+      font-size: 19px;
       background:linear-gradient(90deg,#2a9df4,#27d1b8,#2a9df4);
       background-size:200% auto;
       -webkit-background-clip:text;
@@ -1508,45 +1508,55 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:10px;
+      gap: 6px;
   }
   .subject-card p{
       color:#7fb5e0;
-      margin-bottom:26px;
-      font-size:14px;
+      margin-bottom: 16px;
+      font-size: 12px;
       font-weight:600;
       letter-spacing:.3px;
   }
   .subject-btn{
       width:100%;
-      padding:15px 18px;
-      margin-bottom:11px;
+      padding: 10px 12px;
+      margin-bottom: 7px;
       border:none;
-      border-radius:16px;
-      font-size:15px;
+      border-radius: 12px;
+      font-size: 13px;
       font-weight:700;
       cursor:pointer;
       transition:transform .15s, box-shadow .15s;
       color:white;
       font-family:inherit;
-      box-shadow:0 8px 20px -8px rgba(0,0,0,.5);
+      box-shadow:0 5px 14px -6px rgba(0,0,0,.5);
       display:flex;
       align-items:center;
-      gap:14px;
+      gap: 10px;
       text-align:left;
       border:1px solid rgba(255,255,255,.15);
   }
   .subject-btn:hover{
-      transform:translateY(-3px) scale(1.02);
-      box-shadow:0 14px 28px -8px rgba(0,0,0,.7);
+      transform:translateY(-2px) scale(1.01);
+      box-shadow:0 10px 22px -6px rgba(0,0,0,.7);
   }
-  .subject-btn .subj-info{display:flex;flex-direction:column;gap:3px;flex:1;}
+  .subject-btn .subj-info{display:flex;flex-direction:column;gap: 1px;flex:1;}
   .subject-btn .subj-sub{
-      font-size:11px;
+      font-size: 9px;
       font-weight:600;
       opacity:.85;
       letter-spacing:.3px;
   }
+  .subject-btn .icon-wrap{
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+  }
+  .subject-btn .icon-svg{
+      width: 18px;
+      height: 18px;
+  }
+
   .icon-svg{width:24px;height:24px;flex-shrink:0;display:inline-block;vertical-align:middle;}
   .icon-svg.sm{width:18px;height:18px;}
   .icon-svg.lg{width:32px;height:32px;}
@@ -1573,8 +1583,10 @@
       #mainApp .tab-bar{grid-template-columns:repeat(3,1fr);padding:9px;gap:7px;}
       #mainApp .tab-btn{padding:11px 4px;font-size:11px;min-height:62px;}
       #mainApp .tab-btn .tab-label{font-size:10px;}
-      .subject-card{padding:30px 22px;}
-      .subject-card h1{font-size:22px;}
+      .subject-card{padding: 18px 14px 14px; width: 320px;}
+      .subject-card h1{font-size: 17px;}
+      .subject-btn{padding: 9px 10px; font-size: 12px;}
+      .subject-btn .subj-sub{font-size: 8px;}
       #mainApp #navPanel{width:270px;height:420px;}
       #mainApp #navGrid{height:366px;grid-template-columns:repeat(4,1fr);}
       #mainApp .bg-deco{display:none;}
@@ -2218,7 +2230,6 @@ const SUBJECTS = {
     SAN:{name:"Giao tiếp GDSK trong thực hành ĐD", ds:"DS5.txt"}
 };
 
-/* ===== SUBJECT SELECT ===== */
 function showSubjectSelect(){
     const sel = document.getElementById("subjectSelect");
     if(!sel) return;
@@ -2232,7 +2243,6 @@ function hideSubjectSelect(){
     sel.classList.add("hidden");
 }
 
-/* ===== CHỌN MÔN ===== */
 function chooseSubject(subject){
     answersRevealed=false;
     subjectLoadToken++;
@@ -2248,14 +2258,12 @@ function chooseSubject(subject){
     loadQuestionFiles();
 }
 
-/* ===== ĐỔI MÔN ===== */
 function changeSubject(){
     localStorage.removeItem("currentSubject");
     currentSubject="";
     showSubjectSelect();
 }
 
-/* ===== LOAD CÂU HỎI ===== */
 async function loadQuestionFiles(){
     const loadToken=subjectLoadToken;
     const loadingSubject=currentSubject;
@@ -2295,7 +2303,6 @@ async function loadQuestionFiles(){
     }
 }
 
-/* ===== PARSE ===== */
 function parseRawText(text){
     const lines=text.split("\n");
     let questions=[];
@@ -2318,7 +2325,6 @@ function parseRawText(text){
     return questions;
 }
 
-/* ===== GET CORRECT ===== */
 function getCorrectAnswer(item){
     const correction=window.firebaseCorrections && window.firebaseCorrections[item.id];
     if(correction && correction.answer){ return correction.answer; }
@@ -2329,7 +2335,6 @@ function getCorrectAnswer(item){
     return match ? match[1] : null;
 }
 
-/* ===== SWITCH TAB ===== */
 function switchTab(type){
     currentTab=type;
 
@@ -2369,12 +2374,10 @@ function switchTab(type){
     buildNavPanel();
 }
 
-/* ===== NOTE ===== */
 function saveNote(){ localStorage.setItem("nhat_note", document.getElementById("noteArea").value); alert("Đã lưu ghi chú!"); }
 function loadNote(){ document.getElementById("noteArea").value=localStorage.getItem("nhat_note")||""; }
 function clearNote(){ if(confirm("Xóa ghi chú?")){ localStorage.removeItem("nhat_note"); document.getElementById("noteArea").value=""; } }
 
-/* ===== EXAM ===== */
 function createExam(){
     const two=parsedQuestionsDS.filter(q=>q.arr.length===2);
     const four=parsedQuestionsDS.filter(q=>q.arr.length>=4);
@@ -2456,7 +2459,6 @@ function toggleAllAnswers(){
     buildNavPanel();
 }
 
-/* ===== EDIT ANSWER ===== */
 async function editAnswer(item,qBlock){
     const password=prompt("Nhập mật khẩu sửa đáp án:");
     if(password===null)return;
@@ -2488,7 +2490,6 @@ async function editAnswer(item,qBlock){
     buildNavPanel();
 }
 
-/* ===== BUILD QUIZ ===== */
 function buildQuizHTML(){
     const container=document.getElementById("quiz-container");
     container.innerHTML="";
@@ -2662,7 +2663,6 @@ function buildQuizHTML(){
     updateNavColors();
 }
 
-/* ===== RELOAD ===== */
 function reloadQuiz(){
     localStorage.removeItem("answers");
     localStorage.removeItem("progress");
@@ -2677,7 +2677,6 @@ function reloadQuiz(){
     window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ===== SHUFFLE ===== */
 function toggleShuffle(btn){
     shuffleMode=!shuffleMode;
     customShuffle=false;
@@ -2715,7 +2714,6 @@ function goToQuestion(){
     qs[num-1].scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-/* ===== BOOKMARK ===== */
 function toggleBookmark(id,el){
     if(bookmarks.includes(id)){
         bookmarks=bookmarks.filter(x=>x!==id);
@@ -2728,7 +2726,6 @@ function toggleBookmark(id,el){
     updateNavColors();
 }
 
-/* ===== NAV ===== */
 function toggleNav(){
     const panel=document.getElementById("navPanel");
     panel.style.display=panel.style.display==="block" ? "none" : "block";
@@ -2767,7 +2764,6 @@ function updateNavColors(){
     });
 }
 
-/* ===== POPUP ===== */
 function showPopup(title,text,icon="",confirmMode=false){
     document.getElementById("popupTitle").innerText=title;
     document.getElementById("popupText").innerText=text;
@@ -2782,7 +2778,6 @@ function closePopup(result){
     if(popupCallback){ popupCallback(result); popupCallback=null; }
 }
 
-/* ===== SHUFFLE ARRAY ===== */
 function shuffleArray(arr){
     let a=[...arr];
     for(let i=a.length-1;i>0;i--){
@@ -2792,7 +2787,6 @@ function shuffleArray(arr){
     return a;
 }
 
-/* ===== CREATE TEST ===== */
 function generateTest(){
     const input=document.getElementById("testInput").value;
     if(!input.trim()){ alert("Vui lòng nhập nội dung câu hỏi."); return; }
@@ -2950,7 +2944,6 @@ function clearTest(){
     testAnswers={};
 }
 
-/* ===== INIT ===== */
 const backBtn=document.getElementById("backToTop");
 
 window.addEventListener("scroll",()=>{
