@@ -672,7 +672,7 @@
   }
 
   /* ============================================================
-     WEB TRẮC NGHIỆM — ĐÃ XOÁ ANIMATION CHUYỂN TAB GÂY LAG
+     WEB TRẮC NGHIỆM
      ============================================================ */
   #mainApp *{box-sizing:border-box;}
   #mainApp{
@@ -913,7 +913,6 @@
       box-shadow:0 8px 24px -8px rgba(39,209,184,.8)!important;
       border-color:rgba(39,209,184,.5)!important;
   }
-  /* TAB BAR — XOÁ ANIMATION CHUYỂN TAB GÂY LAG */
   #mainApp .tab-bar{
       display:grid;
       grid-template-columns:repeat(6,1fr);
@@ -1468,7 +1467,6 @@
       border:1px solid rgba(245,158,11,.35);
   }
 
-  /* ===== SUBJECT SELECT — FIX TRIỆT ĐỂ ===== */
   #subjectSelect {
       position: fixed !important;
       inset: 0 !important;
@@ -1573,7 +1571,6 @@
       box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
   }
 
-  /* ===== LOADING PILL ===== */
   #loadingPill {
       position: fixed;
       top: 20px;
@@ -1626,17 +1623,11 @@
 </head>
 <body>
 
-<!-- ============================================================
-     LOADING PILL — hiện khi chuyển môn
-     ============================================================ -->
 <div id="loadingPill">
     <span class="spinner"></span>
     <span id="loadingPillText">Đang tải...</span>
 </div>
 
-<!-- ============================================================
-     GATE ROOT
-     ============================================================ -->
 <div id="gateRoot">
   <i class="fas fa-plus med-cross"></i>
   <i class="fas fa-plus med-cross"></i>
@@ -1747,9 +1738,6 @@
   </div>
 </div>
 
-<!-- ============================================================
-     WEB TRẮC NGHIỆM
-     ============================================================ -->
 <div id="mainApp" style="display:none;">
 
 <div class="bg-deco d1">+</div>
@@ -1991,9 +1979,6 @@ B. Đúng"></textarea>
 
 </div>
 
-<!-- ============================================================
-     SUBJECT SELECT
-     ============================================================ -->
 <div id="subjectSelect" class="hidden">
     <div class="subject-card">
         <h1>🩺 Trắc Nghiệm</h1>
@@ -2056,9 +2041,6 @@ B. Đúng"></textarea>
     </div>
 </div>
 
-<!-- ============================================================
-     GATE SCRIPT
-     ============================================================ -->
 <script>
 (function() {
   const VALID_USER = "19D";
@@ -2200,10 +2182,6 @@ B. Đúng"></textarea>
 })();
 </script>
 
-
-<!-- ============================================================
-     FIREBASE
-     ============================================================ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -2252,10 +2230,6 @@ window.listenFirebaseCorrections = function(subject,callback){
 };
 </script>
 
-
-<!-- ============================================================
-     MAIN JAVASCRIPT
-     ============================================================ -->
 <script>
 /* ===== BIẾN TOÀN CỤC ===== */
 window.currentSubject="";
@@ -2279,8 +2253,8 @@ window.testQuestions=[];
 window.testAnswers={};
 window.firebaseCorrections={};
 
-/* ===== CACHE FILE TXT ===== */
 window._subjectCache = {};
+window._correctionsCache = {};
 window._buildScheduled = false;
 window._isChanging = false;
 
@@ -2293,7 +2267,6 @@ const SUBJECTS = {
     SAN:{name:"Giao tiếp GDSK trong thực hành ĐD", ds:"DS5.txt"}
 };
 
-/* ===== LOADING PILL ===== */
 window.showLoadingPill = function(msg){
     const p = document.getElementById("loadingPill");
     if(!p) return;
@@ -2306,7 +2279,6 @@ window.hideLoadingPill = function(){
     p.style.transform = "translateX(-50%) translateY(-120px)";
 };
 
-/* ===== PRELOAD TẤT CẢ FILE TXT ===== */
 window.preloadAllSubjects = function(){
     Object.keys(SUBJECTS).forEach(async (key)=>{
         if(window._subjectCache[key]) return;
@@ -2320,7 +2292,6 @@ window.preloadAllSubjects = function(){
     });
 };
 
-/* ===== HIỆN/ẨN SUBJECT SELECT ===== */
 window.showSubjectSelect = function(){
     const sel = document.getElementById("subjectSelect");
     if(!sel) return;
@@ -2342,7 +2313,6 @@ window.hideSubjectSelect = function(){
     sel.style.pointerEvents = "none";
 };
 
-/* ===== SCHEDULE BUILD — CHỐNG LAG ===== */
 window.scheduleBuild = function(){
     if(window._buildScheduled) return;
     window._buildScheduled = true;
@@ -2353,14 +2323,18 @@ window.scheduleBuild = function(){
     });
 };
 
-/* ===== CHỌN MÔN ===== */
 window.chooseSubject = function(subject){
     if(window._isChanging) return;
     window._isChanging = true;
-    setTimeout(()=>{ window._isChanging = false; }, 500);
+    setTimeout(()=>{ window._isChanging = false; }, 400);
 
     window.answersRevealed=false;
     window.subjectLoadToken++;
+
+    // Xoá DOM cũ ngay
+    document.getElementById("quiz-container").innerHTML = "";
+    document.getElementById("navGrid").innerHTML = "";
+
     if(window.firebaseCorrectionUnsubscribe){
         window.firebaseCorrectionUnsubscribe();
         window.firebaseCorrectionUnsubscribe=null;
@@ -2372,7 +2346,6 @@ window.chooseSubject = function(subject){
     window.loadQuestionFiles();
 };
 
-/* ===== ĐỔI MÔN ===== */
 window.changeSubject = function(){
     if(window._isChanging) return;
     window._isChanging = true;
@@ -2386,7 +2359,6 @@ window.changeSubject = function(){
     window.showSubjectSelect();
 };
 
-/* ===== LOAD CÂU HỎI (CÓ CACHE) ===== */
 window.loadQuestionFiles = async function(){
     const loadToken=window.subjectLoadToken;
     const loadingSubject=window.currentSubject;
@@ -2406,12 +2378,14 @@ window.loadQuestionFiles = async function(){
         window.parsedQuestionsDS=window.parseRawText(text);
         window.parsedQuestionsDS.forEach((question,index)=>{ question.id="q_"+(index+1); });
 
-        const corrections=await window.getFirebaseCorrections(loadingSubject);
+        // KHÔNG CHỜ FIREBASE — dùng cache cũ trước
+        window.firebaseCorrections = window._correctionsCache[loadingSubject] || {};
+
         if(loadToken!==window.subjectLoadToken || window.currentSubject!==loadingSubject){
             window.hideLoadingPill();
             return;
         }
-        window.firebaseCorrections=corrections||{};
+
         document.getElementById("subjectTitle").innerText="🩺 Môn "+SUBJECTS[loadingSubject].name;
 
         window.currentTab = "DS";
@@ -2426,11 +2400,21 @@ window.loadQuestionFiles = async function(){
         window.hideLoadingPill();
         window.scheduleBuild();
 
+        // Gọi Firebase chạy nền
+        window.getFirebaseCorrections(loadingSubject).then(corrections=>{
+            if(loadToken!==window.subjectLoadToken || window.currentSubject!==loadingSubject)return;
+            window._correctionsCache[loadingSubject] = corrections || {};
+            window.firebaseCorrections = corrections || {};
+            window.applyFirebaseCorrections();
+        }).catch(e=>console.warn("Firebase background fail:", e));
+
+        // Lắng nghe realtime
         window.listenFirebaseCorrections(loadingSubject, corrections=>{
             if(loadToken!==window.subjectLoadToken || window.currentSubject!==loadingSubject)return;
-            window.firebaseCorrections=corrections||{};
+            window._correctionsCache[loadingSubject] = corrections || {};
+            window.firebaseCorrections = corrections || {};
             if(window.currentTab==="DS" || window.currentTab==="TF" || window.currentTab==="MC"){
-                window.scheduleBuild();
+                window.applyFirebaseCorrections();
             }
         });
     }catch(err){
@@ -2466,6 +2450,35 @@ window.getCorrectAnswer = function(item){
     if(!original)return null;
     const match=original.match(/^\*?([A-E])/);
     return match ? match[1] : null;
+};
+
+/* ===== UPDATE ĐÁP ÁN FIREBASE NHẸ NHÀNG ===== */
+window.applyFirebaseCorrections = function(){
+    const qs = document.querySelectorAll("#quiz-container .question");
+    qs.forEach(qBlock=>{
+        const itemId = qBlock.dataset.questionId;
+        if(!itemId) return;
+        const item = window.parsedQuestionsDS.find(x=>x.id===itemId);
+        if(!item) return;
+
+        const newCorrect = window.getCorrectAnswer(item);
+        const options = qBlock.querySelectorAll(".option");
+
+        options.forEach(li=>{
+            const inp = li.querySelector("input");
+            if(!inp) return;
+            const label = inp.dataset.answerLabel;
+            const shouldBeCorrect = (label === newCorrect);
+            li.classList.toggle("correct-target", shouldBeCorrect);
+            li.classList.toggle("revealed-correct", shouldBeCorrect && window.answersRevealed);
+        });
+
+        const status = qBlock.querySelector(".edit-status");
+        if(status){
+            const firebaseEdited = window.firebaseCorrections && window.firebaseCorrections[itemId];
+            status.innerText = firebaseEdited ? "Đã cập nhật đáp án trên Firebase" : "Đáp án gốc";
+        }
+    });
 };
 
 window.switchTab = function(type){
@@ -2592,15 +2605,30 @@ window.editAnswer = async function(item,qBlock){
     const answer=newAnswer.trim().toUpperCase();
     if(!["A","B","C","D","E"].includes(answer)){ alert("Chỉ được nhập A, B, C, D hoặc E."); return; }
     if(!confirm("Xác nhận sửa đáp án thành "+answer+"?")){ return; }
+
+    // 1. Lưu lên Firebase
     const success=await window.saveFirebaseCorrection(window.currentSubject,item.id,answer);
     if(!success)return;
+
+    // 2. Update cache local
     if(!window.firebaseCorrections){ window.firebaseCorrections={}; }
     window.firebaseCorrections[item.id]={answer:answer,updatedAt:Date.now()};
+    if(!window._correctionsCache[window.currentSubject]){
+        window._correctionsCache[window.currentSubject]={};
+    }
+    window._correctionsCache[window.currentSubject][item.id]={answer:answer,updatedAt:Date.now()};
+
     alert("Đã sửa đáp án thành "+answer+"!\n\nFirebase đã lưu đáp án mới.");
-    window.scheduleBuild();
+
+    // 3. Update DOM nhẹ — không rebuild
+    window.applyFirebaseCorrections();
+
+    // 4. Nếu đang ở EXAM/CREATE thì rebuild
+    if(window.currentTab==="EXAM" || window.currentTab==="CREATE"){
+        window.scheduleBuild();
+    }
 };
 
-/* ===== BUILD 1 CÂU HỎI (TÁCH RIÊNG) ===== */
 window.buildQuestionBlock = function(item, qIndex){
     const qBlock=document.createElement("div");
     qBlock.className="question";
@@ -2708,7 +2736,6 @@ window.buildQuestionBlock = function(item, qIndex){
     return qBlock;
 };
 
-/* ===== BUILD QUIZ THEO BATCH — KHÔNG LAG ===== */
 window.buildQuizHTML = function(){
     const container=document.getElementById("quiz-container");
     container.innerHTML="";
@@ -3010,7 +3037,6 @@ window.clearTest = function(){
     window.testAnswers={};
 };
 
-/* ===== KHỞI TẠO ===== */
 document.addEventListener("DOMContentLoaded", function(){
     const navHandle = document.getElementById("navHandle");
     if(navHandle) navHandle.onclick = window.toggleNav;
@@ -3032,7 +3058,6 @@ document.addEventListener("DOMContentLoaded", function(){
         window.showSubjectSelect();
     }
 
-    // Preload tất cả môn chạy nền
     setTimeout(window.preloadAllSubjects, 800);
 });
 </script>
