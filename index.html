@@ -2970,5 +2970,51 @@ window.addEventListener("load", function(){
 });
 </script>
 
+<script>
+(function () {
+  const AUDIO_SRC = "web.mp3"; 
+  const VOLUME    = 1;          
+
+  let played = false;           
+  function playOnce() {
+    if (played) return;
+    played = true;
+
+    const audio = new Audio(AUDIO_SRC);
+    audio.volume  = VOLUME;
+    audio.preload = "auto";
+
+    const p = audio.play();
+    if (p && p.catch) {
+      p.catch(() => {
+     
+        played = false;
+
+        const unlock = () => {
+          removeUnlock();
+          if (played) return;
+          played = true;
+          const a = new Audio(AUDIO_SRC);
+          a.volume = VOLUME;
+          a.play().catch(() => {});
+        };
+
+        const removeUnlock = () => {
+          ["click", "touchstart", "keydown", "pointerdown"].forEach(ev =>
+            document.removeEventListener(ev, unlock)
+          );
+        };
+
+        ["click", "touchstart", "keydown", "pointerdown"].forEach(ev =>
+          document.addEventListener(ev, unlock, { passive: true })
+        );
+      });
+    }
+  }
+
+  playOnce();
+})();
+</script>
+
 </body>
 </html>
