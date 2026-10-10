@@ -9,9 +9,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* ============================================================
-     GATE (LOADING + LOGIN)
-     ============================================================ */
+
   #gateRoot {
     position: fixed;
     inset: 0;
@@ -668,9 +666,7 @@
     .badge-text .name { font-size: 0.75rem; }
   }
 
-  /* ============================================================
-     WEB TRẮC NGHIỆM
-     ============================================================ */
+  
   #mainApp *{box-sizing:border-box;}
   #mainApp{
       font-family:'Segoe UI',Arial,sans-serif;
@@ -2198,7 +2194,7 @@ window.listenFirebaseCorrections = function(subject,callback){
 </script>
 
 <script>
-/* ===== BIẾN TOÀN CỤC ===== */
+
 let currentSubject="";
 let subjectLoadToken=0;
 let parsedQuestionsDS=[];
@@ -2490,7 +2486,7 @@ async function editAnswer(item,qBlock){
     buildNavPanel();
 }
 
-/* ===== FIX: HÀM BUILD QUIZ TỐI ƯU, CHỌN ĐÁP ÁN NHANH ===== */
+
 function buildQuizHTML(){
     const container=document.getElementById("quiz-container");
     container.innerHTML="";
@@ -2520,7 +2516,7 @@ function buildQuizHTML(){
 
     document.getElementById("totalQuestion").innerText=questions.length;
 
-    /* Đọc answers 1 lần duy nhất, tránh đọc localStorage trong vòng lặp */
+    
     const savedAnswersRaw = localStorage.getItem("answers");
     const savedAnswers = savedAnswersRaw ? JSON.parse(savedAnswersRaw) : {};
 
@@ -2560,7 +2556,7 @@ function buildQuizHTML(){
         const optionsList=document.createElement("div");
         optionsList.className="options";
 
-        /* Lấy đáp án đã lưu cho câu hỏi hiện tại */
+        
         const savedForCurrentTab = savedAnswers[currentTab] || {};
         const savedForQuestion = savedForCurrentTab[item.id] || [];
 
@@ -2573,12 +2569,12 @@ function buildQuizHTML(){
             inp.name="q_"+item.id;
             inp.dataset.answerLabel=opt.label;
 
-            /* So sánh trực tiếp, không cần includes nếu đã lưu dạng mảng */
+            
             if(savedForQuestion.includes(opt.text)){
                 inp.checked=true;
             }
 
-            /* Lưu đáp án ngay khi click, dùng requestIdleCallback để không block UI */
+            
             inp.addEventListener("change",()=>{
                 let ans=JSON.parse(localStorage.getItem("answers")||"{}");
                 if(!ans[currentTab]){ ans[currentTab]={}; }
