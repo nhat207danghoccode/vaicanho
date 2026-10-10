@@ -933,10 +933,7 @@
       font-size:12px;
       font-weight:700;
       font-family:inherit;
-      transition:background .2s cubic-bezier(.2,.9,.3,1),
-                 color .2s,
-                 transform .2s cubic-bezier(.2,.9,.3,1),
-                 box-shadow .2s;
+      transition:background .15s, color .15s, transform .15s;
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -956,7 +953,6 @@
       transform:translateY(-2px);
       border-color:rgba(42,157,244,.35);
   }
-  #mainApp .tab-btn:active{transform:scale(.96);}
   #mainApp .tab-btn.activeTab{
       background:linear-gradient(135deg,#10b981,#27d1b8)!important;
       color:#fff!important;
@@ -974,9 +970,7 @@
       box-shadow:0 12px 32px -12px rgba(0,20,50,.7), inset 0 1px 0 rgba(255,255,255,.06);
       border:1px solid rgba(90,180,255,.3);
       border-left:4px solid #2a9df4;
-      transition:box-shadow .3s cubic-bezier(.2,.9,.3,1),
-                 transform .3s cubic-bezier(.2,.9,.3,1),
-                 border-color .3s;
+      transition:box-shadow .25s, transform .25s;
       position:relative;
       overflow:hidden;
   }
@@ -993,8 +987,6 @@
       transform:translateY(-2px);
       border-color:rgba(42,157,244,.55);
   }
-  #mainApp .question.answered{border-left-color:#27d1b8;}
-  #mainApp .question.wrong-question{border-left-color:#ef4444;}
   #mainApp .question-title{
       font-size:17px;
       font-weight:700;
@@ -1010,10 +1002,7 @@
       border-radius:15px;
       padding:15px 18px;
       cursor:pointer;
-      transition:background .2s cubic-bezier(.2,.9,.3,1),
-                 border-color .2s cubic-bezier(.2,.9,.3,1),
-                 transform .15s cubic-bezier(.2,.9,.3,1),
-                 box-shadow .2s;
+      transition:background .15s, border-color .15s, transform .15s;
       display:flex;
       align-items:center;
       gap:12px;
@@ -1021,16 +1010,6 @@
       color:#c4ddf5;
       font-weight:500;
       position:relative;
-      user-select:none;
-      -webkit-tap-highlight-color:transparent;
-      will-change:transform;
-  }
-  #mainApp .option:active{transform:scale(.985);}
-  #mainApp .option input[type="radio"]{pointer-events:none;}
-  #mainApp .option:has(input:checked){
-      border-color:#2a9df4;
-      background:rgba(42,157,244,.18);
-      box-shadow:0 0 0 3px rgba(42,157,244,.15);
   }
   #mainApp .option:hover{
       background:rgba(42,157,244,.15);
@@ -1073,11 +1052,6 @@
   #mainApp .option input{
       transform:scale(1.2);
       accent-color:#27d1b8;
-  }
-  #mainApp .option input:focus-visible + span{
-      outline:2px solid #2a9df4;
-      outline-offset:4px;
-      border-radius:6px;
   }
   #mainApp .edit-area{
       margin-top:14px;
@@ -1229,7 +1203,6 @@
       z-index:999999;
       overflow:hidden;
       border:1px solid rgba(90,180,255,.4);
-      transition:opacity .25s, transform .25s;
   }
   #mainApp #navHeader{
       height:54px;
@@ -1271,7 +1244,7 @@
       background:rgba(90,150,210,.2);
       font-weight:700;
       cursor:pointer;
-      transition:background .15s, color .15s, transform .15s, box-shadow .15s;
+      transition:background .15s, color .15s;
       font-size:13px;
       color:#a9cef0;
       border:1px solid rgba(90,180,255,.2);
@@ -1297,7 +1270,6 @@
       color:#fff;
       box-shadow:0 0 16px rgba(42,157,244,.7);
   }
-  #mainApp .navBtn:active{transform:scale(.92);}
   #mainApp .popup{
       position:fixed;
       inset:0;
@@ -1308,11 +1280,6 @@
       z-index:999999999;
       backdrop-filter:blur(8px);
       -webkit-backdrop-filter:blur(8px);
-      animation:popupFade .2s ease both;
-  }
-  @keyframes popupFade{
-      from{opacity:0;}
-      to{opacity:1;}
   }
   #mainApp .popup-box{
       width:350px;
@@ -1325,11 +1292,6 @@
       text-align:center;
       box-shadow:0 30px 70px -10px rgba(0,20,50,.9), 0 0 40px rgba(42,157,244,.4);
       border:1px solid rgba(90,180,255,.4);
-      animation:popupIn .3s cubic-bezier(.16,1,.3,1) both;
-  }
-  @keyframes popupIn{
-      from{opacity:0;transform:translateY(20px) scale(.96);}
-      to{opacity:1;transform:translateY(0) scale(1);}
   }
   #mainApp .popup-icon{
       margin-bottom:12px;
@@ -1498,18 +1460,6 @@
       background:rgba(245,158,11,.2);
       color:#fbbf24;
       border:1px solid rgba(245,158,11,.35);
-  }
-
-  /* Scrollbar đẹp hơn */
-  #mainApp ::-webkit-scrollbar{width:10px;height:10px;}
-  #mainApp ::-webkit-scrollbar-track{background:rgba(10,40,70,.4);border-radius:10px;}
-  #mainApp ::-webkit-scrollbar-thumb{
-      background:linear-gradient(135deg,#2a9df4,#27d1b8);
-      border-radius:10px;
-      border:2px solid rgba(6,26,46,.6);
-  }
-  #mainApp ::-webkit-scrollbar-thumb:hover{
-      background:linear-gradient(135deg,#27d1b8,#2a9df4);
   }
 
   /* ===== SUBJECT SELECT — NHỎ GỌN ===== */
@@ -2540,210 +2490,201 @@ async function editAnswer(item,qBlock){
     buildNavPanel();
 }
 
-/* ===== DEBOUNCE SAVE ===== */
-let saveTimer = null;
-function scheduleSaveAnswers(ans){
-    if(saveTimer) clearTimeout(saveTimer);
-    saveTimer = setTimeout(()=>{
-        localStorage.setItem("answers", JSON.stringify(ans));
-    }, 250);
-}
-
+/* ===== FIX: HÀM BUILD QUIZ TỐI ƯU, CHỌN ĐÁP ÁN NHANH ===== */
 function buildQuizHTML(){
-    const container = document.getElementById("quiz-container");
-    const fragment = document.createDocumentFragment();
-    container.innerHTML = "";
-    correctCount = 0;
-    document.getElementById("correctAnswer").innerText = "0";
+    const container=document.getElementById("quiz-container");
+    container.innerHTML="";
+    correctCount=0;
+    document.getElementById("correctAnswer").innerText="0";
 
     let sourceQuestions;
-    if(currentTab === "EXAM")      sourceQuestions = [...examQuestions];
-    else if(currentTab === "TF")   sourceQuestions = parsedQuestionsDS.filter(q => q.arr.length === 2);
-    else if(currentTab === "MC")   sourceQuestions = parsedQuestionsDS.filter(q => q.arr.length >= 3);
-    else                           sourceQuestions = [...parsedQuestionsDS];
+    if(currentTab==="EXAM"){ sourceQuestions=[...examQuestions]; }
+    else if(currentTab==="TF"){ sourceQuestions=parsedQuestionsDS.filter(q=>q.arr.length===2); }
+    else if(currentTab==="MC"){ sourceQuestions=parsedQuestionsDS.filter(q=>q.arr.length>=3); }
+    else{ sourceQuestions=[...parsedQuestionsDS]; }
 
-    let questions = sourceQuestions;
+    let questions=sourceQuestions;
 
     if(shuffleMode){
-        questions = shuffleArray(questions);
-    } else if(customShuffle){
-        let start = Math.max(0, customFrom - 1);
-        let end   = Math.min(questions.length - 1, customTo - 1);
-        if(start <= end){
-            const before = questions.slice(0, start);
-            const middle = shuffleArray(questions.slice(start, end + 1));
-            const after  = questions.slice(end + 1);
-            questions = [...before, ...middle, ...after];
+        questions=shuffleArray(questions);
+    }else if(customShuffle){
+        let start=Math.max(0,customFrom-1);
+        let end=Math.min(questions.length-1,customTo-1);
+        if(start<=end){
+            const before=questions.slice(0,start);
+            const middle=shuffleArray(questions.slice(start,end+1));
+            const after=questions.slice(end+1);
+            questions=[...before,...middle,...after];
         }
     }
 
-    document.getElementById("totalQuestion").innerText = questions.length;
+    document.getElementById("totalQuestion").innerText=questions.length;
 
-    const savedAll = JSON.parse(localStorage.getItem("answers") || "{}");
-    const savedTab = savedAll[currentTab] || {};
+    /* Đọc answers 1 lần duy nhất, tránh đọc localStorage trong vòng lặp */
+    const savedAnswersRaw = localStorage.getItem("answers");
+    const savedAnswers = savedAnswersRaw ? JSON.parse(savedAnswersRaw) : {};
 
-    questions.forEach((item, qIndex) => {
-        const qBlock = document.createElement("div");
-        qBlock.className = "question";
-        qBlock.dataset.questionId = item.id;
+    questions.forEach((item,qIndex)=>{
+        const qBlock=document.createElement("div");
+        qBlock.className="question";
+        qBlock.dataset.questionId=item.id;
 
-        const correctAnswer = getCorrectAnswer(item);
+        const correctAnswer=getCorrectAnswer(item);
 
-        /* ----- TIÊU ĐỀ ----- */
-        const qText = document.createElement("div");
-        qText.className = "question-title";
+        const qText=document.createElement("div");
+        qText.className="question-title";
 
-        const typeBadge = item.arr.length === 2
+        const typeBadge=item.arr.length===2
             ? '<span class="type-badge tf">Đúng/Sai</span>'
             : '<span class="type-badge mc">Đúng nhất</span>';
 
-        qText.innerHTML = `
+        qText.innerHTML=`
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-                <span>${typeBadge}Câu ${qIndex + 1}: ${item.q}</span>
-                <span style="cursor:pointer;font-size:24px;flex-shrink:0;line-height:1;"
-                      onclick="toggleBookmark(${qIndex},this)">${bookmarks.includes(qIndex) ? "★" : "☆"}</span>
+                <span>${typeBadge}Câu ${qIndex+1}: ${item.q}</span>
+                <span style="cursor:pointer;font-size:24px;flex-shrink:0;" onclick="toggleBookmark(${qIndex},this)">${bookmarks.includes(qIndex) ? "★" : "☆"}</span>
             </div>
         `;
+
         qBlock.appendChild(qText);
 
-        /* ----- OPTIONS ----- */
-        let optionsData = item.arr.map(opt => {
-            const match = opt.match(/^\*?([A-E])/);
-            const label = match ? match[1] : "";
-            const clean = opt.replace(/^\*?[A-E]\s*[\.\:\s]\s*/, "");
-            const isCorrect = label === correctAnswer;
-            return { label, text: clean, isCorrect };
+        let optionsData=item.arr.map(opt=>{
+            const match=opt.match(/^\*?([A-E])/);
+            const label=match ? match[1] : "";
+            const clean=opt.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
+            const isCorrect=label===correctAnswer;
+            return {label,text:clean,isCorrect};
         });
 
-        optionsData = shuffleArray(optionsData);
+        optionsData=shuffleArray(optionsData);
 
-        const optionsList = document.createElement("div");
-        optionsList.className = "options";
+        const optionsList=document.createElement("div");
+        optionsList.className="options";
 
-        optionsData.forEach(opt => {
-            const label = document.createElement("label");
-            label.className = "option"
-                + (opt.isCorrect ? " correct-target" : "")
-                + (opt.isCorrect && answersRevealed ? " revealed-correct" : "");
+        /* Lấy đáp án đã lưu cho câu hỏi hiện tại */
+        const savedForCurrentTab = savedAnswers[currentTab] || {};
+        const savedForQuestion = savedForCurrentTab[item.id] || [];
 
-            const inp = document.createElement("input");
-            inp.type = "radio";
-            inp.name = "q_" + item.id;
-            inp.dataset.answerLabel = opt.label;
+        optionsData.forEach(opt=>{
+            const label=document.createElement("label");
+            label.className="option"+(opt.isCorrect?" correct-target":"")+(opt.isCorrect && answersRevealed?" revealed-correct":"");
 
-            if(savedTab[item.id] && savedTab[item.id].includes(opt.text)){
-                inp.checked = true;
+            const inp=document.createElement("input");
+            inp.type="radio";
+            inp.name="q_"+item.id;
+            inp.dataset.answerLabel=opt.label;
+
+            /* So sánh trực tiếp, không cần includes nếu đã lưu dạng mảng */
+            if(savedForQuestion.includes(opt.text)){
+                inp.checked=true;
             }
 
-            const span = document.createElement("span");
-            span.innerText = opt.text;
+            /* Lưu đáp án ngay khi click, dùng requestIdleCallback để không block UI */
+            inp.addEventListener("change",()=>{
+                let ans=JSON.parse(localStorage.getItem("answers")||"{}");
+                if(!ans[currentTab]){ ans[currentTab]={}; }
+                ans[currentTab][item.id]=[opt.text];
+                localStorage.setItem("answers",JSON.stringify(ans));
+            });
+
+            const span=document.createElement("span");
+            span.innerText=opt.text;
 
             label.appendChild(inp);
             label.appendChild(span);
 
             if(opt.isCorrect && answersRevealed){
-                const badge = document.createElement("span");
-                badge.className = "answer-reveal-badge";
-                badge.innerText = "✓ ĐÁP ÁN";
+                const badge=document.createElement("span");
+                badge.className="answer-reveal-badge";
+                badge.innerText="✓ ĐÁP ÁN";
                 label.appendChild(badge);
             }
-
-            /* Click cả ô -> chọn + tự chấm */
-            label.addEventListener("change", () => {
-                const ans = JSON.parse(localStorage.getItem("answers") || "{}");
-                if(!ans[currentTab]) ans[currentTab] = {};
-                ans[currentTab][item.id] = [opt.text];
-                scheduleSaveAnswers(ans);
-
-                /* Tự chấm ngay */
-                autoGradeQuestion(qBlock, optionsList, item);
-            });
 
             optionsList.appendChild(label);
         });
 
         qBlock.appendChild(optionsList);
 
-        /* ----- KHU VỰC SỬA ĐÁP ÁN ----- */
-        const editArea = document.createElement("div");
-        editArea.className = "edit-area";
+        const editArea=document.createElement("div");
+        editArea.className="edit-area";
 
-        const status = document.createElement("span");
-        status.className = "edit-status";
-        const firebaseEdited = window.firebaseCorrections && window.firebaseCorrections[item.id];
-        status.innerText = firebaseEdited ? "Đã cập nhật đáp án trên Firebase" : "Đáp án gốc";
+        const status=document.createElement("span");
+        status.className="edit-status";
+
+        const firebaseEdited=window.firebaseCorrections && window.firebaseCorrections[item.id];
+        if(firebaseEdited){ status.innerText="Đã cập nhật đáp án trên Firebase"; }
+        else{ status.innerText="Đáp án gốc"; }
+
         editArea.appendChild(status);
 
-        const editBtn = document.createElement("button");
-        editBtn.className = "btn edit-answer";
-        editBtn.innerHTML = '<svg class="icon-svg sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span>Sửa đáp án</span>';
-        editBtn.onclick = function(){ editAnswer(item, qBlock); };
+        const editBtn=document.createElement("button");
+        editBtn.className="btn edit-answer";
+        editBtn.innerHTML='<svg class="icon-svg sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg><span>Sửa đáp án</span>';
+
+        editBtn.onclick=function(){ editAnswer(item,qBlock); };
         editArea.appendChild(editBtn);
         qBlock.appendChild(editArea);
 
-        fragment.appendChild(qBlock);
+        const submitBtn=document.createElement("button");
+        submitBtn.className="btn answer-submit";
+        submitBtn.style.marginTop="15px";
+        submitBtn.innerText="Trả Lời";
 
-        /* Nếu đã làm trước đó -> tự chấm lại */
+        submitBtn.onclick=function(){
+            if(qBlock.classList.contains("answered")){ return; }
+            qBlock.classList.add("answered");
+
+            const allOpts=optionsList.querySelectorAll(".option");
+            let allCorrect=true;
+
+            allOpts.forEach(li=>{
+                const inp=li.querySelector("input");
+                const isCorrect=li.classList.contains("correct-target");
+                li.style.pointerEvents="none";
+                if(isCorrect){ li.classList.add("correct"); }
+                if(inp.checked && !isCorrect){ li.classList.add("wrong"); allCorrect=false; }
+                if(!inp.checked && isCorrect){ allCorrect=false; }
+            });
+
+            submitBtn.disabled=true;
+
+            if(allCorrect){
+                correctCount++;
+                document.getElementById("correctAnswer").innerText=correctCount;
+            }
+
+            if(!progress[currentTab]){ progress[currentTab]={}; }
+            progress[currentTab][item.id]=true;
+            localStorage.setItem("progress",JSON.stringify(progress));
+
+            if(!allCorrect){ qBlock.classList.add("wrong-question"); }
+
+            updateNavColors();
+            if(currentTab==="EXAM"){ updateProgress(); }
+        };
+
+        qBlock.appendChild(submitBtn);
+        container.appendChild(qBlock);
+
         if(progress[currentTab] && progress[currentTab][item.id]){
-            autoGradeQuestion(qBlock, optionsList, item, true);
+            submitBtn.click();
         }
     });
 
-    container.appendChild(fragment);
     updateNavColors();
-}
-
-/* ===== TỰ CHẤM 1 CÂU ===== */
-function autoGradeQuestion(qBlock, optionsList, item, silent = false){
-    if(qBlock.classList.contains("answered") && !silent) return;
-    qBlock.classList.add("answered");
-
-    const allOpts = optionsList.querySelectorAll(".option");
-    let allCorrect = true;
-
-    allOpts.forEach(li => {
-        const inp = li.querySelector("input");
-        const isCorrect = li.classList.contains("correct-target");
-        li.style.pointerEvents = "none";
-
-        if(isCorrect) li.classList.add("correct");
-        if(inp.checked && !isCorrect){
-            li.classList.add("wrong");
-            allCorrect = false;
-        }
-        if(!inp.checked && isCorrect) allCorrect = false;
-    });
-
-    if(!progress[currentTab]) progress[currentTab] = {};
-    progress[currentTab][item.id] = true;
-    localStorage.setItem("progress", JSON.stringify(progress));
-
-    if(!allCorrect) qBlock.classList.add("wrong-question");
-
-    /* Cập nhật đếm đúng */
-    if(allCorrect && !qBlock.dataset.counted){
-        qBlock.dataset.counted = "1";
-        correctCount++;
-        document.getElementById("correctAnswer").innerText = correctCount;
-    }
-
-    updateNavColors();
-    if(currentTab === "EXAM") updateProgress();
 }
 
 function reloadQuiz(){
     localStorage.removeItem("answers");
     localStorage.removeItem("progress");
-    progress = {};
-    correctCount = 0;
-    shuffleMode = false;
-    customShuffle = false;
-    document.getElementById("shuffleBtn").innerHTML =
-        '<svg class="icon-svg sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg> Xáo Full: OFF';
-    document.getElementById("correctAnswer").innerText = "0";
+    progress={};
+    correctCount=0;
+    shuffleMode=false;
+    customShuffle=false;
+    document.getElementById("shuffleBtn").innerHTML='<svg class="icon-svg sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg> Xáo Full: OFF';
+    document.getElementById("correctAnswer").innerText="0";
     buildQuizHTML();
     buildNavPanel();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({top:0,behavior:"smooth"});
 }
 
 function toggleShuffle(btn){
