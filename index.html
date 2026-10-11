@@ -1025,103 +1025,128 @@
   #mainApp #examProgressText{color:#8888a8!important;}
 
   #mainApp #navHandle{
-      position:fixed;
-      right:16px;
-      top:45%;
-      width:46px;
-      height:92px;
-      background:linear-gradient(135deg,#a855f7,#ec4899);
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:14px 0 0 14px;
-      cursor:pointer;
-      z-index:999;
-      box-shadow:-4px 0 20px rgba(168,85,247,.35);
-      transition:.25s;
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(168, 85, 247, 0.5), 0 0 0 4px rgba(168, 85, 247, 0.15);
+      transition: all 0.25s ease;
   }
   #mainApp #navHandle:hover{
-      width:54px;
-      box-shadow:-4px 0 28px rgba(168,85,247,.6);
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 12px 30px rgba(168, 85, 247, 0.7), 0 0 0 6px rgba(236, 72, 153, 0.2);
   }
+  #mainApp #navHandle:active{
+      transform: scale(0.95);
+  }
+
   #mainApp #navPanel{
-      position:fixed;
-      right:14px;
-      top:50%;
-      transform:translateY(-50%);
-      width:300px;
-      height:470px;
-      background:#1a1a28;
-      border-radius:18px;
-      box-shadow:0 20px 50px rgba(0,0,0,.6);
-      display:none;
-      z-index:999;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.1);
+      position: fixed;
+      right: 20px;
+      bottom: 90px;
+      width: 280px;
+      height: 380px;
+      background: #1a1a28;
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(168, 85, 247, 0.3);
+      display: none;
+      z-index: 1001;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      animation: chatPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: bottom right;
+  }
+  @keyframes chatPop {
+      0%   { opacity: 0; transform: scale(0.85) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
   }
   #mainApp #navHeader{
-      height:52px;
-      background:rgba(255,255,255,.03);
-      color:#e8e8f0;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 16px;
-      font-weight:600;
-      font-size:13px;
-      border-bottom:1px solid rgba(255,255,255,.06);
+      height: 46px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2));
+      color: #e8e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      font-weight: 700;
+      font-size: 12.5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      letter-spacing: 0.3px;
   }
   #mainApp #navHeader button{
-      border:none;
-      background:none;
-      color:#8888a8;
-      font-size:18px;
-      cursor:pointer;
-      width:28px;
-      height:28px;
-      border-radius:6px;
-      transition:.15s;
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: #d8d8e8;
+      font-size: 14px;
+      cursor: pointer;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      transition: 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
   }
-  #mainApp #navHeader button:hover{background:rgba(255,255,255,.08);color:#fff;}
+  #mainApp #navHeader button:hover{
+      background: rgba(236, 72, 153, 0.4);
+      color: #fff;
+  }
   #mainApp #navGrid{
-      padding:12px;
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:6px;
-      overflow-y:auto;
-      height:418px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      overflow-y: auto;
+      height: 334px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
+  }
+  #mainApp #navGrid::-webkit-scrollbar{ width: 6px; }
+  #mainApp #navGrid::-webkit-scrollbar-track{ background: transparent; }
+  #mainApp #navGrid::-webkit-scrollbar-thumb{
+      background: rgba(168, 85, 247, 0.4);
+      border-radius: 3px;
   }
   #mainApp .navBtn{
-      height:38px;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:8px;
-      background:rgba(255,255,255,.03);
-      font-weight:600;
-      cursor:pointer;
-      transition:all .15s;
-      font-size:12px;
-      color:#9898b0;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 11px;
+      color: #9898b0;
   }
-  #mainApp .navBtn.todo{background:rgba(255,255,255,.03);color:#9898b0;}
+  #mainApp .navBtn.todo{ background: rgba(255, 255, 255, 0.03); color: #9898b0; }
   #mainApp .navBtn.correct{
-      background:linear-gradient(135deg,#a855f7,#ec4899);
-      color:#fff;
-      border-color:transparent;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: #fff;
+      border-color: transparent;
   }
   #mainApp .navBtn.wrong{
-      background:rgba(239,68,68,.3);
-      color:#fca5a5;
-      border-color:rgba(239,68,68,.5);
+      background: rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.5);
   }
   #mainApp .navBtn.bookmark{
-      background:linear-gradient(135deg,#facc15,#eab308)!important;
-      color:#111;
-      border-color:transparent;
+      background: linear-gradient(135deg, #facc15, #eab308) !important;
+      color: #111;
+      border-color: transparent;
   }
   #mainApp .navBtn:hover{
-      border-color:rgba(168,85,247,.5);
-      color:#fff;
+      border-color: rgba(168, 85, 247, 0.5);
+      color: #fff;
+      transform: translateY(-1px);
   }
 
   #mainApp .popup{
@@ -1351,8 +1376,22 @@
       #mainApp .tab-btn{padding:8px 12px;font-size:11px;}
       #mainApp .tab-btn .tab-label{font-size:11px;}
       #mainApp #gotoQuestion{width:80px;font-size:11px;padding:7px 10px;}
-      #mainApp #navPanel{width:calc(100vw - 28px);right:14px;height:440px;}
-      #mainApp #navGrid{grid-template-columns:repeat(5,1fr);height:388px;}
+      #mainApp #navPanel{
+          width: calc(100vw - 40px);
+          right: 20px;
+          bottom: 86px;
+          height: 360px;
+      }
+      #mainApp #navGrid{
+          grid-template-columns: repeat(5, 1fr);
+          height: 314px;
+      }
+      #mainApp #navHandle{
+          width: 52px;
+          height: 52px;
+          right: 16px;
+          bottom: 16px;
+      }
       #mainApp #examTimer{font-size:22px;}
       #mainApp .popup-box{width:320px;}
       #mainApp .popup-icon-wrap{width:56px;height:56px;margin:22px auto 12px;}
@@ -1770,7 +1809,7 @@ B. Đúng"></textarea>
 </div>
 
 <div id="navHandle">
-    <i class="fas fa-table-cells" style="font-size:18px;"></i>
+    <i class="fas fa-list-ol" style="font-size:20px;"></i>
 </div>
 
 <div id="navPanel">
