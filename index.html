@@ -1027,7 +1027,7 @@
   #mainApp #navHandle{
       position: fixed;
       right: 20px;
-      bottom: 20px;
+      bottom: 90px;
       width: 52px;
       height: 52px;
       background: linear-gradient(135deg, #a855f7, #ec4899);
@@ -1052,7 +1052,7 @@
   #mainApp #navPanel{
       position: fixed;
       right: 20px;
-      bottom: 82px;
+      bottom: 152px;
       width: 240px;
       height: 320px;
       background: #1a1a28;
@@ -1379,7 +1379,7 @@
       #mainApp #navPanel{
           width: 220px;
           right: 14px;
-          bottom: 78px;
+          bottom: 148px;
           height: 300px;
       }
       #mainApp #navGrid{
@@ -1390,7 +1390,7 @@
           width: 48px;
           height: 48px;
           right: 14px;
-          bottom: 14px;
+          bottom: 84px;
       }
       #mainApp #examTimer{font-size:22px;}
       #mainApp .popup-box{width:320px;}
@@ -1504,6 +1504,247 @@
       background:rgba(255,255,255,.18);
       flex-shrink:0;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+  }
+
+  .music-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .music-widget > * { pointer-events: auto; }
+
+  .music-toggle {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #06b6d4, #a855f7, #ec4899);
+    background-size: 200% 200%;
+    animation: musicBtnFlow 4s ease-in-out infinite;
+    color: #fff;
+    box-shadow:
+      0 6px 20px rgba(168, 85, 247, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    order: 2;
+  }
+  .music-toggle:hover {
+    transform: scale(1.1) rotate(10deg);
+  }
+
+  .music-toggle-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    animation: musicPulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+  }
+
+  @keyframes musicPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.12); }
+  }
+
+  @keyframes musicBtnFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+
+  .music-player {
+    width: 280px;
+    padding: 14px;
+    background: rgba(15, 8, 30, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow:
+      0 15px 40px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(168, 85, 247, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    position: relative;
+    order: 1;
+    transform-origin: bottom right;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .music-player::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(120deg,
+      #a855f7, #ec4899, #06b6d4, #fbbf24, #a855f7);
+    background-size: 300% 300%;
+    animation: musicBorderFlow 6s linear infinite;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  @keyframes musicBorderFlow {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  .music-widget.collapsed .music-player {
+    opacity: 0;
+    transform: scale(0.7);
+    pointer-events: none;
+    position: absolute;
+    bottom: 54px;
+    right: 0;
+  }
+
+  .music-play {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background: linear-gradient(135deg, #06b6d4, #a855f7, #ec4899);
+    background-size: 200% 200%;
+    animation: musicBtnFlow 4s ease-in-out infinite;
+    box-shadow:
+      0 5px 15px rgba(236, 72, 153, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .music-play:hover { transform: scale(1.1); }
+  .music-play:active { transform: scale(0.95); }
+
+  .music-play svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+  }
+
+  .music-body { flex: 1; min-width: 0; }
+
+  .music-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: linear-gradient(135deg, #22d3ee, #a855f7 50%, #ec4899);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: musicTitleFlow 4s ease-in-out infinite;
+  }
+
+  @keyframes musicTitleFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+
+  .music-progress {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: height 0.2s;
+  }
+  .music-progress:hover { height: 6px; }
+
+  .music-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #06b6d4, #a855f7, #ec4899, #fb923c);
+    background-size: 200% 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(236, 72, 153, 0.7);
+    animation: musicProgressFlow 3s linear infinite;
+    transition: width 0.1s linear;
+  }
+
+  @keyframes musicProgressFlow {
+    0%   { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .music-time {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.45);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+
+  .music-volume {
+    position: absolute;
+    bottom: 6px;
+    right: 14px;
+    width: 100px;
+    height: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .music-player:hover .music-volume { opacity: 1; }
+
+  .music-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(236, 72, 153, 0.8);
+  }
+  .music-volume::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    border: none;
+    cursor: pointer;
+  }
+
+  @media (max-width: 480px) {
+    .music-widget { bottom: 14px; right: 14px; }
+    .music-player { width: 240px; padding: 12px; }
+    .music-toggle { width: 42px; height: 42px; }
+    .music-toggle-icon { width: 20px; height: 20px; }
+    .music-play { width: 38px; height: 38px; }
   }
 </style>
 </head>
@@ -1908,6 +2149,42 @@ B. Đúng"></textarea>
             <span class="subj-info"><span>🩺 Giao tiếp GDSK trong thực hành ĐD</span><span class="subj-sub">Health Communication</span></span>
         </button>
     </div>
+</div>
+
+<div class="music-widget" id="musicWidget">
+  <button class="music-toggle" id="musicToggle" aria-label="Mở/đóng nhạc">
+    <svg class="music-toggle-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div class="music-player">
+    <button class="music-play" id="musicPlay" aria-label="Phát nhạc">
+      <svg class="music-icon-play" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+      <svg class="music-icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+        <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
+      </svg>
+    </button>
+
+    <div class="music-body">
+      <div class="music-title" id="musicTitle">Đang tải...</div>
+      <div class="music-progress" id="musicProgressBar">
+        <div class="music-progress-fill" id="musicProgressFill"></div>
+      </div>
+      <div class="music-time">
+        <span id="musicCurrent">0:00</span>
+        <span id="musicDuration">0:00</span>
+      </div>
+    </div>
+
+    <input type="range" class="music-volume" id="musicVolume"
+           min="0" max="1" step="0.01" value="0.6" aria-label="Âm lượng">
+  </div>
+
+  <audio id="musicAudio" src="n.mp3" loop preload="metadata"></audio>
 </div>
 
 <script>
@@ -2948,6 +3225,77 @@ window.addEventListener("load", function(){
   }
 
   playOnce();
+})();
+</script>
+
+<script>
+(function() {
+  'use strict';
+
+  const widget       = document.getElementById('musicWidget');
+  const toggleBtn    = document.getElementById('musicToggle');
+  const playBtn      = document.getElementById('musicPlay');
+  const audio        = document.getElementById('musicAudio');
+  const progressBar  = document.getElementById('musicProgressBar');
+  const progressFill = document.getElementById('musicProgressFill');
+  const currentEl    = document.getElementById('musicCurrent');
+  const durationEl   = document.getElementById('musicDuration');
+  const titleEl      = document.getElementById('musicTitle');
+  const volumeEl     = document.getElementById('musicVolume');
+  const iconPlay     = playBtn.querySelector('.music-icon-play');
+  const iconPause    = playBtn.querySelector('.music-icon-pause');
+
+  toggleBtn.addEventListener('click', () => {
+    widget.classList.toggle('collapsed');
+  });
+
+  const formatTime = (s) => {
+    if (isNaN(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec < 10 ? '0' + sec : sec}`;
+  };
+
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play().catch(err => console.log('Không phát được:', err));
+    } else {
+      audio.pause();
+    }
+  });
+
+  audio.addEventListener('play', () => {
+    iconPlay.style.display  = 'none';
+    iconPause.style.display = 'block';
+  });
+
+  audio.addEventListener('pause', () => {
+    iconPlay.style.display  = 'block';
+    iconPause.style.display = 'none';
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    if (audio.duration) {
+      progressFill.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+      currentEl.textContent = formatTime(audio.currentTime);
+    }
+  });
+
+  audio.addEventListener('loadedmetadata', () => {
+    durationEl.textContent = formatTime(audio.duration);
+    const src = audio.src.split('/').pop().replace(/\.(mp3|wav|ogg)$/i, '');
+    titleEl.textContent = decodeURIComponent(src);
+  });
+
+  progressBar.addEventListener('click', (e) => {
+    const rect = progressBar.getBoundingClientRect();
+    audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+  });
+
+  volumeEl.addEventListener('input', (e) => {
+    audio.volume = parseFloat(e.target.value);
+  });
+  audio.volume = 0.6;
 })();
 </script>
 
