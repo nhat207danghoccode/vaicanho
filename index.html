@@ -1028,8 +1028,8 @@
       position: fixed;
       right: 20px;
       bottom: 20px;
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       background: linear-gradient(135deg, #a855f7, #ec4899);
       color: #fff;
       display: flex;
@@ -1052,11 +1052,11 @@
   #mainApp #navPanel{
       position: fixed;
       right: 20px;
-      bottom: 90px;
-      width: 280px;
-      height: 380px;
+      bottom: 82px;
+      width: 240px;
+      height: 320px;
       background: #1a1a28;
-      border-radius: 18px;
+      border-radius: 16px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(168, 85, 247, 0.3);
       display: none;
       z-index: 1001;
@@ -1070,15 +1070,15 @@
       100% { opacity: 1; transform: scale(1) translateY(0); }
   }
   #mainApp #navHeader{
-      height: 46px;
+      height: 42px;
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2));
       color: #e8e8f0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 14px;
+      padding: 0 12px;
       font-weight: 700;
-      font-size: 12.5px;
+      font-size: 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       letter-spacing: 0.3px;
   }
@@ -1086,11 +1086,11 @@
       border: none;
       background: rgba(255, 255, 255, 0.08);
       color: #d8d8e8;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
-      width: 26px;
-      height: 26px;
-      border-radius: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
       transition: 0.15s;
       display: flex;
       align-items: center;
@@ -1101,30 +1101,30 @@
       color: #fff;
   }
   #mainApp #navGrid{
-      padding: 10px;
+      padding: 8px;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 5px;
+      gap: 4px;
       overflow-y: auto;
-      height: 334px;
+      height: 278px;
       scrollbar-width: thin;
       scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
   }
-  #mainApp #navGrid::-webkit-scrollbar{ width: 6px; }
+  #mainApp #navGrid::-webkit-scrollbar{ width: 5px; }
   #mainApp #navGrid::-webkit-scrollbar-track{ background: transparent; }
   #mainApp #navGrid::-webkit-scrollbar-thumb{
       background: rgba(168, 85, 247, 0.4);
       border-radius: 3px;
   }
   #mainApp .navBtn{
-      height: 34px;
+      height: 30px;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
+      border-radius: 7px;
       background: rgba(255, 255, 255, 0.03);
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s;
-      font-size: 11px;
+      font-size: 10.5px;
       color: #9898b0;
   }
   #mainApp .navBtn.todo{ background: rgba(255, 255, 255, 0.03); color: #9898b0; }
@@ -1377,20 +1377,20 @@
       #mainApp .tab-btn .tab-label{font-size:11px;}
       #mainApp #gotoQuestion{width:80px;font-size:11px;padding:7px 10px;}
       #mainApp #navPanel{
-          width: calc(100vw - 40px);
-          right: 20px;
-          bottom: 86px;
-          height: 360px;
+          width: 220px;
+          right: 14px;
+          bottom: 78px;
+          height: 300px;
       }
       #mainApp #navGrid{
           grid-template-columns: repeat(5, 1fr);
-          height: 314px;
+          height: 258px;
       }
       #mainApp #navHandle{
-          width: 52px;
-          height: 52px;
-          right: 16px;
-          bottom: 16px;
+          width: 48px;
+          height: 48px;
+          right: 14px;
+          bottom: 14px;
       }
       #mainApp #examTimer{font-size:22px;}
       #mainApp .popup-box{width:320px;}
@@ -1809,13 +1809,13 @@ B. Đúng"></textarea>
 </div>
 
 <div id="navHandle">
-    <i class="fas fa-list-ol" style="font-size:20px;"></i>
+    <i class="fas fa-list-ol" style="font-size:18px;"></i>
 </div>
 
 <div id="navPanel">
     <div id="navHeader">
-        <span style="display:flex;align-items:center;gap:8px;">
-            <i class="fas fa-map-location-dot" style="font-size:13px;"></i>
+        <span style="display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-map-location-dot" style="font-size:12px;"></i>
             Đi đến câu
         </span>
         <button onclick="toggleNav()">✕</button>
@@ -2111,6 +2111,12 @@ let examFinished=false;
 let currentTab="DS";
 let correctCount=0;
 let bookmarks=JSON.parse(localStorage.getItem("bookmarks")||"[]");
+
+if(bookmarks.length && typeof bookmarks[0]==="number"){
+    bookmarks=[];
+    localStorage.removeItem("bookmarks");
+}
+
 let progress=JSON.parse(localStorage.getItem("progress")||"{}");
 let shuffleMode=false;
 let customShuffle=false;
@@ -2341,10 +2347,10 @@ function showAllAnswers(){
 }
 
 function filterExam(type){
-    document.querySelectorAll("#quiz-container .question").forEach((q,i)=>{
+    document.querySelectorAll("#quiz-container .question").forEach((q)=>{
         q.style.display="block";
         if(type==="todo" && q.classList.contains("answered")){ q.style.display="none"; }
-        if(type==="bookmark" && !bookmarks.includes(i)){ q.style.display="none"; }
+        if(type==="bookmark" && !bookmarks.includes(q.dataset.questionId)){ q.style.display="none"; }
         if(type==="wrong" && !q.classList.contains("wrong-question")){ q.style.display="none"; }
     });
 }
@@ -2389,8 +2395,34 @@ async function editAnswer(item,qBlock){
 
     alert("Đã sửa đáp án thành "+answer+"!\n\nFirebase đã lưu đáp án mới.");
 
-    buildQuizHTML();
-    buildNavPanel();
+    const target=document.querySelector(`.question[data-question-id="${item.id}"]`);
+    if(target){
+        const newCorrect=getCorrectAnswer(item);
+
+        target.querySelectorAll(".option").forEach(li=>{
+            const inp=li.querySelector("input");
+            const lbl=inp.dataset.answerLabel;
+            li.classList.remove("correct-target","correct","wrong","revealed-correct");
+            if(lbl===newCorrect){
+                li.classList.add("correct-target");
+                if(answersRevealed) li.classList.add("revealed-correct");
+            }
+        });
+
+        const status=target.querySelector(".edit-status");
+        if(status) status.innerText="Đã cập nhật đáp án trên Firebase";
+
+        if(target.classList.contains("answered")){
+            target.classList.remove("answered","wrong-question");
+            target.querySelectorAll(".option").forEach(li=>li.style.pointerEvents="");
+            const sb=target.querySelector(".answer-submit");
+            if(sb){ sb.disabled=false; }
+            updateNavColors();
+        }
+    }else{
+        buildQuizHTML();
+        buildNavPanel();
+    }
 }
 
 function buildQuizHTML(){
@@ -2442,7 +2474,7 @@ function buildQuizHTML(){
         qText.innerHTML=`
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
                 <span>${typeBadge}Câu ${qIndex+1}: ${item.q}</span>
-                <span style="cursor:pointer;font-size:22px;flex-shrink:0;color:${bookmarks.includes(qIndex)?'#facc15':'#444458'};" onclick="toggleBookmark(${qIndex},this)"><i class="fas fa-bookmark"></i></span>
+                <span style="cursor:pointer;font-size:22px;flex-shrink:0;color:${bookmarks.includes(item.id)?'#facc15':'#444458'};" onclick="toggleBookmark('${item.id}',this)"><i class="fas fa-bookmark"></i></span>
             </div>
         `;
 
@@ -2668,7 +2700,8 @@ function updateNavColors(){
             if(q.classList.contains("wrong-question")){ btn.classList.add("wrong"); }
             else{ btn.classList.add("correct"); }
         }else{ btn.classList.add("todo"); }
-        if(bookmarks.includes(i)){ btn.className="navBtn bookmark"; }
+        const qid=q.dataset.questionId;
+        if(bookmarks.includes(qid)){ btn.className="navBtn bookmark"; }
     });
 }
 
