@@ -538,7 +538,6 @@
   #mainApp #gotoQuestion::placeholder{color:#5a5a70;}
   #mainApp #gotoQuestion:focus{border-color:rgba(168,85,247,.5);}
 
-  /* ===== QUESTION CARD ===== */
   #mainApp .question {
     background: linear-gradient(160deg, #16161f 0%, #131320 100%);
     border-radius: 16px; margin-bottom: 14px;
@@ -635,7 +634,8 @@
   #mainApp .option {
     border: 1.5px solid rgba(255, 255, 255, 0.07);
     border-radius: 11px; padding: 11px 14px; cursor: pointer;
-    transition: all 0.18s; display: flex; align-items: center;
+    transition: background 0.18s, border-color 0.18s, transform 0.18s;
+    display: flex; align-items: center;
     gap: 12px; background: rgba(255, 255, 255, 0.02);
     color: #c8c8d8; font-size: 13.5px; font-weight: 500;
     position: relative;
@@ -669,7 +669,6 @@
     flex: 1; line-height: 1.5; word-break: break-word;
   }
 
-  /* Chỉ hiện khi user đã trả lời */
   #mainApp .option.correct {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.08));
     border-color: rgba(16, 185, 129, 0.5); color: #a7f3d0;
@@ -686,7 +685,7 @@
     background: linear-gradient(135deg, #ef4444, #b91c1c);
     border-color: transparent; color: #fff;
   }
-  /* Chỉ hiện khi user bấm "Hiện toàn bộ đáp án" */
+
   #mainApp .option.revealed-correct {
     background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(236, 72, 153, 0.08));
     border-color: rgba(168, 85, 247, 0.5);
@@ -1242,7 +1241,6 @@
     .music-play { width: 38px; height: 38px; }
   }
 
-  /* ========== EDIT ANSWER MODAL ========== */
   #editAnswerModal {
     position: fixed; inset: 0;
     background: rgba(5, 5, 12, 0.85);
@@ -2061,17 +2059,16 @@ B. Đúng"></textarea>
     `;
     loginWrap.style.animation = 'loginEnter 0.9s cubic-bezier(0.16, 1, 0.3, 1) both';
     const btn = document.getElementById('enterSystemBtn');
-    if (btn) {
-      btn.onclick = enterMainApp;
-    }
+    if (btn) btn.onclick = enterMainApp;
   }
 
   function enterMainApp() {
-    document.getElementById('mainApp').style.display = 'block';
+    const mainApp = document.getElementById('mainApp');
+    mainApp.style.display = 'block';
     gateRoot.classList.add('gate-hidden');
     setTimeout(() => {
       gateRoot.style.display = 'none';
-    }, 800);
+    }, 500);
   }
 
   loginForm.addEventListener('submit', (e) => {
@@ -2166,7 +2163,6 @@ window.listenFirebaseCorrections = function(subject,callback){
 </script>
 
 <script>
-/* ========== STATE ========== */
 let currentSubject = "";
 window.currentSubject = "";
 let subjectLoadToken = 0;
@@ -2209,7 +2205,6 @@ const SUBJECTS = {
     SAN:{name:"Giao tiếp GDSK trong thực hành ĐD", ds:"DS5.txt"}
 };
 
-/* ========== SUBJECT ========== */
 function showSubjectSelect(){
     const sel = document.getElementById("subjectSelect");
     if(!sel) return;
@@ -2310,7 +2305,6 @@ function getCorrectAnswer(item){
     return match ? match[1] : null;
 }
 
-/* ========== TABS ========== */
 function switchTab(type){
     currentTab=type;
     document.querySelectorAll(".tab-bar .tab-btn").forEach(b=>b.classList.remove("activeTab"));
@@ -2352,7 +2346,6 @@ function saveNote(){ localStorage.setItem("nhat_note", document.getElementById("
 function loadNote(){ document.getElementById("noteArea").value=localStorage.getItem("nhat_note")||""; }
 function clearNote(){ if(confirm("Xóa ghi chú?")){ localStorage.removeItem("nhat_note"); document.getElementById("noteArea").value=""; } }
 
-/* ========== EXAM ========== */
 function createExam(){
     const two=parsedQuestionsDS.filter(q=>q.arr.length===2);
     const four=parsedQuestionsDS.filter(q=>q.arr.length>=4);
@@ -2413,7 +2406,6 @@ function filterExam(type){
     });
 }
 
-/* ========== TOGGLE ALL ANSWERS (MƯỢT) ========== */
 function toggleAllAnswers(){
     if(currentTab==="EXAM"){ alert("Chức năng này không áp dụng trong phần Thi thử."); return; }
     answersRevealed = !answersRevealed;
@@ -2423,24 +2415,26 @@ function toggleAllAnswers(){
             ? '<i class="fas fa-eye-slash" style="font-size:12px;"></i> Ẩn toàn bộ đáp án'
             : '<i class="fas fa-eye" style="font-size:12px;"></i> Hiện toàn bộ đáp án';
     }
-    // Chỉ duyệt option trong cache, dùng data-is-correct
-    const container = document.getElementById("quiz-container");
-    const options = container.querySelectorAll('.option[data-is-correct="1"]');
-    options.forEach(li=>{
-        li.classList.toggle("revealed-correct", answersRevealed);
-        let badge = li.querySelector(".reveal-badge");
-        if(answersRevealed && !badge){
-            badge = document.createElement("span");
-            badge.className = "reveal-badge";
-            badge.innerText = "✓ Đáp án";
-            li.appendChild(badge);
-        } else if(!answersRevealed && badge){
-            badge.remove();
+
+    for(let i = 0; i < cachedQuestionNodes.length; i++){
+        const qBlock = cachedQuestionNodes[i];
+        const options = qBlock.querySelectorAll('.option[data-is-correct="1"]');
+        for(let j = 0; j < options.length; j++){
+            const li = options[j];
+            li.classList.toggle("revealed-correct", answersRevealed);
+            let badge = li.querySelector(".reveal-badge");
+            if(answersRevealed && !badge){
+                badge = document.createElement("span");
+                badge.className = "reveal-badge";
+                badge.innerText = "✓ Đáp án";
+                li.appendChild(badge);
+            } else if(!answersRevealed && badge){
+                badge.remove();
+            }
         }
-    });
+    }
 }
 
-/* ========== REFRESH CORRECTNESS (khi Firebase cập nhật) ========== */
 function refreshCorrectnessInPlace(){
     cachedQuestionNodes.forEach(qBlock=>{
         const item = parsedQuestionsDS.find(x => x.id === qBlock.dataset.questionId);
@@ -2451,7 +2445,7 @@ function refreshCorrectnessInPlace(){
             const lbl = inp.dataset.answerLabel;
             const isNowCorrect = (lbl === newCorrect);
             li.dataset.isCorrect = isNowCorrect ? "1" : "0";
-            if(!li.classList.contains("answered")){
+            if(!qBlock.classList.contains("answered")){
                 li.classList.remove("correct","wrong","revealed-correct");
                 const oldBadge = li.querySelector(".reveal-badge");
                 if(oldBadge) oldBadge.remove();
@@ -2467,7 +2461,6 @@ function refreshCorrectnessInPlace(){
     });
 }
 
-/* ========== EDIT ANSWER MODAL ========== */
 function openEditModal(item, qBlock){
     editTargetItem = item;
     editTargetBlock = qBlock;
@@ -2604,9 +2597,7 @@ async function submitEditAnswer(){
     };
     lastCorrectionsJSON = JSON.stringify(window.firebaseCorrections);
 
-    // Cập nhật DOM câu hiện tại
     const qBlock = editTargetBlock;
-    const item = editTargetItem;
     qBlock.querySelectorAll(".option").forEach(li=>{
         const inp = li.querySelector("input");
         const lbl = inp.dataset.answerLabel;
@@ -2644,7 +2635,6 @@ async function submitEditAnswer(){
     showToast("Đã lưu đáp án mới: " + editSelectedAnswer);
 }
 
-/* ========== BUILD QUIZ ========== */
 function buildQuizHTML(){
     const container=document.getElementById("quiz-container");
     container.innerHTML="";
@@ -2744,7 +2734,6 @@ function buildQuizHTML(){
         optionsData.forEach(opt=>{
             const label = document.createElement("label");
             let cls = "option";
-            // Chỉ thêm revealed-correct nếu đã reveal, KHÔNG thêm correct-target
             if(opt.isCorrect && answersRevealed) cls += " revealed-correct";
             label.className = cls;
             label.dataset.isCorrect = opt.isCorrect ? "1" : "0";
@@ -2884,21 +2873,63 @@ function buildQuizHTML(){
 }
 
 function reloadQuiz(){
-    localStorage.removeItem("answers");
-    localStorage.removeItem("progress");
     answersCache = {};
     progress = {};
+    localStorage.removeItem("answers");
+    localStorage.removeItem("progress");
     correctCount = 0;
     shuffleMode = false;
     customShuffle = false;
+    answersRevealed = false;
+
     document.getElementById("shuffleBtn").innerHTML = '<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: OFF</span>';
     document.getElementById("correctAnswer").innerText = "0";
-    buildQuizHTML();
-    buildNavPanel();
+    const showBtn = document.getElementById("showAnswersBtn");
+    if(showBtn){
+        showBtn.innerHTML = '<i class="fas fa-eye" style="font-size:12px;"></i> Hiện toàn bộ đáp án';
+    }
+
+    for(let i = 0; i < cachedQuestionNodes.length; i++){
+        const qBlock = cachedQuestionNodes[i];
+        qBlock.classList.remove("answered","wrong-question");
+        const statusPill = qBlock.querySelector(".status-pill");
+        if(statusPill) statusPill.remove();
+
+        const opts = qBlock.querySelectorAll(".option");
+        for(let j = 0; j < opts.length; j++){
+            const li = opts[j];
+            li.classList.remove("correct","wrong","revealed-correct");
+            li.style.pointerEvents = "";
+            const inp = li.querySelector("input");
+            inp.disabled = false;
+            inp.checked = false;
+            const badge = li.querySelector(".reveal-badge");
+            if(badge) badge.remove();
+        }
+
+        const sb = qBlock.querySelector(".answer-submit");
+        if(sb){
+            sb.disabled = false;
+            sb.innerHTML = '<i class="fas fa-check"></i><span>Trả lời</span>';
+        }
+
+        const st = qBlock.querySelector(".edit-status");
+        if(st){
+            const firebaseEdited = window.firebaseCorrections && window.firebaseCorrections[qBlock.dataset.questionId];
+            if(firebaseEdited){
+                st.classList.remove("original");
+                st.innerText = "Đã cập nhật đáp án";
+            } else {
+                st.classList.add("original");
+                st.innerText = "Đáp án gốc";
+            }
+        }
+    }
+
+    updateNavColors();
     window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ========== SHUFFLE MƯỢT (không rebuild) ========== */
 function toggleShuffle(btn){
     shuffleMode = !shuffleMode;
     customShuffle = false;
@@ -2946,21 +2977,29 @@ function reorderQuestionsInPlace(){
         return;
     }
 
-    // Dùng fragment để append lại (không tạo mới node)
     const frag = document.createDocumentFragment();
     newOrder.forEach(n => frag.appendChild(n));
     container.appendChild(frag);
 
     cachedQuestionNodes = newOrder;
-    // Cập nhật lại số câu hiển thị
-    cachedQuestionNodes.forEach((q, i)=>{
+
+    for(let i = 0; i < cachedQuestionNodes.length; i++){
+        const q = cachedQuestionNodes[i];
         const numEl = q.querySelector(".question-number");
-        if(numEl) numEl.innerText = (i + 1);
-    });
-    buildNavPanel();
+        if(numEl) numEl.textContent = (i + 1);
+    }
+
+    const navBtns = document.querySelectorAll(".navBtn");
+    if(navBtns.length === cachedQuestionNodes.length){
+        for(let i = 0; i < navBtns.length; i++){
+            navBtns[i].innerText = i + 1;
+        }
+        updateNavColors();
+    } else {
+        buildNavPanel();
+    }
 }
 
-/* ========== NAV ========== */
 function goToQuestion(){
     const num = parseInt(document.getElementById("gotoQuestion").value);
     if(!num) return;
@@ -3016,7 +3055,6 @@ function updateNavColors(){
     });
 }
 
-/* ========== POPUP / TOAST / UTILS ========== */
 function showPopup(title, text, icon="", confirmMode=false){
     document.getElementById("popupTitle").innerText = title;
     document.getElementById("popupText").innerText = text;
@@ -3049,7 +3087,6 @@ function showToast(msg, isError=false){
     showToast._t = setTimeout(()=>toast.classList.remove("show"), 2500);
 }
 
-/* ========== TEST CREATE ========== */
 function generateTest(){
     const input = document.getElementById("testInput").value;
     if(!input.trim()){ alert("Vui lòng nhập nội dung câu hỏi."); return; }
@@ -3204,14 +3241,12 @@ function clearTest(){
     testAnswers = {};
 }
 
-/* ========== BACK TO TOP ========== */
 const backBtn = document.getElementById("backToTop");
 window.addEventListener("scroll", ()=>{
     backBtn.style.display = window.scrollY > 300 ? "flex" : "none";
 });
 backBtn.onclick = ()=>{ window.scrollTo({top:0,behavior:"smooth"}); };
 
-/* ========== INIT ========== */
 window.addEventListener("load", function(){
     const saved = localStorage.getItem("currentSubject");
     if(saved && SUBJECTS[saved]){
@@ -3224,7 +3259,6 @@ window.addEventListener("load", function(){
     }
 });
 
-/* Close edit modal on ESC / outside click */
 document.getElementById("editAnswerModal").addEventListener("click", (e)=>{
     if(e.target.id === "editAnswerModal") closeEditModal();
 });
