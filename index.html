@@ -1746,6 +1746,419 @@
     .music-toggle-icon { width: 20px; height: 20px; }
     .music-play { width: 38px; height: 38px; }
   }
+
+  /* ========== EDIT ANSWER MODAL ========== */
+  #editAnswerModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 5, 12, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2147483646;
+    padding: 16px;
+    font-family: 'Inter', sans-serif;
+  }
+  #editAnswerModal.show { display: flex; }
+
+  .edit-modal-box {
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    background: linear-gradient(160deg, #1c1430 0%, #14101f 100%);
+    border-radius: 22px;
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    box-shadow:
+      0 30px 70px -10px rgba(0, 0, 0, 0.85),
+      0 0 40px rgba(168, 85, 247, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: editModalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  @keyframes editModalEnter {
+    0%   { opacity: 0; transform: translateY(30px) scale(0.94); filter: blur(8px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+  .edit-modal-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #a855f7, #ec4899, #f97316, #a855f7);
+    background-size: 200% auto;
+    animation: nameShine 3s linear infinite;
+  }
+
+  .edit-modal-header {
+    padding: 20px 22px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .edit-modal-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(236, 72, 153, 0.25));
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fbbf24;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+  }
+  .edit-modal-titles { flex: 1; min-width: 0; }
+  .edit-modal-titles h3 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #f0f0f8;
+    letter-spacing: -0.01em;
+    margin-bottom: 2px;
+  }
+  .edit-modal-titles p {
+    font-size: 0.72rem;
+    color: #a78bfa;
+    font-weight: 500;
+  }
+  .edit-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: #9898b0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.18s;
+    flex-shrink: 0;
+  }
+  .edit-modal-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.4);
+  }
+
+  .edit-modal-body {
+    padding: 18px 22px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .edit-modal-body::-webkit-scrollbar { width: 6px; }
+  .edit-modal-body::-webkit-scrollbar-track { background: transparent; }
+  .edit-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.4);
+    border-radius: 3px;
+  }
+
+  .edit-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #c4b5fd;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .edit-question-preview {
+    background: rgba(168, 85, 247, 0.08);
+    border: 1px solid rgba(168, 85, 247, 0.22);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: #e8e8f0;
+    font-weight: 500;
+    margin-bottom: 18px;
+    max-height: 110px;
+    overflow-y: auto;
+  }
+  .edit-question-preview::-webkit-scrollbar { width: 4px; }
+  .edit-question-preview::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.4); border-radius: 2px; }
+
+  .edit-password-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .edit-password-wrap i {
+    position: absolute;
+    left: 14px;
+    color: #a78bfa;
+    font-size: 0.9rem;
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+  .edit-password-wrap input {
+    width: 100%;
+    padding: 12px 14px 12px 40px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(168, 85, 247, 0.35);
+    background: rgba(10, 5, 25, 0.7);
+    color: #f3e8ff;
+    font-size: 0.92rem;
+    font-family: inherit;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.25s;
+    letter-spacing: 0.15em;
+  }
+  .edit-password-wrap input::placeholder {
+    color: #6a5a88;
+    font-weight: 400;
+    letter-spacing: normal;
+  }
+  .edit-password-wrap input:focus {
+    border-color: #ec4899;
+    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15), 0 0 20px -5px rgba(236, 72, 153, 0.5);
+  }
+  .edit-password-wrap:focus-within i { color: #ec4899; }
+  .edit-password-wrap.error input {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+    animation: shake 0.4s ease;
+  }
+
+  .edit-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .edit-option-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1.5px solid rgba(255, 255, 255, 0.07);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .edit-option-row:hover {
+    background: rgba(168, 85, 247, 0.08);
+    border-color: rgba(168, 85, 247, 0.3);
+  }
+  .edit-option-row.selected {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.12));
+    border-color: rgba(236, 72, 153, 0.6);
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1), 0 8px 20px -8px rgba(236, 72, 153, 0.5);
+  }
+  .edit-option-row input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(168, 85, 247, 0.5);
+    background: rgba(10, 5, 25, 0.5);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .edit-option-row input[type="radio"]:checked {
+    border-color: #ec4899;
+    background: radial-gradient(circle, #ec4899 0%, #ec4899 45%, transparent 50%);
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+  }
+  .edit-option-row.selected input[type="radio"] {
+    border-color: #ec4899;
+    background: radial-gradient(circle, #ec4899 0%, #ec4899 45%, transparent 50%);
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+  }
+  .edit-option-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 8px;
+    border-radius: 8px;
+    background: rgba(168, 85, 247, 0.18);
+    color: #d8b4fe;
+    font-weight: 800;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+  .edit-option-row.selected .edit-option-label {
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    color: #fff;
+    border-color: transparent;
+  }
+  .edit-option-text {
+    flex: 1;
+    font-size: 0.85rem;
+    color: #d8d8e8;
+    font-weight: 500;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  .edit-option-row.selected .edit-option-text {
+    color: #fbcfe8;
+    font-weight: 600;
+  }
+  .edit-option-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(168, 85, 247, 0.25);
+    color: #d8b4fe;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+  .edit-option-row.selected .edit-option-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  .edit-current-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: rgba(168, 85, 247, 0.08);
+    border: 1px dashed rgba(168, 85, 247, 0.3);
+    font-size: 0.75rem;
+    color: #c4b5fd;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .edit-current-info i { color: #fbbf24; }
+  .edit-current-info .val {
+    color: #fbbf24;
+    font-weight: 800;
+    margin-left: auto;
+    padding: 2px 10px;
+    background: rgba(245, 158, 11, 0.15);
+    border-radius: 6px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  .edit-error-msg {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.45);
+    color: #fca5a5;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    animation: shake 0.4s ease;
+  }
+  .edit-error-msg.show { display: flex; }
+
+  .edit-modal-footer {
+    padding: 16px 22px 20px;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.15);
+  }
+  .edit-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
+    letter-spacing: 0.3px;
+  }
+  .edit-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .edit-btn.cancel {
+    background: rgba(255, 255, 255, 0.05);
+    color: #9898b0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    flex: 0 0 auto;
+    padding: 12px 20px;
+  }
+  .edit-btn.cancel:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #d8d8e8;
+  }
+  .edit-btn.save {
+    background: linear-gradient(135deg, #a855f7, #ec4899, #f97316);
+    background-size: 200% 200%;
+    color: #fff;
+    box-shadow: 0 10px 24px -10px rgba(236, 72, 153, 0.8);
+    animation: gradientShift 4s ease infinite;
+    position: relative;
+    overflow: hidden;
+  }
+  .edit-btn.save::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: skewX(-25deg);
+    animation: shine 3.2s infinite;
+  }
+  .edit-btn.save:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 16px 32px -10px rgba(236, 72, 153, 1);
+    letter-spacing: 0.6px;
+  }
+  .edit-btn.save:active:not(:disabled) {
+    transform: translateY(0) scale(0.99);
+  }
+  .edit-btn.save.loading {
+    pointer-events: none;
+  }
+  .edit-btn.save.loading span { opacity: 0.7; }
+  .edit-btn.save .spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .edit-btn.save.loading .spinner { display: inline-block; }
+  .edit-btn.save.loading i { display: none; }
+
+  @media (max-width: 480px) {
+    .edit-modal-box { border-radius: 18px; }
+    .edit-modal-header { padding: 16px 18px 12px; }
+    .edit-modal-body { padding: 16px 18px; }
+    .edit-modal-footer { padding: 14px 18px 16px; }
+    .edit-modal-titles h3 { font-size: 0.92rem; }
+    .edit-option-row { padding: 10px 12px; }
+    .edit-btn { padding: 11px 14px; font-size: 0.82rem; }
+  }
 </style>
 </head>
 <body>
@@ -2151,6 +2564,57 @@ B. Đúng"></textarea>
     </div>
 </div>
 
+<div id="editAnswerModal">
+  <div class="edit-modal-box">
+    <div class="edit-modal-header">
+      <div class="edit-modal-icon">
+        <i class="fas fa-pen-to-square"></i>
+      </div>
+      <div class="edit-modal-titles">
+        <h3>Sửa đáp án</h3>
+        <p>Nhập mật khẩu & chọn đáp án đúng</p>
+      </div>
+      <button class="edit-modal-close" onclick="closeEditModal()" aria-label="Đóng">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="edit-modal-body">
+      <label class="edit-label">Nội dung câu hỏi</label>
+      <div class="edit-question-preview" id="editQuestionPreview"></div>
+
+      <label class="edit-label">Mật khẩu xác thực</label>
+      <div class="edit-password-wrap" id="editPasswordWrap">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="editPasswordInput" placeholder="Nhập mật khẩu..." autocomplete="off">
+      </div>
+
+      <div class="edit-error-msg" id="editErrorMsg">
+        <i class="fas fa-circle-exclamation"></i>
+        <span id="editErrorText">Sai mật khẩu!</span>
+      </div>
+
+      <div class="edit-current-info">
+        <i class="fas fa-circle-info"></i>
+        <span>Đáp án hiện tại:</span>
+        <span class="val" id="editCurrentAnswer">?</span>
+      </div>
+
+      <label class="edit-label">Chọn đáp án đúng</label>
+      <div class="edit-options" id="editOptionsList"></div>
+    </div>
+
+    <div class="edit-modal-footer">
+      <button class="edit-btn cancel" onclick="closeEditModal()">Huỷ</button>
+      <button class="edit-btn save" id="editSaveBtn" onclick="submitEditAnswer()">
+        <i class="fas fa-floppy-disk"></i>
+        <span class="spinner"></span>
+        <span>Lưu đáp án</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="music-widget" id="musicWidget">
   <button class="music-toggle" id="musicToggle" aria-label="Mở/đóng nhạc">
     <svg class="music-toggle-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2274,7 +2738,10 @@ B. Đúng"></textarea>
       </div>
     `;
     loginWrap.style.animation = 'loginEnter 0.9s cubic-bezier(0.16, 1, 0.3, 1) both';
-    document.getElementById('enterSystemBtn').addEventListener('click', enterMainApp);
+    requestAnimationFrame(() => {
+      const btn = document.getElementById('enterSystemBtn');
+      if (btn) btn.addEventListener('click', enterMainApp);
+    });
   }
 
   function enterMainApp() {
@@ -2406,6 +2873,16 @@ let testAnswers={};
 
 window.firebaseCorrections={};
 
+/* === CACHE === */
+let answersCache = JSON.parse(localStorage.getItem("answers") || "{}");
+let cachedQuestionNodes = [];
+let lastCorrectionsJSON = "";
+
+/* === EDIT MODAL STATE === */
+let editTargetItem = null;
+let editTargetBlock = null;
+let editSelectedAnswer = null;
+
 const SUBJECTS = {
     GPSL:{name:"Pháp luật", ds:"DS.txt"},
     DDCS:{name:"ĐD cơ sở 2", ds:"DS1.txt"},
@@ -2437,6 +2914,7 @@ function chooseSubject(subject){
         window.firebaseCorrectionUnsubscribe=null;
     }
     window.firebaseCorrections={};
+    lastCorrectionsJSON = "";
     currentSubject=subject;
     localStorage.setItem("currentSubject", subject);
     hideSubjectSelect();
@@ -2468,11 +2946,15 @@ async function loadQuestionFiles(){
         if(loadToken!==subjectLoadToken || currentSubject!==loadingSubject)return;
 
         window.firebaseCorrections=corrections||{};
+        lastCorrectionsJSON = JSON.stringify(corrections || {});
 
         document.getElementById("subjectTitle").innerText="🩺 Môn "+subject.name;
 
         window.listenFirebaseCorrections(loadingSubject, corrections=>{
             if(loadToken!==subjectLoadToken || currentSubject!==loadingSubject)return;
+            const json = JSON.stringify(corrections || {});
+            if(json === lastCorrectionsJSON) return;
+            lastCorrectionsJSON = json;
             window.firebaseCorrections=corrections||{};
             if(currentTab==="DS" || currentTab==="TF" || currentTab==="MC"){
                 buildQuizHTML();
@@ -2624,11 +3106,13 @@ function showAllAnswers(){
 }
 
 function filterExam(type){
-    document.querySelectorAll("#quiz-container .question").forEach((q)=>{
-        q.style.display="block";
-        if(type==="todo" && q.classList.contains("answered")){ q.style.display="none"; }
-        if(type==="bookmark" && !bookmarks.includes(q.dataset.questionId)){ q.style.display="none"; }
-        if(type==="wrong" && !q.classList.contains("wrong-question")){ q.style.display="none"; }
+    const qs = cachedQuestionNodes.length ? cachedQuestionNodes : document.querySelectorAll("#quiz-container .question");
+    qs.forEach((q)=>{
+        let show = true;
+        if(type==="todo" && q.classList.contains("answered")){ show = false; }
+        if(type==="bookmark" && !bookmarks.includes(q.dataset.questionId)){ show = false; }
+        if(type==="wrong" && !q.classList.contains("wrong-question")){ show = false; }
+        q.classList.toggle("hidden", !show);
     });
 }
 
@@ -2641,67 +3125,196 @@ function toggleAllAnswers(){
             ? '<i class="fas fa-eye-slash" style="font-size:12px;"></i> Ẩn toàn bộ đáp án'
             : '<i class="fas fa-eye" style="font-size:12px;"></i> Hiện toàn bộ đáp án';
     }
-    buildQuizHTML();
-    buildNavPanel();
+
+    const container=document.getElementById("quiz-container");
+    container.querySelectorAll(".option.correct-target").forEach(li=>{
+        li.classList.toggle("revealed-correct", answersRevealed);
+        let badge = li.querySelector(".answer-reveal-badge");
+        if(answersRevealed && !badge){
+            badge = document.createElement("span");
+            badge.className = "answer-reveal-badge";
+            badge.innerText = "✓ ĐÁP ÁN";
+            li.appendChild(badge);
+        } else if(!answersRevealed && badge){
+            badge.remove();
+        }
+    });
 }
 
-async function editAnswer(item,qBlock){
-    const password=prompt("Nhập mật khẩu sửa đáp án:");
-    if(password===null)return;
-    if(password!=="19D"){ alert("Sai mật khẩu!"); return; }
+/* ========== EDIT ANSWER MODAL ========== */
+function openEditModal(item, qBlock){
+    editTargetItem = item;
+    editTargetBlock = qBlock;
+    editSelectedAnswer = getCorrectAnswer(item);
 
-    const oldAnswer=getCorrectAnswer(item);
-    const optionText=item.arr.map(opt=>{
-        const match=opt.match(/^\*?([A-E])\s*[\.\:\s]\s*(.*)$/);
-        if(!match)return opt;
-        return match[1]+". "+match[2];
-    }).join("\n");
+    const preview = document.getElementById("editQuestionPreview");
+    preview.innerText = item.q;
 
-    const newAnswer=prompt("Sửa đáp án câu này.\n\nĐáp án hiện tại: "+(oldAnswer||"?")+"\n"+optionText+"\n\nNhập A, B, C, D hoặc E:");
-    if(newAnswer===null)return;
+    document.getElementById("editPasswordInput").value = "";
+    document.getElementById("editPasswordWrap").classList.remove("error");
+    document.getElementById("editErrorMsg").classList.remove("show");
+    document.getElementById("editCurrentAnswer").innerText = editSelectedAnswer || "?";
 
-    const answer=newAnswer.trim().toUpperCase();
-    if(!["A","B","C","D","E"].includes(answer)){ alert("Chỉ được nhập A, B, C, D hoặc E."); return; }
-    if(!confirm("Xác nhận sửa đáp án thành "+answer+"?")){ return; }
+    const list = document.getElementById("editOptionsList");
+    list.innerHTML = "";
 
-    const success=await window.saveFirebaseCorrection(currentSubject,item.id,answer);
-    if(!success)return;
+    const correctAnswer = getCorrectAnswer(item);
+    item.arr.forEach((opt, idx)=>{
+        const match = opt.match(/^\*?([A-E])\s*[\.\:\s]\s*(.*)$/);
+        const label = match ? match[1] : String.fromCharCode(65+idx);
+        const text = match ? match[2] : opt;
 
-    if(!window.firebaseCorrections){ window.firebaseCorrections={}; }
-    window.firebaseCorrections[item.id]={answer:answer,updatedAt:Date.now()};
+        const row = document.createElement("label");
+        row.className = "edit-option-row";
+        row.dataset.label = label;
+        if(label === correctAnswer){ row.classList.add("selected"); }
 
-    alert("Đã sửa đáp án thành "+answer+"!\n\nFirebase đã lưu đáp án mới.");
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "editAnswerChoice";
+        radio.value = label;
+        if(label === correctAnswer){ radio.checked = true; }
 
-    const target=document.querySelector(`.question[data-question-id="${item.id}"]`);
-    if(target){
-        const newCorrect=getCorrectAnswer(item);
-
-        target.querySelectorAll(".option").forEach(li=>{
-            const inp=li.querySelector("input");
-            const lbl=inp.dataset.answerLabel;
-            li.classList.remove("correct-target","correct","wrong","revealed-correct");
-            if(lbl===newCorrect){
-                li.classList.add("correct-target");
-                if(answersRevealed) li.classList.add("revealed-correct");
-            }
+        radio.addEventListener("change", ()=>{
+            editSelectedAnswer = label;
+            document.querySelectorAll("#editOptionsList .edit-option-row").forEach(r=>{
+                r.classList.toggle("selected", r.dataset.label === label);
+            });
         });
 
-        const status=target.querySelector(".edit-status");
-        if(status) status.innerText="Đã cập nhật đáp án trên Firebase";
+        const lbl = document.createElement("span");
+        lbl.className = "edit-option-label";
+        lbl.innerText = label;
 
-        if(target.classList.contains("answered")){
-            target.classList.remove("answered","wrong-question");
-            target.querySelectorAll(".option").forEach(li=>li.style.pointerEvents="");
-            const sb=target.querySelector(".answer-submit");
-            if(sb){ sb.disabled=false; }
-            updateNavColors();
+        const txt = document.createElement("span");
+        txt.className = "edit-option-text";
+        txt.innerText = text;
+
+        row.appendChild(radio);
+        row.appendChild(lbl);
+        row.appendChild(txt);
+
+        if(label === correctAnswer){
+            const badge = document.createElement("span");
+            badge.className = "edit-option-badge";
+            badge.innerText = "Hiện tại";
+            row.appendChild(badge);
         }
-    }else{
-        buildQuizHTML();
-        buildNavPanel();
+
+        list.appendChild(row);
+    });
+
+    const modal = document.getElementById("editAnswerModal");
+    modal.classList.add("show");
+    setTimeout(()=>document.getElementById("editPasswordInput").focus(), 250);
+}
+
+function closeEditModal(){
+    const modal = document.getElementById("editAnswerModal");
+    modal.classList.remove("show");
+    editTargetItem = null;
+    editTargetBlock = null;
+    editSelectedAnswer = null;
+}
+
+async function submitEditAnswer(){
+    if(!editTargetItem){ return; }
+
+    const passInput = document.getElementById("editPasswordInput");
+    const passWrap = document.getElementById("editPasswordWrap");
+    const errBox = document.getElementById("editErrorMsg");
+    const errText = document.getElementById("editErrorText");
+    const saveBtn = document.getElementById("editSaveBtn");
+
+    if(passInput.value !== "19D"){
+        passWrap.classList.add("error");
+        errText.innerText = "Sai mật khẩu! Vui lòng thử lại.";
+        errBox.classList.add("show");
+        passInput.value = "";
+        passInput.focus();
+        return;
+    }
+
+    passWrap.classList.remove("error");
+    errBox.classList.remove("show");
+
+    if(!editSelectedAnswer){
+        errText.innerText = "Vui lòng chọn một đáp án.";
+        errBox.classList.add("show");
+        return;
+    }
+
+    const oldAnswer = getCorrectAnswer(editTargetItem);
+    if(editSelectedAnswer === oldAnswer){
+        errText.innerText = "Đáp án này đã là đáp án hiện tại.";
+        errBox.classList.add("show");
+        return;
+    }
+
+    saveBtn.classList.add("loading");
+
+    const success = await window.saveFirebaseCorrection(
+        currentSubject,
+        editTargetItem.id,
+        editSelectedAnswer
+    );
+
+    saveBtn.classList.remove("loading");
+
+    if(!success){
+        errText.innerText = "Không thể lưu lên Firebase. Vui lòng thử lại.";
+        errBox.classList.add("show");
+        return;
+    }
+
+    if(!window.firebaseCorrections){ window.firebaseCorrections={}; }
+    window.firebaseCorrections[editTargetItem.id] = {
+        answer: editSelectedAnswer,
+        updatedAt: Date.now()
+    };
+    lastCorrectionsJSON = JSON.stringify(window.firebaseCorrections);
+
+    updateSingleQuestionAnswer(editTargetBlock, editTargetItem);
+
+    closeEditModal();
+}
+
+function updateSingleQuestionAnswer(qBlock, item){
+    if(!qBlock) return;
+    const newCorrect = getCorrectAnswer(item);
+
+    qBlock.querySelectorAll(".option").forEach(li=>{
+        const inp = li.querySelector("input");
+        const lbl = inp.dataset.answerLabel;
+        li.classList.remove("correct-target","correct","wrong","revealed-correct");
+        const oldBadge = li.querySelector(".answer-reveal-badge");
+        if(oldBadge) oldBadge.remove();
+
+        if(lbl === newCorrect){
+            li.classList.add("correct-target");
+            if(answersRevealed){
+                li.classList.add("revealed-correct");
+                const badge = document.createElement("span");
+                badge.className = "answer-reveal-badge";
+                badge.innerText = "✓ ĐÁP ÁN";
+                li.appendChild(badge);
+            }
+        }
+    });
+
+    const status = qBlock.querySelector(".edit-status");
+    if(status) status.innerText = "Đã cập nhật đáp án trên Firebase";
+
+    if(qBlock.classList.contains("answered")){
+        qBlock.classList.remove("answered","wrong-question");
+        qBlock.querySelectorAll(".option").forEach(li=>li.style.pointerEvents="");
+        const sb = qBlock.querySelector(".answer-submit");
+        if(sb){ sb.disabled = false; }
+        updateNavColors();
     }
 }
 
+/* ========== BUILD QUIZ ========== */
 function buildQuizHTML(){
     const container=document.getElementById("quiz-container");
     container.innerHTML="";
@@ -2731,8 +3344,9 @@ function buildQuizHTML(){
 
     document.getElementById("totalQuestion").innerText=questions.length;
 
-    const savedAnswersRaw = localStorage.getItem("answers");
-    const savedAnswers = savedAnswersRaw ? JSON.parse(savedAnswersRaw) : {};
+    const savedForTab = answersCache[currentTab] || {};
+
+    const fragment = document.createDocumentFragment();
 
     questions.forEach((item,qIndex)=>{
         const qBlock=document.createElement("div");
@@ -2770,8 +3384,7 @@ function buildQuizHTML(){
         const optionsList=document.createElement("div");
         optionsList.className="options";
 
-        const savedForCurrentTab = savedAnswers[currentTab] || {};
-        const savedForQuestion = savedForCurrentTab[item.id] || [];
+        const savedForQuestion = savedForTab[item.id] || [];
 
         optionsData.forEach(opt=>{
             const label=document.createElement("label");
@@ -2787,10 +3400,9 @@ function buildQuizHTML(){
             }
 
             inp.addEventListener("change",()=>{
-                let ans=JSON.parse(localStorage.getItem("answers")||"{}");
-                if(!ans[currentTab]){ ans[currentTab]={}; }
-                ans[currentTab][item.id]=[opt.text];
-                localStorage.setItem("answers",JSON.stringify(ans));
+                if(!answersCache[currentTab]){ answersCache[currentTab]={}; }
+                answersCache[currentTab][item.id]=[opt.text];
+                localStorage.setItem("answers",JSON.stringify(answersCache));
             });
 
             const span=document.createElement("span");
@@ -2827,7 +3439,10 @@ function buildQuizHTML(){
         editBtn.className="btn edit-answer";
         editBtn.innerHTML='<i class="fas fa-pen-to-square" style="font-size:12px;"></i><span>Sửa đáp án</span>';
 
-        editBtn.onclick=function(){ editAnswer(item,qBlock); };
+        editBtn.onclick=function(e){
+            e.preventDefault();
+            openEditModal(item, qBlock);
+        };
         editArea.appendChild(editBtn);
         qBlock.appendChild(editArea);
 
@@ -2870,12 +3485,15 @@ function buildQuizHTML(){
         };
 
         qBlock.appendChild(submitBtn);
-        container.appendChild(qBlock);
+        fragment.appendChild(qBlock);
 
         if(progress[currentTab] && progress[currentTab][item.id]){
             submitBtn.click();
         }
     });
+
+    container.appendChild(fragment);
+    cachedQuestionNodes = Array.from(container.querySelectorAll(".question"));
 
     updateNavColors();
 }
@@ -2883,6 +3501,7 @@ function buildQuizHTML(){
 function reloadQuiz(){
     localStorage.removeItem("answers");
     localStorage.removeItem("progress");
+    answersCache = {};
     progress={};
     correctCount=0;
     shuffleMode=false;
@@ -2952,7 +3571,8 @@ document.getElementById("navHandle").onclick=toggleNav;
 function buildNavPanel(){
     const grid=document.getElementById("navGrid");
     grid.innerHTML="";
-    const qs=document.querySelectorAll("#quiz-container .question");
+    const qs = cachedQuestionNodes.length ? cachedQuestionNodes : document.querySelectorAll("#quiz-container .question");
+    const fragment = document.createDocumentFragment();
     qs.forEach((q,i)=>{
         const btn=document.createElement("button");
         btn.className="navBtn";
@@ -2961,14 +3581,15 @@ function buildNavPanel(){
             q.scrollIntoView({behavior:"smooth",block:"start"});
             toggleNav();
         };
-        grid.appendChild(btn);
+        fragment.appendChild(btn);
     });
+    grid.appendChild(fragment);
     updateNavColors();
 }
 
 function updateNavColors(){
     const btns=document.querySelectorAll(".navBtn");
-    const qs=document.querySelectorAll("#quiz-container .question");
+    const qs = cachedQuestionNodes.length ? cachedQuestionNodes : document.querySelectorAll("#quiz-container .question");
     btns.forEach((btn,i)=>{
         btn.className="navBtn";
         const q=qs[i];
@@ -3064,6 +3685,8 @@ function renderTestQuiz(){
         return;
     }
 
+    const fragment = document.createDocumentFragment();
+
     testQuestions.forEach((item,idx)=>{
         const div=document.createElement("div");
         div.className="question";
@@ -3104,8 +3727,10 @@ function renderTestQuiz(){
         });
 
         div.appendChild(optDiv);
-        container.appendChild(div);
+        fragment.appendChild(div);
     });
+
+    container.appendChild(fragment);
 }
 
 function checkTestAnswers(){
@@ -3145,7 +3770,7 @@ function uploadFile(event){
     const reader=new FileReader();
     reader.onload=function(e){
         document.getElementById("testInput").value=e.target.result;
-        generateTest();
+        setTimeout(generateTest, 0);
     };
     reader.readAsText(file);
     event.target.value="";
@@ -3178,6 +3803,17 @@ window.addEventListener("load", function(){
         loadQuestionFiles();
     } else {
         showSubjectSelect();
+    }
+});
+
+/* Close edit modal on ESC / outside click */
+document.getElementById("editAnswerModal").addEventListener("click", (e)=>{
+    if(e.target.id === "editAnswerModal") closeEditModal();
+});
+document.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape"){
+        const modal = document.getElementById("editAnswerModal");
+        if(modal.classList.contains("show")) closeEditModal();
     }
 });
 </script>
