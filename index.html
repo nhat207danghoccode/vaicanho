@@ -690,10 +690,6 @@
       position:relative;
       z-index:1;
   }
-  #mainApp .icon-svg{width:18px;height:18px;flex-shrink:0;display:inline-block;vertical-align:middle;}
-  #mainApp .icon-svg.sm{width:15px;height:15px;}
-  #mainApp .icon-svg.lg{width:28px;height:28px;}
-  #mainApp .bg-deco{display:none;}
 
   #mainApp .header{
       background:linear-gradient(135deg,#1a1a2e 0%,#16162a 100%);
@@ -845,14 +841,6 @@
       box-shadow:0 6px 20px rgba(168,85,247,.5);
       transform:translateY(-1px);
   }
-  #mainApp .btn.edit-answer{
-      background:rgba(245,158,11,.15);
-      border-color:rgba(245,158,11,.3);
-      color:#fbbf24;
-  }
-  #mainApp .btn.edit-answer:hover{
-      background:rgba(245,158,11,.25);
-  }
 
   #mainApp #gotoQuestion{
       padding:8px 12px;
@@ -869,99 +857,360 @@
   #mainApp #gotoQuestion::placeholder{color:#5a5a70;}
   #mainApp #gotoQuestion:focus{border-color:rgba(168,85,247,.5);}
 
-  #mainApp .question{
-      background:#14141f;
-      padding:20px 22px;
-      border-radius:14px;
-      margin-bottom:14px;
-      border:1px solid rgba(255,255,255,.06);
-      transition:border-color .2s;
-      position:relative;
+  /* ============ QUESTION CARD (NEW DESIGN) ============ */
+  #mainApp .question {
+    background: linear-gradient(160deg, #16161f 0%, #131320 100%);
+    padding: 0;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+    position: relative;
+    overflow: hidden;
   }
-  #mainApp .question:hover{
-      border-color:rgba(168,85,247,.25);
+  #mainApp .question::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #a855f7, #ec4899);
+    opacity: 0.9;
+    transition: all 0.3s;
   }
-  #mainApp .question-title{
-      font-size:15px;
-      font-weight:600;
-      color:#f0f0f8;
-      margin-bottom:16px;
-      line-height:1.6;
+  #mainApp .question.tf::before {
+    background: linear-gradient(180deg, #a855f7, #7e22ce);
   }
-  #mainApp .options{display:flex;flex-direction:column;gap:8px;}
-  #mainApp .option{
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:10px;
-      padding:12px 14px;
-      cursor:pointer;
-      transition:all .15s;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      background:rgba(255,255,255,.02);
-      color:#c8c8d8;
-      font-size:14px;
-      font-weight:500;
+  #mainApp .question.mc::before {
+    background: linear-gradient(180deg, #f97316, #ec4899);
   }
-  #mainApp .option:hover{
-      background:rgba(168,85,247,.08);
-      border-color:rgba(168,85,247,.3);
+  #mainApp .question:hover {
+    border-color: rgba(168, 85, 247, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px -12px rgba(168, 85, 247, 0.35);
   }
-  #mainApp .option.correct{
-      background:rgba(236,72,153,.1);
-      border-color:rgba(236,72,153,.5);
-      color:#fbcfe8;
+  #mainApp .question.answered {
+    opacity: 0.96;
   }
-  #mainApp .option.wrong{
-      background:rgba(239,68,68,.1);
-      border-color:rgba(239,68,68,.5);
-      color:#fca5a5;
+  #mainApp .question.answered::before {
+    background: linear-gradient(180deg, #10b981, #059669);
   }
-  #mainApp .option.correct-target{border-color:rgba(255,255,255,.08);}
-  #mainApp .option.revealed-correct{
-      background:rgba(236,72,153,.1);
-      border-color:rgba(236,72,153,.5);
-      color:#fbcfe8;
+  #mainApp .question.wrong-question::before {
+    background: linear-gradient(180deg, #ef4444, #b91c1c);
   }
-  #mainApp .answer-reveal-badge{
-      margin-left:auto;
-      flex-shrink:0;
-      padding:3px 9px;
-      border-radius:999px;
-      background:#ec4899;
-      color:#fff;
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.3px;
+
+  #mainApp .question-inner {
+    padding: 18px 20px 16px;
   }
-  #mainApp .option input{
-      transform:scale(1.15);
-      accent-color:#ec4899;
+
+  #mainApp .question-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
   }
-  #mainApp .edit-area{
-      margin-top:12px;
-      padding:10px 12px;
-      background:rgba(245,158,11,.06);
-      border:1px solid rgba(245,158,11,.2);
-      border-radius:10px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
+
+  #mainApp .question-number {
+    flex-shrink: 0;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.15));
+    border: 1px solid rgba(168, 85, 247, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    color: #d8b4fe;
+    letter-spacing: -0.5px;
+    transition: all 0.3s;
   }
-  #mainApp .edit-status{
-      color:#fbbf24;
-      font-size:11px;
-      font-weight:600;
-      display:flex;
-      align-items:center;
-      gap:6px;
+  #mainApp .question.answered .question-number {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #6ee7b7;
   }
-  #mainApp .edit-status::before{
-      content:"●";
-      font-size:6px;
-      animation:pulseDot 2s infinite;
+  #mainApp .question.wrong-question .question-number {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.15));
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+  }
+
+  #mainApp .question-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #mainApp .question-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  #mainApp .type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid transparent;
+  }
+  #mainApp .type-pill.tf {
+    background: rgba(168, 85, 247, 0.12);
+    color: #d8b4fe;
+    border-color: rgba(168, 85, 247, 0.3);
+  }
+  #mainApp .type-pill.mc {
+    background: rgba(249, 115, 22, 0.12);
+    color: #fdba74;
+    border-color: rgba(249, 115, 22, 0.3);
+  }
+
+  #mainApp .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  #mainApp .status-pill.correct {
+    background: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+  }
+  #mainApp .status-pill.wrong {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+  }
+
+  #mainApp .question-text {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #f0f0f8;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+
+  #mainApp .bookmark-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: #5a5a70;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  #mainApp .bookmark-btn:hover {
+    background: rgba(250, 204, 21, 0.12);
+    border-color: rgba(250, 204, 21, 0.4);
+    color: #facc15;
+  }
+  #mainApp .bookmark-btn.active {
+    background: linear-gradient(135deg, rgba(250, 204, 21, 0.25), rgba(234, 179, 8, 0.2));
+    border-color: rgba(250, 204, 21, 0.5);
+    color: #facc15;
+    box-shadow: 0 0 14px rgba(250, 204, 21, 0.35);
+  }
+
+  #mainApp .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  #mainApp .option {
+    border: 1.5px solid rgba(255, 255, 255, 0.07);
+    border-radius: 11px;
+    padding: 11px 14px;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    color: #c8c8d8;
+    font-size: 13.5px;
+    font-weight: 500;
+    position: relative;
+  }
+  #mainApp .option:hover {
+    background: rgba(168, 85, 247, 0.08);
+    border-color: rgba(168, 85, 247, 0.35);
+    transform: translateX(2px);
+  }
+  #mainApp .option input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(168, 85, 247, 0.5);
+    background: rgba(10, 5, 25, 0.5);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  #mainApp .option input[type="radio"]:checked {
+    border-color: #ec4899;
+    background: radial-gradient(circle, #ec4899 0%, #ec4899 45%, transparent 50%);
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+  }
+
+  #mainApp .option-label-letter {
+    flex-shrink: 0;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 8px;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #d8b4fe;
+    transition: all 0.2s;
+  }
+  #mainApp .option-text {
+    flex: 1;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  #mainApp .option.correct-target {
+    border-color: rgba(236, 72, 153, 0.4);
+  }
+  #mainApp .option.correct {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.08));
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #a7f3d0;
+  }
+  #mainApp .option.correct .option-label-letter {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: transparent;
+    color: #fff;
+  }
+  #mainApp .option.wrong {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(185, 28, 28, 0.08));
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #fca5a5;
+  }
+  #mainApp .option.wrong .option-label-letter {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  #mainApp .reveal-badge {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.5);
+    margin-left: auto;
+  }
+
+  #mainApp .question-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.06);
+    flex-wrap: wrap;
+  }
+
+  #mainApp .edit-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #fbbf24;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  #mainApp .edit-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fbbf24;
+    box-shadow: 0 0 8px #fbbf24;
+    animation: pulseDot 1.8s infinite;
+  }
+  #mainApp .edit-status.original {
+    color: #8888a8;
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  #mainApp .edit-status.original::before {
+    background: #5a5a70;
+    box-shadow: none;
+    animation: none;
+  }
+
+  #mainApp .action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  #mainApp .btn.edit-answer {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #fbbf24;
+  }
+  #mainApp .btn.edit-answer:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 6px 18px -6px rgba(245, 158, 11, 0.5);
+  }
+
+  #mainApp .btn.submit {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 18px -6px rgba(168, 85, 247, 0.6);
+  }
+  #mainApp .btn.submit:hover:not(:disabled) {
+    box-shadow: 0 10px 24px -6px rgba(236, 72, 153, 0.7);
+    transform: translateY(-1px);
+  }
+  #mainApp .btn.submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 
   #mainApp .footer{
@@ -1342,34 +1591,13 @@
   #mainApp .test-questions .q-item:last-child{border-bottom:none;}
   #mainApp .hidden{display:none!important;}
 
-  #mainApp .type-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:4px;
-      padding:2px 8px;
-      border-radius:4px;
-      font-size:9px;
-      font-weight:800;
-      margin-right:8px;
-      vertical-align:middle;
-      text-transform:uppercase;
-      letter-spacing:.4px;
-  }
-  #mainApp .type-badge.tf{
-      background:rgba(168,85,247,.15);
-      color:#d8b4fe;
-  }
-  #mainApp .type-badge.mc{
-      background:rgba(249,115,22,.15);
-      color:#fdba74;
-  }
-
   @media(max-width:700px){
       #mainApp{padding:12px 10px 40px;}
       #mainApp .header{padding:20px 18px;}
       #mainApp .header h1{font-size:18px;}
-      #mainApp .question{padding:16px 14px;}
-      #mainApp .question-title{font-size:14px;}
+      #mainApp .question-inner{padding:14px 14px 12px;}
+      #mainApp .question-text{font-size:13.5px;}
+      #mainApp .question-number{min-width:30px;height:30px;font-size:12px;}
       #mainApp .topbar{flex-direction:column;align-items:stretch;}
       #mainApp .buttons{justify-content:flex-start;}
       #mainApp .btn{padding:7px 11px;font-size:11px;}
@@ -1396,6 +1624,8 @@
       #mainApp .popup-box{width:320px;}
       #mainApp .popup-icon-wrap{width:56px;height:56px;margin:22px auto 12px;}
       #mainApp .popup-icon{font-size:24px;}
+      #mainApp .action-buttons{width:100%;}
+      #mainApp .action-buttons .btn{flex:1;justify-content:center;}
   }
 
   #subjectSelect {
@@ -1752,8 +1982,8 @@
     position: fixed;
     inset: 0;
     background: rgba(5, 5, 12, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1765,23 +1995,23 @@
 
   .edit-modal-box {
     width: 100%;
-    max-width: 480px;
-    max-height: 90vh;
-    background: linear-gradient(160deg, #1c1430 0%, #14101f 100%);
+    max-width: 520px;
+    max-height: 92vh;
+    background: linear-gradient(160deg, #1a1230 0%, #110b1e 100%);
     border-radius: 22px;
     border: 1px solid rgba(168, 85, 247, 0.35);
     box-shadow:
-      0 30px 70px -10px rgba(0, 0, 0, 0.85),
-      0 0 40px rgba(168, 85, 247, 0.25),
+      0 30px 80px -10px rgba(0, 0, 0, 0.9),
+      0 0 50px rgba(168, 85, 247, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    animation: editModalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: modalEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
   }
-  @keyframes editModalEnter {
-    0%   { opacity: 0; transform: translateY(30px) scale(0.94); filter: blur(8px); }
+  @keyframes modalEnter {
+    0% { opacity: 0; transform: translateY(40px) scale(0.94); filter: blur(10px); }
     100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
   .edit-modal-box::before {
@@ -1795,15 +2025,15 @@
   }
 
   .edit-modal-header {
-    padding: 20px 22px 14px;
+    padding: 20px 24px 14px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
   .edit-modal-icon {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     border-radius: 13px;
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(236, 72, 153, 0.25));
     border: 1px solid rgba(245, 158, 11, 0.4);
@@ -1811,26 +2041,26 @@
     align-items: center;
     justify-content: center;
     color: #fbbf24;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     flex-shrink: 0;
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+    box-shadow: 0 0 24px rgba(245, 158, 11, 0.3);
   }
   .edit-modal-titles { flex: 1; min-width: 0; }
   .edit-modal-titles h3 {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 800;
     color: #f0f0f8;
     letter-spacing: -0.01em;
     margin-bottom: 2px;
   }
   .edit-modal-titles p {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     color: #a78bfa;
     font-weight: 500;
   }
   .edit-modal-close {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.04);
@@ -1839,7 +2069,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     transition: all 0.18s;
     flex-shrink: 0;
   }
@@ -1847,15 +2077,15 @@
     background: rgba(239, 68, 68, 0.2);
     color: #fca5a5;
     border-color: rgba(239, 68, 68, 0.4);
+    transform: rotate(90deg);
   }
 
   .edit-modal-body {
-    padding: 18px 22px;
+    padding: 18px 24px 20px;
     overflow-y: auto;
     flex: 1;
   }
   .edit-modal-body::-webkit-scrollbar { width: 6px; }
-  .edit-modal-body::-webkit-scrollbar-track { background: transparent; }
   .edit-modal-body::-webkit-scrollbar-thumb {
     background: rgba(168, 85, 247, 0.4);
     border-radius: 3px;
@@ -1866,14 +2096,29 @@
     font-weight: 800;
     color: #c4b5fd;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
     margin-bottom: 8px;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .edit-label .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    background: rgba(168, 85, 247, 0.2);
+    color: #d8b4fe;
+    font-size: 0.65rem;
+    border: 1px solid rgba(168, 85, 247, 0.35);
   }
 
   .edit-question-preview {
-    background: rgba(168, 85, 247, 0.08);
+    background: rgba(168, 85, 247, 0.06);
     border: 1px solid rgba(168, 85, 247, 0.22);
+    border-left: 3px solid #a855f7;
     border-radius: 12px;
     padding: 12px 14px;
     font-size: 0.85rem;
@@ -1881,7 +2126,7 @@
     color: #e8e8f0;
     font-weight: 500;
     margin-bottom: 18px;
-    max-height: 110px;
+    max-height: 120px;
     overflow-y: auto;
   }
   .edit-question-preview::-webkit-scrollbar { width: 4px; }
@@ -1891,19 +2136,19 @@
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
   .edit-password-wrap i {
     position: absolute;
     left: 14px;
     color: #a78bfa;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     pointer-events: none;
     transition: color 0.2s;
   }
   .edit-password-wrap input {
     width: 100%;
-    padding: 12px 14px 12px 40px;
+    padding: 12px 14px 12px 42px;
     border-radius: 12px;
     border: 1.5px solid rgba(168, 85, 247, 0.35);
     background: rgba(10, 5, 25, 0.7);
@@ -1913,16 +2158,14 @@
     font-weight: 600;
     outline: none;
     transition: all 0.25s;
-    letter-spacing: 0.15em;
   }
   .edit-password-wrap input::placeholder {
     color: #6a5a88;
     font-weight: 400;
-    letter-spacing: normal;
   }
   .edit-password-wrap input:focus {
     border-color: #ec4899;
-    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15), 0 0 20px -5px rgba(236, 72, 153, 0.5);
+    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15), 0 0 22px -5px rgba(236, 72, 153, 0.5);
   }
   .edit-password-wrap:focus-within i { color: #ec4899; }
   .edit-password-wrap.error input {
@@ -1931,17 +2174,93 @@
     animation: shake 0.4s ease;
   }
 
+  .edit-error-msg {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.45);
+    color: #fca5a5;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    animation: shake 0.4s ease;
+  }
+  .edit-error-msg.show { display: flex; }
+
+  .edit-compare {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    margin-bottom: 16px;
+  }
+  .edit-compare-item {
+    text-align: center;
+  }
+  .edit-compare-item .lbl {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: #8888a8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .edit-compare-item .val {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 900;
+    transition: all 0.25s;
+  }
+  .edit-compare-item.old .val {
+    background: rgba(255, 255, 255, 0.05);
+    color: #9898b0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .edit-compare-item.new .val {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+    border: 1px solid transparent;
+  }
+  .edit-compare-item.new .val.empty {
+    background: rgba(255, 255, 255, 0.03);
+    color: #5a5a70;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+  }
+  .edit-compare-arrow {
+    color: #a855f7;
+    font-size: 1rem;
+    animation: arrowPulse 1.5s infinite;
+  }
+  @keyframes arrowPulse {
+    0%, 100% { opacity: 0.5; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(3px); }
+  }
+
   .edit-options {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 18px;
   }
   .edit-option-row {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 11px 14px;
+    padding: 12px 14px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.025);
     border: 1.5px solid rgba(255, 255, 255, 0.07);
@@ -1952,11 +2271,12 @@
   .edit-option-row:hover {
     background: rgba(168, 85, 247, 0.08);
     border-color: rgba(168, 85, 247, 0.3);
+    transform: translateX(2px);
   }
   .edit-option-row.selected {
     background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(168, 85, 247, 0.12));
     border-color: rgba(236, 72, 153, 0.6);
-    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1), 0 8px 20px -8px rgba(236, 72, 153, 0.5);
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1), 0 8px 22px -8px rgba(236, 72, 153, 0.5);
   }
   .edit-option-row input[type="radio"] {
     appearance: none;
@@ -1967,43 +2287,40 @@
     border: 2px solid rgba(168, 85, 247, 0.5);
     background: rgba(10, 5, 25, 0.5);
     cursor: pointer;
-    position: relative;
     flex-shrink: 0;
     transition: all 0.2s;
   }
-  .edit-option-row input[type="radio"]:checked {
-    border-color: #ec4899;
-    background: radial-gradient(circle, #ec4899 0%, #ec4899 45%, transparent 50%);
-    box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
-  }
+  .edit-option-row input[type="radio"]:checked,
   .edit-option-row.selected input[type="radio"] {
     border-color: #ec4899;
     background: radial-gradient(circle, #ec4899 0%, #ec4899 45%, transparent 50%);
-    box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+    box-shadow: 0 0 14px rgba(236, 72, 153, 0.8);
   }
   .edit-option-label {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 26px;
-    height: 26px;
+    min-width: 28px;
+    height: 28px;
     padding: 0 8px;
-    border-radius: 8px;
+    border-radius: 9px;
     background: rgba(168, 85, 247, 0.18);
     color: #d8b4fe;
     font-weight: 800;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     flex-shrink: 0;
     border: 1px solid rgba(168, 85, 247, 0.3);
+    transition: all 0.2s;
   }
   .edit-option-row.selected .edit-option-label {
     background: linear-gradient(135deg, #ec4899, #a855f7);
     color: #fff;
     border-color: transparent;
+    box-shadow: 0 0 14px rgba(236, 72, 153, 0.5);
   }
   .edit-option-text {
     flex: 1;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     color: #d8d8e8;
     font-weight: 500;
     line-height: 1.45;
@@ -2018,67 +2335,28 @@
     font-weight: 800;
     padding: 3px 8px;
     border-radius: 999px;
-    background: rgba(168, 85, 247, 0.25);
+    background: rgba(168, 85, 247, 0.2);
     color: #d8b4fe;
     letter-spacing: 0.5px;
     flex-shrink: 0;
     text-transform: uppercase;
+    border: 1px solid rgba(168, 85, 247, 0.3);
   }
   .edit-option-row.selected .edit-option-badge {
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
+    border-color: transparent;
   }
-
-  .edit-current-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 12px;
-    border-radius: 10px;
-    background: rgba(168, 85, 247, 0.08);
-    border: 1px dashed rgba(168, 85, 247, 0.3);
-    font-size: 0.75rem;
-    color: #c4b5fd;
-    font-weight: 600;
-    margin-bottom: 14px;
-  }
-  .edit-current-info i { color: #fbbf24; }
-  .edit-current-info .val {
-    color: #fbbf24;
-    font-weight: 800;
-    margin-left: auto;
-    padding: 2px 10px;
-    background: rgba(245, 158, 11, 0.15);
-    border-radius: 6px;
-    border: 1px solid rgba(245, 158, 11, 0.3);
-  }
-
-  .edit-error-msg {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    padding: 9px 12px;
-    border-radius: 10px;
-    background: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(248, 113, 113, 0.45);
-    color: #fca5a5;
-    font-size: 0.78rem;
-    font-weight: 600;
-    margin-bottom: 14px;
-    animation: shake 0.4s ease;
-  }
-  .edit-error-msg.show { display: flex; }
 
   .edit-modal-footer {
-    padding: 16px 22px 20px;
+    padding: 16px 24px 20px;
     display: flex;
     gap: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.2);
   }
   .edit-btn {
-    flex: 1;
-    padding: 12px 16px;
+    padding: 12px 18px;
     border-radius: 12px;
     border: none;
     font-family: inherit;
@@ -2092,26 +2370,22 @@
     transition: all 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
     letter-spacing: 0.3px;
   }
-  .edit-btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
   .edit-btn.cancel {
     background: rgba(255, 255, 255, 0.05);
     color: #9898b0;
     border: 1px solid rgba(255, 255, 255, 0.08);
     flex: 0 0 auto;
-    padding: 12px 20px;
   }
-  .edit-btn.cancel:hover:not(:disabled) {
+  .edit-btn.cancel:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #d8d8e8;
   }
   .edit-btn.save {
+    flex: 1;
     background: linear-gradient(135deg, #a855f7, #ec4899, #f97316);
     background-size: 200% 200%;
     color: #fff;
-    box-shadow: 0 10px 24px -10px rgba(236, 72, 153, 0.8);
+    box-shadow: 0 10px 26px -10px rgba(236, 72, 153, 0.8);
     animation: gradientShift 4s ease infinite;
     position: relative;
     overflow: hidden;
@@ -2126,18 +2400,12 @@
     transform: skewX(-25deg);
     animation: shine 3.2s infinite;
   }
-  .edit-btn.save:hover:not(:disabled) {
+  .edit-btn.save:hover {
     transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 16px 32px -10px rgba(236, 72, 153, 1);
-    letter-spacing: 0.6px;
+    box-shadow: 0 16px 34px -10px rgba(236, 72, 153, 1);
   }
-  .edit-btn.save:active:not(:disabled) {
-    transform: translateY(0) scale(0.99);
-  }
-  .edit-btn.save.loading {
-    pointer-events: none;
-  }
-  .edit-btn.save.loading span { opacity: 0.7; }
+  .edit-btn.save:active { transform: translateY(0) scale(0.99); }
+  .edit-btn.save.loading { pointer-events: none; }
   .edit-btn.save .spinner {
     display: none;
     width: 16px;
@@ -2150,13 +2418,39 @@
   .edit-btn.save.loading .spinner { display: inline-block; }
   .edit-btn.save.loading i { display: none; }
 
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 15px 40px -8px rgba(16, 185, 129, 0.6);
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    font-family: 'Inter', sans-serif;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    box-shadow: 0 15px 40px -8px rgba(239, 68, 68, 0.6);
+  }
+
   @media (max-width: 480px) {
     .edit-modal-box { border-radius: 18px; }
     .edit-modal-header { padding: 16px 18px 12px; }
     .edit-modal-body { padding: 16px 18px; }
     .edit-modal-footer { padding: 14px 18px 16px; }
-    .edit-modal-titles h3 { font-size: 0.92rem; }
-    .edit-option-row { padding: 10px 12px; }
+    .edit-modal-titles h3 { font-size: 0.95rem; }
     .edit-btn { padding: 11px 14px; font-size: 0.82rem; }
   }
 </style>
@@ -2564,6 +2858,7 @@ B. Đúng"></textarea>
     </div>
 </div>
 
+<!-- EDIT ANSWER MODAL -->
 <div id="editAnswerModal">
   <div class="edit-modal-box">
     <div class="edit-modal-header">
@@ -2580,10 +2875,10 @@ B. Đúng"></textarea>
     </div>
 
     <div class="edit-modal-body">
-      <label class="edit-label">Nội dung câu hỏi</label>
+      <label class="edit-label"><span class="num">1</span> Nội dung câu hỏi</label>
       <div class="edit-question-preview" id="editQuestionPreview"></div>
 
-      <label class="edit-label">Mật khẩu xác thực</label>
+      <label class="edit-label"><span class="num">2</span> Mật khẩu xác thực</label>
       <div class="edit-password-wrap" id="editPasswordWrap">
         <i class="fas fa-lock"></i>
         <input type="password" id="editPasswordInput" placeholder="Nhập mật khẩu..." autocomplete="off">
@@ -2594,13 +2889,22 @@ B. Đúng"></textarea>
         <span id="editErrorText">Sai mật khẩu!</span>
       </div>
 
-      <div class="edit-current-info">
-        <i class="fas fa-circle-info"></i>
-        <span>Đáp án hiện tại:</span>
-        <span class="val" id="editCurrentAnswer">?</span>
+      <label class="edit-label"><span class="num">3</span> So sánh đáp án</label>
+      <div class="edit-compare">
+        <div class="edit-compare-item old">
+          <div class="lbl">Hiện tại</div>
+          <div class="val" id="editOldAnswer">?</div>
+        </div>
+        <div class="edit-compare-arrow">
+          <i class="fas fa-arrow-right"></i>
+        </div>
+        <div class="edit-compare-item new">
+          <div class="lbl">Sau khi sửa</div>
+          <div class="val empty" id="editNewAnswer">?</div>
+        </div>
       </div>
 
-      <label class="edit-label">Chọn đáp án đúng</label>
+      <label class="edit-label"><span class="num">4</span> Chọn đáp án đúng</label>
       <div class="edit-options" id="editOptionsList"></div>
     </div>
 
@@ -2613,6 +2917,12 @@ B. Đúng"></textarea>
       </button>
     </div>
   </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="fas fa-circle-check"></i>
+  <span id="toastText">Đã lưu đáp án!</span>
 </div>
 
 <div class="music-widget" id="musicWidget">
@@ -2824,7 +3134,7 @@ window.saveFirebaseCorrection = async function(subject,questionId,answer){
     try{
         await set(ref(db,"corrections/"+subject+"/"+questionId),{answer:answer,updatedAt:Date.now()});
         return true;
-    }catch(error){ console.error("Firebase ghi lỗi:", error); alert("Không thể lưu đáp án lên Firebase."); return false; }
+    }catch(error){ console.error("Firebase ghi lỗi:", error); return false; }
 };
 
 window.firebaseCorrectionUnsubscribe=null;
@@ -3041,7 +3351,7 @@ function switchTab(type){
     buildNavPanel();
 }
 
-function saveNote(){ localStorage.setItem("nhat_note", document.getElementById("noteArea").value); alert("Đã lưu ghi chú!"); }
+function saveNote(){ localStorage.setItem("nhat_note", document.getElementById("noteArea").value); showToast("Đã lưu ghi chú!"); }
 function loadNote(){ document.getElementById("noteArea").value=localStorage.getItem("nhat_note")||""; }
 function clearNote(){ if(confirm("Xóa ghi chú?")){ localStorage.removeItem("nhat_note"); document.getElementById("noteArea").value=""; } }
 
@@ -3129,11 +3439,11 @@ function toggleAllAnswers(){
     const container=document.getElementById("quiz-container");
     container.querySelectorAll(".option.correct-target").forEach(li=>{
         li.classList.toggle("revealed-correct", answersRevealed);
-        let badge = li.querySelector(".answer-reveal-badge");
+        let badge = li.querySelector(".reveal-badge");
         if(answersRevealed && !badge){
             badge = document.createElement("span");
-            badge.className = "answer-reveal-badge";
-            badge.innerText = "✓ ĐÁP ÁN";
+            badge.className = "reveal-badge";
+            badge.innerText = "✓ Đáp án";
             li.appendChild(badge);
         } else if(!answersRevealed && badge){
             badge.remove();
@@ -3147,13 +3457,18 @@ function openEditModal(item, qBlock){
     editTargetBlock = qBlock;
     editSelectedAnswer = getCorrectAnswer(item);
 
-    const preview = document.getElementById("editQuestionPreview");
-    preview.innerText = item.q;
+    document.getElementById("editQuestionPreview").innerText = item.q;
 
     document.getElementById("editPasswordInput").value = "";
     document.getElementById("editPasswordWrap").classList.remove("error");
     document.getElementById("editErrorMsg").classList.remove("show");
-    document.getElementById("editCurrentAnswer").innerText = editSelectedAnswer || "?";
+
+    const oldAnsEl = document.getElementById("editOldAnswer");
+    oldAnsEl.innerText = editSelectedAnswer || "?";
+
+    const newAnsEl = document.getElementById("editNewAnswer");
+    newAnsEl.innerText = "?";
+    newAnsEl.classList.add("empty");
 
     const list = document.getElementById("editOptionsList");
     list.innerHTML = "";
@@ -3180,6 +3495,9 @@ function openEditModal(item, qBlock){
             document.querySelectorAll("#editOptionsList .edit-option-row").forEach(r=>{
                 r.classList.toggle("selected", r.dataset.label === label);
             });
+            const newVal = document.getElementById("editNewAnswer");
+            newVal.innerText = label;
+            newVal.classList.remove("empty");
         });
 
         const lbl = document.createElement("span");
@@ -3204,14 +3522,12 @@ function openEditModal(item, qBlock){
         list.appendChild(row);
     });
 
-    const modal = document.getElementById("editAnswerModal");
-    modal.classList.add("show");
+    document.getElementById("editAnswerModal").classList.add("show");
     setTimeout(()=>document.getElementById("editPasswordInput").focus(), 250);
 }
 
 function closeEditModal(){
-    const modal = document.getElementById("editAnswerModal");
-    modal.classList.remove("show");
+    document.getElementById("editAnswerModal").classList.remove("show");
     editTargetItem = null;
     editTargetBlock = null;
     editSelectedAnswer = null;
@@ -3277,6 +3593,7 @@ async function submitEditAnswer(){
     updateSingleQuestionAnswer(editTargetBlock, editTargetItem);
 
     closeEditModal();
+    showToast("Đã lưu đáp án mới: " + editSelectedAnswer);
 }
 
 function updateSingleQuestionAnswer(qBlock, item){
@@ -3287,7 +3604,7 @@ function updateSingleQuestionAnswer(qBlock, item){
         const inp = li.querySelector("input");
         const lbl = inp.dataset.answerLabel;
         li.classList.remove("correct-target","correct","wrong","revealed-correct");
-        const oldBadge = li.querySelector(".answer-reveal-badge");
+        const oldBadge = li.querySelector(".reveal-badge");
         if(oldBadge) oldBadge.remove();
 
         if(lbl === newCorrect){
@@ -3295,15 +3612,18 @@ function updateSingleQuestionAnswer(qBlock, item){
             if(answersRevealed){
                 li.classList.add("revealed-correct");
                 const badge = document.createElement("span");
-                badge.className = "answer-reveal-badge";
-                badge.innerText = "✓ ĐÁP ÁN";
+                badge.className = "reveal-badge";
+                badge.innerText = "✓ Đáp án";
                 li.appendChild(badge);
             }
         }
     });
 
     const status = qBlock.querySelector(".edit-status");
-    if(status) status.innerText = "Đã cập nhật đáp án trên Firebase";
+    if(status) {
+        status.classList.remove("original");
+        status.innerText = "Đã cập nhật đáp án";
+    }
 
     if(qBlock.classList.contains("answered")){
         qBlock.classList.remove("answered","wrong-question");
@@ -3350,26 +3670,55 @@ function buildQuizHTML(){
 
     questions.forEach((item,qIndex)=>{
         const qBlock=document.createElement("div");
-        qBlock.className="question";
+        const isTF = item.arr.length === 2;
+        qBlock.className = "question " + (isTF ? "tf" : "mc");
         qBlock.dataset.questionId=item.id;
 
         const correctAnswer=getCorrectAnswer(item);
 
-        const qText=document.createElement("div");
-        qText.className="question-title";
+        const qInner = document.createElement("div");
+        qInner.className = "question-inner";
 
-        const typeBadge=item.arr.length===2
-            ? '<span class="type-badge tf">Đúng/Sai</span>'
-            : '<span class="type-badge mc">Đúng nhất</span>';
+        const qHead = document.createElement("div");
+        qHead.className = "question-head";
 
-        qText.innerHTML=`
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-                <span>${typeBadge}Câu ${qIndex+1}: ${item.q}</span>
-                <span style="cursor:pointer;font-size:22px;flex-shrink:0;color:${bookmarks.includes(item.id)?'#facc15':'#444458'};" onclick="toggleBookmark('${item.id}',this)"><i class="fas fa-bookmark"></i></span>
-            </div>
-        `;
+        const qNum = document.createElement("div");
+        qNum.className = "question-number";
+        qNum.innerText = (qIndex + 1);
+        qHead.appendChild(qNum);
 
-        qBlock.appendChild(qText);
+        const qContent = document.createElement("div");
+        qContent.className = "question-content";
+
+        const qMeta = document.createElement("div");
+        qMeta.className = "question-meta";
+
+        const typePill = document.createElement("span");
+        typePill.className = "type-pill " + (isTF ? "tf" : "mc");
+        typePill.innerHTML = isTF
+            ? '<i class="fas fa-check-double"></i> Đúng / Sai'
+            : '<i class="fas fa-list-ul"></i> Đúng nhất';
+        qMeta.appendChild(typePill);
+
+        qContent.appendChild(qMeta);
+
+        const qText = document.createElement("div");
+        qText.className = "question-text";
+        qText.innerText = item.q;
+        qContent.appendChild(qText);
+
+        qHead.appendChild(qContent);
+
+        const bmBtn = document.createElement("button");
+        bmBtn.className = "bookmark-btn" + (bookmarks.includes(item.id) ? " active" : "");
+        bmBtn.innerHTML = '<i class="fas fa-bookmark"></i>';
+        bmBtn.onclick = (e) => {
+            e.preventDefault();
+            toggleBookmark(item.id, bmBtn);
+        };
+        qHead.appendChild(bmBtn);
+
+        qInner.appendChild(qHead);
 
         let optionsData=item.arr.map(opt=>{
             const match=opt.match(/^\*?([A-E])/);
@@ -3405,51 +3754,59 @@ function buildQuizHTML(){
                 localStorage.setItem("answers",JSON.stringify(answersCache));
             });
 
+            const lblLetter = document.createElement("span");
+            lblLetter.className = "option-label-letter";
+            lblLetter.innerText = opt.label;
+
             const span=document.createElement("span");
+            span.className = "option-text";
             span.innerText=opt.text;
 
             label.appendChild(inp);
+            label.appendChild(lblLetter);
             label.appendChild(span);
 
             if(opt.isCorrect && answersRevealed){
                 const badge=document.createElement("span");
-                badge.className="answer-reveal-badge";
-                badge.innerText="✓ ĐÁP ÁN";
+                badge.className="reveal-badge";
+                badge.innerText="✓ Đáp án";
                 label.appendChild(badge);
             }
 
             optionsList.appendChild(label);
         });
 
-        qBlock.appendChild(optionsList);
+        qInner.appendChild(optionsList);
 
-        const editArea=document.createElement("div");
-        editArea.className="edit-area";
+        const actions = document.createElement("div");
+        actions.className = "question-actions";
 
         const status=document.createElement("span");
         status.className="edit-status";
-
         const firebaseEdited=window.firebaseCorrections && window.firebaseCorrections[item.id];
-        if(firebaseEdited){ status.innerText="Đã cập nhật đáp án trên Firebase"; }
-        else{ status.innerText="Đáp án gốc"; }
+        if(firebaseEdited){
+            status.innerText="Đã cập nhật đáp án";
+        }else{
+            status.classList.add("original");
+            status.innerText="Đáp án gốc";
+        }
+        actions.appendChild(status);
 
-        editArea.appendChild(status);
+        const actionBtns = document.createElement("div");
+        actionBtns.className = "action-buttons";
 
         const editBtn=document.createElement("button");
         editBtn.className="btn edit-answer";
-        editBtn.innerHTML='<i class="fas fa-pen-to-square" style="font-size:12px;"></i><span>Sửa đáp án</span>';
-
+        editBtn.innerHTML='<i class="fas fa-pen-to-square"></i><span>Sửa đáp án</span>';
         editBtn.onclick=function(e){
             e.preventDefault();
             openEditModal(item, qBlock);
         };
-        editArea.appendChild(editBtn);
-        qBlock.appendChild(editArea);
+        actionBtns.appendChild(editBtn);
 
         const submitBtn=document.createElement("button");
-        submitBtn.className="btn answer-submit";
-        submitBtn.style.marginTop="15px";
-        submitBtn.innerHTML='<i class="fas fa-check" style="font-size:12px;"></i> Trả Lời';
+        submitBtn.className="btn submit answer-submit";
+        submitBtn.innerHTML='<i class="fas fa-check"></i><span>Trả lời</span>';
 
         submitBtn.onclick=function(){
             if(qBlock.classList.contains("answered")){ return; }
@@ -3462,17 +3819,34 @@ function buildQuizHTML(){
                 const inp=li.querySelector("input");
                 const isCorrect=li.classList.contains("correct-target");
                 li.style.pointerEvents="none";
-                if(isCorrect){ li.classList.add("correct"); }
+                inp.disabled = true;
+                if(isCorrect){
+                    li.classList.add("correct");
+                    if(!li.querySelector(".reveal-badge")){
+                        const badge = document.createElement("span");
+                        badge.className = "reveal-badge";
+                        badge.innerText = "✓ Đáp án";
+                        li.appendChild(badge);
+                    }
+                }
                 if(inp.checked && !isCorrect){ li.classList.add("wrong"); allCorrect=false; }
                 if(!inp.checked && isCorrect){ allCorrect=false; }
             });
 
             submitBtn.disabled=true;
+            submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Đã trả lời</span>';
 
             if(allCorrect){
                 correctCount++;
                 document.getElementById("correctAnswer").innerText=correctCount;
             }
+
+            const statusPill = document.createElement("span");
+            statusPill.className = "status-pill " + (allCorrect ? "correct" : "wrong");
+            statusPill.innerHTML = allCorrect
+                ? '<i class="fas fa-check"></i> Chính xác'
+                : '<i class="fas fa-xmark"></i> Sai';
+            qMeta.appendChild(statusPill);
 
             if(!progress[currentTab]){ progress[currentTab]={}; }
             progress[currentTab][item.id]=true;
@@ -3484,7 +3858,11 @@ function buildQuizHTML(){
             if(currentTab==="EXAM"){ updateProgress(); }
         };
 
-        qBlock.appendChild(submitBtn);
+        actionBtns.appendChild(submitBtn);
+        actions.appendChild(actionBtns);
+        qInner.appendChild(actions);
+
+        qBlock.appendChild(qInner);
         fragment.appendChild(qBlock);
 
         if(progress[currentTab] && progress[currentTab][item.id]){
@@ -3550,13 +3928,13 @@ function goToQuestion(){
     qs[num-1].scrollIntoView({behavior:"smooth",block:"start"});
 }
 
-function toggleBookmark(id,el){
+function toggleBookmark(id, btn){
     if(bookmarks.includes(id)){
         bookmarks=bookmarks.filter(x=>x!==id);
-        el.style.color="#444458";
+        btn.classList.remove("active");
     }else{
         bookmarks.push(id);
-        el.style.color="#facc15";
+        btn.classList.add("active");
     }
     localStorage.setItem("bookmarks",JSON.stringify(bookmarks));
     updateNavColors();
@@ -3626,6 +4004,18 @@ function shuffleArray(arr){
     return a;
 }
 
+function showToast(msg, isError = false){
+    const toast = document.getElementById("toast");
+    const text = document.getElementById("toastText");
+    const icon = toast.querySelector("i");
+    text.innerText = msg;
+    toast.classList.toggle("error", isError);
+    icon.className = isError ? "fas fa-circle-exclamation" : "fas fa-circle-check";
+    toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>toast.classList.remove("show"), 2500);
+}
+
 function generateTest(){
     const input=document.getElementById("testInput").value;
     if(!input.trim()){ alert("Vui lòng nhập nội dung câu hỏi."); return; }
@@ -3689,13 +4079,19 @@ function renderTestQuiz(){
 
     testQuestions.forEach((item,idx)=>{
         const div=document.createElement("div");
-        div.className="question";
+        div.className="question mc";
         div.style.marginBottom="16px";
+
+        const inner = document.createElement("div");
+        inner.className = "question-inner";
 
         const title=document.createElement("div");
         title.className="question-title";
+        title.style.marginBottom = "12px";
+        title.style.fontWeight = "600";
+        title.style.fontSize = "14px";
         title.innerHTML=`<span>Câu ${idx+1}: ${item.q}</span>`;
-        div.appendChild(title);
+        inner.appendChild(title);
 
         const optDiv=document.createElement("div");
         optDiv.className="options";
@@ -3719,14 +4115,21 @@ function renderTestQuiz(){
             inp.value=opt.text;
             label.appendChild(inp);
 
+            const lblLetter = document.createElement("span");
+            lblLetter.className = "option-label-letter";
+            lblLetter.innerText = opt.label;
+            label.appendChild(lblLetter);
+
             const span=document.createElement("span");
+            span.className = "option-text";
             span.innerText=opt.text;
             label.appendChild(span);
 
             optDiv.appendChild(label);
         });
 
-        div.appendChild(optDiv);
+        inner.appendChild(optDiv);
+        div.appendChild(inner);
         fragment.appendChild(div);
     });
 
