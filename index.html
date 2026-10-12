@@ -10,32 +10,20 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   #gateRoot {
-    position: fixed;
-    inset: 0;
-    z-index: 9999999999;
-    background: #0a0a12;
-    overflow: hidden;
+    position: fixed; inset: 0; z-index: 9999999999;
+    background: #0a0a12; overflow: hidden;
     transition: opacity .8s ease, transform .8s ease;
     font-family: 'Inter', sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
-  #gateRoot.gate-hidden {
-    opacity: 0;
-    transform: scale(1.05);
-    pointer-events: none;
-  }
+  #gateRoot.gate-hidden { opacity: 0; transform: scale(1.05); pointer-events: none; }
   #gateRoot::before {
-    content: '';
-    position: absolute;
-    inset: -20%;
+    content: ''; position: absolute; inset: -20%;
     background:
       radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.35), transparent 45%),
       radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.28), transparent 45%),
       radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.15), transparent 65%);
-    animation: bgMove 14s ease-in-out infinite alternate;
-    z-index: 0;
+    animation: bgMove 14s ease-in-out infinite alternate; z-index: 0;
   }
   @keyframes bgMove {
     0%   { transform: translate(0, 0) scale(1); }
@@ -43,29 +31,22 @@
     100% { transform: translate(-3%, 4%) scale(1.05); }
   }
   #gateRoot::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+    content: ''; position: absolute; inset: 0;
     background-image:
       linear-gradient(rgba(168, 85, 247, 0.07) 1px, transparent 1px),
       linear-gradient(90deg, rgba(236, 72, 153, 0.07) 1px, transparent 1px);
     background-size: 45px 45px;
     mask-image: radial-gradient(circle at center, black 20%, transparent 75%);
     -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 75%);
-    animation: gridPan 20s linear infinite;
-    z-index: 1;
+    animation: gridPan 20s linear infinite; z-index: 1;
   }
   @keyframes gridPan {
     0%   { background-position: 0 0; }
     100% { background-position: 45px 45px; }
   }
   .med-cross {
-    position: absolute;
-    color: rgba(236, 72, 153, 0.22);
-    font-size: 2rem;
-    animation: floatCross 10s ease-in-out infinite;
-    z-index: 1;
-    pointer-events: none;
+    position: absolute; color: rgba(236, 72, 153, 0.22); font-size: 2rem;
+    animation: floatCross 10s ease-in-out infinite; z-index: 1; pointer-events: none;
     text-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
   }
   .med-cross:nth-child(1) { top: 8%;  left: 10%; animation-delay: 0s;  font-size: 2.6rem; }
@@ -79,68 +60,37 @@
     50%      { transform: translateY(-35px) rotate(180deg) scale(1.15); opacity: 0.5; }
   }
   .app-stage {
-    position: relative;
-    z-index: 5;
-    width: 100%;
-    max-width: 460px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
+    position: relative; z-index: 5; width: 100%; max-width: 460px;
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
   }
   .screen {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 100%; display: flex; flex-direction: column; align-items: center;
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
   .screen.hidden { display: none; }
-  .screen.fade-out {
-    opacity: 0;
-    transform: scale(0.95);
-    pointer-events: none;
-  }
-  .loader-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: fadeIn 0.8s ease both;
-  }
+  .screen.fade-out { opacity: 0; transform: scale(0.95); pointer-events: none; }
+  .loader-wrap { display: flex; flex-direction: column; align-items: center; animation: fadeIn 0.8s ease both; }
   @keyframes fadeIn {
     0%   { opacity: 0; transform: scale(0.9); filter: blur(10px); }
     100% { opacity: 1; transform: scale(1); filter: blur(0); }
   }
   .center-core {
-    position: relative;
-    width: 180px;
-    height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2.2rem;
+    position: relative; width: 180px; height: 180px;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 2.2rem;
   }
   .ring-outer {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    border-top-color: #a855f7;
-    border-right-color: #ec4899;
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid transparent; border-top-color: #a855f7; border-right-color: #ec4899;
     animation: spin 1.6s linear infinite;
     filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.8));
   }
   .ring-inner {
-    position: absolute;
-    inset: 22px;
-    border-radius: 50%;
+    position: absolute; inset: 22px; border-radius: 50%;
     border: 2px dashed rgba(236, 72, 153, 0.7);
     animation: spin 3.5s linear infinite reverse;
   }
   .ring-pulse {
-    position: absolute;
-    inset: -10px;
-    border-radius: 50%;
+    position: absolute; inset: -10px; border-radius: 50%;
     border: 1px solid rgba(249, 115, 22, 0.35);
     animation: pulseRing 2.2s ease-out infinite;
   }
@@ -151,22 +101,15 @@
     100% { transform: scale(1.5); opacity: 0; }
   }
   .heart-core {
-    width: 92px;
-    height: 92px;
-    border-radius: 50%;
+    width: 92px; height: 92px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #a855f7, #4c1d95 70%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 2.4rem;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 2.4rem;
     box-shadow:
       0 0 30px rgba(168, 85, 247, 0.7),
       0 0 60px rgba(236, 72, 153, 0.4),
       inset 0 2px 8px rgba(255, 255, 255, 0.25);
-    animation: heartBeat 1.4s ease-in-out infinite;
-    position: relative;
-    z-index: 2;
+    animation: heartBeat 1.4s ease-in-out infinite; position: relative; z-index: 2;
   }
   .heart-core i { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6)); }
   @keyframes heartBeat {
@@ -176,59 +119,34 @@
     45%      { transform: scale(1.08); }
     60%      { transform: scale(1); }
   }
-  .admin-name {
-    text-align: center;
-    margin-bottom: 1.8rem;
-    animation: fadeUp 1s 0.3s both;
-  }
+  .admin-name { text-align: center; margin-bottom: 1.8rem; animation: fadeUp 1s 0.3s both; }
   .admin-name .greet {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #c084fc;
-    margin-bottom: 0.5rem;
-    opacity: 0.85;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: #c084fc; margin-bottom: 0.5rem; opacity: 0.85;
   }
   .admin-name h1 {
-    font-size: 2rem;
-    font-weight: 900;
-    letter-spacing: -0.03em;
+    font-size: 2rem; font-weight: 900; letter-spacing: -0.03em;
     background: linear-gradient(90deg, #a855f7, #ec4899, #f97316, #a855f7);
     background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     animation: nameShine 3s linear infinite;
   }
   @keyframes nameShine { to { background-position: 200% center; } }
   .admin-name .sub {
-    font-size: 0.8rem;
-    color: #c4b5fd;
-    font-weight: 500;
-    margin-top: 0.45rem;
-    letter-spacing: 0.5px;
+    font-size: 0.8rem; color: #c4b5fd; font-weight: 500;
+    margin-top: 0.45rem; letter-spacing: 0.5px;
   }
   @keyframes fadeUp {
     0%   { opacity: 0; transform: translateY(20px); }
     100% { opacity: 1; transform: translateY(0); }
   }
-  .ecg-line {
-    width: 320px;
-    height: 60px;
-    margin-bottom: 1.2rem;
-    animation: fadeUp 1s 0.5s both;
-  }
+  .ecg-line { width: 320px; height: 60px; margin-bottom: 1.2rem; animation: fadeUp 1s 0.5s both; }
   .ecg-line svg { width: 100%; height: 100%; overflow: visible; }
   .ecg-path {
-    fill: none;
-    stroke: #ec4899;
-    stroke-width: 2.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    fill: none; stroke: #ec4899; stroke-width: 2.5;
+    stroke-linecap: round; stroke-linejoin: round;
     filter: drop-shadow(0 0 6px #ec4899) drop-shadow(0 0 12px rgba(236, 72, 153, 0.6));
-    stroke-dasharray: 600;
-    stroke-dashoffset: 600;
+    stroke-dasharray: 600; stroke-dashoffset: 600;
     animation: ecgDraw 2.5s linear infinite;
   }
   @keyframes ecgDraw {
@@ -247,22 +165,13 @@
     100% { transform: translateX(320px); opacity: 0; }
   }
   .loading-text {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #c4b5fd;
-    letter-spacing: 1px;
-    margin-bottom: 1.4rem;
-    animation: fadeUp 1s 0.6s both;
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; font-weight: 600; color: #c4b5fd;
+    letter-spacing: 1px; margin-bottom: 1.4rem; animation: fadeUp 1s 0.6s both;
   }
   .loading-text .dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #ec4899;
-    box-shadow: 0 0 8px #ec4899;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #ec4899; box-shadow: 0 0 8px #ec4899;
     animation: dotBounce 1.4s infinite;
   }
   .loading-text .dot:nth-child(2) { animation-delay: 0.2s; }
@@ -271,54 +180,33 @@
     0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
     30%           { transform: translateY(-6px); opacity: 1; }
   }
-  .progress-wrap {
-    width: 320px;
-    animation: fadeUp 1s 0.7s both;
-  }
+  .progress-wrap { width: 320px; animation: fadeUp 1s 0.7s both; }
   .progress-bar-bg {
-    height: 4px;
-    background: rgba(168, 85, 247, 0.2);
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
+    height: 4px; background: rgba(168, 85, 247, 0.2);
+    border-radius: 10px; overflow: hidden; position: relative;
   }
   .progress-fill {
-    height: 100%;
-    width: 0%;
+    height: 100%; width: 0%;
     background: linear-gradient(90deg, #a855f7, #ec4899, #f97316);
-    border-radius: 10px;
-    box-shadow: 0 0 12px rgba(236, 72, 153, 0.8);
-    transition: width 0.3s ease;
-    position: relative;
+    border-radius: 10px; box-shadow: 0 0 12px rgba(236, 72, 153, 0.8);
+    transition: width 0.3s ease; position: relative;
   }
   .progress-fill::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #fff;
+    content: ''; position: absolute; right: 0; top: 50%;
+    transform: translateY(-50%); width: 8px; height: 8px;
+    border-radius: 50%; background: #fff;
     box-shadow: 0 0 12px #f97316, 0 0 20px #ec4899;
   }
   .progress-percent {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 0.7rem;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #a78bfa;
-    letter-spacing: 1px;
+    display: flex; justify-content: space-between; margin-top: 0.7rem;
+    font-size: 0.72rem; font-weight: 700; color: #a78bfa; letter-spacing: 1px;
   }
   .login-wrap {
     width: 100%;
     background: rgba(20, 10, 40, 0.65);
     backdrop-filter: blur(22px) saturate(180%);
     -webkit-backdrop-filter: blur(22px) saturate(180%);
-    border-radius: 28px;
-    padding: 2.4rem 2rem 2rem;
+    border-radius: 28px; padding: 2.4rem 2rem 2rem;
     border: 1px solid rgba(168, 85, 247, 0.35);
     box-shadow:
       0 30px 60px -20px rgba(20, 0, 50, 0.9),
@@ -330,22 +218,12 @@
     0%   { opacity: 0; transform: translateY(40px) scale(0.94); filter: blur(10px); }
     100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
-  .login-logo {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1.3rem;
-  }
+  .login-logo { display: flex; justify-content: center; margin-bottom: 1.3rem; }
   .login-logo-circle {
-    width: 76px;
-    height: 76px;
-    border-radius: 50%;
+    width: 76px; height: 76px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, #a855f7, #4c1d95 70%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 2rem;
-    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 2rem; position: relative;
     box-shadow:
       0 0 26px rgba(168, 85, 247, 0.7),
       0 0 50px rgba(236, 72, 153, 0.35),
@@ -353,146 +231,75 @@
     animation: heartBeat 1.4s ease-in-out infinite;
   }
   .login-logo-circle::after {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    border: 2px solid rgba(236, 72, 153, 0.4);
-    border-top-color: #f97316;
+    content: ''; position: absolute; inset: -8px; border-radius: 50%;
+    border: 2px solid rgba(236, 72, 153, 0.4); border-top-color: #f97316;
     animation: spin 2.5s linear infinite;
   }
-  .login-title {
-    text-align: center;
-    margin-bottom: 1.8rem;
-  }
+  .login-title { text-align: center; margin-bottom: 1.8rem; }
   .login-title h2 {
-    font-size: 1.5rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
+    font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em;
     background: linear-gradient(90deg, #a855f7, #ec4899, #f97316, #a855f7);
     background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     animation: nameShine 3s linear infinite;
   }
   .login-title p {
-    font-size: 0.82rem;
-    color: #c4b5fd;
-    font-weight: 500;
-    margin-top: 0.4rem;
-    letter-spacing: 0.3px;
+    font-size: 0.82rem; color: #c4b5fd; font-weight: 500;
+    margin-top: 0.4rem; letter-spacing: 0.3px;
   }
   .login-admin-tag {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    background: rgba(88, 28, 135, 0.35);
-    border: 1px solid rgba(168, 85, 247, 0.35);
-    border-radius: 50px;
-    padding: 0.45rem 1rem 0.45rem 0.45rem;
-    margin: 0 auto 1.6rem;
-    width: fit-content;
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+    background: rgba(88, 28, 135, 0.35); border: 1px solid rgba(168, 85, 247, 0.35);
+    border-radius: 50px; padding: 0.45rem 1rem 0.45rem 0.45rem;
+    margin: 0 auto 1.6rem; width: fit-content;
   }
   .login-admin-tag .mini-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    width: 30px; height: 30px; border-radius: 50%;
     background: linear-gradient(145deg, #a855f7, #7e22ce);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 0.8rem;
-    box-shadow: 0 0 12px rgba(168, 85, 247, 0.7);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.8rem; box-shadow: 0 0 12px rgba(168, 85, 247, 0.7);
   }
-  .login-admin-tag .mini-text {
-    line-height: 1.15;
-    text-align: left;
-  }
+  .login-admin-tag .mini-text { line-height: 1.15; text-align: left; }
   .login-admin-tag .mini-text .lbl {
-    font-size: 0.55rem;
-    font-weight: 600;
-    color: #d8b4fe;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 0.55rem; font-weight: 600; color: #d8b4fe;
+    text-transform: uppercase; letter-spacing: 1px;
   }
-  .login-admin-tag .mini-text .nm {
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: #f3e8ff;
-  }
-  .form-group {
-    margin-bottom: 1.1rem;
-    animation: fadeUp 0.7s both;
-  }
+  .login-admin-tag .mini-text .nm { font-size: 0.78rem; font-weight: 800; color: #f3e8ff; }
+  .form-group { margin-bottom: 1.1rem; animation: fadeUp 0.7s both; }
   .form-group:nth-of-type(1) { animation-delay: 0.15s; }
   .form-group:nth-of-type(2) { animation-delay: 0.25s; }
   .form-group label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #c4b5fd;
-    margin-bottom: 0.45rem;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    display: block; font-size: 0.75rem; font-weight: 700; color: #c4b5fd;
+    margin-bottom: 0.45rem; letter-spacing: 0.5px; text-transform: uppercase;
   }
-  .input-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
+  .input-wrap { position: relative; display: flex; align-items: center; }
   .input-wrap i.field-icon {
-    position: absolute;
-    left: 1.05rem;
-    color: #a78bfa;
-    font-size: 0.95rem;
-    transition: color 0.25s;
-    pointer-events: none;
+    position: absolute; left: 1.05rem; color: #a78bfa;
+    font-size: 0.95rem; transition: color 0.25s; pointer-events: none;
   }
   .input-wrap input {
-    width: 100%;
-    padding: 0.9rem 1rem 0.9rem 2.8rem;
-    border-radius: 14px;
-    border: 1.6px solid rgba(168, 85, 247, 0.4);
+    width: 100%; padding: 0.9rem 1rem 0.9rem 2.8rem;
+    border-radius: 14px; border: 1.6px solid rgba(168, 85, 247, 0.4);
     background: rgba(20, 10, 40, 0.6);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #f3e8ff;
-    outline: none;
+    font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600;
+    color: #f3e8ff; outline: none;
     transition: all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
   }
-  .input-wrap input::placeholder {
-    color: #7c6ba8;
-    font-weight: 400;
-  }
+  .input-wrap input::placeholder { color: #7c6ba8; font-weight: 400; }
   .input-wrap input:focus {
-    border-color: #ec4899;
-    background: rgba(40, 15, 70, 0.75);
+    border-color: #ec4899; background: rgba(40, 15, 70, 0.75);
     box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2), 0 0 24px -6px rgba(236, 72, 153, 0.6);
     transform: translateY(-1px);
   }
-  .input-wrap:focus-within i.field-icon {
-    color: #ec4899;
-  }
+  .input-wrap:focus-within i.field-icon { color: #ec4899; }
   .btn-access {
-    width: 100%;
-    margin-top: 0.5rem;
-    padding: 1rem;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    color: #fff;
+    width: 100%; margin-top: 0.5rem; padding: 1rem;
+    border: none; border-radius: 14px;
+    font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 800;
+    letter-spacing: 0.5px; color: #fff;
     background: linear-gradient(135deg, #7e22ce, #a855f7 50%, #ec4899);
-    background-size: 200% 200%;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+    background-size: 200% 200%; cursor: pointer;
+    position: relative; overflow: hidden;
     box-shadow: 0 14px 28px -12px rgba(126, 34, 206, 0.9);
     transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
     animation: gradientShift 4s ease infinite;
@@ -510,15 +317,10 @@
   .btn-access i { margin-right: 0.5rem; transition: transform 0.3s; }
   .btn-access:hover i { transform: translateX(4px); }
   .btn-access::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 100%;
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
     background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-    transform: skewX(-25deg);
-    animation: shine 3.2s infinite;
+    transform: skewX(-25deg); animation: shine 3.2s infinite;
   }
   @keyframes shine {
     0%   { left: -100%; }
@@ -526,18 +328,12 @@
     100% { left: 130%; }
   }
   .error-msg {
-    display: none;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    padding: 0.7rem 1rem;
+    display: none; align-items: center; gap: 0.5rem;
+    margin-top: 1rem; padding: 0.7rem 1rem;
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(248, 113, 113, 0.5);
-    border-radius: 12px;
-    color: #fca5a5;
-    font-size: 0.82rem;
-    font-weight: 600;
-    animation: shake 0.5s ease;
+    border-radius: 12px; color: #fca5a5;
+    font-size: 0.82rem; font-weight: 600; animation: shake 0.5s ease;
   }
   .error-msg.show { display: flex; }
   @keyframes shake {
@@ -548,30 +344,20 @@
     80%      { transform: translateX(5px); }
   }
   .footer-note {
-    text-align: center;
-    margin-top: 1.3rem;
-    font-size: 0.75rem;
-    color: #a78bfa;
-    font-weight: 500;
+    text-align: center; margin-top: 1.3rem;
+    font-size: 0.75rem; color: #a78bfa; font-weight: 500;
   }
   .footer-note i {
-    color: #ec4899;
-    margin-right: 0.25rem;
+    color: #ec4899; margin-right: 0.25rem;
     animation: heartBeat 1.6s ease-in-out infinite;
   }
   .admin-badge {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem;
     background: rgba(40, 15, 70, 0.5);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(168, 85, 247, 0.35);
-    border-radius: 50px;
-    padding: 0.5rem 1rem 0.5rem 0.5rem;
+    border-radius: 50px; padding: 0.5rem 1rem 0.5rem 0.5rem;
     z-index: 10;
     box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.2);
     animation: badgeSlide 1s 1s both;
@@ -581,15 +367,10 @@
     100% { opacity: 1; transform: translateX(0); }
   }
   .badge-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     background: linear-gradient(145deg, #a855f7, #7e22ce);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.85rem;
     box-shadow: 0 0 12px rgba(168, 85, 247, 0.7);
     animation: badgePulse 2.5s ease-in-out infinite;
   }
@@ -599,41 +380,24 @@
   }
   .badge-text { line-height: 1.2; }
   .badge-text .label {
-    font-size: 0.58rem;
-    font-weight: 600;
-    color: #d8b4fe;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 0.58rem; font-weight: 600; color: #d8b4fe;
+    text-transform: uppercase; letter-spacing: 1px;
   }
   .badge-text .name {
-    font-size: 0.82rem;
-    font-weight: 800;
-    color: #f3e8ff;
-    letter-spacing: -0.01em;
+    font-size: 0.82rem; font-weight: 800; color: #f3e8ff; letter-spacing: -0.01em;
   }
   .btn-enter-system {
-    width: 100%;
-    margin-top: 1.6rem;
-    padding: 1.1rem;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    color: #fff;
+    width: 100%; margin-top: 1.6rem; padding: 1.1rem;
+    border: none; border-radius: 14px;
+    font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 800;
+    letter-spacing: 0.5px; color: #fff;
     background: linear-gradient(135deg, #f97316, #ec4899 50%, #a855f7);
-    background-size: 200% 200%;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+    background-size: 200% 200%; cursor: pointer;
+    position: relative; overflow: hidden;
     box-shadow: 0 14px 28px -12px rgba(236, 72, 153, 0.9);
     transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
     animation: gradientShift 4s ease infinite;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
   }
   .btn-enter-system:hover {
     transform: translateY(-3px) scale(1.02);
@@ -644,15 +408,10 @@
   .btn-enter-system i { transition: transform 0.3s; font-size: 1.1rem; }
   .btn-enter-system:hover i { transform: translateX(5px); }
   .btn-enter-system::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 100%;
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
     background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-    transform: skewX(-25deg);
-    animation: shine 3.2s infinite;
+    transform: skewX(-25deg); animation: shine 3.2s infinite;
   }
   @media (max-width: 480px) {
     .center-core { width: 140px; height: 140px; margin-bottom: 1.6rem; }
@@ -668,136 +427,79 @@
   #mainApp *{box-sizing:border-box;}
   #mainApp{
       font-family:'Inter','Segoe UI',Arial,sans-serif;
-      background:#0d0d14;
-      padding:20px 16px 60px;
-      color:#e8e8f0;
-      min-height:100vh;
-      position:relative;
+      background:#0d0d14; padding:20px 16px 60px;
+      color:#e8e8f0; min-height:100vh; position:relative;
   }
   #mainApp::before{
-      content:"";
-      position:fixed;
-      inset:0;
+      content:""; position:fixed; inset:0;
       background:
           radial-gradient(ellipse 80% 50% at 50% -20%, rgba(120,80,220,.15), transparent),
           radial-gradient(ellipse 60% 40% at 80% 100%, rgba(220,80,140,.1), transparent);
-      pointer-events:none;
-      z-index:0;
+      pointer-events:none; z-index:0;
   }
   #mainApp .container{
-      max-width:860px;
-      margin:0 auto;
-      position:relative;
-      z-index:1;
+      max-width:860px; margin:0 auto; position:relative; z-index:1;
   }
-
   #mainApp .header{
       background:linear-gradient(135deg,#1a1a2e 0%,#16162a 100%);
-      padding:28px 24px;
-      border-radius:16px;
-      text-align:left;
-      margin-bottom:16px;
-      border:1px solid rgba(255,255,255,.06);
-      position:relative;
-      overflow:hidden;
+      padding:28px 24px; border-radius:16px; text-align:left;
+      margin-bottom:16px; border:1px solid rgba(255,255,255,.06);
+      position:relative; overflow:hidden;
   }
   #mainApp .header::before{
-      content:"";
-      position:absolute;
-      top:0;left:0;
-      width:4px;height:100%;
+      content:""; position:absolute; top:0; left:0;
+      width:4px; height:100%;
       background:linear-gradient(180deg,#a855f7,#ec4899);
   }
   #mainApp .header h1{
-      font-size:22px;
-      font-weight:800;
-      color:#fff;
-      margin-bottom:6px;
-      letter-spacing:-.3px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
+      font-size:22px; font-weight:800; color:#fff;
+      margin-bottom:6px; letter-spacing:-.3px;
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
   }
   #mainApp .creator{
-      color:#8888a8;
-      font-size:12px;
-      font-weight:500;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
+      color:#8888a8; font-size:12px; font-weight:500;
+      display:flex; align-items:center; gap:8px; flex-wrap:wrap;
   }
   #mainApp .creator .dot{
-      width:4px;height:4px;
-      border-radius:50%;
-      background:#ec4899;
-      animation:pulseDot 2s infinite;
+      width:4px; height:4px; border-radius:50%;
+      background:#ec4899; animation:pulseDot 2s infinite;
   }
-  @keyframes pulseDot{
-      0%,100%{opacity:.4;}
-      50%{opacity:1;}
-  }
+  @keyframes pulseDot { 0%,100%{opacity:.4;} 50%{opacity:1;} }
 
   #mainApp .tab-bar{
-      display:flex;
-      gap:6px;
-      margin-bottom:18px;
-      overflow-x:auto;
-      padding-bottom:4px;
-      scrollbar-width:none;
+      display:flex; gap:6px; margin-bottom:18px;
+      overflow-x:auto; padding-bottom:4px; scrollbar-width:none;
   }
   #mainApp .tab-bar::-webkit-scrollbar{display:none;}
   #mainApp .tab-btn{
       border:1px solid rgba(255,255,255,.08);
       background:rgba(255,255,255,.03);
-      color:#9898b0;
-      padding:9px 16px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:13px;
-      font-weight:600;
-      font-family:inherit;
-      transition:all .2s;
-      display:flex;
-      align-items:center;
-      gap:7px;
-      white-space:nowrap;
-      flex-shrink:0;
+      color:#9898b0; padding:9px 16px; border-radius:999px;
+      cursor:pointer; font-size:13px; font-weight:600;
+      font-family:inherit; transition:all .2s;
+      display:flex; align-items:center; gap:7px;
+      white-space:nowrap; flex-shrink:0;
   }
   #mainApp .tab-btn .tab-label{font-size:12px;}
   #mainApp .tab-btn:hover{
       background:rgba(168,85,247,.12);
-      color:#d8b4fe;
-      border-color:rgba(168,85,247,.3);
+      color:#d8b4fe; border-color:rgba(168,85,247,.3);
   }
   #mainApp .tab-btn.activeTab{
       background:linear-gradient(135deg,#a855f7,#ec4899);
-      color:#fff;
-      border-color:transparent;
+      color:#fff; border-color:transparent;
       box-shadow:0 4px 16px rgba(168,85,247,.35);
   }
 
   #mainApp .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-bottom:16px;
-      padding:14px 16px;
-      background:rgba(255,255,255,.02);
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:14px;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:12px; margin-bottom:16px;
+      padding:14px 16px; background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.06); border-radius:14px;
   }
   #mainApp .stats{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      font-size:13px;
-      font-weight:600;
-      color:#b8b8d0;
-      flex-wrap:wrap;
+      display:flex; align-items:center; gap:14px;
+      font-size:13px; font-weight:600; color:#b8b8d0; flex-wrap:wrap;
   }
   #mainApp .stats .stat-item{display:flex;align-items:center;gap:6px;white-space:nowrap;}
   #mainApp .stats .stat-correct{color:#f472b6;}
@@ -805,250 +507,137 @@
   #mainApp .btn{
       border:1px solid rgba(255,255,255,.1);
       background:rgba(255,255,255,.04);
-      color:#d8d8e8;
-      padding:8px 14px;
-      border-radius:10px;
-      cursor:pointer;
-      font-size:12px;
-      font-weight:600;
-      transition:all .18s;
-      font-family:inherit;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
+      color:#d8d8e8; padding:8px 14px; border-radius:10px;
+      cursor:pointer; font-size:12px; font-weight:600;
+      transition:all .18s; font-family:inherit;
+      display:inline-flex; align-items:center; gap:6px;
       white-space:nowrap;
   }
   #mainApp .btn:hover{
       background:rgba(168,85,247,.15);
-      border-color:rgba(168,85,247,.4);
-      color:#fff;
+      border-color:rgba(168,85,247,.4); color:#fff;
   }
-  #mainApp .btn.gray{
-      background:transparent;
-      color:#8888a8;
-  }
-  #mainApp .btn.gray:hover{
-      background:rgba(255,255,255,.06);
-      color:#d8d8e8;
-  }
+  #mainApp .btn.gray{background:transparent; color:#8888a8;}
+  #mainApp .btn.gray:hover{background:rgba(255,255,255,.06); color:#d8d8e8;}
   #mainApp .btn.green{
       background:linear-gradient(135deg,#a855f7,#ec4899);
-      border-color:transparent;
-      color:#fff;
+      border-color:transparent; color:#fff;
       box-shadow:0 4px 14px rgba(168,85,247,.3);
   }
   #mainApp .btn.green:hover{
       box-shadow:0 6px 20px rgba(168,85,247,.5);
       transform:translateY(-1px);
   }
-
   #mainApp #gotoQuestion{
-      padding:8px 12px;
-      border-radius:10px;
+      padding:8px 12px; border-radius:10px;
       border:1px solid rgba(255,255,255,.1);
-      width:110px;
-      font-weight:600;
-      outline:none;
-      font-family:inherit;
-      background:rgba(255,255,255,.03);
-      color:#e8e8f0;
-      font-size:12px;
+      width:110px; font-weight:600; outline:none;
+      font-family:inherit; background:rgba(255,255,255,.03);
+      color:#e8e8f0; font-size:12px;
   }
   #mainApp #gotoQuestion::placeholder{color:#5a5a70;}
   #mainApp #gotoQuestion:focus{border-color:rgba(168,85,247,.5);}
 
-  /* ============ QUESTION CARD (NEW DESIGN) ============ */
+  /* ===== QUESTION CARD ===== */
   #mainApp .question {
     background: linear-gradient(160deg, #16161f 0%, #131320 100%);
-    padding: 0;
-    border-radius: 16px;
-    margin-bottom: 14px;
+    border-radius: 16px; margin-bottom: 14px;
     border: 1px solid rgba(255, 255, 255, 0.06);
-    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
-    position: relative;
-    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative; overflow: hidden;
   }
   #mainApp .question::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: linear-gradient(180deg, #a855f7, #ec4899);
-    opacity: 0.9;
-    transition: all 0.3s;
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: linear-gradient(180deg, #a855f7, #ec4899);
+    opacity: 0.9; transition: background 0.3s;
   }
-  #mainApp .question.tf::before {
-    background: linear-gradient(180deg, #a855f7, #7e22ce);
-  }
-  #mainApp .question.mc::before {
-    background: linear-gradient(180deg, #f97316, #ec4899);
-  }
+  #mainApp .question.tf::before { background: linear-gradient(180deg, #a855f7, #7e22ce); }
+  #mainApp .question.mc::before { background: linear-gradient(180deg, #f97316, #ec4899); }
   #mainApp .question:hover {
     border-color: rgba(168, 85, 247, 0.35);
     transform: translateY(-2px);
-    box-shadow: 0 14px 40px -12px rgba(168, 85, 247, 0.35);
   }
-  #mainApp .question.answered {
-    opacity: 0.96;
-  }
-  #mainApp .question.answered::before {
-    background: linear-gradient(180deg, #10b981, #059669);
-  }
-  #mainApp .question.wrong-question::before {
-    background: linear-gradient(180deg, #ef4444, #b91c1c);
-  }
+  #mainApp .question.answered { opacity: 0.96; }
+  #mainApp .question.answered::before { background: linear-gradient(180deg, #10b981, #059669); }
+  #mainApp .question.wrong-question::before { background: linear-gradient(180deg, #ef4444, #b91c1c); }
 
-  #mainApp .question-inner {
-    padding: 18px 20px 16px;
-  }
-
-  #mainApp .question-head {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-
+  #mainApp .question-inner { padding: 18px 20px 16px; }
+  #mainApp .question-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
   #mainApp .question-number {
-    flex-shrink: 0;
-    min-width: 34px;
-    height: 34px;
-    padding: 0 8px;
+    flex-shrink: 0; min-width: 34px; height: 34px; padding: 0 8px;
     border-radius: 10px;
     background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.15));
     border: 1px solid rgba(168, 85, 247, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 900;
-    color: #d8b4fe;
-    letter-spacing: -0.5px;
-    transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900; color: #d8b4fe;
+    letter-spacing: -0.5px; transition: all 0.3s;
   }
   #mainApp .question.answered .question-number {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #6ee7b7;
+    border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;
   }
   #mainApp .question.wrong-question .question-number {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(185, 28, 28, 0.15));
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;
   }
-
-  #mainApp .question-content {
-    flex: 1;
-    min-width: 0;
-  }
-
+  #mainApp .question-content { flex: 1; min-width: 0; }
   #mainApp .question-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px; flex-wrap: wrap;
   }
-
   #mainApp .type-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 9px;
-    border-radius: 999px;
-    font-size: 9px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border: 1px solid transparent;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 999px;
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.5px; border: 1px solid transparent;
   }
   #mainApp .type-pill.tf {
-    background: rgba(168, 85, 247, 0.12);
-    color: #d8b4fe;
+    background: rgba(168, 85, 247, 0.12); color: #d8b4fe;
     border-color: rgba(168, 85, 247, 0.3);
   }
   #mainApp .type-pill.mc {
-    background: rgba(249, 115, 22, 0.12);
-    color: #fdba74;
+    background: rgba(249, 115, 22, 0.12); color: #fdba74;
     border-color: rgba(249, 115, 22, 0.3);
   }
-
   #mainApp .status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 9px;
-    border-radius: 999px;
-    font-size: 9px;
-    font-weight: 800;
-    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 999px;
+    font-size: 9px; font-weight: 800; text-transform: uppercase;
     letter-spacing: 0.5px;
   }
-  #mainApp .status-pill.correct {
-    background: rgba(16, 185, 129, 0.15);
-    color: #6ee7b7;
-  }
-  #mainApp .status-pill.wrong {
-    background: rgba(239, 68, 68, 0.15);
-    color: #fca5a5;
-  }
-
+  #mainApp .status-pill.correct { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
+  #mainApp .status-pill.wrong { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
   #mainApp .question-text {
-    font-size: 14.5px;
-    font-weight: 600;
-    color: #f0f0f8;
-    line-height: 1.6;
-    word-break: break-word;
+    font-size: 14.5px; font-weight: 600; color: #f0f0f8;
+    line-height: 1.6; word-break: break-word;
   }
-
   #mainApp .bookmark-btn {
-    flex-shrink: 0;
-    width: 32px;
-    height: 32px;
-    border-radius: 9px;
+    flex-shrink: 0; width: 32px; height: 32px; border-radius: 9px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.03);
-    color: #5a5a70;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    transition: all 0.2s;
+    color: #5a5a70; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: all 0.2s;
   }
   #mainApp .bookmark-btn:hover {
     background: rgba(250, 204, 21, 0.12);
-    border-color: rgba(250, 204, 21, 0.4);
-    color: #facc15;
+    border-color: rgba(250, 204, 21, 0.4); color: #facc15;
   }
   #mainApp .bookmark-btn.active {
     background: linear-gradient(135deg, rgba(250, 204, 21, 0.25), rgba(234, 179, 8, 0.2));
-    border-color: rgba(250, 204, 21, 0.5);
-    color: #facc15;
+    border-color: rgba(250, 204, 21, 0.5); color: #facc15;
     box-shadow: 0 0 14px rgba(250, 204, 21, 0.35);
   }
 
   #mainApp .options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 12px;
+    display: flex; flex-direction: column; gap: 8px; margin-top: 12px;
   }
   #mainApp .option {
     border: 1.5px solid rgba(255, 255, 255, 0.07);
-    border-radius: 11px;
-    padding: 11px 14px;
-    cursor: pointer;
-    transition: all 0.18s;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.02);
-    color: #c8c8d8;
-    font-size: 13.5px;
-    font-weight: 500;
+    border-radius: 11px; padding: 11px 14px; cursor: pointer;
+    transition: all 0.18s; display: flex; align-items: center;
+    gap: 12px; background: rgba(255, 255, 255, 0.02);
+    color: #c8c8d8; font-size: 13.5px; font-weight: 500;
     position: relative;
   }
   #mainApp .option:hover {
@@ -1057,149 +646,104 @@
     transform: translateX(2px);
   }
   #mainApp .option input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
+    appearance: none; -webkit-appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
     border: 2px solid rgba(168, 85, 247, 0.5);
-    background: rgba(10, 5, 25, 0.5);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all 0.2s;
+    background: rgba(10, 5, 25, 0.5); cursor: pointer;
+    flex-shrink: 0; transition: all 0.2s;
   }
   #mainApp .option input[type="radio"]:checked {
     border-color: #ec4899;
     background: radial-gradient(circle, #ec4899 0%, #ec4899 45%, transparent 50%);
     box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
   }
-
   #mainApp .option-label-letter {
-    flex-shrink: 0;
-    min-width: 26px;
-    height: 26px;
-    padding: 0 7px;
-    border-radius: 8px;
-    background: rgba(168, 85, 247, 0.15);
+    flex-shrink: 0; min-width: 26px; height: 26px; padding: 0 7px;
+    border-radius: 8px; background: rgba(168, 85, 247, 0.15);
     border: 1px solid rgba(168, 85, 247, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 800;
-    color: #d8b4fe;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #d8b4fe;
     transition: all 0.2s;
   }
   #mainApp .option-text {
-    flex: 1;
-    line-height: 1.5;
-    word-break: break-word;
+    flex: 1; line-height: 1.5; word-break: break-word;
   }
 
-  #mainApp .option.correct-target {
-    border-color: rgba(236, 72, 153, 0.4);
-  }
+  /* Chỉ hiện khi user đã trả lời */
   #mainApp .option.correct {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(5, 150, 105, 0.08));
-    border-color: rgba(16, 185, 129, 0.5);
-    color: #a7f3d0;
+    border-color: rgba(16, 185, 129, 0.5); color: #a7f3d0;
   }
   #mainApp .option.correct .option-label-letter {
     background: linear-gradient(135deg, #10b981, #059669);
-    border-color: transparent;
-    color: #fff;
+    border-color: transparent; color: #fff;
   }
   #mainApp .option.wrong {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(185, 28, 28, 0.08));
-    border-color: rgba(239, 68, 68, 0.5);
-    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.5); color: #fca5a5;
   }
   #mainApp .option.wrong .option-label-letter {
     background: linear-gradient(135deg, #ef4444, #b91c1c);
-    border-color: transparent;
-    color: #fff;
+    border-color: transparent; color: #fff;
+  }
+  /* Chỉ hiện khi user bấm "Hiện toàn bộ đáp án" */
+  #mainApp .option.revealed-correct {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(236, 72, 153, 0.08));
+    border-color: rgba(168, 85, 247, 0.5);
+  }
+  #mainApp .option.revealed-correct .option-label-letter {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    border-color: transparent; color: #fff;
   }
 
   #mainApp .reveal-badge {
-    flex-shrink: 0;
-    padding: 3px 9px;
-    border-radius: 999px;
+    flex-shrink: 0; padding: 3px 9px; border-radius: 999px;
     background: linear-gradient(135deg, #a855f7, #ec4899);
-    color: #fff;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
+    color: #fff; font-size: 9px; font-weight: 800;
+    letter-spacing: 0.4px; text-transform: uppercase;
     box-shadow: 0 0 12px rgba(236, 72, 153, 0.5);
     margin-left: auto;
   }
 
   #mainApp .question-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 14px;
-    padding-top: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-top: 14px; padding-top: 12px;
     border-top: 1px dashed rgba(255, 255, 255, 0.06);
     flex-wrap: wrap;
   }
-
   #mainApp .edit-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 10.5px;
-    font-weight: 700;
-    color: #fbbf24;
-    padding: 4px 10px;
-    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; color: #fbbf24;
+    padding: 4px 10px; border-radius: 999px;
     background: rgba(245, 158, 11, 0.08);
     border: 1px solid rgba(245, 158, 11, 0.2);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
+    text-transform: uppercase; letter-spacing: 0.4px;
   }
   #mainApp .edit-status::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #fbbf24;
-    box-shadow: 0 0 8px #fbbf24;
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: #fbbf24; box-shadow: 0 0 8px #fbbf24;
     animation: pulseDot 1.8s infinite;
   }
   #mainApp .edit-status.original {
-    color: #8888a8;
-    background: rgba(255, 255, 255, 0.03);
+    color: #8888a8; background: rgba(255, 255, 255, 0.03);
     border-color: rgba(255, 255, 255, 0.08);
   }
   #mainApp .edit-status.original::before {
-    background: #5a5a70;
-    box-shadow: none;
-    animation: none;
+    background: #5a5a70; box-shadow: none; animation: none;
   }
-
-  #mainApp .action-buttons {
-    display: flex;
-    gap: 8px;
-    margin-left: auto;
-  }
-
+  #mainApp .action-buttons { display: flex; gap: 8px; margin-left: auto; }
   #mainApp .btn.edit-answer {
     background: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.3); color: #fbbf24;
   }
   #mainApp .btn.edit-answer:hover {
     background: rgba(245, 158, 11, 0.2);
     border-color: rgba(245, 158, 11, 0.5);
     box-shadow: 0 6px 18px -6px rgba(245, 158, 11, 0.5);
   }
-
   #mainApp .btn.submit {
     background: linear-gradient(135deg, #a855f7, #ec4899);
-    border-color: transparent;
-    color: #fff;
+    border-color: transparent; color: #fff;
     box-shadow: 0 6px 18px -6px rgba(168, 85, 247, 0.6);
   }
   #mainApp .btn.submit:hover:not(:disabled) {
@@ -1207,86 +751,54 @@
     transform: translateY(-1px);
   }
   #mainApp .btn.submit:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    opacity: 0.5; cursor: not-allowed;
+    transform: none; box-shadow: none;
   }
 
   #mainApp .footer{
-      text-align:center;
-      color:#666680;
-      margin-top:40px;
-      font-size:12px;
-      padding:20px;
+      text-align:center; color:#666680; margin-top:40px;
+      font-size:12px; padding:20px;
       border-top:1px solid rgba(255,255,255,.05);
   }
   #mainApp .footer i{color:#ec4899;}
 
   #mainApp #noteBox{
-      background:#14141f;
-      padding:24px;
-      border-radius:14px;
-      margin-bottom:16px;
-      border:1px solid rgba(255,255,255,.06);
+      background:#14141f; padding:24px; border-radius:14px;
+      margin-bottom:16px; border:1px solid rgba(255,255,255,.06);
   }
   #mainApp #noteBox h2{color:#f0f0f8!important;font-size:18px;}
   #mainApp #noteArea{
-      width:100%;
-      height:340px;
+      width:100%; height:340px;
       border:1px solid rgba(255,255,255,.08);
-      outline:none;
-      resize:none;
-      padding:16px;
-      font-size:14px;
-      border-radius:10px;
-      background:rgba(255,255,255,.02);
-      color:#e8e8f0;
-      line-height:1.7;
-      font-family:inherit;
-      transition:border-color .2s;
+      outline:none; resize:none; padding:16px;
+      font-size:14px; border-radius:10px;
+      background:rgba(255,255,255,.02); color:#e8e8f0;
+      line-height:1.7; font-family:inherit; transition:border-color .2s;
   }
   #mainApp #noteArea::placeholder{color:#5a5a70;}
   #mainApp #noteArea:focus{border-color:rgba(168,85,247,.5);}
 
   #mainApp #examTop{
-      background:#14141f;
-      padding:18px 20px;
-      border-radius:14px;
-      margin-bottom:16px;
-      border:1px solid rgba(255,255,255,.06);
+      background:#14141f; padding:18px 20px; border-radius:14px;
+      margin-bottom:16px; border:1px solid rgba(255,255,255,.06);
   }
   #mainApp #examTop h3{color:#f0f0f8!important;font-size:16px;}
   #mainApp #examTimer{
-      font-size:28px;
-      font-weight:800;
-      color:#fbbf24;
-      letter-spacing:1px;
-      font-variant-numeric:tabular-nums;
+      font-size:28px; font-weight:800; color:#fbbf24;
+      letter-spacing:1px; font-variant-numeric:tabular-nums;
   }
   #mainApp #examProgressBar{
-      height:8px;
-      background:linear-gradient(90deg,#a855f7,#ec4899);
-      border-radius:999px;
-      transition:.3s;
-      width:0%;
+      height:8px; background:linear-gradient(90deg,#a855f7,#ec4899);
+      border-radius:999px; transition:.3s; width:0%;
   }
   #mainApp #examProgressText{color:#8888a8!important;}
 
   #mainApp #navHandle{
-      position: fixed;
-      right: 20px;
-      bottom: 90px;
-      width: 52px;
-      height: 52px;
+      position: fixed; right: 20px; bottom: 90px;
+      width: 52px; height: 52px;
       background: linear-gradient(135deg, #a855f7, #ec4899);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 1000;
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; cursor: pointer; z-index: 1000;
       box-shadow: 0 8px 24px rgba(168, 85, 247, 0.5), 0 0 0 4px rgba(168, 85, 247, 0.15);
       transition: all 0.25s ease;
   }
@@ -1294,22 +806,14 @@
       transform: scale(1.1) translateY(-3px);
       box-shadow: 0 12px 30px rgba(168, 85, 247, 0.7), 0 0 0 6px rgba(236, 72, 153, 0.2);
   }
-  #mainApp #navHandle:active{
-      transform: scale(0.95);
-  }
+  #mainApp #navHandle:active{ transform: scale(0.95); }
 
   #mainApp #navPanel{
-      position: fixed;
-      right: 20px;
-      bottom: 152px;
-      width: 240px;
-      height: 320px;
-      background: #1a1a28;
-      border-radius: 16px;
+      position: fixed; right: 20px; bottom: 152px;
+      width: 240px; height: 320px;
+      background: #1a1a28; border-radius: 16px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(168, 85, 247, 0.3);
-      display: none;
-      z-index: 1001;
-      overflow: hidden;
+      display: none; z-index: 1001; overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.1);
       animation: chatPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       transform-origin: bottom right;
@@ -1321,272 +825,173 @@
   #mainApp #navHeader{
       height: 42px;
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2));
-      color: #e8e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 12px;
-      font-weight: 700;
-      font-size: 12px;
+      color: #e8e8f0; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 12px;
+      font-weight: 700; font-size: 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       letter-spacing: 0.3px;
   }
   #mainApp #navHeader button{
-      border: none;
-      background: rgba(255, 255, 255, 0.08);
-      color: #d8d8e8;
-      font-size: 13px;
-      cursor: pointer;
-      width: 24px;
-      height: 24px;
-      border-radius: 7px;
-      transition: 0.15s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: none; background: rgba(255, 255, 255, 0.08);
+      color: #d8d8e8; font-size: 13px; cursor: pointer;
+      width: 24px; height: 24px; border-radius: 7px;
+      transition: 0.15s; display: flex;
+      align-items: center; justify-content: center;
   }
   #mainApp #navHeader button:hover{
-      background: rgba(236, 72, 153, 0.4);
-      color: #fff;
+      background: rgba(236, 72, 153, 0.4); color: #fff;
   }
   #mainApp #navGrid{
-      padding: 8px;
-      display: grid;
+      padding: 8px; display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      overflow-y: auto;
-      height: 278px;
+      gap: 4px; overflow-y: auto; height: 278px;
       scrollbar-width: thin;
       scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
   }
   #mainApp #navGrid::-webkit-scrollbar{ width: 5px; }
   #mainApp #navGrid::-webkit-scrollbar-track{ background: transparent; }
   #mainApp #navGrid::-webkit-scrollbar-thumb{
-      background: rgba(168, 85, 247, 0.4);
-      border-radius: 3px;
+      background: rgba(168, 85, 247, 0.4); border-radius: 3px;
   }
   #mainApp .navBtn{
       height: 30px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 7px;
       background: rgba(255, 255, 255, 0.03);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-size: 10.5px;
+      font-weight: 600; cursor: pointer;
+      transition: all 0.15s; font-size: 10.5px;
       color: #9898b0;
   }
   #mainApp .navBtn.todo{ background: rgba(255, 255, 255, 0.03); color: #9898b0; }
   #mainApp .navBtn.correct{
       background: linear-gradient(135deg, #a855f7, #ec4899);
-      color: #fff;
-      border-color: transparent;
+      color: #fff; border-color: transparent;
   }
   #mainApp .navBtn.wrong{
       background: rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      border-color: rgba(239, 68, 68, 0.5);
+      color: #fca5a5; border-color: rgba(239, 68, 68, 0.5);
   }
   #mainApp .navBtn.bookmark{
       background: linear-gradient(135deg, #facc15, #eab308) !important;
-      color: #111;
-      border-color: transparent;
+      color: #111; border-color: transparent;
   }
   #mainApp .navBtn:hover{
       border-color: rgba(168, 85, 247, 0.5);
-      color: #fff;
-      transform: translateY(-1px);
+      color: #fff; transform: translateY(-1px);
   }
 
   #mainApp .popup{
-      position:fixed;
-      inset:0;
-      background:rgba(8,8,14,.8);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:99999;
-      backdrop-filter:blur(6px);
-      -webkit-backdrop-filter:blur(6px);
-      padding:16px;
+      position:fixed; inset:0;
+      background:rgba(8,8,14,.8); display:none;
+      align-items:center; justify-content:center;
+      z-index:99999; backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px); padding:16px;
   }
   #mainApp .popup-box{
-      width:340px;
-      max-width:100%;
+      width:340px; max-width:100%;
       background:linear-gradient(160deg,#1c1c2e 0%,#16162a 100%);
-      border-radius:20px;
-      padding:0;
-      text-align:center;
+      border-radius:20px; padding:0; text-align:center;
       box-shadow:0 30px 70px rgba(0,0,0,.7), 0 0 0 1px rgba(168,85,247,.15);
-      overflow:hidden;
-      position:relative;
+      overflow:hidden; position:relative;
   }
   #mainApp .popup-box::before{
-      content:'';
-      position:absolute;
-      top:0;left:0;right:0;
-      height:3px;
-      background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);
+      content:''; position:absolute; top:0; left:0; right:0;
+      height:3px; background:linear-gradient(90deg,#a855f7,#ec4899,#f97316);
   }
   #mainApp .popup-icon-wrap{
-      width:64px;
-      height:64px;
-      border-radius:50%;
+      width:64px; height:64px; border-radius:50%;
       background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(236,72,153,.2));
       border:1px solid rgba(168,85,247,.35);
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display:flex; align-items:center; justify-content:center;
       margin:26px auto 14px;
   }
   #mainApp .popup-icon{
-      line-height:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:28px;
-      color:#d8b4fe;
+      line-height:1; display:flex; align-items:center;
+      justify-content:center; font-size:28px; color:#d8b4fe;
   }
   #mainApp .popup-box h2{
-      font-size:17px;
-      margin-bottom:8px;
-      color:#f0f0f8;
-      font-weight:700;
-      padding:0 24px;
+      font-size:17px; margin-bottom:8px; color:#f0f0f8;
+      font-weight:700; padding:0 24px;
   }
   #mainApp .popup-box p{
-      font-size:13px;
-      line-height:1.65;
-      color:#9898b0;
-      margin-bottom:22px;
-      white-space:pre-line;
-      padding:0 24px;
+      font-size:13px; line-height:1.65; color:#9898b0;
+      margin-bottom:22px; white-space:pre-line; padding:0 24px;
   }
   #mainApp .popup-buttons{
-      display:flex;
-      gap:0;
-      border-top:1px solid rgba(255,255,255,.06);
+      display:flex; gap:0; border-top:1px solid rgba(255,255,255,.06);
   }
   #mainApp .popup-btn{
-      flex:1;
-      border:none;
-      padding:15px;
-      font-weight:700;
-      cursor:pointer;
-      font-size:13px;
-      font-family:inherit;
-      transition:.18s;
-      background:transparent;
-      color:#d8d8e8;
+      flex:1; border:none; padding:15px;
+      font-weight:700; cursor:pointer; font-size:13px;
+      font-family:inherit; transition:.18s;
+      background:transparent; color:#d8d8e8;
   }
-  #mainApp .popup-btn.ok{
-      background:transparent;
-      color:#f472b6;
-  }
-  #mainApp .popup-btn.ok:hover{
-      background:rgba(236,72,153,.1);
-  }
+  #mainApp .popup-btn.ok{ background:transparent; color:#f472b6; }
+  #mainApp .popup-btn.ok:hover{ background:rgba(236,72,153,.1); }
   #mainApp .popup-btn.cancel{
-      background:transparent;
-      color:#8888a8;
+      background:transparent; color:#8888a8;
       border-right:1px solid rgba(255,255,255,.06);
   }
   #mainApp .popup-btn.cancel:hover{
-      background:rgba(255,255,255,.04);
-      color:#d8d8e8;
+      background:rgba(255,255,255,.04); color:#d8d8e8;
   }
   #mainApp #shufflePopup input{
-      width:calc(100% - 48px);
-      padding:12px 14px;
-      margin:6px 24px;
-      border-radius:10px;
+      width:calc(100% - 48px); padding:12px 14px;
+      margin:6px 24px; border-radius:10px;
       border:1px solid rgba(255,255,255,.1);
-      font-size:14px;
-      outline:none;
-      font-family:inherit;
-      background:rgba(255,255,255,.03);
-      color:#e8e8f0;
-      transition:.2s;
-      display:block;
+      font-size:14px; outline:none; font-family:inherit;
+      background:rgba(255,255,255,.03); color:#e8e8f0;
+      transition:.2s; display:block;
   }
   #mainApp #shufflePopup input::placeholder{color:#5a5a70;}
   #mainApp #shufflePopup input:focus{border-color:rgba(168,85,247,.5);}
   #mainApp #shufflePopup p{margin-bottom:14px;}
 
   #mainApp #backToTop{
-      position:fixed;
-      left:16px;
-      bottom:16px;
-      width:46px;
-      height:46px;
-      border:none;
-      border-radius:50%;
+      position:fixed; left:16px; bottom:16px;
+      width:46px; height:46px; border:none; border-radius:50%;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.1);
-      color:#b8b8d0;
-      cursor:pointer;
-      z-index:999;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      transition:.2s;
-      backdrop-filter:blur(8px);
+      color:#b8b8d0; cursor:pointer; z-index:999;
+      display:none; align-items:center; justify-content:center;
+      transition:.2s; backdrop-filter:blur(8px);
   }
   #mainApp #backToTop:hover{
       background:rgba(168,85,247,.2);
-      border-color:rgba(168,85,247,.4);
-      color:#fff;
+      border-color:rgba(168,85,247,.4); color:#fff;
   }
 
   #mainApp .create-test-area{
-      background:#14141f;
-      border-radius:14px;
-      padding:24px;
-      border:1px solid rgba(255,255,255,.06);
+      background:#14141f; border-radius:14px;
+      padding:24px; border:1px solid rgba(255,255,255,.06);
   }
   #mainApp .create-test-area h3{color:#f0f0f8!important;font-size:17px;}
   #mainApp .create-test-area p{color:#8888a8!important;}
   #mainApp .create-test-area textarea{
-      width:100%;
-      height:200px;
+      width:100%; height:200px;
       border:1px solid rgba(255,255,255,.08);
-      border-radius:10px;
-      padding:14px;
-      font-size:13px;
-      font-family:'Consolas',monospace;
-      resize:vertical;
-      outline:none;
-      background:rgba(255,255,255,.02);
-      color:#e8e8f0;
-      transition:.2s;
-      line-height:1.6;
+      border-radius:10px; padding:14px; font-size:13px;
+      font-family:'Consolas',monospace; resize:vertical;
+      outline:none; background:rgba(255,255,255,.02);
+      color:#e8e8f0; transition:.2s; line-height:1.6;
   }
   #mainApp .create-test-area textarea::placeholder{color:#5a5a70;}
   #mainApp .create-test-area textarea:focus{border-color:rgba(168,85,247,.5);}
   #mainApp .create-test-area .row{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0;}
   #mainApp .badge{
-      display:inline-block;
-      background:rgba(168,85,247,.15);
-      padding:3px 10px;
-      border-radius:6px;
-      font-size:11px;
-      font-weight:600;
-      color:#d8b4fe;
-      margin:2px;
+      display:inline-block; background:rgba(168,85,247,.15);
+      padding:3px 10px; border-radius:6px; font-size:11px;
+      font-weight:600; color:#d8b4fe; margin:2px;
       border:1px solid rgba(168,85,247,.25);
   }
   #mainApp .test-questions{
-      margin-top:16px;
-      padding:16px;
-      background:rgba(255,255,255,.02);
-      border-radius:10px;
+      margin-top:16px; padding:16px;
+      background:rgba(255,255,255,.02); border-radius:10px;
       border:1px dashed rgba(168,85,247,.3);
-      color:#c8c8d8;
-      font-size:13px;
+      color:#c8c8d8; font-size:13px;
   }
   #mainApp .test-questions .q-item{
-      padding:10px 0;
-      border-bottom:1px solid rgba(255,255,255,.05);
+      padding:10px 0; border-bottom:1px solid rgba(255,255,255,.05);
   }
   #mainApp .test-questions .q-item:last-child{border-bottom:none;}
   #mainApp .hidden{display:none!important;}
@@ -1604,22 +1009,9 @@
       #mainApp .tab-btn{padding:8px 12px;font-size:11px;}
       #mainApp .tab-btn .tab-label{font-size:11px;}
       #mainApp #gotoQuestion{width:80px;font-size:11px;padding:7px 10px;}
-      #mainApp #navPanel{
-          width: 220px;
-          right: 14px;
-          bottom: 148px;
-          height: 300px;
-      }
-      #mainApp #navGrid{
-          grid-template-columns: repeat(5, 1fr);
-          height: 258px;
-      }
-      #mainApp #navHandle{
-          width: 48px;
-          height: 48px;
-          right: 14px;
-          bottom: 84px;
-      }
+      #mainApp #navPanel{ width: 220px; right: 14px; bottom: 148px; height: 300px; }
+      #mainApp #navGrid{ grid-template-columns: repeat(5, 1fr); height: 258px; }
+      #mainApp #navHandle{ width: 48px; height: 48px; right: 14px; bottom: 84px; }
       #mainApp #examTimer{font-size:22px;}
       #mainApp .popup-box{width:320px;}
       #mainApp .popup-icon-wrap{width:56px;height:56px;margin:22px auto 12px;}
@@ -1629,77 +1021,48 @@
   }
 
   #subjectSelect {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background:
           radial-gradient(circle at 20% 30%, rgba(168,85,247,.35), transparent 45%),
           radial-gradient(circle at 80% 70%, rgba(236,72,153,.28), transparent 45%),
           #0a0a12;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2147483647;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      padding: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2147483647; backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px); padding: 1rem;
   }
-  #subjectSelect.hidden {
-      display: none !important;
-  }
+  #subjectSelect.hidden { display: none !important; }
   .subject-card{
-      width: 340px;
-      max-width: 100%;
+      width: 340px; max-width: 100%;
       background:rgba(40,15,70,.85);
       backdrop-filter:blur(22px) saturate(180%);
       -webkit-backdrop-filter:blur(22px) saturate(180%);
-      border-radius: 22px;
-      padding: 22px 18px 18px;
+      border-radius: 22px; padding: 22px 18px 18px;
       text-align:center;
       box-shadow:0 20px 50px -10px rgba(0,0,0,.7), 0 0 30px rgba(168,85,247,.25);
       border:1px solid rgba(168,85,247,.35);
-      max-height: 92vh;
-      overflow-y:auto;
+      max-height: 92vh; overflow-y:auto;
   }
   .subject-card h1{
-      margin-bottom: 4px;
-      font-size: 19px;
+      margin-bottom: 4px; font-size: 19px;
       background:linear-gradient(90deg,#a855f7,#ec4899,#f97316,#a855f7);
       background-size:200% auto;
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
-      animation:nameShine 3s linear infinite;
-      font-weight:900;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 6px;
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      animation:nameShine 3s linear infinite; font-weight:900;
+      display:flex; align-items:center; justify-content:center; gap: 6px;
   }
   .subject-card p{
-      color:#c4b5fd;
-      margin-bottom: 16px;
-      font-size: 12px;
-      font-weight:600;
-      letter-spacing:.3px;
+      color:#c4b5fd; margin-bottom: 16px;
+      font-size: 12px; font-weight:600; letter-spacing:.3px;
   }
   .subject-btn{
-      width:100%;
-      padding: 10px 12px;
-      margin-bottom: 7px;
-      border:none;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight:700;
-      cursor:pointer;
+      width:100%; padding: 10px 12px; margin-bottom: 7px;
+      border:none; border-radius: 12px; font-size: 13px;
+      font-weight:700; cursor:pointer;
       transition:transform .15s, box-shadow .15s;
-      color:white;
-      font-family:inherit;
+      color:white; font-family:inherit;
       box-shadow:0 5px 14px -6px rgba(0,0,0,.5);
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      text-align:left;
-      border:1px solid rgba(255,255,255,.15);
+      display:flex; align-items:center; gap: 10px;
+      text-align:left; border:1px solid rgba(255,255,255,.15);
   }
   .subject-btn:hover{
       transform:translateY(-2px) scale(1.01);
@@ -1707,57 +1070,29 @@
   }
   .subject-btn .subj-info{display:flex;flex-direction:column;gap: 1px;flex:1;}
   .subject-btn .subj-sub{
-      font-size: 9px;
-      font-weight:600;
-      opacity:.85;
-      letter-spacing:.3px;
+      font-size: 9px; font-weight:600; opacity:.85; letter-spacing:.3px;
   }
-  .subject-btn .icon-wrap{
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-  }
-  .subject-btn .icon-svg{
-      width: 18px;
-      height: 18px;
-  }
+  .subject-btn .icon-wrap{ width: 32px; height: 32px; border-radius: 10px; }
+  .subject-btn .icon-svg{ width: 18px; height: 18px; }
 
   .icon-svg{width:24px;height:24px;flex-shrink:0;display:inline-block;vertical-align:middle;}
-  .icon-svg.sm{width:18px;height:18px;}
-  .icon-svg.lg{width:32px;height:32px;}
   .icon-wrap{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:40px;height:40px;
-      border-radius:13px;
-      background:rgba(255,255,255,.18);
-      flex-shrink:0;
+      display:inline-flex; align-items:center; justify-content:center;
+      width:40px;height:40px; border-radius:13px;
+      background:rgba(255,255,255,.18); flex-shrink:0;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
   }
 
   .music-widget {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
+    position: fixed; bottom: 20px; right: 20px; z-index: 9999;
     font-family: -apple-system, 'Segoe UI', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-    pointer-events: none;
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 10px; pointer-events: none;
   }
   .music-widget > * { pointer-events: auto; }
-
   .music-toggle {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
+    width: 46px; height: 46px; border-radius: 50%; border: none;
+    cursor: pointer; display: flex; justify-content: center;
     align-items: center;
     background: linear-gradient(135deg, #06b6d4, #a855f7, #ec4899);
     background-size: 200% 200%;
@@ -1769,56 +1104,39 @@
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     order: 2;
   }
-  .music-toggle:hover {
-    transform: scale(1.1) rotate(10deg);
-  }
-
+  .music-toggle:hover { transform: scale(1.1) rotate(10deg); }
   .music-toggle-icon {
-    width: 22px;
-    height: 22px;
-    display: block;
+    width: 22px; height: 22px; display: block;
     animation: musicPulse 2s ease-in-out infinite;
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
   }
-
   @keyframes musicPulse {
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.12); }
   }
-
   @keyframes musicBtnFlow {
     0%, 100% { background-position: 0% 50%; }
     50%      { background-position: 100% 50%; }
   }
-
   .music-player {
-    width: 280px;
-    padding: 14px;
+    width: 280px; padding: 14px;
     background: rgba(15, 8, 30, 0.75);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    border-radius: 20px; display: flex; align-items: center; gap: 12px;
     box-shadow:
       0 15px 40px rgba(0, 0, 0, 0.5),
       0 0 30px rgba(168, 85, 247, 0.25),
       0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-    position: relative;
-    order: 1;
+    position: relative; order: 1;
     transform-origin: bottom right;
     transition:
       opacity 0.3s ease,
       transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-
   .music-player::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 20px;
-    padding: 1px;
+    content: ''; position: absolute; inset: 0;
+    border-radius: 20px; padding: 1px;
     background: linear-gradient(120deg,
       #a855f7, #ec4899, #06b6d4, #fbbf24, #a855f7);
     background-size: 300% 300%;
@@ -1826,35 +1144,21 @@
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    -webkit-mask-composite: xor; mask-composite: exclude;
     pointer-events: none;
   }
-
   @keyframes musicBorderFlow {
     0%   { background-position: 0% 50%; }
     100% { background-position: 300% 50%; }
   }
-
   .music-widget.collapsed .music-player {
-    opacity: 0;
-    transform: scale(0.7);
-    pointer-events: none;
-    position: absolute;
-    bottom: 54px;
-    right: 0;
+    opacity: 0; transform: scale(0.7); pointer-events: none;
+    position: absolute; bottom: 54px; right: 0;
   }
-
   .music-play {
-    flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-shrink: 0; width: 42px; height: 42px;
+    border-radius: 50%; border: none; cursor: pointer;
+    display: flex; justify-content: center; align-items: center;
     color: #fff;
     background: linear-gradient(135deg, #06b6d4, #a855f7, #ec4899);
     background-size: 200% 200%;
@@ -1866,50 +1170,33 @@
   }
   .music-play:hover { transform: scale(1.1); }
   .music-play:active { transform: scale(0.95); }
-
   .music-play svg {
-    width: 18px;
-    height: 18px;
-    display: block;
+    width: 18px; height: 18px; display: block;
     filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
   }
-
   .music-body { flex: 1; min-width: 0; }
-
   .music-title {
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.82rem; font-weight: 600; margin-bottom: 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     background: linear-gradient(135deg, #22d3ee, #a855f7 50%, #ec4899);
     background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: musicTitleFlow 4s ease-in-out infinite;
   }
-
   @keyframes musicTitleFlow {
     0%, 100% { background-position: 0% 50%; }
     50%      { background-position: 100% 50%; }
   }
-
   .music-progress {
-    width: 100%;
-    height: 4px;
+    width: 100%; height: 4px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    cursor: pointer;
-    overflow: hidden;
+    border-radius: 10px; cursor: pointer; overflow: hidden;
     transition: height 0.2s;
   }
   .music-progress:hover { height: 6px; }
-
   .music-progress-fill {
-    height: 100%;
-    width: 0%;
+    height: 100%; width: 0%;
     background: linear-gradient(90deg, #06b6d4, #a855f7, #ec4899, #fb923c);
     background-size: 200% 100%;
     border-radius: 10px;
@@ -1917,58 +1204,36 @@
     animation: musicProgressFlow 3s linear infinite;
     transition: width 0.1s linear;
   }
-
   @keyframes musicProgressFlow {
     0%   { background-position: 0% 0; }
     100% { background-position: 200% 0; }
   }
-
   .music-time {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 5px;
-    font-size: 0.62rem;
-    color: rgba(255, 255, 255, 0.45);
-    font-variant-numeric: tabular-nums;
-    font-weight: 500;
+    display: flex; justify-content: space-between; margin-top: 5px;
+    font-size: 0.62rem; color: rgba(255, 255, 255, 0.45);
+    font-variant-numeric: tabular-nums; font-weight: 500;
   }
-
   .music-volume {
-    position: absolute;
-    bottom: 6px;
-    right: 14px;
-    width: 100px;
-    height: 3px;
-    -webkit-appearance: none;
-    appearance: none;
+    position: absolute; bottom: 6px; right: 14px;
+    width: 100px; height: 3px;
+    -webkit-appearance: none; appearance: none;
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.3s;
+    border-radius: 4px; outline: none; cursor: pointer;
+    opacity: 0; transition: opacity 0.3s;
   }
   .music-player:hover .music-volume { opacity: 1; }
-
   .music-volume::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    -webkit-appearance: none; appearance: none;
+    width: 12px; height: 12px; border-radius: 50%;
     background: linear-gradient(135deg, #a855f7, #ec4899);
     cursor: pointer;
     box-shadow: 0 0 8px rgba(236, 72, 153, 0.8);
   }
   .music-volume::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    width: 12px; height: 12px; border-radius: 50%;
     background: linear-gradient(135deg, #a855f7, #ec4899);
-    border: none;
-    cursor: pointer;
+    border: none; cursor: pointer;
   }
-
   @media (max-width: 480px) {
     .music-widget { bottom: 14px; right: 14px; }
     .music-player { width: 240px; padding: 12px; }
@@ -1979,24 +1244,17 @@
 
   /* ========== EDIT ANSWER MODAL ========== */
   #editAnswerModal {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: rgba(5, 5, 12, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 2147483646;
-    padding: 16px;
+    display: none; align-items: center; justify-content: center;
+    z-index: 2147483646; padding: 16px;
     font-family: 'Inter', sans-serif;
   }
   #editAnswerModal.show { display: flex; }
-
   .edit-modal-box {
-    width: 100%;
-    max-width: 520px;
-    max-height: 92vh;
+    width: 100%; max-width: 520px; max-height: 92vh;
     background: linear-gradient(160deg, #1a1230 0%, #110b1e 100%);
     border-radius: 22px;
     border: 1px solid rgba(168, 85, 247, 0.35);
@@ -2004,9 +1262,7 @@
       0 30px 80px -10px rgba(0, 0, 0, 0.9),
       0 0 50px rgba(168, 85, 247, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    overflow: hidden; display: flex; flex-direction: column;
     animation: modalEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
   }
@@ -2015,154 +1271,92 @@
     100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
   .edit-modal-box::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
     height: 3px;
     background: linear-gradient(90deg, #a855f7, #ec4899, #f97316, #a855f7);
     background-size: 200% auto;
     animation: nameShine 3s linear infinite;
   }
-
   .edit-modal-header {
     padding: 20px 24px 14px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
+    display: flex; align-items: center; gap: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
   .edit-modal-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 13px;
+    width: 46px; height: 46px; border-radius: 13px;
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(236, 72, 153, 0.25));
     border: 1px solid rgba(245, 158, 11, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fbbf24;
-    font-size: 1.2rem;
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #fbbf24; font-size: 1.2rem; flex-shrink: 0;
     box-shadow: 0 0 24px rgba(245, 158, 11, 0.3);
   }
   .edit-modal-titles { flex: 1; min-width: 0; }
   .edit-modal-titles h3 {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: #f0f0f8;
-    letter-spacing: -0.01em;
-    margin-bottom: 2px;
+    font-size: 1.05rem; font-weight: 800; color: #f0f0f8;
+    letter-spacing: -0.01em; margin-bottom: 2px;
   }
   .edit-modal-titles p {
-    font-size: 0.75rem;
-    color: #a78bfa;
-    font-weight: 500;
+    font-size: 0.75rem; color: #a78bfa; font-weight: 500;
   }
   .edit-modal-close {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
+    width: 34px; height: 34px; border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.04);
-    color: #9898b0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    transition: all 0.18s;
-    flex-shrink: 0;
+    color: #9898b0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem; transition: all 0.18s; flex-shrink: 0;
   }
   .edit-modal-close:hover {
     background: rgba(239, 68, 68, 0.2);
-    color: #fca5a5;
-    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5; border-color: rgba(239, 68, 68, 0.4);
     transform: rotate(90deg);
   }
-
   .edit-modal-body {
-    padding: 18px 24px 20px;
-    overflow-y: auto;
-    flex: 1;
+    padding: 18px 24px 20px; overflow-y: auto; flex: 1;
   }
   .edit-modal-body::-webkit-scrollbar { width: 6px; }
   .edit-modal-body::-webkit-scrollbar-thumb {
-    background: rgba(168, 85, 247, 0.4);
-    border-radius: 3px;
+    background: rgba(168, 85, 247, 0.4); border-radius: 3px;
   }
-
   .edit-label {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: #c4b5fd;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
+    font-size: 0.7rem; font-weight: 800; color: #c4b5fd;
+    text-transform: uppercase; letter-spacing: 1.2px;
     margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; gap: 6px;
   }
   .edit-label .num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 6px;
-    background: rgba(168, 85, 247, 0.2);
-    color: #d8b4fe;
-    font-size: 0.65rem;
-    border: 1px solid rgba(168, 85, 247, 0.35);
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 6px;
+    background: rgba(168, 85, 247, 0.2); color: #d8b4fe;
+    font-size: 0.65rem; border: 1px solid rgba(168, 85, 247, 0.35);
   }
-
   .edit-question-preview {
     background: rgba(168, 85, 247, 0.06);
     border: 1px solid rgba(168, 85, 247, 0.22);
     border-left: 3px solid #a855f7;
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 0.85rem;
-    line-height: 1.55;
-    color: #e8e8f0;
-    font-weight: 500;
-    margin-bottom: 18px;
-    max-height: 120px;
-    overflow-y: auto;
+    border-radius: 12px; padding: 12px 14px;
+    font-size: 0.85rem; line-height: 1.55;
+    color: #e8e8f0; font-weight: 500;
+    margin-bottom: 18px; max-height: 120px; overflow-y: auto;
   }
   .edit-question-preview::-webkit-scrollbar { width: 4px; }
   .edit-question-preview::-webkit-scrollbar-thumb { background: rgba(168, 85, 247, 0.4); border-radius: 2px; }
-
   .edit-password-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
+    position: relative; display: flex; align-items: center; margin-bottom: 16px;
   }
   .edit-password-wrap i {
-    position: absolute;
-    left: 14px;
-    color: #a78bfa;
-    font-size: 0.95rem;
-    pointer-events: none;
-    transition: color 0.2s;
+    position: absolute; left: 14px; color: #a78bfa;
+    font-size: 0.95rem; pointer-events: none; transition: color 0.2s;
   }
   .edit-password-wrap input {
-    width: 100%;
-    padding: 12px 14px 12px 42px;
+    width: 100%; padding: 12px 14px 12px 42px;
     border-radius: 12px;
     border: 1.5px solid rgba(168, 85, 247, 0.35);
-    background: rgba(10, 5, 25, 0.7);
-    color: #f3e8ff;
-    font-size: 0.92rem;
-    font-family: inherit;
-    font-weight: 600;
-    outline: none;
-    transition: all 0.25s;
+    background: rgba(10, 5, 25, 0.7); color: #f3e8ff;
+    font-size: 0.92rem; font-family: inherit; font-weight: 600;
+    outline: none; transition: all 0.25s;
   }
-  .edit-password-wrap input::placeholder {
-    color: #6a5a88;
-    font-weight: 400;
-  }
+  .edit-password-wrap input::placeholder { color: #6a5a88; font-weight: 400; }
   .edit-password-wrap input:focus {
     border-color: #ec4899;
     box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15), 0 0 22px -5px rgba(236, 72, 153, 0.5);
@@ -2173,66 +1367,41 @@
     box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
     animation: shake 0.4s ease;
   }
-
   .edit-error-msg {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: 10px;
+    display: none; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: 10px;
     background: rgba(239, 68, 68, 0.12);
     border: 1px solid rgba(248, 113, 113, 0.45);
-    color: #fca5a5;
-    font-size: 0.78rem;
-    font-weight: 600;
-    margin-bottom: 14px;
-    animation: shake 0.4s ease;
+    color: #fca5a5; font-size: 0.78rem; font-weight: 600;
+    margin-bottom: 14px; animation: shake 0.4s ease;
   }
   .edit-error-msg.show { display: flex; }
-
   .edit-compare {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
     background: rgba(255, 255, 255, 0.025);
     border: 1px solid rgba(255, 255, 255, 0.07);
     margin-bottom: 16px;
   }
-  .edit-compare-item {
-    text-align: center;
-  }
+  .edit-compare-item { text-align: center; }
   .edit-compare-item .lbl {
-    font-size: 0.6rem;
-    font-weight: 800;
-    color: #8888a8;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
+    font-size: 0.6rem; font-weight: 800; color: #8888a8;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
   }
   .edit-compare-item .val {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 34px;
-    height: 34px;
-    padding: 0 10px;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    font-weight: 900;
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 34px; height: 34px; padding: 0 10px;
+    border-radius: 10px; font-size: 0.95rem; font-weight: 900;
     transition: all 0.25s;
   }
   .edit-compare-item.old .val {
     background: rgba(255, 255, 255, 0.05);
-    color: #9898b0;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #9898b0; border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .edit-compare-item.new .val {
     background: linear-gradient(135deg, #a855f7, #ec4899);
-    color: #fff;
-    box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+    color: #fff; box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
     border: 1px solid transparent;
   }
   .edit-compare-item.new .val.empty {
@@ -2242,31 +1411,20 @@
     box-shadow: none;
   }
   .edit-compare-arrow {
-    color: #a855f7;
-    font-size: 1rem;
+    color: #a855f7; font-size: 1rem;
     animation: arrowPulse 1.5s infinite;
   }
   @keyframes arrowPulse {
     0%, 100% { opacity: 0.5; transform: translateX(0); }
     50% { opacity: 1; transform: translateX(3px); }
   }
-
-  .edit-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .edit-options { display: flex; flex-direction: column; gap: 8px; }
   .edit-option-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border-radius: 12px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
     background: rgba(255, 255, 255, 0.025);
     border: 1.5px solid rgba(255, 255, 255, 0.07);
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
+    cursor: pointer; transition: all 0.2s; position: relative;
   }
   .edit-option-row:hover {
     background: rgba(168, 85, 247, 0.08);
@@ -2279,16 +1437,11 @@
     box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1), 0 8px 22px -8px rgba(236, 72, 153, 0.5);
   }
   .edit-option-row input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+    appearance: none; -webkit-appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
     border: 2px solid rgba(168, 85, 247, 0.5);
-    background: rgba(10, 5, 25, 0.5);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: all 0.2s;
+    background: rgba(10, 5, 25, 0.5); cursor: pointer;
+    flex-shrink: 0; transition: all 0.2s;
   }
   .edit-option-row input[type="radio"]:checked,
   .edit-option-row.selected input[type="radio"] {
@@ -2297,76 +1450,43 @@
     box-shadow: 0 0 14px rgba(236, 72, 153, 0.8);
   }
   .edit-option-label {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 28px;
-    height: 28px;
-    padding: 0 8px;
-    border-radius: 9px;
-    background: rgba(168, 85, 247, 0.18);
-    color: #d8b4fe;
-    font-weight: 800;
-    font-size: 0.8rem;
-    flex-shrink: 0;
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 28px; height: 28px; padding: 0 8px;
+    border-radius: 9px; background: rgba(168, 85, 247, 0.18);
+    color: #d8b4fe; font-weight: 800; font-size: 0.8rem;
+    flex-shrink: 0; border: 1px solid rgba(168, 85, 247, 0.3);
     transition: all 0.2s;
   }
   .edit-option-row.selected .edit-option-label {
     background: linear-gradient(135deg, #ec4899, #a855f7);
-    color: #fff;
-    border-color: transparent;
+    color: #fff; border-color: transparent;
     box-shadow: 0 0 14px rgba(236, 72, 153, 0.5);
   }
   .edit-option-text {
-    flex: 1;
-    font-size: 0.86rem;
-    color: #d8d8e8;
-    font-weight: 500;
-    line-height: 1.45;
-    word-break: break-word;
+    flex: 1; font-size: 0.86rem; color: #d8d8e8;
+    font-weight: 500; line-height: 1.45; word-break: break-word;
   }
-  .edit-option-row.selected .edit-option-text {
-    color: #fbcfe8;
-    font-weight: 600;
-  }
+  .edit-option-row.selected .edit-option-text { color: #fbcfe8; font-weight: 600; }
   .edit-option-badge {
-    font-size: 0.6rem;
-    font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 999px;
-    background: rgba(168, 85, 247, 0.2);
-    color: #d8b4fe;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
-    text-transform: uppercase;
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    font-size: 0.6rem; font-weight: 800; padding: 3px 8px;
+    border-radius: 999px; background: rgba(168, 85, 247, 0.2);
+    color: #d8b4fe; letter-spacing: 0.5px; flex-shrink: 0;
+    text-transform: uppercase; border: 1px solid rgba(168, 85, 247, 0.3);
   }
   .edit-option-row.selected .edit-option-badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border-color: transparent;
+    background: rgba(255, 255, 255, 0.2); color: #fff; border-color: transparent;
   }
-
   .edit-modal-footer {
     padding: 16px 24px 20px;
-    display: flex;
-    gap: 10px;
+    display: flex; gap: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(0, 0, 0, 0.2);
   }
   .edit-btn {
-    padding: 12px 18px;
-    border-radius: 12px;
-    border: none;
-    font-family: inherit;
-    font-size: 0.88rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    padding: 12px 18px; border-radius: 12px; border: none;
+    font-family: inherit; font-size: 0.88rem; font-weight: 800;
+    cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; gap: 8px;
     transition: all 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
     letter-spacing: 0.3px;
   }
@@ -2376,29 +1496,20 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     flex: 0 0 auto;
   }
-  .edit-btn.cancel:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #d8d8e8;
-  }
+  .edit-btn.cancel:hover { background: rgba(255, 255, 255, 0.1); color: #d8d8e8; }
   .edit-btn.save {
     flex: 1;
     background: linear-gradient(135deg, #a855f7, #ec4899, #f97316);
-    background-size: 200% 200%;
-    color: #fff;
+    background-size: 200% 200%; color: #fff;
     box-shadow: 0 10px 26px -10px rgba(236, 72, 153, 0.8);
     animation: gradientShift 4s ease infinite;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
   .edit-btn.save::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 60%;
-    height: 100%;
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
     background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transform: skewX(-25deg);
-    animation: shine 3.2s infinite;
+    transform: skewX(-25deg); animation: shine 3.2s infinite;
   }
   .edit-btn.save:hover {
     transform: translateY(-2px) scale(1.01);
@@ -2407,44 +1518,31 @@
   .edit-btn.save:active { transform: translateY(0) scale(0.99); }
   .edit-btn.save.loading { pointer-events: none; }
   .edit-btn.save .spinner {
-    display: none;
-    width: 16px;
-    height: 16px;
+    display: none; width: 16px; height: 16px;
     border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
+    border-top-color: #fff; border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
   .edit-btn.save.loading .spinner { display: inline-block; }
   .edit-btn.save.loading i { display: none; }
 
-  /* Toast */
   .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
+    position: fixed; bottom: 24px; left: 50%;
     transform: translateX(-50%) translateY(120px);
     background: linear-gradient(135deg, #10b981, #059669);
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    color: #fff; padding: 12px 20px; border-radius: 12px;
+    font-size: 0.85rem; font-weight: 700;
     box-shadow: 0 15px 40px -8px rgba(16, 185, 129, 0.6);
     z-index: 2147483647;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: flex; align-items: center; gap: 10px;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    pointer-events: none;
-    font-family: 'Inter', sans-serif;
+    pointer-events: none; font-family: 'Inter', sans-serif;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.error {
     background: linear-gradient(135deg, #ef4444, #b91c1c);
     box-shadow: 0 15px 40px -8px rgba(239, 68, 68, 0.6);
   }
-
   @media (max-width: 480px) {
     .edit-modal-box { border-radius: 18px; }
     .edit-modal-header { padding: 16px 18px 12px; }
@@ -2473,9 +1571,7 @@
           <div class="ring-pulse delay"></div>
           <div class="ring-outer"></div>
           <div class="ring-inner"></div>
-          <div class="heart-core">
-            <i class="fas fa-heart-pulse"></i>
-          </div>
+          <div class="heart-core"><i class="fas fa-heart-pulse"></i></div>
         </div>
         <div class="admin-name">
           <div class="greet">✦ Welcome to ✦</div>
@@ -2490,37 +1586,24 @@
         </div>
         <div class="loading-text">
           Đang tải hệ thống
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </div>
         <div class="progress-wrap">
-          <div class="progress-bar-bg">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-          <div class="progress-percent">
-            <span>LOADING...</span>
-            <span id="progressText">0%</span>
-          </div>
+          <div class="progress-bar-bg"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="progress-percent"><span>LOADING...</span><span id="progressText">0%</span></div>
         </div>
       </div>
     </div>
 
     <div class="screen hidden" id="loginScreen">
       <div class="login-wrap">
-        <div class="login-logo">
-          <div class="login-logo-circle">
-            <i class="fas fa-heart-pulse"></i>
-          </div>
-        </div>
+        <div class="login-logo"><div class="login-logo-circle"><i class="fas fa-heart-pulse"></i></div></div>
         <div class="login-title">
           <h2>Đăng nhập hệ thống</h2>
           <p>Vui lòng nhập tài khoản để truy cập</p>
         </div>
         <div class="login-admin-tag">
-          <div class="mini-avatar">
-            <i class="fas fa-user-md"></i>
-          </div>
+          <div class="mini-avatar"><i class="fas fa-user-md"></i></div>
           <div class="mini-text">
             <div class="lbl">Admin</div>
             <div class="nm">Nguyễn Phi Nhật</div>
@@ -2557,9 +1640,7 @@
   </div>
 
   <div class="admin-badge">
-    <div class="badge-avatar">
-      <i class="fas fa-user-md"></i>
-    </div>
+    <div class="badge-avatar"><i class="fas fa-user-md"></i></div>
     <div class="badge-text">
       <div class="label">Admin</div>
       <div class="name">Nguyễn Phi Nhật</div>
@@ -2568,7 +1649,6 @@
 </div>
 
 <div id="mainApp" style="display:none;">
-
 <div class="container">
 
 <div class="header">
@@ -2615,12 +1695,10 @@
     <textarea id="noteArea" placeholder="Nhập ghi chú kiến thức tại đây..."></textarea>
     <div style="display:flex;gap:12px;margin-top:16px;">
         <button class="btn green" onclick="saveNote()">
-            <i class="fas fa-floppy-disk" style="font-size:12px;"></i>
-            Lưu ghi chú
+            <i class="fas fa-floppy-disk" style="font-size:12px;"></i> Lưu ghi chú
         </button>
         <button class="btn gray" onclick="clearNote()">
-            <i class="fas fa-trash-can" style="font-size:12px;"></i>
-            Xóa
+            <i class="fas fa-trash-can" style="font-size:12px;"></i> Xóa
         </button>
     </div>
 </div>
@@ -2646,17 +1724,14 @@ B. Sai
 B. Đúng"></textarea>
     <div class="row">
         <button class="btn green" onclick="generateTest()">
-            <i class="fas fa-bolt" style="font-size:12px;"></i>
-            Tạo đề từ văn bản
+            <i class="fas fa-bolt" style="font-size:12px;"></i> Tạo đề từ văn bản
         </button>
         <button class="btn gray" onclick="document.getElementById('fileInput').click()">
-            <i class="fas fa-cloud-arrow-up" style="font-size:12px;"></i>
-            Upload file (.txt)
+            <i class="fas fa-cloud-arrow-up" style="font-size:12px;"></i> Upload file (.txt)
         </button>
         <input type="file" id="fileInput" accept=".txt" style="display:none" onchange="uploadFile(event)">
         <button class="btn gray" onclick="clearTest()">
-            <i class="fas fa-broom" style="font-size:12px;"></i>
-            Xóa đề
+            <i class="fas fa-broom" style="font-size:12px;"></i> Xóa đề
         </button>
     </div>
     <div id="testResult" style="margin-top:12px;font-weight:700;color:#f472b6;"></div>
@@ -2666,12 +1741,10 @@ B. Đúng"></textarea>
         <div id="testQuizInner"></div>
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
             <button class="btn green" onclick="checkTestAnswers()">
-                <i class="fas fa-circle-check" style="font-size:12px;"></i>
-                Kiểm tra đáp án
+                <i class="fas fa-circle-check" style="font-size:12px;"></i> Kiểm tra đáp án
             </button>
             <button class="btn gray" onclick="resetTestQuiz()">
-                <i class="fas fa-rotate-left" style="font-size:12px;"></i>
-                Làm lại
+                <i class="fas fa-rotate-left" style="font-size:12px;"></i> Làm lại
             </button>
         </div>
         <div id="testResultScore" style="margin-top:12px;font-weight:800;font-size:16px;color:#f0f0f8;"></div>
@@ -2694,28 +1767,23 @@ B. Đúng"></textarea>
     <div class="buttons">
         <input type="number" id="gotoQuestion" placeholder="Đến câu..." min="1">
         <button class="btn" onclick="goToQuestion()">
-            <i class="fas fa-location-crosshairs" style="font-size:12px;"></i>
-            Đến
+            <i class="fas fa-location-crosshairs" style="font-size:12px;"></i> Đến
         </button>
         <button class="btn" id="shuffleBtn" onclick="toggleShuffle(this)">
             <i class="fas fa-shuffle" style="font-size:12px;"></i>
             <span>Xáo Full: OFF</span>
         </button>
         <button class="btn" onclick="openShufflePopup()">
-            <i class="fas fa-arrows-rotate" style="font-size:12px;"></i>
-            Xáo đoạn
+            <i class="fas fa-arrows-rotate" style="font-size:12px;"></i> Xáo đoạn
         </button>
         <button class="btn green" id="showAnswersBtn" onclick="toggleAllAnswers()">
-            <i class="fas fa-eye" style="font-size:12px;"></i>
-            Hiện toàn bộ đáp án
+            <i class="fas fa-eye" style="font-size:12px;"></i> Hiện toàn bộ đáp án
         </button>
         <button class="btn" onclick="reloadQuiz()">
-            <i class="fas fa-rotate" style="font-size:12px;"></i>
-            Làm lại
+            <i class="fas fa-rotate" style="font-size:12px;"></i> Làm lại
         </button>
         <button class="btn gray" onclick="changeSubject()">
-            <i class="fas fa-book-open" style="font-size:12px;"></i>
-            Đổi môn
+            <i class="fas fa-book-open" style="font-size:12px;"></i> Đổi môn
         </button>
     </div>
 </div>
@@ -2726,8 +1794,7 @@ B. Đúng"></textarea>
     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center;">
         <div>
             <h3 style="display:flex;align-items:center;gap:8px;">
-                <i class="fas fa-stopwatch" style="color:#ef4444;font-size:14px;"></i>
-                Thi thử
+                <i class="fas fa-stopwatch" style="color:#ef4444;font-size:14px;"></i> Thi thử
             </h3>
             <div id="examTimer">45:00</div>
         </div>
@@ -2743,28 +1810,22 @@ B. Đúng"></textarea>
             <button class="btn" onclick="filterExam('wrong')">Sai</button>
             <button class="btn" onclick="filterExam('bookmark')">Bookmark</button>
             <button class="btn green" onclick="finishExam()">
-                <i class="fas fa-paper-plane" style="font-size:12px;"></i>
-                Nộp bài
+                <i class="fas fa-paper-plane" style="font-size:12px;"></i> Nộp bài
             </button>
         </div>
     </div>
 </div>
 
-<div class="footer">
-    Create @Nhat2007 <i class="fas fa-heart"></i>
-</div>
+<div class="footer">Create @Nhat2007 <i class="fas fa-heart"></i></div>
 
 </div>
 
-<div id="navHandle">
-    <i class="fas fa-list-ol" style="font-size:18px;"></i>
-</div>
+<div id="navHandle"><i class="fas fa-list-ol" style="font-size:18px;"></i></div>
 
 <div id="navPanel">
     <div id="navHeader">
         <span style="display:flex;align-items:center;gap:6px;">
-            <i class="fas fa-map-location-dot" style="font-size:12px;"></i>
-            Đi đến câu
+            <i class="fas fa-map-location-dot" style="font-size:12px;"></i> Đi đến câu
         </span>
         <button onclick="toggleNav()">✕</button>
     </div>
@@ -2773,9 +1834,7 @@ B. Đúng"></textarea>
 
 <div class="popup" id="popup">
     <div class="popup-box">
-        <div class="popup-icon-wrap">
-            <div class="popup-icon" id="popupIcon"></div>
-        </div>
+        <div class="popup-icon-wrap"><div class="popup-icon" id="popupIcon"></div></div>
         <h2 id="popupTitle"></h2>
         <p id="popupText"></p>
         <div class="popup-buttons">
@@ -2787,11 +1846,7 @@ B. Đúng"></textarea>
 
 <div class="popup" id="shufflePopup">
     <div class="popup-box">
-        <div class="popup-icon-wrap">
-            <div class="popup-icon">
-                <i class="fas fa-shuffle"></i>
-            </div>
-        </div>
+        <div class="popup-icon-wrap"><div class="popup-icon"><i class="fas fa-shuffle"></i></div></div>
         <h2>Xáo đoạn câu</h2>
         <p>Nhập phạm vi câu cần xáo</p>
         <input id="popupFrom" type="number" placeholder="Từ câu">
@@ -2803,9 +1858,7 @@ B. Đúng"></textarea>
     </div>
 </div>
 
-<button id="backToTop">
-    <i class="fas fa-arrow-up" style="font-size:16px;"></i>
-</button>
+<button id="backToTop"><i class="fas fa-arrow-up" style="font-size:16px;"></i></button>
 
 </div>
 
@@ -2815,56 +1868,36 @@ B. Đúng"></textarea>
         <p>Chọn môn học</p>
 
         <button class="subject-btn" style="background:linear-gradient(135deg,#7e22ce,#6b21a8);" onclick="chooseSubject('GPSL')">
-            <span class="icon-wrap">
-                <i class="fas fa-scale-balanced" style="font-size:16px;"></i>
-            </span>
+            <span class="icon-wrap"><i class="fas fa-scale-balanced" style="font-size:16px;"></i></span>
             <span class="subj-info"><span>🩺 Pháp luật</span><span class="subj-sub">Legal Medicine</span></span>
         </button>
-
         <button class="subject-btn" style="background:linear-gradient(135deg,#ec4899,#be185d);" onclick="chooseSubject('DDCS')">
-            <span class="icon-wrap">
-                <i class="fas fa-hand-holding-medical" style="font-size:16px;"></i>
-            </span>
+            <span class="icon-wrap"><i class="fas fa-hand-holding-medical" style="font-size:16px;"></i></span>
             <span class="subj-info"><span>🩺 ĐD cơ sở 2</span><span class="subj-sub">Nursing Foundation</span></span>
         </button>
-
         <button class="subject-btn" style="background:linear-gradient(135deg,#a855f7,#7e22ce);" onclick="chooseSubject('NOI')">
-            <span class="icon-wrap">
-                <i class="fas fa-stethoscope" style="font-size:16px;"></i>
-            </span>
+            <span class="icon-wrap"><i class="fas fa-stethoscope" style="font-size:16px;"></i></span>
             <span class="subj-info"><span>🩺 CSSK người lớn - Nội khoa</span><span class="subj-sub">Internal Medicine</span></span>
         </button>
-
         <button class="subject-btn" style="background:linear-gradient(135deg,#f97316,#c2410c);" onclick="chooseSubject('NGOAI')">
-            <span class="icon-wrap">
-                <i class="fas fa-syringe" style="font-size:16px;"></i>
-            </span>
+            <span class="icon-wrap"><i class="fas fa-syringe" style="font-size:16px;"></i></span>
             <span class="subj-info"><span>🩺 CSSK người lớn - Ngoại khoa</span><span class="subj-sub">Surgery</span></span>
         </button>
-
         <button class="subject-btn" style="background:linear-gradient(135deg,#f59e0b,#b45309);" onclick="chooseSubject('NHI')">
-            <span class="icon-wrap">
-                <i class="fas fa-baby" style="font-size:16px;"></i>
-            </span>
+            <span class="icon-wrap"><i class="fas fa-baby" style="font-size:16px;"></i></span>
             <span class="subj-info"><span>🩺 Sức khỏe - NCSK và Hành vi</span><span class="subj-sub">Child & Behavior</span></span>
         </button>
-
         <button class="subject-btn" style="background:linear-gradient(135deg,#db2777,#9d174d);" onclick="chooseSubject('SAN')">
-            <span class="icon-wrap">
-                <i class="fas fa-comments" style="font-size:16px;"></i>
-            </span>
+            <span class="icon-wrap"><i class="fas fa-comments" style="font-size:16px;"></i></span>
             <span class="subj-info"><span>🩺 Giao tiếp GDSK trong thực hành ĐD</span><span class="subj-sub">Health Communication</span></span>
         </button>
     </div>
 </div>
 
-<!-- EDIT ANSWER MODAL -->
 <div id="editAnswerModal">
   <div class="edit-modal-box">
     <div class="edit-modal-header">
-      <div class="edit-modal-icon">
-        <i class="fas fa-pen-to-square"></i>
-      </div>
+      <div class="edit-modal-icon"><i class="fas fa-pen-to-square"></i></div>
       <div class="edit-modal-titles">
         <h3>Sửa đáp án</h3>
         <p>Nhập mật khẩu & chọn đáp án đúng</p>
@@ -2895,9 +1928,7 @@ B. Đúng"></textarea>
           <div class="lbl">Hiện tại</div>
           <div class="val" id="editOldAnswer">?</div>
         </div>
-        <div class="edit-compare-arrow">
-          <i class="fas fa-arrow-right"></i>
-        </div>
+        <div class="edit-compare-arrow"><i class="fas fa-arrow-right"></i></div>
         <div class="edit-compare-item new">
           <div class="lbl">Sau khi sửa</div>
           <div class="val empty" id="editNewAnswer">?</div>
@@ -2919,7 +1950,6 @@ B. Đúng"></textarea>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">
   <i class="fas fa-circle-check"></i>
   <span id="toastText">Đã lưu đáp án!</span>
@@ -2932,32 +1962,18 @@ B. Đúng"></textarea>
       <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </button>
-
   <div class="music-player">
     <button class="music-play" id="musicPlay" aria-label="Phát nhạc">
-      <svg class="music-icon-play" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M8 5v14l11-7z"/>
-      </svg>
-      <svg class="music-icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none">
-        <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
-      </svg>
+      <svg class="music-icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg class="music-icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
     </button>
-
     <div class="music-body">
       <div class="music-title" id="musicTitle">Đang tải...</div>
-      <div class="music-progress" id="musicProgressBar">
-        <div class="music-progress-fill" id="musicProgressFill"></div>
-      </div>
-      <div class="music-time">
-        <span id="musicCurrent">0:00</span>
-        <span id="musicDuration">0:00</span>
-      </div>
+      <div class="music-progress" id="musicProgressBar"><div class="music-progress-fill" id="musicProgressFill"></div></div>
+      <div class="music-time"><span id="musicCurrent">0:00</span><span id="musicDuration">0:00</span></div>
     </div>
-
-    <input type="range" class="music-volume" id="musicVolume"
-           min="0" max="1" step="0.01" value="0.6" aria-label="Âm lượng">
+    <input type="range" class="music-volume" id="musicVolume" min="0" max="1" step="0.01" value="0.6">
   </div>
-
   <audio id="musicAudio" src="n.mp3" loop preload="metadata"></audio>
 </div>
 
@@ -3022,18 +2038,14 @@ B. Đúng"></textarea>
     const loginWrap = document.querySelector('#loginScreen .login-wrap');
     loginWrap.innerHTML = `
       <div class="login-logo">
-        <div class="login-logo-circle">
-          <i class="fas fa-check"></i>
-        </div>
+        <div class="login-logo-circle"><i class="fas fa-check"></i></div>
       </div>
       <div class="login-title">
         <h2>Chào mừng trở lại!</h2>
         <p>Bạn đã được xác thực • Truy cập mãi mãi</p>
       </div>
       <div class="login-admin-tag" style="margin-bottom: 0;">
-        <div class="mini-avatar">
-          <i class="fas fa-user-md"></i>
-        </div>
+        <div class="mini-avatar"><i class="fas fa-user-md"></i></div>
         <div class="mini-text">
           <div class="lbl">Admin</div>
           <div class="nm">Nguyễn Phi Nhật</div>
@@ -3048,10 +2060,10 @@ B. Đúng"></textarea>
       </div>
     `;
     loginWrap.style.animation = 'loginEnter 0.9s cubic-bezier(0.16, 1, 0.3, 1) both';
-    requestAnimationFrame(() => {
-      const btn = document.getElementById('enterSystemBtn');
-      if (btn) btn.addEventListener('click', enterMainApp);
-    });
+    const btn = document.getElementById('enterSystemBtn');
+    if (btn) {
+      btn.onclick = enterMainApp;
+    }
   }
 
   function enterMainApp() {
@@ -3146,7 +2158,7 @@ window.listenFirebaseCorrections = function(subject,callback){
     }
     const listenerSubject=subject;
     window.firebaseCorrectionUnsubscribe=onValue(ref(db,"corrections/"+listenerSubject), snapshot=>{
-        if(currentSubject!==listenerSubject)return;
+        if(window.currentSubject!==listenerSubject)return;
         callback(snapshot.exists() ? snapshot.val() : {});
     });
     return window.firebaseCorrectionUnsubscribe;
@@ -3154,24 +2166,21 @@ window.listenFirebaseCorrections = function(subject,callback){
 </script>
 
 <script>
+/* ========== STATE ========== */
+let currentSubject = "";
+window.currentSubject = "";
+let subjectLoadToken = 0;
+let parsedQuestionsDS = [];
+let examQuestions = [];
+let examSeconds = 2700;
+let examInterval = null;
+let examFinished = false;
+let currentTab = "DS";
+let correctCount = 0;
+let bookmarks = JSON.parse(localStorage.getItem("bookmarks")||"[]");
+if(bookmarks.length && typeof bookmarks[0]==="number"){ bookmarks=[]; localStorage.removeItem("bookmarks"); }
 
-let currentSubject="";
-let subjectLoadToken=0;
-let parsedQuestionsDS=[];
-let examQuestions=[];
-let examSeconds=2700;
-let examInterval=null;
-let examFinished=false;
-let currentTab="DS";
-let correctCount=0;
-let bookmarks=JSON.parse(localStorage.getItem("bookmarks")||"[]");
-
-if(bookmarks.length && typeof bookmarks[0]==="number"){
-    bookmarks=[];
-    localStorage.removeItem("bookmarks");
-}
-
-let progress=JSON.parse(localStorage.getItem("progress")||"{}");
+let progress = JSON.parse(localStorage.getItem("progress")||"{}");
 let shuffleMode=false;
 let customShuffle=false;
 let customFrom=0;
@@ -3181,14 +2190,12 @@ let answersRevealed=false;
 let testQuestions=[];
 let testAnswers={};
 
-window.firebaseCorrections={};
+window.firebaseCorrections = {};
 
-/* === CACHE === */
 let answersCache = JSON.parse(localStorage.getItem("answers") || "{}");
 let cachedQuestionNodes = [];
 let lastCorrectionsJSON = "";
 
-/* === EDIT MODAL STATE === */
 let editTargetItem = null;
 let editTargetBlock = null;
 let editSelectedAnswer = null;
@@ -3202,23 +2209,21 @@ const SUBJECTS = {
     SAN:{name:"Giao tiếp GDSK trong thực hành ĐD", ds:"DS5.txt"}
 };
 
+/* ========== SUBJECT ========== */
 function showSubjectSelect(){
     const sel = document.getElementById("subjectSelect");
     if(!sel) return;
     sel.classList.remove("hidden");
     window.scrollTo(0,0);
 }
-
 function hideSubjectSelect(){
     const sel = document.getElementById("subjectSelect");
     if(!sel) return;
     sel.classList.add("hidden");
 }
-
 function chooseSubject(subject){
     answersRevealed=false;
     subjectLoadToken++;
-
     if(window.firebaseCorrectionUnsubscribe){
         window.firebaseCorrectionUnsubscribe();
         window.firebaseCorrectionUnsubscribe=null;
@@ -3226,14 +2231,15 @@ function chooseSubject(subject){
     window.firebaseCorrections={};
     lastCorrectionsJSON = "";
     currentSubject=subject;
+    window.currentSubject = subject;
     localStorage.setItem("currentSubject", subject);
     hideSubjectSelect();
     loadQuestionFiles();
 }
-
 function changeSubject(){
     localStorage.removeItem("currentSubject");
     currentSubject="";
+    window.currentSubject = "";
     showSubjectSelect();
 }
 
@@ -3246,13 +2252,11 @@ async function loadQuestionFiles(){
         const response=await fetch(subject.ds);
         const text=await response.text();
         parsedQuestionsDS=parseRawText(text);
-
         parsedQuestionsDS.forEach((question,index)=>{
             question.id="q_"+(index+1);
         });
 
         const corrections=await window.getFirebaseCorrections(loadingSubject);
-
         if(loadToken!==subjectLoadToken || currentSubject!==loadingSubject)return;
 
         window.firebaseCorrections=corrections||{};
@@ -3267,13 +2271,11 @@ async function loadQuestionFiles(){
             lastCorrectionsJSON = json;
             window.firebaseCorrections=corrections||{};
             if(currentTab==="DS" || currentTab==="TF" || currentTab==="MC"){
-                buildQuizHTML();
-                buildNavPanel();
+                refreshCorrectnessInPlace();
             }
         });
 
         switchTab("DS");
-
     }catch(err){
         alert("Không tìm thấy file: "+SUBJECTS[loadingSubject].ds);
         console.log(err);
@@ -3284,11 +2286,9 @@ function parseRawText(text){
     const lines=text.split("\n");
     let questions=[];
     let currentQ=null;
-
     lines.forEach(line=>{
         let trimmed=line.trim();
         if(!trimmed)return;
-
         if(/^(#?\d+[\.\:\s])/.test(trimmed)){
             if(currentQ){ questions.push(currentQ); }
             let clean=trimmed.replace(/^(#?\d+[\.\:\s]\s*)/,"");
@@ -3297,7 +2297,6 @@ function parseRawText(text){
             if(currentQ){ currentQ.arr.push(trimmed); }
         }
     });
-
     if(currentQ){ questions.push(currentQ); }
     return questions;
 }
@@ -3305,16 +2304,15 @@ function parseRawText(text){
 function getCorrectAnswer(item){
     const correction=window.firebaseCorrections && window.firebaseCorrections[item.id];
     if(correction && correction.answer){ return correction.answer; }
-
     const original=item.arr.find(opt=>opt.startsWith("*"));
     if(!original)return null;
     const match=original.match(/^\*?([A-E])/);
     return match ? match[1] : null;
 }
 
+/* ========== TABS ========== */
 function switchTab(type){
     currentTab=type;
-
     document.querySelectorAll(".tab-bar .tab-btn").forEach(b=>b.classList.remove("activeTab"));
     const map={DS:"tabDS",TF:"tabTF",MC:"tabMC",NOTE:"tabNOTE",EXAM:"tabEXAM",CREATE:"tabCREATE"};
     if(map[type]){ document.getElementById(map[type]).classList.add("activeTab"); }
@@ -3330,7 +2328,6 @@ function switchTab(type){
         loadNote();
         return;
     }
-
     if(type==="CREATE"){
         document.getElementById("createBox").classList.remove("hidden");
         document.getElementById("mainTopbar").classList.add("hidden");
@@ -3343,7 +2340,7 @@ function switchTab(type){
         document.getElementById("examTop").classList.remove("hidden");
         createExam();
         startExam();
-    }else{
+    } else {
         clearInterval(examInterval);
     }
 
@@ -3355,19 +2352,18 @@ function saveNote(){ localStorage.setItem("nhat_note", document.getElementById("
 function loadNote(){ document.getElementById("noteArea").value=localStorage.getItem("nhat_note")||""; }
 function clearNote(){ if(confirm("Xóa ghi chú?")){ localStorage.removeItem("nhat_note"); document.getElementById("noteArea").value=""; } }
 
+/* ========== EXAM ========== */
 function createExam(){
     const two=parsedQuestionsDS.filter(q=>q.arr.length===2);
     const four=parsedQuestionsDS.filter(q=>q.arr.length>=4);
     examQuestions=shuffleArray([...two.slice(0,40),...four.slice(0,40)]);
     examQuestions=shuffleArray(examQuestions);
 }
-
 function startExam(){
     examFinished=false;
     clearInterval(examInterval);
     examSeconds=2700;
     updateExamTimer();
-
     examInterval=setInterval(()=>{
         examSeconds--;
         updateExamTimer();
@@ -3375,13 +2371,11 @@ function startExam(){
         if(examSeconds<=0){ finishExam(); }
     },1000);
 }
-
 function updateExamTimer(){
     let m=Math.floor(examSeconds/60);
     let s=examSeconds%60;
     document.getElementById("examTimer").innerHTML=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
 }
-
 function updateProgress(){
     const total=examQuestions.length;
     let done=document.querySelectorAll("#quiz-container .question.answered").length;
@@ -3389,34 +2383,27 @@ function updateProgress(){
     document.getElementById("examProgressBar").style.width=pct+"%";
     document.getElementById("examProgressText").innerHTML=done+" / "+total+" ("+Math.round(pct)+"%)";
 }
-
 async function finishExam(){
     if(examFinished)return;
     examFinished=true;
     clearInterval(examInterval);
-
     let correct=0, wrong=0, todo=0;
-    document.querySelectorAll("#quiz-container .question").forEach(q=>{
+    cachedQuestionNodes.forEach(q=>{
         if(!q.classList.contains("answered")){ todo++; return; }
         if(q.classList.contains("wrong-question")){ wrong++; }else{ correct++; }
     });
-
     const score=(correct/(correct+wrong+todo||1)*10).toFixed(2);
     await showPopup("Kết quả thi thử",
         `Điểm: ${score}/10\nĐúng: ${correct}\nSai: ${wrong}\nChưa làm: ${todo}`,
         '<i class="fas fa-trophy" style="color:#fbbf24;"></i>');
     showAllAnswers();
 }
-
 function showAllAnswers(){
-    document.querySelectorAll("#quiz-container .question").forEach(q=>{
-        const btn=q.querySelector(".answer-submit");
-        if(btn && !btn.disabled){ btn.click(); }
-    });
+    const btns=document.querySelectorAll("#quiz-container .answer-submit");
+    btns.forEach(btn=>{ if(!btn.disabled){ btn.click(); } });
 }
-
 function filterExam(type){
-    const qs = cachedQuestionNodes.length ? cachedQuestionNodes : document.querySelectorAll("#quiz-container .question");
+    const qs = cachedQuestionNodes;
     qs.forEach((q)=>{
         let show = true;
         if(type==="todo" && q.classList.contains("answered")){ show = false; }
@@ -3426,18 +2413,20 @@ function filterExam(type){
     });
 }
 
+/* ========== TOGGLE ALL ANSWERS (MƯỢT) ========== */
 function toggleAllAnswers(){
     if(currentTab==="EXAM"){ alert("Chức năng này không áp dụng trong phần Thi thử."); return; }
-    answersRevealed=!answersRevealed;
-    const btn=document.getElementById("showAnswersBtn");
+    answersRevealed = !answersRevealed;
+    const btn = document.getElementById("showAnswersBtn");
     if(btn){
-        btn.innerHTML=answersRevealed
+        btn.innerHTML = answersRevealed
             ? '<i class="fas fa-eye-slash" style="font-size:12px;"></i> Ẩn toàn bộ đáp án'
             : '<i class="fas fa-eye" style="font-size:12px;"></i> Hiện toàn bộ đáp án';
     }
-
-    const container=document.getElementById("quiz-container");
-    container.querySelectorAll(".option.correct-target").forEach(li=>{
+    // Chỉ duyệt option trong cache, dùng data-is-correct
+    const container = document.getElementById("quiz-container");
+    const options = container.querySelectorAll('.option[data-is-correct="1"]');
+    options.forEach(li=>{
         li.classList.toggle("revealed-correct", answersRevealed);
         let badge = li.querySelector(".reveal-badge");
         if(answersRevealed && !badge){
@@ -3451,6 +2440,33 @@ function toggleAllAnswers(){
     });
 }
 
+/* ========== REFRESH CORRECTNESS (khi Firebase cập nhật) ========== */
+function refreshCorrectnessInPlace(){
+    cachedQuestionNodes.forEach(qBlock=>{
+        const item = parsedQuestionsDS.find(x => x.id === qBlock.dataset.questionId);
+        if(!item) return;
+        const newCorrect = getCorrectAnswer(item);
+        qBlock.querySelectorAll(".option").forEach(li=>{
+            const inp = li.querySelector("input");
+            const lbl = inp.dataset.answerLabel;
+            const isNowCorrect = (lbl === newCorrect);
+            li.dataset.isCorrect = isNowCorrect ? "1" : "0";
+            if(!li.classList.contains("answered")){
+                li.classList.remove("correct","wrong","revealed-correct");
+                const oldBadge = li.querySelector(".reveal-badge");
+                if(oldBadge) oldBadge.remove();
+                if(isNowCorrect && answersRevealed){
+                    li.classList.add("revealed-correct");
+                    const badge = document.createElement("span");
+                    badge.className = "reveal-badge";
+                    badge.innerText = "✓ Đáp án";
+                    li.appendChild(badge);
+                }
+            }
+        });
+    });
+}
+
 /* ========== EDIT ANSWER MODAL ========== */
 function openEditModal(item, qBlock){
     editTargetItem = item;
@@ -3458,46 +2474,44 @@ function openEditModal(item, qBlock){
     editSelectedAnswer = getCorrectAnswer(item);
 
     document.getElementById("editQuestionPreview").innerText = item.q;
-
     document.getElementById("editPasswordInput").value = "";
     document.getElementById("editPasswordWrap").classList.remove("error");
     document.getElementById("editErrorMsg").classList.remove("show");
+    document.getElementById("editOldAnswer").innerText = editSelectedAnswer || "?";
 
-    const oldAnsEl = document.getElementById("editOldAnswer");
-    oldAnsEl.innerText = editSelectedAnswer || "?";
-
-    const newAnsEl = document.getElementById("editNewAnswer");
-    newAnsEl.innerText = "?";
-    newAnsEl.classList.add("empty");
+    const newEl = document.getElementById("editNewAnswer");
+    newEl.innerText = "?";
+    newEl.classList.add("empty");
 
     const list = document.getElementById("editOptionsList");
     list.innerHTML = "";
 
-    const correctAnswer = getCorrectAnswer(item);
-    item.arr.forEach((opt, idx)=>{
-        const match = opt.match(/^\*?([A-E])\s*[\.\:\s]\s*(.*)$/);
-        const label = match ? match[1] : String.fromCharCode(65+idx);
-        const text = match ? match[2] : opt;
+    const optionNodes = qBlock.querySelectorAll(".option");
+    optionNodes.forEach(li=>{
+        const inp = li.querySelector("input");
+        const textEl = li.querySelector(".option-text");
+        const label = inp.dataset.answerLabel;
+        const text = textEl ? textEl.innerText : "";
 
         const row = document.createElement("label");
         row.className = "edit-option-row";
         row.dataset.label = label;
-        if(label === correctAnswer){ row.classList.add("selected"); }
+        if(label === editSelectedAnswer) row.classList.add("selected");
 
         const radio = document.createElement("input");
         radio.type = "radio";
         radio.name = "editAnswerChoice";
         radio.value = label;
-        if(label === correctAnswer){ radio.checked = true; }
+        if(label === editSelectedAnswer) radio.checked = true;
 
         radio.addEventListener("change", ()=>{
             editSelectedAnswer = label;
             document.querySelectorAll("#editOptionsList .edit-option-row").forEach(r=>{
                 r.classList.toggle("selected", r.dataset.label === label);
             });
-            const newVal = document.getElementById("editNewAnswer");
-            newVal.innerText = label;
-            newVal.classList.remove("empty");
+            const nv = document.getElementById("editNewAnswer");
+            nv.innerText = label;
+            nv.classList.remove("empty");
         });
 
         const lbl = document.createElement("span");
@@ -3512,7 +2526,7 @@ function openEditModal(item, qBlock){
         row.appendChild(lbl);
         row.appendChild(txt);
 
-        if(label === correctAnswer){
+        if(label === editSelectedAnswer){
             const badge = document.createElement("span");
             badge.className = "edit-option-badge";
             badge.innerText = "Hiện tại";
@@ -3590,37 +2604,28 @@ async function submitEditAnswer(){
     };
     lastCorrectionsJSON = JSON.stringify(window.firebaseCorrections);
 
-    updateSingleQuestionAnswer(editTargetBlock, editTargetItem);
-
-    closeEditModal();
-    showToast("Đã lưu đáp án mới: " + editSelectedAnswer);
-}
-
-function updateSingleQuestionAnswer(qBlock, item){
-    if(!qBlock) return;
-    const newCorrect = getCorrectAnswer(item);
-
+    // Cập nhật DOM câu hiện tại
+    const qBlock = editTargetBlock;
+    const item = editTargetItem;
     qBlock.querySelectorAll(".option").forEach(li=>{
         const inp = li.querySelector("input");
         const lbl = inp.dataset.answerLabel;
-        li.classList.remove("correct-target","correct","wrong","revealed-correct");
+        const isNowCorrect = (lbl === editSelectedAnswer);
+        li.dataset.isCorrect = isNowCorrect ? "1" : "0";
+        li.classList.remove("correct","wrong","revealed-correct");
         const oldBadge = li.querySelector(".reveal-badge");
         if(oldBadge) oldBadge.remove();
-
-        if(lbl === newCorrect){
-            li.classList.add("correct-target");
-            if(answersRevealed){
-                li.classList.add("revealed-correct");
-                const badge = document.createElement("span");
-                badge.className = "reveal-badge";
-                badge.innerText = "✓ Đáp án";
-                li.appendChild(badge);
-            }
+        if(isNowCorrect && answersRevealed){
+            li.classList.add("revealed-correct");
+            const badge = document.createElement("span");
+            badge.className = "reveal-badge";
+            badge.innerText = "✓ Đáp án";
+            li.appendChild(badge);
         }
     });
 
     const status = qBlock.querySelector(".edit-status");
-    if(status) {
+    if(status){
         status.classList.remove("original");
         status.innerText = "Đã cập nhật đáp án";
     }
@@ -3629,9 +2634,14 @@ function updateSingleQuestionAnswer(qBlock, item){
         qBlock.classList.remove("answered","wrong-question");
         qBlock.querySelectorAll(".option").forEach(li=>li.style.pointerEvents="");
         const sb = qBlock.querySelector(".answer-submit");
-        if(sb){ sb.disabled = false; }
+        if(sb){ sb.disabled = false; sb.innerHTML = '<i class="fas fa-check"></i><span>Trả lời</span>'; }
+        const oldPill = qBlock.querySelector(".status-pill");
+        if(oldPill) oldPill.remove();
         updateNavColors();
     }
+
+    closeEditModal();
+    showToast("Đã lưu đáp án mới: " + editSelectedAnswer);
 }
 
 /* ========== BUILD QUIZ ========== */
@@ -3648,10 +2658,9 @@ function buildQuizHTML(){
     else{ sourceQuestions=[...parsedQuestionsDS]; }
 
     let questions=sourceQuestions;
-
     if(shuffleMode){
         questions=shuffleArray(questions);
-    }else if(customShuffle){
+    } else if(customShuffle){
         let start=Math.max(0,customFrom-1);
         let end=Math.min(questions.length-1,customTo-1);
         if(start<=end){
@@ -3665,16 +2674,15 @@ function buildQuizHTML(){
     document.getElementById("totalQuestion").innerText=questions.length;
 
     const savedForTab = answersCache[currentTab] || {};
-
     const fragment = document.createDocumentFragment();
 
     questions.forEach((item,qIndex)=>{
-        const qBlock=document.createElement("div");
         const isTF = item.arr.length === 2;
+        const qBlock = document.createElement("div");
         qBlock.className = "question " + (isTF ? "tf" : "mc");
-        qBlock.dataset.questionId=item.id;
+        qBlock.dataset.questionId = item.id;
 
-        const correctAnswer=getCorrectAnswer(item);
+        const correctAnswer = getCorrectAnswer(item);
 
         const qInner = document.createElement("div");
         qInner.className = "question-inner";
@@ -3699,14 +2707,12 @@ function buildQuizHTML(){
             ? '<i class="fas fa-check-double"></i> Đúng / Sai'
             : '<i class="fas fa-list-ul"></i> Đúng nhất';
         qMeta.appendChild(typePill);
-
         qContent.appendChild(qMeta);
 
         const qText = document.createElement("div");
         qText.className = "question-text";
         qText.innerText = item.q;
         qContent.appendChild(qText);
-
         qHead.appendChild(qContent);
 
         const bmBtn = document.createElement("button");
@@ -3720,56 +2726,57 @@ function buildQuizHTML(){
 
         qInner.appendChild(qHead);
 
-        let optionsData=item.arr.map(opt=>{
-            const match=opt.match(/^\*?([A-E])/);
-            const label=match ? match[1] : "";
-            const clean=opt.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
-            const isCorrect=label===correctAnswer;
-            return {label,text:clean,isCorrect};
+        let optionsData = item.arr.map(opt=>{
+            const match = opt.match(/^\*?([A-E])/);
+            const label = match ? match[1] : "";
+            const clean = opt.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
+            const isCorrect = label === correctAnswer;
+            return {label, text: clean, isCorrect};
         });
 
-        optionsData=shuffleArray(optionsData);
+        optionsData = shuffleArray(optionsData);
 
-        const optionsList=document.createElement("div");
-        optionsList.className="options";
+        const optionsList = document.createElement("div");
+        optionsList.className = "options";
 
         const savedForQuestion = savedForTab[item.id] || [];
 
         optionsData.forEach(opt=>{
-            const label=document.createElement("label");
-            label.className="option"+(opt.isCorrect?" correct-target":"")+(opt.isCorrect && answersRevealed?" revealed-correct":"");
+            const label = document.createElement("label");
+            let cls = "option";
+            // Chỉ thêm revealed-correct nếu đã reveal, KHÔNG thêm correct-target
+            if(opt.isCorrect && answersRevealed) cls += " revealed-correct";
+            label.className = cls;
+            label.dataset.isCorrect = opt.isCorrect ? "1" : "0";
 
-            const inp=document.createElement("input");
-            inp.type="radio";
-            inp.name="q_"+item.id;
-            inp.dataset.answerLabel=opt.label;
+            const inp = document.createElement("input");
+            inp.type = "radio";
+            inp.name = "q_" + item.id;
+            inp.dataset.answerLabel = opt.label;
+            if(savedForQuestion.includes(opt.text)){ inp.checked = true; }
 
-            if(savedForQuestion.includes(opt.text)){
-                inp.checked=true;
-            }
-
-            inp.addEventListener("change",()=>{
-                if(!answersCache[currentTab]){ answersCache[currentTab]={}; }
-                answersCache[currentTab][item.id]=[opt.text];
-                localStorage.setItem("answers",JSON.stringify(answersCache));
+            inp.addEventListener("change", ()=>{
+                if(!answersCache[currentTab]){ answersCache[currentTab] = {}; }
+                answersCache[currentTab][item.id] = [opt.text];
+                localStorage.setItem("answers", JSON.stringify(answersCache));
             });
 
             const lblLetter = document.createElement("span");
             lblLetter.className = "option-label-letter";
             lblLetter.innerText = opt.label;
 
-            const span=document.createElement("span");
+            const span = document.createElement("span");
             span.className = "option-text";
-            span.innerText=opt.text;
+            span.innerText = opt.text;
 
             label.appendChild(inp);
             label.appendChild(lblLetter);
             label.appendChild(span);
 
             if(opt.isCorrect && answersRevealed){
-                const badge=document.createElement("span");
-                badge.className="reveal-badge";
-                badge.innerText="✓ Đáp án";
+                const badge = document.createElement("span");
+                badge.className = "reveal-badge";
+                badge.innerText = "✓ Đáp án";
                 label.appendChild(badge);
             }
 
@@ -3781,44 +2788,44 @@ function buildQuizHTML(){
         const actions = document.createElement("div");
         actions.className = "question-actions";
 
-        const status=document.createElement("span");
-        status.className="edit-status";
-        const firebaseEdited=window.firebaseCorrections && window.firebaseCorrections[item.id];
+        const status = document.createElement("span");
+        status.className = "edit-status";
+        const firebaseEdited = window.firebaseCorrections && window.firebaseCorrections[item.id];
         if(firebaseEdited){
-            status.innerText="Đã cập nhật đáp án";
-        }else{
+            status.innerText = "Đã cập nhật đáp án";
+        } else {
             status.classList.add("original");
-            status.innerText="Đáp án gốc";
+            status.innerText = "Đáp án gốc";
         }
         actions.appendChild(status);
 
         const actionBtns = document.createElement("div");
         actionBtns.className = "action-buttons";
 
-        const editBtn=document.createElement("button");
-        editBtn.className="btn edit-answer";
-        editBtn.innerHTML='<i class="fas fa-pen-to-square"></i><span>Sửa đáp án</span>';
-        editBtn.onclick=function(e){
+        const editBtn = document.createElement("button");
+        editBtn.className = "btn edit-answer";
+        editBtn.innerHTML = '<i class="fas fa-pen-to-square"></i><span>Sửa đáp án</span>';
+        editBtn.onclick = function(e){
             e.preventDefault();
             openEditModal(item, qBlock);
         };
         actionBtns.appendChild(editBtn);
 
-        const submitBtn=document.createElement("button");
-        submitBtn.className="btn submit answer-submit";
-        submitBtn.innerHTML='<i class="fas fa-check"></i><span>Trả lời</span>';
+        const submitBtn = document.createElement("button");
+        submitBtn.className = "btn submit answer-submit";
+        submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Trả lời</span>';
 
-        submitBtn.onclick=function(){
+        submitBtn.onclick = function(){
             if(qBlock.classList.contains("answered")){ return; }
             qBlock.classList.add("answered");
 
-            const allOpts=optionsList.querySelectorAll(".option");
-            let allCorrect=true;
+            const allOpts = optionsList.querySelectorAll(".option");
+            let allCorrect = true;
 
             allOpts.forEach(li=>{
-                const inp=li.querySelector("input");
-                const isCorrect=li.classList.contains("correct-target");
-                li.style.pointerEvents="none";
+                const inp = li.querySelector("input");
+                const isCorrect = li.dataset.isCorrect === "1";
+                li.style.pointerEvents = "none";
                 inp.disabled = true;
                 if(isCorrect){
                     li.classList.add("correct");
@@ -3829,16 +2836,16 @@ function buildQuizHTML(){
                         li.appendChild(badge);
                     }
                 }
-                if(inp.checked && !isCorrect){ li.classList.add("wrong"); allCorrect=false; }
-                if(!inp.checked && isCorrect){ allCorrect=false; }
+                if(inp.checked && !isCorrect){ li.classList.add("wrong"); allCorrect = false; }
+                if(!inp.checked && isCorrect){ allCorrect = false; }
             });
 
-            submitBtn.disabled=true;
+            submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Đã trả lời</span>';
 
             if(allCorrect){
                 correctCount++;
-                document.getElementById("correctAnswer").innerText=correctCount;
+                document.getElementById("correctAnswer").innerText = correctCount;
             }
 
             const statusPill = document.createElement("span");
@@ -3848,14 +2855,14 @@ function buildQuizHTML(){
                 : '<i class="fas fa-xmark"></i> Sai';
             qMeta.appendChild(statusPill);
 
-            if(!progress[currentTab]){ progress[currentTab]={}; }
-            progress[currentTab][item.id]=true;
-            localStorage.setItem("progress",JSON.stringify(progress));
+            if(!progress[currentTab]){ progress[currentTab] = {}; }
+            progress[currentTab][item.id] = true;
+            localStorage.setItem("progress", JSON.stringify(progress));
 
             if(!allCorrect){ qBlock.classList.add("wrong-question"); }
 
             updateNavColors();
-            if(currentTab==="EXAM"){ updateProgress(); }
+            if(currentTab === "EXAM"){ updateProgress(); }
         };
 
         actionBtns.appendChild(submitBtn);
@@ -3880,131 +2887,157 @@ function reloadQuiz(){
     localStorage.removeItem("answers");
     localStorage.removeItem("progress");
     answersCache = {};
-    progress={};
-    correctCount=0;
-    shuffleMode=false;
-    customShuffle=false;
-    document.getElementById("shuffleBtn").innerHTML='<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: OFF</span>';
-    document.getElementById("correctAnswer").innerText="0";
+    progress = {};
+    correctCount = 0;
+    shuffleMode = false;
+    customShuffle = false;
+    document.getElementById("shuffleBtn").innerHTML = '<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: OFF</span>';
+    document.getElementById("correctAnswer").innerText = "0";
     buildQuizHTML();
     buildNavPanel();
     window.scrollTo({top:0,behavior:"smooth"});
 }
 
+/* ========== SHUFFLE MƯỢT (không rebuild) ========== */
 function toggleShuffle(btn){
-    shuffleMode=!shuffleMode;
-    customShuffle=false;
-    btn.innerHTML='<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: '+(shuffleMode?"ON":"OFF")+'</span>';
-    buildQuizHTML();
-    buildNavPanel();
+    shuffleMode = !shuffleMode;
+    customShuffle = false;
+    btn.innerHTML = '<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: ' + (shuffleMode ? "ON" : "OFF") + '</span>';
+    reorderQuestionsInPlace();
 }
 
-function openShufflePopup(){ document.getElementById("shufflePopup").style.display="flex"; }
-function closeShufflePopup(){ document.getElementById("shufflePopup").style.display="none"; }
+function openShufflePopup(){ document.getElementById("shufflePopup").style.display = "flex"; }
+function closeShufflePopup(){ document.getElementById("shufflePopup").style.display = "none"; }
 
 function shuffleCustom(){
     if(shuffleMode){
-        shuffleMode=false;
-        document.getElementById("shuffleBtn").innerHTML='<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: OFF</span>';
+        shuffleMode = false;
+        document.getElementById("shuffleBtn").innerHTML = '<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: OFF</span>';
     }
-    const from=parseInt(document.getElementById("popupFrom").value);
-    const to=parseInt(document.getElementById("popupTo").value);
+    const from = parseInt(document.getElementById("popupFrom").value);
+    const to = parseInt(document.getElementById("popupTo").value);
     if(isNaN(from)||isNaN(to)||from<1||to<from){ alert("Nhập khoảng hợp lệ."); return; }
-    const total=parsedQuestionsDS.length;
+    const total = cachedQuestionNodes.length;
     if(from>total||to>total){ alert("Vượt quá số câu."); return; }
-    customShuffle=true;
-    customFrom=from;
-    customTo=to;
-    buildQuizHTML();
-    buildNavPanel();
+    customShuffle = true;
+    customFrom = from;
+    customTo = to;
+    reorderQuestionsInPlace();
     closeShufflePopup();
 }
 
-function goToQuestion(){
-    const num=parseInt(document.getElementById("gotoQuestion").value);
-    if(!num)return;
-    const qs=document.querySelectorAll("#quiz-container .question");
-    if(num<1||num>qs.length){ alert("Không tồn tại câu này"); return; }
-    qs[num-1].scrollIntoView({behavior:"smooth",block:"start"});
+function reorderQuestionsInPlace(){
+    const container = document.getElementById("quiz-container");
+    const nodes = cachedQuestionNodes;
+    if(!nodes.length) return;
+
+    let newOrder;
+    if(shuffleMode){
+        newOrder = shuffleArray(nodes);
+    } else if(customShuffle){
+        const start = Math.max(0, customFrom - 1);
+        const end = Math.min(nodes.length - 1, customTo - 1);
+        if(start > end){ return; }
+        const before = nodes.slice(0, start);
+        const middle = shuffleArray(nodes.slice(start, end + 1));
+        const after = nodes.slice(end + 1);
+        newOrder = [...before, ...middle, ...after];
+    } else {
+        return;
+    }
+
+    // Dùng fragment để append lại (không tạo mới node)
+    const frag = document.createDocumentFragment();
+    newOrder.forEach(n => frag.appendChild(n));
+    container.appendChild(frag);
+
+    cachedQuestionNodes = newOrder;
+    // Cập nhật lại số câu hiển thị
+    cachedQuestionNodes.forEach((q, i)=>{
+        const numEl = q.querySelector(".question-number");
+        if(numEl) numEl.innerText = (i + 1);
+    });
+    buildNavPanel();
 }
 
+/* ========== NAV ========== */
+function goToQuestion(){
+    const num = parseInt(document.getElementById("gotoQuestion").value);
+    if(!num) return;
+    if(num<1 || num>cachedQuestionNodes.length){ alert("Không tồn tại câu này"); return; }
+    cachedQuestionNodes[num-1].scrollIntoView({behavior:"smooth",block:"start"});
+}
 function toggleBookmark(id, btn){
     if(bookmarks.includes(id)){
-        bookmarks=bookmarks.filter(x=>x!==id);
+        bookmarks = bookmarks.filter(x=>x!==id);
         btn.classList.remove("active");
-    }else{
+    } else {
         bookmarks.push(id);
         btn.classList.add("active");
     }
-    localStorage.setItem("bookmarks",JSON.stringify(bookmarks));
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
     updateNavColors();
 }
-
 function toggleNav(){
-    const panel=document.getElementById("navPanel");
-    panel.style.display=panel.style.display==="block" ? "none" : "block";
+    const panel = document.getElementById("navPanel");
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
 }
-document.getElementById("navHandle").onclick=toggleNav;
+document.getElementById("navHandle").onclick = toggleNav;
 
 function buildNavPanel(){
-    const grid=document.getElementById("navGrid");
-    grid.innerHTML="";
-    const qs = cachedQuestionNodes.length ? cachedQuestionNodes : document.querySelectorAll("#quiz-container .question");
-    const fragment = document.createDocumentFragment();
-    qs.forEach((q,i)=>{
-        const btn=document.createElement("button");
-        btn.className="navBtn";
-        btn.innerText=i+1;
-        btn.onclick=function(){
+    const grid = document.getElementById("navGrid");
+    grid.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    cachedQuestionNodes.forEach((q, i)=>{
+        const btn = document.createElement("button");
+        btn.className = "navBtn";
+        btn.innerText = i + 1;
+        btn.onclick = function(){
             q.scrollIntoView({behavior:"smooth",block:"start"});
             toggleNav();
         };
-        fragment.appendChild(btn);
+        frag.appendChild(btn);
     });
-    grid.appendChild(fragment);
+    grid.appendChild(frag);
     updateNavColors();
 }
 
 function updateNavColors(){
-    const btns=document.querySelectorAll(".navBtn");
-    const qs = cachedQuestionNodes.length ? cachedQuestionNodes : document.querySelectorAll("#quiz-container .question");
-    btns.forEach((btn,i)=>{
-        btn.className="navBtn";
-        const q=qs[i];
+    const btns = document.querySelectorAll(".navBtn");
+    btns.forEach((btn, i)=>{
+        btn.className = "navBtn";
+        const q = cachedQuestionNodes[i];
         if(!q){ btn.classList.add("todo"); return; }
         if(q.classList.contains("answered")){
             if(q.classList.contains("wrong-question")){ btn.classList.add("wrong"); }
-            else{ btn.classList.add("correct"); }
-        }else{ btn.classList.add("todo"); }
-        const qid=q.dataset.questionId;
-        if(bookmarks.includes(qid)){ btn.className="navBtn bookmark"; }
+            else { btn.classList.add("correct"); }
+        } else { btn.classList.add("todo"); }
+        if(bookmarks.includes(q.dataset.questionId)){ btn.className = "navBtn bookmark"; }
     });
 }
 
-function showPopup(title,text,icon="",confirmMode=false){
-    document.getElementById("popupTitle").innerText=title;
-    document.getElementById("popupText").innerText=text;
-    document.getElementById("popupIcon").innerHTML=icon;
-    document.getElementById("cancelBtn").style.display=confirmMode ? "block" : "none";
-    document.getElementById("popup").style.display="flex";
-    return new Promise(resolve=>{ popupCallback=resolve; });
+/* ========== POPUP / TOAST / UTILS ========== */
+function showPopup(title, text, icon="", confirmMode=false){
+    document.getElementById("popupTitle").innerText = title;
+    document.getElementById("popupText").innerText = text;
+    document.getElementById("popupIcon").innerHTML = icon;
+    document.getElementById("cancelBtn").style.display = confirmMode ? "block" : "none";
+    document.getElementById("popup").style.display = "flex";
+    return new Promise(resolve=>{ popupCallback = resolve; });
 }
-
 function closePopup(result){
-    document.getElementById("popup").style.display="none";
-    if(popupCallback){ popupCallback(result); popupCallback=null; }
+    document.getElementById("popup").style.display = "none";
+    if(popupCallback){ popupCallback(result); popupCallback = null; }
 }
-
 function shuffleArray(arr){
-    let a=[...arr];
-    for(let i=a.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [a[i],a[j]]=[a[j],a[i]];
+    let a = [...arr];
+    for(let i=a.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
     }
     return a;
 }
-
-function showToast(msg, isError = false){
+function showToast(msg, isError=false){
     const toast = document.getElementById("toast");
     const text = document.getElementById("toastText");
     const icon = toast.querySelector("i");
@@ -4016,192 +3049,174 @@ function showToast(msg, isError = false){
     showToast._t = setTimeout(()=>toast.classList.remove("show"), 2500);
 }
 
+/* ========== TEST CREATE ========== */
 function generateTest(){
-    const input=document.getElementById("testInput").value;
+    const input = document.getElementById("testInput").value;
     if(!input.trim()){ alert("Vui lòng nhập nội dung câu hỏi."); return; }
-
-    const lines=input.split("\n").map(l=>l.trim()).filter(l=>l);
-    let questions=[];
-    let current=null;
-
+    const lines = input.split("\n").map(l=>l.trim()).filter(l=>l);
+    let questions = [];
+    let current = null;
     lines.forEach(line=>{
         if(/^\d+[\.\:\s]/.test(line)){
             if(current){ questions.push(current); }
-            current={q:line.replace(/^\d+[\.\:\s]\s*/,""),arr:[]};
-        }else if(/^[\*]?[A-E][\.\:\s]/.test(line)){
+            current = {q:line.replace(/^\d+[\.\:\s]\s*/,""),arr:[]};
+        } else if(/^[\*]?[A-E][\.\:\s]/.test(line)){
             if(current){ current.arr.push(line); }
         }
     });
-
     if(current){ questions.push(current); }
     if(questions.length===0){ alert("Không tìm thấy câu hỏi."); return; }
 
-    testQuestions=questions;
-    testAnswers={};
+    testQuestions = questions;
+    testAnswers = {};
 
-    let previewHtml=`<div class="test-questions">`;
-    previewHtml+=`<strong>Đã tạo ${questions.length} câu hỏi</strong><br><br>`;
-
+    let previewHtml = `<div class="test-questions">`;
+    previewHtml += `<strong>Đã tạo ${questions.length} câu hỏi</strong><br><br>`;
     questions.forEach((q,i)=>{
-        previewHtml+=`<div class="q-item">`;
-        previewHtml+=`<b>Câu ${i+1}:</b> ${q.q}<br>`;
+        previewHtml += `<div class="q-item">`;
+        previewHtml += `<b>Câu ${i+1}:</b> ${q.q}<br>`;
         q.arr.forEach(a=>{
-            const isCorrect=a.startsWith("*");
-            const text=a.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
-            previewHtml+=`<span style="color:${isCorrect?"#f472b6":"#c4b5fd"};">${isCorrect?"●":"○"} ${text}</span><br>`;
+            const isCorrect = a.startsWith("*");
+            const text = a.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
+            previewHtml += `<span style="color:${isCorrect?"#f472b6":"#c4b5fd"};">${isCorrect?"●":"○"} ${text}</span><br>`;
             if(isCorrect){
-                if(!testAnswers[i]){ testAnswers[i]=[]; }
+                if(!testAnswers[i]){ testAnswers[i] = []; }
                 testAnswers[i].push(text);
             }
         });
-        previewHtml+=`</div>`;
+        previewHtml += `</div>`;
     });
-    previewHtml+=`</div>`;
+    previewHtml += `</div>`;
 
-    document.getElementById("testPreview").innerHTML=previewHtml;
+    document.getElementById("testPreview").innerHTML = previewHtml;
     document.getElementById("testPreview").classList.remove("hidden");
-    document.getElementById("testResult").innerHTML=`Đã tạo ${questions.length} câu hỏi thành công!`;
+    document.getElementById("testResult").innerHTML = `Đã tạo ${questions.length} câu hỏi thành công!`;
 
     renderTestQuiz();
     document.getElementById("testQuizContainer").classList.remove("hidden");
 }
 
 function renderTestQuiz(){
-    const container=document.getElementById("testQuizInner");
-    container.innerHTML="";
-
+    const container = document.getElementById("testQuizInner");
+    container.innerHTML = "";
     if(testQuestions.length===0){
-        container.innerHTML="<p style='color:#c4b5fd;'>Chưa có đề nào.</p>";
+        container.innerHTML = "<p style='color:#c4b5fd;'>Chưa có đề nào.</p>";
         return;
     }
-
     const fragment = document.createDocumentFragment();
-
-    testQuestions.forEach((item,idx)=>{
-        const div=document.createElement("div");
-        div.className="question mc";
-        div.style.marginBottom="16px";
+    testQuestions.forEach((item, idx)=>{
+        const div = document.createElement("div");
+        div.className = "question mc";
+        div.style.marginBottom = "16px";
 
         const inner = document.createElement("div");
         inner.className = "question-inner";
 
-        const title=document.createElement("div");
-        title.className="question-title";
+        const title = document.createElement("div");
+        title.className = "question-text";
         title.style.marginBottom = "12px";
-        title.style.fontWeight = "600";
-        title.style.fontSize = "14px";
-        title.innerHTML=`<span>Câu ${idx+1}: ${item.q}</span>`;
+        title.innerHTML = `<span>Câu ${idx+1}: ${item.q}</span>`;
         inner.appendChild(title);
 
-        const optDiv=document.createElement("div");
-        optDiv.className="options";
+        const optDiv = document.createElement("div");
+        optDiv.className = "options";
 
-        let opts=item.arr.map(a=>{
-            let clean=a.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
-            let isCorrect=a.startsWith("*");
-            let label=a.match(/^\*?([A-E])/)[1];
-            return {label,text:clean,isCorrect};
+        let opts = item.arr.map(a=>{
+            let clean = a.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
+            let isCorrect = a.startsWith("*");
+            let label = a.match(/^\*?([A-E])/)[1];
+            return {label, text:clean, isCorrect};
         });
-
-        opts=shuffleArray(opts);
+        opts = shuffleArray(opts);
 
         opts.forEach(opt=>{
-            const label=document.createElement("label");
-            label.className="option";
-
-            const inp=document.createElement("input");
-            inp.type="radio";
-            inp.name=`test_q_${idx}`;
-            inp.value=opt.text;
+            const label = document.createElement("label");
+            label.className = "option";
+            const inp = document.createElement("input");
+            inp.type = "radio";
+            inp.name = `test_q_${idx}`;
+            inp.value = opt.text;
             label.appendChild(inp);
-
             const lblLetter = document.createElement("span");
             lblLetter.className = "option-label-letter";
             lblLetter.innerText = opt.label;
             label.appendChild(lblLetter);
-
-            const span=document.createElement("span");
+            const span = document.createElement("span");
             span.className = "option-text";
-            span.innerText=opt.text;
+            span.innerText = opt.text;
             label.appendChild(span);
-
             optDiv.appendChild(label);
         });
-
         inner.appendChild(optDiv);
         div.appendChild(inner);
         fragment.appendChild(div);
     });
-
     container.appendChild(fragment);
 }
 
 function checkTestAnswers(){
-    const qs=document.querySelectorAll("#testQuizInner .question");
-    let correct=0;
-    let total=qs.length;
-
-    qs.forEach((q,idx)=>{
-        const selected=q.querySelector("input:checked");
-        const correctAns=testAnswers[idx]||[];
-
+    const qs = document.querySelectorAll("#testQuizInner .question");
+    let correct = 0;
+    let total = qs.length;
+    qs.forEach((q, idx)=>{
+        const selected = q.querySelector("input:checked");
+        const correctAns = testAnswers[idx] || [];
         q.querySelectorAll(".option").forEach(li=>{
             li.classList.remove("correct","wrong");
-            const inp=li.querySelector("input");
+            const inp = li.querySelector("input");
             if(inp && correctAns.includes(inp.value)){ li.classList.add("correct"); }
         });
-
         if(selected){
             if(correctAns.includes(selected.value)){ correct++; }
-            else{ selected.closest(".option").classList.add("wrong"); }
+            else { selected.closest(".option").classList.add("wrong"); }
         }
     });
-
-    const score=total ? (correct/total*10).toFixed(2) : "0.00";
-    document.getElementById("testResultScore").innerHTML=`Kết quả: ${correct}/${total} đúng · Điểm: ${score}/10`;
+    const score = total ? (correct/total*10).toFixed(2) : "0.00";
+    document.getElementById("testResultScore").innerHTML = `Kết quả: ${correct}/${total} đúng · Điểm: ${score}/10`;
 }
 
 function resetTestQuiz(){
     document.querySelectorAll("#testQuizInner .question input").forEach(inp=>inp.checked=false);
     document.querySelectorAll("#testQuizInner .option").forEach(li=>{ li.classList.remove("correct","wrong"); });
-    document.getElementById("testResultScore").innerHTML="";
+    document.getElementById("testResultScore").innerHTML = "";
 }
 
 function uploadFile(event){
-    const file=event.target.files[0];
-    if(!file)return;
-    const reader=new FileReader();
-    reader.onload=function(e){
-        document.getElementById("testInput").value=e.target.result;
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+        document.getElementById("testInput").value = e.target.result;
         setTimeout(generateTest, 0);
     };
     reader.readAsText(file);
-    event.target.value="";
+    event.target.value = "";
 }
 
 function clearTest(){
-    document.getElementById("testInput").value="";
-    document.getElementById("testPreview").innerHTML="";
+    document.getElementById("testInput").value = "";
+    document.getElementById("testPreview").innerHTML = "";
     document.getElementById("testPreview").classList.add("hidden");
-    document.getElementById("testResult").innerHTML="";
-    document.getElementById("testResultScore").innerHTML="";
+    document.getElementById("testResult").innerHTML = "";
+    document.getElementById("testResultScore").innerHTML = "";
     document.getElementById("testQuizContainer").classList.add("hidden");
-    testQuestions=[];
-    testAnswers={};
+    testQuestions = [];
+    testAnswers = {};
 }
 
-const backBtn=document.getElementById("backToTop");
-
-window.addEventListener("scroll",()=>{
-    backBtn.style.display=window.scrollY>300 ? "flex" : "none";
+/* ========== BACK TO TOP ========== */
+const backBtn = document.getElementById("backToTop");
+window.addEventListener("scroll", ()=>{
+    backBtn.style.display = window.scrollY > 300 ? "flex" : "none";
 });
+backBtn.onclick = ()=>{ window.scrollTo({top:0,behavior:"smooth"}); };
 
-backBtn.onclick=()=>{ window.scrollTo({top:0,behavior:"smooth"}); };
-
+/* ========== INIT ========== */
 window.addEventListener("load", function(){
-    const saved=localStorage.getItem("currentSubject");
+    const saved = localStorage.getItem("currentSubject");
     if(saved && SUBJECTS[saved]){
-        currentSubject=saved;
+        currentSubject = saved;
+        window.currentSubject = saved;
         document.getElementById("subjectSelect").classList.add("hidden");
         loadQuestionFiles();
     } else {
@@ -4225,22 +3240,17 @@ document.addEventListener("keydown", (e)=>{
 (function () {
   const AUDIO_SRC = "web.mp3"; 
   const VOLUME    = 1;          
-
   let played = false;           
   function playOnce() {
     if (played) return;
     played = true;
-
     const audio = new Audio(AUDIO_SRC);
-    audio.volume  = VOLUME;
+    audio.volume = VOLUME;
     audio.preload = "auto";
-
     const p = audio.play();
     if (p && p.catch) {
       p.catch(() => {
-     
         played = false;
-
         const unlock = () => {
           removeUnlock();
           if (played) return;
@@ -4249,20 +3259,17 @@ document.addEventListener("keydown", (e)=>{
           a.volume = VOLUME;
           a.play().catch(() => {});
         };
-
         const removeUnlock = () => {
           ["click", "touchstart", "keydown", "pointerdown"].forEach(ev =>
             document.removeEventListener(ev, unlock)
           );
         };
-
         ["click", "touchstart", "keydown", "pointerdown"].forEach(ev =>
           document.addEventListener(ev, unlock, { passive: true })
         );
       });
     }
   }
-
   playOnce();
 })();
 </script>
@@ -4270,7 +3277,6 @@ document.addEventListener("keydown", (e)=>{
 <script>
 (function() {
   'use strict';
-
   const widget       = document.getElementById('musicWidget');
   const toggleBtn    = document.getElementById('musicToggle');
   const playBtn      = document.getElementById('musicPlay');
@@ -4284,56 +3290,35 @@ document.addEventListener("keydown", (e)=>{
   const iconPlay     = playBtn.querySelector('.music-icon-play');
   const iconPause    = playBtn.querySelector('.music-icon-pause');
 
-  toggleBtn.addEventListener('click', () => {
-    widget.classList.toggle('collapsed');
-  });
-
+  toggleBtn.addEventListener('click', () => { widget.classList.toggle('collapsed'); });
   const formatTime = (s) => {
     if (isNaN(s)) return '0:00';
     const m = Math.floor(s / 60);
     const sec = Math.floor(s % 60);
     return `${m}:${sec < 10 ? '0' + sec : sec}`;
   };
-
   playBtn.addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play().catch(err => console.log('Không phát được:', err));
-    } else {
-      audio.pause();
-    }
+    if (audio.paused) { audio.play().catch(err => console.log('Không phát được:', err)); }
+    else { audio.pause(); }
   });
-
-  audio.addEventListener('play', () => {
-    iconPlay.style.display  = 'none';
-    iconPause.style.display = 'block';
-  });
-
-  audio.addEventListener('pause', () => {
-    iconPlay.style.display  = 'block';
-    iconPause.style.display = 'none';
-  });
-
+  audio.addEventListener('play', () => { iconPlay.style.display = 'none'; iconPause.style.display = 'block'; });
+  audio.addEventListener('pause', () => { iconPlay.style.display = 'block'; iconPause.style.display = 'none'; });
   audio.addEventListener('timeupdate', () => {
     if (audio.duration) {
       progressFill.style.width = (audio.currentTime / audio.duration) * 100 + '%';
       currentEl.textContent = formatTime(audio.currentTime);
     }
   });
-
   audio.addEventListener('loadedmetadata', () => {
     durationEl.textContent = formatTime(audio.duration);
     const src = audio.src.split('/').pop().replace(/\.(mp3|wav|ogg)$/i, '');
     titleEl.textContent = decodeURIComponent(src);
   });
-
   progressBar.addEventListener('click', (e) => {
     const rect = progressBar.getBoundingClientRect();
     audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
   });
-
-  volumeEl.addEventListener('input', (e) => {
-    audio.volume = parseFloat(e.target.value);
-  });
+  volumeEl.addEventListener('input', (e) => { audio.volume = parseFloat(e.target.value); });
   audio.volume = 0.6;
 })();
 </script>
