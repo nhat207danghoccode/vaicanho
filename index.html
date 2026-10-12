@@ -1547,7 +1547,7 @@
   .edit-btn.save.loading .spinner { display: inline-block; }
   .edit-btn.save.loading i { display: none; }
 
-  /* ============ CONFIRM MODAL (NEW) ============ */
+  /* ============ CONFIRM MODAL ============ */
   #confirmModal {
     position: fixed; inset: 0;
     background: rgba(5, 5, 12, 0.85);
@@ -2119,7 +2119,6 @@ B. Đúng"></textarea>
   </div>
 </div>
 
-<!-- ============ CONFIRM MODAL (NEW) ============ -->
 <div id="confirmModal">
   <div class="confirm-box">
     <div class="confirm-icon-wrap">
@@ -2260,7 +2259,6 @@ B. Đúng"></textarea>
     const mainApp = document.getElementById('mainApp');
     mainApp.style.display = 'block';
     gateRoot.classList.add('gate-hidden');
-    // ← FIX: remove hẳn khỏi DOM để không ngốn GPU
     setTimeout(() => {
       gateRoot.style.display = 'none';
       gateRoot.style.animation = 'none';
@@ -2360,7 +2358,7 @@ let examQuestions = [];
 let examSeconds = 2700;
 let examInterval = null;
 let examFinished = false;
-let currentTab = "DS";
+let currentTab = "";
 let correctCount = 0;
 let bookmarks = JSON.parse(localStorage.getItem("bookmarks")||"[]");
 if(bookmarks.length && typeof bookmarks[0]==="number"){ bookmarks=[]; localStorage.removeItem("bookmarks"); }
@@ -2420,6 +2418,15 @@ function showActiveContainer(){
     const active = getActiveContainer();
     if(active) active.classList.remove("hidden");
 }
+function clearAllContainers(){
+    ["quiz-container","quiz-container-TF","quiz-container-MC"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = "";
+    });
+    cachedQuestionNodes = [];
+    originalOrder = [];
+    navBtnsCache = [];
+}
 
 function showSubjectSelect(){
     const sel = document.getElementById("subjectSelect");
@@ -2451,6 +2458,11 @@ function changeSubject(){
     localStorage.removeItem("currentSubject");
     currentSubject="";
     window.currentSubject = "";
+    // ← FIX: reset toàn bộ state để môn mới load sạch
+    currentTab = "";
+    clearAllContainers();
+    parsedQuestionsDS = [];
+    document.getElementById("subjectTitle").innerText = "🖥 Đang tải...";
     showSubjectSelect();
 }
 
@@ -2485,6 +2497,10 @@ async function loadQuestionFiles(){
                 refreshCorrectnessInPlace();
             }
         });
+
+        // ← FIX: xóa sạch container + reset tab trước khi switchTab
+        clearAllContainers();
+        currentTab = "";
 
         switchTab("DS");
     }catch(err){
@@ -2522,7 +2538,11 @@ function getCorrectAnswer(item){
 }
 
 function switchTab(type){
-    if(currentTab === type && type !== "EXAM") return;
+    // ← FIX: chỉ return sớm nếu tab đang active VÀ container đã có nội dung
+    if(currentTab === type && type !== "EXAM"){
+        const c = getActiveContainer();
+        if(c && c.children.length > 0) return;
+    }
 
     currentTab=type;
     document.querySelectorAll(".tab-bar .tab-btn").forEach(b=>b.classList.remove("activeTab"));
@@ -2551,12 +2571,12 @@ function switchTab(type){
         startExam();
         buildQuizHTML();
         buildNavPanel();
+        showActiveContainer();
         return;
     }
 
     clearInterval(examInterval);
 
-    // ← FIX: mỗi tab có container riêng, chỉ build nếu rỗng
     const container = getActiveContainer();
     if(container.children.length === 0){
         buildQuizHTML();
@@ -3141,10 +3161,7 @@ function reloadQuiz(){
         showBtn.innerHTML = '<i class="fas fa-eye" style="font-size:12px;"></i> Hiện toàn bộ đáp án';
     }
 
-    ["quiz-container","quiz-container-TF","quiz-container-MC"].forEach(id=>{
-        const el = document.getElementById(id);
-        if(el) el.innerHTML = "";
-    });
+    clearAllContainers();
 
     buildQuizHTML();
     buildNavPanel();
@@ -3296,7 +3313,6 @@ function closePopup(result){
     if(popupCallback){ popupCallback(result); popupCallback = null; }
 }
 
-// ====== CONFIRM MODAL (NEW) ======
 function showConfirm(opts){
     document.getElementById("confirmTitle").innerText = opts.title || "Xác nhận";
     document.getElementById("confirmDesc").innerHTML = opts.desc || "";
@@ -3315,13 +3331,11 @@ function closeConfirm(result){
     if(result && typeof confirmCallback === "function"){
         const cb = confirmCallback;
         confirmCallback = null;
-        // Cho animation đóng chạy xong rồi mới gọi callback
         setTimeout(cb, 200);
     } else {
         confirmCallback = null;
     }
 }
-// Đóng khi click ngoài
 document.getElementById("confirmModal").addEventListener("click", (e)=>{
     if(e.target.id === "confirmModal") closeConfirm(false);
 });
