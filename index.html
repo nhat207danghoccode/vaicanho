@@ -544,6 +544,8 @@
     border: 1px solid rgba(255, 255, 255, 0.06);
     transition: border-color 0.2s, transform 0.2s;
     position: relative; overflow: hidden;
+    will-change: transform;
+    contain: layout style;
   }
   #mainApp .question::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
@@ -639,6 +641,7 @@
     gap: 12px; background: rgba(255, 255, 255, 0.02);
     color: #c8c8d8; font-size: 13.5px; font-weight: 500;
     position: relative;
+    will-change: background-color, border-color;
   }
   #mainApp .option:hover {
     background: rgba(168, 85, 247, 0.08);
@@ -2090,8 +2093,9 @@ B. Đúng"></textarea>
       }, 500);
     } else {
       errorMsg.classList.remove('show');
-      void errorMsg.offsetWidth;
-      errorMsg.classList.add('show');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => errorMsg.classList.add('show'));
+      });
       passwordInput.value = '';
       passwordInput.focus();
       usernameInput.parentElement.style.animation = 'shake 0.5s ease';
@@ -2190,11 +2194,24 @@ window.firebaseCorrections = {};
 
 let answersCache = JSON.parse(localStorage.getItem("answers") || "{}");
 let cachedQuestionNodes = [];
+let originalOrder = [];          // ← FIX: lưu thứ tự gốc
+let navBtnsCache = [];           // ← FIX: cache nav buttons
 let lastCorrectionsJSON = "";
 
 let editTargetItem = null;
 let editTargetBlock = null;
 let editSelectedAnswer = null;
+
+// ← FIX: debounce lưu localStorage
+let saveTimer = null;
+function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+        localStorage.setItem("answers", JSON.stringify(answersCache));
+        localStorage.setItem("progress", JSON.stringify(progress));
+        localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    }, 400);
+}
 
 const SUBJECTS = {
     GPSL:{name:"Pháp luật", ds:"DS.txt"},
@@ -2747,7 +2764,7 @@ function buildQuizHTML(){
             inp.addEventListener("change", ()=>{
                 if(!answersCache[currentTab]){ answersCache[currentTab] = {}; }
                 answersCache[currentTab][item.id] = [opt.text];
-                localStorage.setItem("answers", JSON.stringify(answersCache));
+                scheduleSave(); // ← FIX: debounce
             });
 
             const lblLetter = document.createElement("span");
@@ -2846,7 +2863,7 @@ function buildQuizHTML(){
 
             if(!progress[currentTab]){ progress[currentTab] = {}; }
             progress[currentTab][item.id] = true;
-            localStorage.setItem("progress", JSON.stringify(progress));
+            scheduleSave(); // ← FIX: debounce
 
             if(!allCorrect){ qBlock.classList.add("wrong-question"); }
 
@@ -2868,6 +2885,7 @@ function buildQuizHTML(){
 
     container.appendChild(fragment);
     cachedQuestionNodes = Array.from(container.querySelectorAll(".question"));
+    originalOrder = [...cachedQuestionNodes]; // ← FIX: lưu thứ tự gốc
 
     updateNavColors();
 }
@@ -2926,13 +2944,14 @@ function reloadQuiz(){
         }
     }
 
+    originalOrder = [...cachedQuestionNodes]; // ← FIX: reset order gốc
     updateNavColors();
     window.scrollTo({top:0,behavior:"smooth"});
 }
 
 function toggleShuffle(btn){
     shuffleMode = !shuffleMode;
-    customShuffle = false;
+    if(shuffleMode) customShuffle = false; // ← FIX: tắt custom khi bật full
     btn.innerHTML = '<i class="fas fa-shuffle" style="font-size:12px;"></i><span>Xáo Full: ' + (shuffleMode ? "ON" : "OFF") + '</span>';
     reorderQuestionsInPlace();
 }
@@ -2959,53 +2978,57 @@ function shuffleCustom(){
 
 function reorderQuestionsInPlace(){
     const container = document.getElementById("quiz-container");
-    const nodes = cachedQuestionNodes;
-    if(!nodes.length) return;
+    if(!cachedQuestionNodes.length) return;
 
     let newOrder;
     if(shuffleMode){
-        newOrder = shuffleArray(nodes);
+        newOrder = shuffleArray([...originalOrder]);
     } else if(customShuffle){
         const start = Math.max(0, customFrom - 1);
-        const end = Math.min(nodes.length - 1, customTo - 1);
-        if(start > end){ return; }
-        const before = nodes.slice(0, start);
-        const middle = shuffleArray(nodes.slice(start, end + 1));
-        const after = nodes.slice(end + 1);
+        const end = Math.min(originalOrder.length - 1, customTo - 1);
+        if(start > end) return;
+        const before = originalOrder.slice(0, start);
+        const middle = shuffleArray(originalOrder.slice(start, end + 1));
+        const after = originalOrder.slice(end + 1);
         newOrder = [...before, ...middle, ...after];
     } else {
-        return;
+        // ← FIX: trả về thứ tự gốc khi tắt cả 2 chế độ
+        newOrder = [...originalOrder];
     }
 
     const frag = document.createDocumentFragment();
     newOrder.forEach(n => frag.appendChild(n));
-    container.appendChild(frag);
+    container.replaceChildren(frag); // ← FIX: replaceChildren nhanh hơn
 
     cachedQuestionNodes = newOrder;
 
     for(let i = 0; i < cachedQuestionNodes.length; i++){
-        const q = cachedQuestionNodes[i];
-        const numEl = q.querySelector(".question-number");
+        const numEl = cachedQuestionNodes[i].querySelector(".question-number");
         if(numEl) numEl.textContent = (i + 1);
     }
 
-    const navBtns = document.querySelectorAll(".navBtn");
-    if(navBtns.length === cachedQuestionNodes.length){
-        for(let i = 0; i < navBtns.length; i++){
-            navBtns[i].innerText = i + 1;
-        }
-        updateNavColors();
-    } else {
-        buildNavPanel();
-    }
+    buildNavPanel(); // ← FIX: rebuild nav để số đúng
+    updateNavColors();
 }
 
 function goToQuestion(){
     const num = parseInt(document.getElementById("gotoQuestion").value);
     if(!num) return;
-    if(num<1 || num>cachedQuestionNodes.length){ alert("Không tồn tại câu này"); return; }
-    cachedQuestionNodes[num-1].scrollIntoView({behavior:"smooth",block:"start"});
+    if(num < 1 || num > cachedQuestionNodes.length){
+        showToast("Không tồn tại câu này", true);
+        return;
+    }
+    const target = cachedQuestionNodes[num - 1];
+    target.scrollIntoView({behavior:"smooth", block:"start"});
+
+    // ← FIX: highlight để người dùng biết đã đến đúng câu
+    target.style.transition = "box-shadow .4s";
+    target.style.boxShadow = "0 0 0 3px rgba(236,72,153,.6)";
+    setTimeout(()=>{ target.style.boxShadow = ""; }, 1200);
+
+    document.getElementById("gotoQuestion").value = "";
 }
+
 function toggleBookmark(id, btn){
     if(bookmarks.includes(id)){
         bookmarks = bookmarks.filter(x=>x!==id);
@@ -3014,7 +3037,7 @@ function toggleBookmark(id, btn){
         bookmarks.push(id);
         btn.classList.add("active");
     }
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    scheduleSave(); // ← FIX: debounce
     updateNavColors();
 }
 function toggleNav(){
@@ -3027,6 +3050,7 @@ function buildNavPanel(){
     const grid = document.getElementById("navGrid");
     grid.innerHTML = "";
     const frag = document.createDocumentFragment();
+    navBtnsCache = [];
     cachedQuestionNodes.forEach((q, i)=>{
         const btn = document.createElement("button");
         btn.className = "navBtn";
@@ -3036,23 +3060,26 @@ function buildNavPanel(){
             toggleNav();
         };
         frag.appendChild(btn);
+        navBtnsCache.push(btn);
     });
     grid.appendChild(frag);
     updateNavColors();
 }
 
 function updateNavColors(){
-    const btns = document.querySelectorAll(".navBtn");
-    btns.forEach((btn, i)=>{
-        btn.className = "navBtn";
+    // ← FIX: dùng cache, không querySelectorAll mỗi lần
+    for(let i = 0; i < navBtnsCache.length; i++){
+        const btn = navBtnsCache[i];
         const q = cachedQuestionNodes[i];
-        if(!q){ btn.classList.add("todo"); return; }
+        btn.className = "navBtn";
+        if(!q){ btn.classList.add("todo"); continue; }
         if(q.classList.contains("answered")){
-            if(q.classList.contains("wrong-question")){ btn.classList.add("wrong"); }
-            else { btn.classList.add("correct"); }
-        } else { btn.classList.add("todo"); }
+            btn.classList.add(q.classList.contains("wrong-question") ? "wrong" : "correct");
+        } else {
+            btn.classList.add("todo");
+        }
         if(bookmarks.includes(q.dataset.questionId)){ btn.className = "navBtn bookmark"; }
-    });
+    }
 }
 
 function showPopup(title, text, icon="", confirmMode=false){
