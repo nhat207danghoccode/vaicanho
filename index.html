@@ -9,7 +9,6 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-
   #gateRoot {
     position: fixed; inset: 0; z-index: 9999999999;
     background: #0a0a12; overflow: hidden;
@@ -439,7 +438,6 @@
     .badge-text .name { font-size: 0.75rem; }
   }
 
-  
   #mainApp *{box-sizing:border-box;}
   #mainApp{
       font-family:'Inter','Segoe UI',Arial,sans-serif;
@@ -1040,7 +1038,6 @@
       #mainApp .action-buttons .btn{flex:1;justify-content:center;}
   }
 
-  
   #subjectSelect {
       position: fixed; inset: 0;
       background:
@@ -1103,7 +1100,6 @@
       box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
   }
 
-  /* ============ MUSIC WIDGET ============ */
   .music-widget {
     position: fixed; bottom: 20px; right: 20px; z-index: 9999;
     font-family: -apple-system, 'Segoe UI', sans-serif;
@@ -1263,7 +1259,6 @@
     .music-play { width: 38px; height: 38px; }
   }
 
-  /* ============ EDIT MODAL ============ */
   #editAnswerModal {
     position: fixed; inset: 0;
     background: rgba(5, 5, 12, 0.85);
@@ -1547,7 +1542,6 @@
   .edit-btn.save.loading .spinner { display: inline-block; }
   .edit-btn.save.loading i { display: none; }
 
-  /* ============ CONFIRM MODAL ============ */
   #confirmModal {
     position: fixed; inset: 0;
     background: rgba(5, 5, 12, 0.85);
@@ -2458,11 +2452,10 @@ function changeSubject(){
     localStorage.removeItem("currentSubject");
     currentSubject="";
     window.currentSubject = "";
-    // ← FIX: reset toàn bộ state để môn mới load sạch
     currentTab = "";
     clearAllContainers();
     parsedQuestionsDS = [];
-    document.getElementById("subjectTitle").innerText = "🖥 Đang tải...";
+    document.getElementById("subjectTitle").innerText = "Đang tải...";
     showSubjectSelect();
 }
 
@@ -2498,7 +2491,6 @@ async function loadQuestionFiles(){
             }
         });
 
-        // ← FIX: xóa sạch container + reset tab trước khi switchTab
         clearAllContainers();
         currentTab = "";
 
@@ -2538,7 +2530,6 @@ function getCorrectAnswer(item){
 }
 
 function switchTab(type){
-    
     if(currentTab === type && type !== "EXAM"){
         const c = getActiveContainer();
         if(c && c.children.length > 0) return;
@@ -2976,15 +2967,25 @@ function buildQuizHTML(){
 
         qInner.appendChild(qHead);
 
-        let optionsData = item.arr.map(opt=>{
+        // ===== FIX: Xáo text, GIỮ NGUYÊN chữ A/B/C/D theo VỊ TRÍ =====
+        const rawOptions = item.arr.map(opt=>{
             const match = opt.match(/^\*?([A-E])/);
             const label = match ? match[1] : "";
             const clean = opt.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
             const isCorrect = label === correctAnswer;
-            return {label, text: clean, isCorrect};
+            return {text: clean, isCorrect};
         });
 
-        optionsData = shuffleArray(optionsData);
+        // Xáo chỉ text + isCorrect
+        const shuffled = shuffleArray(rawOptions);
+
+        // Gán label theo VỊ TRÍ HIỂN THỊ (cố định A, B, C, D...)
+        const labels = ["A","B","C","D","E"];
+        const optionsData = shuffled.map((opt, idx) => ({
+            label: labels[idx],
+            text: opt.text,
+            isCorrect: opt.isCorrect
+        }));
 
         const optionsList = document.createElement("div");
         optionsList.className = "options";
@@ -3431,13 +3432,19 @@ function renderTestQuiz(){
         const optDiv = document.createElement("div");
         optDiv.className = "options";
 
-        let opts = item.arr.map(a=>{
+        // ===== FIX: Xáo text, giữ label theo vị trí =====
+        const rawOpts = item.arr.map(a=>{
             let clean = a.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"");
             let isCorrect = a.startsWith("*");
-            let label = a.match(/^\*?([A-E])/)[1];
-            return {label, text:clean, isCorrect};
+            return {text:clean, isCorrect};
         });
-        opts = shuffleArray(opts);
+        const shuffledOpts = shuffleArray(rawOpts);
+        const labels = ["A","B","C","D","E"];
+        const opts = shuffledOpts.map((opt, i) => ({
+            label: labels[i],
+            text: opt.text,
+            isCorrect: opt.isCorrect
+        }));
 
         opts.forEach(opt=>{
             const label = document.createElement("label");
