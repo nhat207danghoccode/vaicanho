@@ -9,7 +9,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* ============ GATE / LOADING / LOGIN ============ */
+
   #gateRoot {
     position: fixed; inset: 0; z-index: 9999999999;
     background: #0a0a12; overflow: hidden;
@@ -439,7 +439,7 @@
     .badge-text .name { font-size: 0.75rem; }
   }
 
-  /* ============ MAIN APP ============ */
+  
   #mainApp *{box-sizing:border-box;}
   #mainApp{
       font-family:'Inter','Segoe UI',Arial,sans-serif;
@@ -1040,7 +1040,7 @@
       #mainApp .action-buttons .btn{flex:1;justify-content:center;}
   }
 
-  /* ============ SUBJECT SELECT ============ */
+  
   #subjectSelect {
       position: fixed; inset: 0;
       background:
@@ -2538,7 +2538,7 @@ function getCorrectAnswer(item){
 }
 
 function switchTab(type){
-    // ← FIX: chỉ return sớm nếu tab đang active VÀ container đã có nội dung
+    
     if(currentTab === type && type !== "EXAM"){
         const c = getActiveContainer();
         if(c && c.children.length > 0) return;
