@@ -1819,10 +1819,10 @@ B. Đúng"></textarea>
       </div>
 
       <div class="chips" id="chipsRow">
-        <button class="chip on"><i class="fas fa-list"></i> Tất cả</button>
-        <button class="chip"><i class="fas fa-circle-dot"></i> Chưa làm</button>
-        <button class="chip"><i class="fas fa-circle-check"></i> Đã làm</button>
-        <button class="chip"><i class="fas fa-circle-xmark"></i> Làm sai</button>
+        <button class="chip on" data-filter="all"><i class="fas fa-list"></i> Tất cả</button>
+        <button class="chip" data-filter="todo"><i class="fas fa-circle-dot"></i> Chưa làm</button>
+        <button class="chip" data-filter="done"><i class="fas fa-circle-check"></i> Đã làm</button>
+        <button class="chip" data-filter="wrong"><i class="fas fa-circle-xmark"></i> Làm sai</button>
       </div>
 
       <div class="info-strip" id="infoStrip">
@@ -2425,6 +2425,34 @@ function getCorrectAnswer(item){
     return match ? match[1] : null;
 }
 
+function resetChips(){
+    document.querySelectorAll(".chip").forEach((c, i) => {
+        c.classList.toggle("on", i === 0);
+    });
+}
+
+function applyChipFilter(filter){
+    if(!cachedQuestionNodes.length) return;
+    cachedQuestionNodes.forEach(q => {
+        const isAnswered = q.classList.contains("answered");
+        const isWrong = q.classList.contains("wrong-question");
+        let show = true;
+        if(filter === "todo") show = !isAnswered;
+        else if(filter === "done") show = isAnswered;
+        else if(filter === "wrong") show = isAnswered && isWrong;
+        q.classList.toggle("hidden", !show);
+    });
+}
+
+document.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+        document.querySelectorAll(".chip").forEach(c => c.classList.remove("on"));
+        chip.classList.add("on");
+        const filter = chip.dataset.filter || "all";
+        applyChipFilter(filter);
+    });
+});
+
 function switchTab(type){
     if(currentTab === type && type !== "EXAM"){
         const c = getActiveContainer();
@@ -2436,6 +2464,8 @@ function switchTab(type){
         }
     }
 
+    const isSameTab = (currentTab === type);
+
     currentTab=type;
     document.querySelectorAll(".side-btn").forEach(b=>b.classList.remove("activeTab"));
     const btn = document.querySelector(`.side-btn[data-tab="${type}"]`);
@@ -2446,6 +2476,7 @@ function switchTab(type){
     document.getElementById("examTop").classList.add("hidden");
     document.getElementById("infoStrip").classList.remove("hidden");
     document.getElementById("chipsRow").classList.remove("hidden");
+    resetChips();
 
     if(type==="NOTE"){
         document.getElementById("noteBox").classList.remove("hidden");
@@ -2473,12 +2504,12 @@ function switchTab(type){
 
     clearInterval(examInterval);
 
-    const container = getActiveContainer();
-    if(container.children.length === 0){
+    if(!isSameTab || getActiveContainer().children.length === 0){
+        clearAllContainers();
         buildQuizHTML();
         buildNavPanel();
     } else {
-        cachedQuestionNodes = Array.from(container.children).filter(el => el.classList.contains("question"));
+        cachedQuestionNodes = Array.from(getActiveContainer().children).filter(el => el.classList.contains("q-item"));
         originalOrder = [...cachedQuestionNodes];
         buildNavPanel();
     }
