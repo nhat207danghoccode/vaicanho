@@ -1,0 +1,3717 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>RPG Ôn Thi</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@1.0.6/lib/three-vrm.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",
+  authDomain: "anime-f57e4.firebaseapp.com",
+  databaseURL: "https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "anime-f57e6",
+  storageBucket: "anime-f57e6.firebasestorage.app",
+  messagingSenderId: "546284227871",
+  appId: "1:546284227871:web:68e939a098af2211ad342a"
+};
+
+let db = null;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app);
+  console.log("[FB] Firebase initialized");
+} catch(e) { console.error("[FB] init error:", e); }
+
+window.FirebaseAPI = {
+  db,
+  async saveModelURL(category, slot, url, name) {
+    if (!db) throw new Error("Firebase chưa sẵn sàng");
+    await set(ref(db, `models/${category}/${slot}`), { url, name: name || slot, updatedAt: Date.now() });
+    return true;
+  },
+  async getModelURL(category, slot) {
+    if (!db) return null;
+    try { const snap = await get(ref(db, `models/${category}/${slot}`)); return snap.exists() ? snap.val() : null; } catch(e) { return null; }
+  },
+  async getAllModels(category) {
+    if (!db) return {};
+    try { const snap = await get(ref(db, `models/${category}`)); return snap.exists() ? snap.val() : {}; } catch(e) { return {}; }
+  },
+  async deleteModel(category, slot) {
+    if (!db) return false;
+    try { await remove(ref(db, `models/${category}/${slot}`)); return true; } catch(e) { return false; }
+  }
+};
+console.log("[FB] FirebaseAPI ready");
+</script>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;overflow:hidden;}
+  :root{
+    --c1:#8b5cf6; --c2:#ec4899;
+    --c1-soft:rgba(139,92,246,.12); --c2-soft:rgba(236,72,153,.12);
+    --c1-line:rgba(139,92,246,.3);
+    --bg:#0a0618; --bg-2:#150a2e;
+    --surface:rgba(255,255,255,.06);
+    --surface-2:rgba(255,255,255,.03);
+    --line:rgba(255,255,255,.08);
+    --line-2:rgba(255,255,255,.12);
+    --txt:#f5f3ff; --txt-2:#c4b5fd; --txt-dim:#8b83a8;
+    --gold:#fbbf24; --gold-2:#f59e0b;
+    --green:#34d399; --red:#fb7185; --cyan:#06b6d4;
+    --font:'Be Vietnam Pro',system-ui,sans-serif;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  body{
+    font-family:var(--font); background:var(--bg); color:var(--txt);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    overscroll-behavior:none;
+  }
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(139,92,246,.18), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(236,72,153,.12), transparent 70%);
+  }
+
+  #bootLoader{
+    position:fixed; inset:0; z-index:99999;
+    background:radial-gradient(ellipse 60% 40% at 50% 0%, rgba(139,92,246,.25), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(236,72,153,.15), transparent 70%),
+      linear-gradient(180deg, #0a0618 0%, #150a2e 50%, #0a0618 100%);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    padding:24px; transition:opacity .6s ease, transform .6s ease;
+  }
+  #bootLoader.hidden{ opacity:0; transform:scale(1.05); pointer-events:none; }
+  .boot-card{
+    width:100%; max-width:380px;
+    background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1.5px solid var(--line-2); border-radius:24px;
+    padding:32px 26px 26px; text-align:center; position:relative; overflow:hidden;
+    box-shadow:0 40px 80px -20px rgba(0,0,0,.7);
+  }
+  .boot-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c1));
+    background-size:200% auto; animation:expShimmer 3s linear infinite;
+  }
+  .boot-logo{
+    width:80px; height:80px; border-radius:24px; margin:0 auto 20px;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:34px;
+    box-shadow:0 16px 40px -10px var(--c1), 0 0 0 8px rgba(139,92,246,.08);
+    animation:bootPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes bootPulse{0%,100%{ transform:scale(1);}50%{ transform:scale(1.06);}}
+  .boot-title{
+    font-size:22px; font-weight:900;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text; margin-bottom:6px;
+  }
+  .boot-sub{ font-size:12.5px; color:var(--txt-dim); font-weight:600; margin-bottom:24px; }
+  .boot-status{
+    display:flex; align-items:center; gap:10px;
+    padding:12px 16px; border-radius:14px;
+    background:rgba(139,92,246,.08); border:1px solid rgba(139,92,246,.25);
+    margin-bottom:16px; min-height:52px;
+  }
+  .boot-spinner{
+    width:20px; height:20px; border-radius:50%; flex-shrink:0;
+    border:2.5px solid rgba(139,92,246,.2); border-top-color:var(--c1);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .boot-status.done .boot-spinner{
+    animation:none; border-color:var(--green);
+    background:linear-gradient(135deg,#34d399,#10b981); position:relative;
+  }
+  .boot-status.done .boot-spinner::after{
+    content:"✓"; position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:12px; font-weight:900;
+  }
+  .boot-status.error .boot-spinner{
+    animation:none; border-color:var(--red);
+    background:linear-gradient(135deg,#fb7185,#ef4444);
+  }
+  .boot-status.error .boot-spinner::after{
+    content:"✕"; position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-size:11px; font-weight:900;
+  }
+  .boot-status-text{ flex:1; text-align:left; font-size:12.5px; font-weight:700; }
+  .boot-status-sub{ font-size:10px; color:var(--txt-dim); font-weight:600; margin-top:2px; }
+  .boot-foot{ font-size:10.5px; color:var(--txt-dim); font-weight:600; margin-top:8px; }
+  .boot-foot i{ color:var(--c2); }
+
+  #hub{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;overflow:hidden;}
+  #hub.hidden{display:none;}
+
+  .rpg-top{
+    position:relative; z-index:10;
+    display:flex; align-items:center; gap:10px;
+    padding:calc(8px + var(--safe-top)) 12px 8px;
+    background:linear-gradient(180deg, rgba(10,6,24,.95), rgba(10,6,24,.6));
+    backdrop-filter:blur(20px); border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .rpg-avatar{
+    width:44px; height:44px; border-radius:13px; flex-shrink:0;
+    position:relative; overflow:hidden; cursor:pointer;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    box-shadow:0 6px 18px -6px var(--c1);
+    transition:transform .2s;
+  }
+  .rpg-avatar:active{transform:scale(.95);}
+  .rpg-avatar img{width:100%;height:100%;object-fit:cover;}
+  .rpg-avatar .edit-ic{
+    position:absolute;inset:0;background:rgba(0,0,0,.55);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:.2s;font-size:13px;color:#fff;
+  }
+  .rpg-avatar:hover .edit-ic{opacity:1;}
+  .rpg-avatar .lvl-badge{
+    position:absolute;bottom:-2px;right:-2px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    color:#422006;font-size:8px;font-weight:900;
+    padding:1px 6px;border-radius:6px;
+    border:2px solid var(--bg);z-index:2;
+  }
+  .rpg-user{flex:1;min-width:0;}
+  .rpg-user .name{font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px;}
+  .rpg-user .name .edit-name{
+    width:18px;height:18px;border-radius:6px;
+    background:var(--surface);border:1px solid var(--line-2);
+    color:var(--txt-2);cursor:pointer;font-size:8px;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .rpg-user .title{
+    font-size:9.5px;font-weight:700;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    display:flex;align-items:center;gap:4px;margin-top:1px;
+  }
+  .rpg-user .title i{font-size:8px;-webkit-text-fill-color:var(--gold);color:var(--gold);}
+  .rpg-stats{display:flex;gap:4px;flex-shrink:0;}
+  .stat-pill{
+    display:flex;align-items:center;gap:4px;
+    padding:5px 8px;border-radius:9px;
+    background:var(--surface);border:1px solid var(--line);
+    font-size:10.5px;font-weight:800;
+  }
+  .stat-pill.cloud i{color:var(--txt-dim);font-size:9px;}
+  .stat-pill.cloud.on i{color:var(--green);}
+  .stat-pill.coin i{color:var(--gold);}
+  .stat-pill.coin b{color:var(--gold);}
+  .stat-pill.combo i{color:var(--c2);}
+  .stat-pill.combo b{color:var(--c2);}
+
+  .btn-back-web{
+    display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:11px;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    color:#fff;font-size:13px;border:none;cursor:pointer;flex-shrink:0;
+    transition:.2s;
+  }
+  .btn-back-web:active{transform:scale(.92);}
+
+  .exp-strip{
+    padding:5px 12px 7px;
+    background:linear-gradient(180deg, rgba(10,6,24,.6), transparent);
+    flex-shrink:0;
+  }
+  .exp-top{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:9px;font-weight:800;color:var(--txt-dim);
+    text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;
+  }
+  .exp-top .lbl{display:flex;align-items:center;gap:4px;}
+  .exp-top .lbl i{color:var(--c1);font-size:8px;}
+  .exp-top b{color:#fff;font-weight:900;font-size:10px;}
+  .exp-track{height:6px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;border:1px solid rgba(255,255,255,.05);}
+  .exp-fill{
+    height:100%;width:0%;border-radius:999px;
+    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c1));
+    background-size:200% 100%;
+    transition:width .8s cubic-bezier(.16,1,.3,1);
+    animation:expShimmer 3s linear infinite;
+  }
+  @keyframes expShimmer{0%{background-position:0% 0;}100%{background-position:200% 0;}}
+
+  .stage-area{
+    position:relative;z-index:5;
+    flex:1 1 auto;min-height:0;overflow:hidden;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 45%, rgba(139,92,246,.4) 0%, rgba(236,72,153,.15) 40%, transparent 70%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(139,92,246,.3) 0%, transparent 60%),
+      linear-gradient(180deg, #0a0618 0%, #150a2e 45%, #0a0618 100%);
+  }
+  .floor-grid{
+    position:absolute;bottom:0;left:0;right:0;height:55%;z-index:2;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(139,92,246,.22) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,.22) 1px, transparent 1px);
+    background-size:50px 50px;background-position:center bottom;
+    transform:perspective(380px) rotateX(62deg);transform-origin:bottom center;
+    mask-image:linear-gradient(to top, #000 0%, transparent 92%);
+    -webkit-mask-image:linear-gradient(to top, #000 0%, transparent 92%);
+  }
+  .spotlight{
+    position:absolute;top:-15%;left:50%;transform:translateX(-50%);
+    width:90%;height:85%;z-index:2;pointer-events:none;
+    background:radial-gradient(ellipse 50% 60% at 50% 20%, rgba(255,255,255,.1) 0%, transparent 60%);
+    filter:blur(24px);
+  }
+  #stage3D{
+    position:absolute;inset:0;width:100%;height:100%;
+    display:block;touch-action:none;cursor:grab;z-index:3;
+  }
+
+  .stage-loader{
+    position:absolute; inset:0; z-index:9;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(10,6,24,.5); backdrop-filter:blur(8px); pointer-events:none;
+  }
+  .stage-loader.on{ display:flex; }
+  .stage-loader .spinner-wrap{display:flex; flex-direction:column; align-items:center; gap:14px;}
+  .stage-loader .big-spinner{
+    width:52px; height:52px; border-radius:50%;
+    border:4px solid rgba(139,92,246,.2);
+    border-top-color:var(--c1); border-right-color:var(--c2);
+    animation:spin 1s linear infinite;
+  }
+  .stage-loader .lbl{
+    font-size:12px; font-weight:800; color:#fff;
+    letter-spacing:1.5px; text-transform:uppercase;
+    text-shadow:0 2px 8px rgba(0,0,0,.6);
+  }
+  .stage-loader .sub{ font-size:10px; color:var(--txt-2); font-weight:600; margin-top:-8px; }
+
+  .stage-tools{position:absolute;top:12px;right:12px;z-index:8;display:flex;flex-direction:column;gap:6px;}
+  .stage-tool{
+    width:36px;height:36px;border-radius:11px;
+    background:rgba(10,6,24,.7);backdrop-filter:blur(14px);
+    border:1px solid var(--line-2);color:var(--txt-2);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:13px;transition:.2s;
+  }
+  .stage-tool:active{transform:scale(.9);background:var(--c1-soft);color:#fff;}
+
+  .study-question-badge{
+    position:absolute;top:12px;left:50%;transform:translateX(-50%);
+    z-index:9;
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 12px;border-radius:999px;
+    background:rgba(10,6,24,.75);backdrop-filter:blur(14px);
+    border:1px solid rgba(183,255,74,.35);
+    color:#b7ff4a;font-size:10px;font-weight:900;
+    white-space:nowrap;
+    animation:badgeGlow 2.2s ease-in-out infinite;
+    max-width:calc(100% - 100px);overflow:hidden;text-overflow:ellipsis;
+  }
+  @keyframes badgeGlow{50%{box-shadow:0 0 28px rgba(183,255,74,.35);}}
+  .study-question-badge::before{
+    content:"";width:5px;height:5px;border-radius:50%;
+    background:#b7ff4a;box-shadow:0 0 8px #b7ff4a;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{opacity:.4;transform:scale(.8);}}
+
+  .emote-btn{
+    position:absolute;bottom:14px;right:14px;z-index:9;
+    width:44px;height:44px;border-radius:14px;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    border:none;color:#fff;font-size:16px;cursor:pointer;
+    transition:.25s;display:flex;align-items:center;justify-content:center;
+  }
+  .emote-btn::after{
+    content:"";position:absolute;inset:-5px;border-radius:16px;
+    border:1.5px solid rgba(139,92,246,.5);
+    animation:emoteRing 2s ease-out infinite;
+  }
+  @keyframes emoteRing{0%{transform:scale(.9);opacity:.8;}100%{transform:scale(1.35);opacity:0;}}
+  .emote-btn:active{transform:scale(.9);}
+  .emote-btn.active{transform:scale(.9);}
+  .emote-btn.active::after{animation:none;opacity:0;}
+
+  .emote-panel{
+    position:absolute;bottom:66px;right:14px;z-index:9;
+    width:min(300px, calc(100vw - 28px));
+    max-height:min(420px, calc(100vh - 180px));
+    background:rgba(10,6,24,.96);backdrop-filter:blur(24px);
+    border:1px solid var(--line-2);border-radius:18px;
+    padding:10px;box-shadow:0 24px 60px -12px rgba(0,0,0,.75);
+    opacity:0;transform:translateY(12px) scale(.95);
+    pointer-events:none;transition:.3s cubic-bezier(.16,1,.3,1);
+    display:flex;flex-direction:column;
+  }
+  .emote-panel.on{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+  .emote-head{
+    display:flex;align-items:center;gap:6px;
+    font-size:10px;font-weight:800;text-transform:uppercase;
+    letter-spacing:1.2px;color:var(--txt-2);
+    padding:2px 4px 8px;margin-bottom:6px;border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .emote-head button{
+    margin-left:auto;width:22px;height:22px;border-radius:7px;
+    background:var(--surface);border:1px solid var(--line);
+    color:var(--txt-dim);cursor:pointer;font-size:11px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .emote-scroll{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;}
+  .emote-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+  .emote-item{
+    aspect-ratio:1;border-radius:11px;
+    background:var(--surface-2);border:1.5px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;cursor:pointer;transition:.2s;padding:5px 3px;color:var(--txt);
+    font-family:inherit;
+  }
+  .emote-item:active{transform:scale(.94);background:var(--c1-soft);border-color:var(--c1-line);}
+  .emote-item.active{
+    border-color:var(--c1);
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    color:#fff;
+  }
+  .emote-item .em{
+    width:28px;height:28px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;
+    background:linear-gradient(135deg, rgba(139,92,246,.25), rgba(236,72,153,.25));
+    border:1px solid rgba(255,255,255,.12);color:#fff;
+  }
+  .emote-item.fx .em{background:linear-gradient(135deg, rgba(251,113,133,.3), rgba(249,115,22,.3));}
+  .emote-item .lb{font-size:8.5px;font-weight:800;text-align:center;line-height:1.1;}
+  .emote-section{
+    grid-column:1/-1;font-size:9px;font-weight:800;color:var(--txt-dim);
+    text-transform:uppercase;letter-spacing:1.2px;
+    padding:6px 2px 2px;display:flex;align-items:center;gap:5px;
+  }
+  .emote-section i{font-size:9px;color:var(--c1);}
+
+  .bubble{
+    position:absolute;top:60px;left:50%;
+    transform:translateX(-50%) translateY(-10px) scale(.9);
+    background:linear-gradient(135deg, rgba(255,255,255,.98), rgba(245,243,255,.95));
+    border:2px solid var(--c1-line);border-radius:16px;
+    padding:8px 15px;font-size:12px;font-weight:700;color:#1a1430;
+    opacity:0;transition:.4s cubic-bezier(.16,1,.3,1);
+    pointer-events:none;white-space:nowrap;max-width:260px;z-index:10;
+    overflow:hidden;text-overflow:ellipsis;
+  }
+  .bubble.on{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}
+
+  .hub-menu{
+    position:relative;z-index:10;flex-shrink:0;
+    display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
+    max-width:600px;width:100%;margin:0 auto;
+    padding:10px 12px calc(12px + var(--safe-bottom));
+    background:linear-gradient(180deg, transparent 0%, rgba(10,6,24,.9) 40%);
+  }
+  .hub-btn{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:7px 2px;border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--line);color:var(--txt);font-family:inherit;
+    cursor:pointer;transition:.2s;
+  }
+  .hub-btn:active{transform:scale(.94);border-color:var(--c1-line);}
+  .hub-btn .ic{
+    width:32px;height:32px;border-radius:10px;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    color:#fff;font-size:13px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .hub-btn .tx{font-size:9.5px;font-weight:800;white-space:nowrap;}
+  .hub-btn.boss .ic{background:linear-gradient(135deg,#ef4444,#b91c1c);}
+  .hub-btn.upload .ic{background:linear-gradient(135deg,#06b6d4,#0e7490);}
+  .hub-btn.anim .ic{background:linear-gradient(135deg,#f59e0b,#b45309);}
+  .hub-btn.map .ic{background:linear-gradient(135deg,#10b981,#047857);}
+  .hub-btn.ach .ic{background:linear-gradient(135deg,#fbbf24,#f59e0b);}
+  .hub-btn.set .ic{background:linear-gradient(135deg,#6b7280,#374151);}
+  .hub-btn.shop .ic{background:linear-gradient(135deg,#ec4899,#9d174d);}
+
+  .overlay{
+    position:fixed;inset:0;z-index:150;
+    background:rgba(10,6,24,.8);backdrop-filter:blur(14px);
+    display:none;align-items:center;justify-content:center;
+    padding:16px;overflow-y:auto;
+  }
+  .overlay.on{display:flex;animation:fadeIn .3s;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .modal-box{
+    width:100%;max-width:520px;
+    background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1.5px solid var(--line-2);border-radius:20px;
+    overflow:hidden;box-shadow:0 40px 80px -20px rgba(0,0,0,.7);
+    animation:cardIn .5s;margin:auto;
+  }
+  @keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .modal-head{
+    padding:14px 16px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:12px;
+    background:linear-gradient(135deg, rgba(139,92,246,.15), rgba(236,72,153,.1));
+  }
+  .modal-head .ic{
+    width:38px;height:38px;border-radius:11px;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    color:#fff;font-size:15px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .modal-head h3{font-size:14px;font-weight:800;}
+  .modal-head p{font-size:10.5px;color:var(--txt-2);margin-top:1px;font-weight:600;}
+  .modal-head .close{
+    margin-left:auto;width:30px;height:30px;border-radius:9px;
+    border:1px solid var(--line-2);background:var(--surface);
+    color:var(--txt-dim);cursor:pointer;font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+    transition:.2s;flex-shrink:0;
+  }
+  .modal-head .close:active{background:rgba(251,113,133,.15);color:var(--red);}
+  .modal-body{padding:16px;max-height:70vh;overflow-y:auto;}
+
+  .mode-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;}
+  .mode-item{
+    padding:14px 8px;border-radius:14px;
+    background:var(--surface-2);border:1.5px solid var(--line);
+    cursor:pointer;transition:.2s;text-align:center;
+  }
+  .mode-item:active{transform:scale(.96);border-color:var(--c1-line);background:var(--c1-soft);}
+  .mode-item .mi{
+    width:38px;height:38px;border-radius:11px;margin:0 auto 8px;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;color:#fff;
+  }
+  .mode-item .mn{font-size:12px;font-weight:800;}
+  .mode-item .md{font-size:9.5px;color:var(--txt-dim);font-weight:600;margin-top:2px;}
+
+  .avatar-preview-big{
+    width:110px;height:110px;margin:0 auto 16px;
+    border-radius:24px;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    padding:4px;overflow:hidden;
+  }
+  .avatar-preview-big img{width:100%;height:100%;border-radius:20px;object-fit:cover;}
+  .avatar-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+  .avatar-action{
+    padding:14px 8px;border-radius:14px;
+    background:var(--surface-2);border:1.5px solid var(--line);
+    cursor:pointer;text-align:center;transition:.2s;color:var(--txt);font-family:inherit;
+  }
+  .avatar-action:active{transform:scale(.96);border-color:var(--c1-line);background:var(--c1-soft);}
+  .avatar-action i{font-size:20px;color:var(--c1);margin-bottom:5px;display:block;}
+  .avatar-action .t{font-size:11.5px;font-weight:800;}
+  .avatar-action .d{font-size:9.5px;color:var(--txt-dim);margin-top:2px;font-weight:600;}
+  .avatar-section-title{font-size:9.5px;font-weight:800;color:var(--txt-dim);text-transform:uppercase;letter-spacing:1.5px;margin:14px 0 8px;}
+  .avatar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+  .avatar-option{aspect-ratio:1;border-radius:10px;overflow:hidden;cursor:pointer;transition:.2s;border:2px solid transparent;background:var(--surface);}
+  .avatar-option:active{transform:scale(1.08);border-color:var(--c1);}
+  .avatar-option img{width:100%;height:100%;object-fit:cover;}
+
+  .btn-row{display:flex;gap:8px;margin-top:14px;}
+  .btn-row button{
+    flex:1;padding:12px;border-radius:12px;border:none;
+    font-family:inherit;font-size:12.5px;font-weight:800;
+    cursor:pointer;transition:.2s;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+    color:#fff;
+  }
+  .btn-row button:active{transform:translateY(-1px);}
+  .btn-row button.danger{background:linear-gradient(135deg,#ef4444,#b91c1c);}
+
+  .quest-item{
+    padding:12px 14px;border-radius:14px;
+    background:var(--surface-2);border:1.5px solid var(--line);transition:.2s;
+  }
+  .quest-item.done{background:linear-gradient(135deg, rgba(52,211,153,.15), rgba(16,185,129,.05));border-color:rgba(52,211,153,.4);}
+  .quest-item.claimed{opacity:.55;}
+
+  .map-wrap{
+    position:relative;width:100%;aspect-ratio:16/10;
+    background:radial-gradient(ellipse at center, rgba(139,92,246,.15), rgba(10,6,24,.4));
+    border-radius:16px;border:1px solid var(--line-2);overflow:hidden;min-height:260px;
+  }
+  .map-node{
+    position:absolute;transform:translate(-50%,-50%);
+    width:48px;height:48px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;color:#fff;cursor:pointer;
+    transition:.3s;border:2px solid rgba(255,255,255,.2);
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+  }
+  .map-node:active:not(.locked){transform:translate(-50%,-50%) scale(1.15);}
+  .map-node.locked{background:linear-gradient(135deg,#374151,#1f2937);cursor:not-allowed;opacity:.6;}
+  .map-node .nm{
+    position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);
+    font-size:9px;font-weight:800;white-space:nowrap;
+    background:rgba(0,0,0,.75);padding:2px 8px;border-radius:6px;color:#fff;
+  }
+  .map-path{position:absolute;height:2px;transform-origin:left center;background:linear-gradient(90deg, rgba(139,92,246,.5), rgba(236,72,153,.5));pointer-events:none;border-radius:2px;}
+
+  .ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
+  .ach-item{padding:12px 8px;border-radius:14px;text-align:center;}
+
+  .shop-tabs,.upload-tabs{display:flex;gap:6px;margin-bottom:12px;padding:4px;background:var(--surface-2);border-radius:12px;border:1px solid var(--line);}
+  .shop-tab,.upload-tab{flex:1;padding:9px 10px;border-radius:9px;border:none;background:transparent;color:var(--txt-2);font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;transition:.2s;}
+  .shop-tab.active,.upload-tab.active{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;}
+  .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;}
+  .shop-item{padding:10px 8px;border-radius:14px;background:var(--surface-2);border:1.5px solid var(--line);transition:.2s;position:relative;overflow:hidden;}
+  .shop-item.owned{border-color:rgba(52,211,153,.4);background:linear-gradient(135deg,rgba(52,211,153,.1),rgba(16,185,129,.03));}
+  .shop-item.equipped{border-color:var(--c1);background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(236,72,153,.08));}
+  .shop-item .swatch{width:100%;aspect-ratio:2/1;border-radius:10px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(236,72,153,.3));border:1px solid var(--line);}
+  .shop-item .nm{font-size:11.5px;font-weight:800;margin-bottom:2px;}
+  .shop-item .price{display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;color:var(--gold);margin-top:6px;margin-bottom:8px;}
+  .shop-item .buy-btn{width:100%;padding:7px;border-radius:9px;border:none;font-family:inherit;font-size:10.5px;font-weight:900;cursor:pointer;transition:.2s;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;}
+  .shop-item .buy-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .shop-item .buy-btn.owned-btn{background:var(--surface);color:var(--txt-2);border:1px solid var(--line);cursor:pointer;}
+  .shop-item .buy-btn.equipped-btn{background:linear-gradient(135deg,#34d399,#10b981);color:#fff;cursor:default;}
+  .shop-item .tag-owned{position:absolute;top:8px;right:8px;padding:2px 7px;border-radius:6px;font-size:8.5px;font-weight:900;background:linear-gradient(135deg,#34d399,#10b981);color:#fff;}
+  .shop-item .tag-equipped{position:absolute;top:8px;right:8px;padding:2px 7px;border-radius:6px;font-size:8.5px;font-weight:900;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;}
+  .shop-item .tag-fb{position:absolute;top:8px;left:8px;padding:2px 6px;border-radius:6px;font-size:8px;font-weight:900;background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;}
+  .shop-item .tag-free{position:absolute;top:8px;left:8px;padding:2px 6px;border-radius:6px;font-size:8px;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#422006;}
+
+  .code-input-wrap{display:flex;gap:6px;margin-bottom:12px;}
+  .code-input-wrap input{flex:1;padding:11px 12px;border-radius:11px;border:1.5px solid var(--line-2);background:var(--surface-2);color:#fff;font-family:inherit;font-size:13px;font-weight:700;outline:none;text-transform:uppercase;letter-spacing:1px;}
+  .code-input-wrap input:focus{border-color:var(--c1);background:var(--surface);}
+  .code-input-wrap button{padding:0 16px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#422006;font-family:inherit;font-size:12.5px;font-weight:900;cursor:pointer;}
+  .code-hint{font-size:10.5px;color:var(--txt-dim);font-weight:600;padding:9px 12px;border-radius:10px;background:var(--surface-2);border:1px dashed var(--line-2);line-height:1.5;}
+
+  .slot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+  .slot-item{padding:10px 8px;border-radius:12px;background:var(--surface-2);border:1.5px solid var(--line);transition:.2s;position:relative;overflow:hidden;}
+  .slot-item.filled{border-color:rgba(52,211,153,.4);background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(16,185,129,.02));}
+  .slot-item .slot-name{font-size:11px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+  .slot-item .slot-name .num{width:18px;height:18px;border-radius:6px;background:var(--c1-soft);color:var(--c1);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;}
+  .slot-item.filled .slot-name .num{background:linear-gradient(135deg,#34d399,#10b981);color:#fff;}
+  .slot-item .slot-info{font-size:9.5px;color:var(--txt-dim);font-weight:600;margin-bottom:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .slot-item.filled .slot-info{color:var(--green);}
+  .slot-item .slot-actions{display:flex;gap:5px;}
+  .slot-item .slot-actions button{flex:1;padding:6px 4px;border-radius:8px;border:none;font-family:inherit;font-size:9.5px;font-weight:800;cursor:pointer;transition:.2s;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;}
+  .slot-item .slot-actions button.danger{background:linear-gradient(135deg,#ef4444,#b91c1c);flex:0 0 30px;}
+  .slot-item .slot-actions button:active{transform:scale(.94);}
+  .upload-input{width:100%;padding:9px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface-2);color:#fff;font-family:inherit;font-size:11px;font-weight:600;outline:none;margin-bottom:6px;}
+  .upload-input:focus{border-color:var(--c1);background:var(--surface);}
+  .upload-input.auto-filled{border-color:rgba(52,211,153,.4);background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(16,185,129,.02));}
+
+  #quizScreen{position:fixed;inset:0;z-index:90;background:var(--bg);display:none;flex-direction:column;}
+  #quizScreen.on{display:flex;animation:fadeIn .4s;}
+  .q-topbar{display:flex;align-items:center;gap:10px;padding:calc(10px + var(--safe-top)) 14px 10px;background:rgba(10,6,24,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);z-index:5;flex-shrink:0;}
+  .q-back{width:34px;height:34px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface);color:var(--txt-2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0;}
+  .q-back:active{background:var(--c1-soft);color:#fff;}
+  .q-title{flex:1;min-width:0;}
+  .q-title h2{font-size:13px;font-weight:800;}
+  .q-title p{font-size:10.5px;color:var(--txt-dim);font-weight:600;}
+  .q-progress-mini{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--txt-2);flex-shrink:0;}
+  .q-progress-mini .bar{width:60px;height:7px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;}
+  .q-progress-mini .bar i{display:block;height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--c1),var(--c2));transition:width .5s;}
+  .q-body{flex:1;overflow-y:auto;padding:18px 14px 60px;display:flex;flex-direction:column;align-items:center;-webkit-overflow-scrolling:touch;}
+  .q-card{width:100%;max-width:640px;background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid var(--line-2);border-radius:20px;padding:20px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6);animation:cardIn .5s;position:relative;overflow:hidden;}
+  .q-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c1));background-size:200% auto;animation:expShimmer 3s linear infinite;}
+  .q-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--c1-soft);color:var(--c1);border:1px solid var(--c1-line);font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;}
+  .q-text{font-size:16px;font-weight:700;line-height:1.5;margin-bottom:16px;text-wrap:pretty;}
+  .q-opts{display:flex;flex-direction:column;gap:9px;}
+  .q-opt{display:flex;align-items:center;gap:11px;padding:13px 14px;border-radius:13px;border:1.5px solid var(--line-2);background:var(--surface-2);color:var(--txt-2);font-size:13.5px;font-weight:600;cursor:pointer;transition:.25s;text-align:left;font-family:inherit;}
+  .q-opt:active:not(.locked){transform:translateY(-3px) scale(1.012);border-color:var(--c1-line);color:#fff;}
+  .q-opt .letter{width:30px;height:30px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg, rgba(139,92,246,.2), rgba(236,72,153,.2));color:var(--c1);border:1px solid var(--c1-line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;}
+  .q-opt.correct{background:linear-gradient(135deg, rgba(52,211,153,.15), rgba(16,185,129,.08));border-color:rgba(52,211,153,.5);color:#6ee7b7;}
+  .q-opt.correct .letter{background:linear-gradient(135deg,#34d399,#10b981);color:#fff;}
+  .q-opt.wrong{background:linear-gradient(135deg, rgba(251,113,133,.15), rgba(239,68,68,.08));border-color:rgba(251,113,133,.5);color:#fca5a5;}
+  .q-opt.wrong .letter{background:linear-gradient(135deg,#fb7185,#ef4444);color:#fff;}
+  .q-opt.locked{cursor:default;}
+  .q-opt .check{margin-left:auto;font-size:15px;}
+  .q-feedback{margin-top:14px;padding:12px 14px;border-radius:13px;display:none;align-items:center;gap:11px;border:1px solid;}
+  .q-feedback.on{display:flex;}
+  .q-feedback.ok{background:linear-gradient(135deg, rgba(52,211,153,.15), rgba(16,185,129,.05));border-color:rgba(52,211,153,.4);color:#6ee7b7;}
+  .q-feedback.no{background:linear-gradient(135deg, rgba(251,113,133,.15), rgba(239,68,68,.05));border-color:rgba(251,113,133,.4);color:#fca5a5;}
+  .q-feedback .fi{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;}
+  .q-feedback.ok .fi{background:linear-gradient(135deg,#34d399,#10b981);}
+  .q-feedback.no .fi{background:linear-gradient(135deg,#fb7185,#ef4444);}
+  .q-feedback .ft{flex:1;}
+  .q-feedback .ft .t{font-size:13px;font-weight:800;color:#fff;}
+  .q-feedback .ft .d{font-size:11px;opacity:.85;font-weight:600;margin-top:2px;}
+
+  #bossScreen{
+    position:fixed;inset:0;z-index:120;
+    background:
+      radial-gradient(ellipse 100% 60% at 50% 0%, rgba(239,68,68,.3), transparent 60%),
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(139,92,246,.25), transparent 60%),
+      linear-gradient(180deg, #0f0414 0%, #1a0e2e 50%, #0a0618 100%);
+    display:none;flex-direction:column;color:#fff;overflow:hidden;
+  }
+  #bossScreen.on{display:flex;animation:fadeIn .4s;}
+  #bossScreen::before{
+    content:""; position:absolute; inset:0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, rgba(239,68,68,.8), transparent),
+      radial-gradient(2px 2px at 60% 70%, rgba(251,191,36,.8), transparent),
+      radial-gradient(1px 1px at 80% 20%, rgba(255,255,255,.6), transparent),
+      radial-gradient(2px 2px at 40% 80%, rgba(239,68,68,.6), transparent),
+      radial-gradient(1px 1px at 10% 60%, rgba(139,92,246,.7), transparent);
+    background-size:200% 200%;
+    animation:bossParticleDrift 20s linear infinite;
+    pointer-events:none;
+    opacity:.7;
+  }
+  @keyframes bossParticleDrift{
+    0%{ background-position:0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+    100%{ background-position:200% 200%, -200% 200%, 100% -100%, -100% 100%, 200% -200%; }
+  }
+  .boss-top{
+    padding:calc(10px + var(--safe-top)) 12px 10px;
+    display:flex;align-items:center;gap:10px;
+    position:relative;z-index:10;flex-shrink:0;
+    background:linear-gradient(180deg, rgba(15,4,20,.9), rgba(15,4,20,.4));
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(239,68,68,.15);
+  }
+  .boss-top .back{
+    width:38px;height:38px;border-radius:12px;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.06);
+    color:#fff;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:.2s;flex-shrink:0;
+    backdrop-filter:blur(10px);
+  }
+  .boss-top .back:active{background:rgba(255,255,255,.15);transform:scale(.94);}
+  .boss-top .info{flex:1;min-width:0;}
+  .boss-top .info .t{
+    font-size:14px;font-weight:900;
+    background:linear-gradient(135deg,#fca5a5,#fbbf24);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    display:flex;align-items:center;gap:6px;
+  }
+  .boss-top .info .t i{font-size:12px;-webkit-text-fill-color:#fca5a5;color:#fca5a5;}
+  .boss-top .info .d{font-size:10.5px;color:var(--txt-2);font-weight:600;margin-top:1px;}
+  .boss-menu-btn{
+    width:38px;height:38px;border-radius:12px;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.06);
+    color:#fff;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;flex-shrink:0;
+    transition:.2s;
+  }
+  .boss-menu-btn:active{transform:scale(.94);background:rgba(255,255,255,.15);}
+  .boss-arena{
+    flex:1;display:flex;flex-direction:column;
+    padding:12px 14px 16px;position:relative;overflow:hidden;min-height:0;
+    gap:10px;
+  }
+  .boss-hud{
+    position:relative;z-index:5;
+    background:linear-gradient(135deg, rgba(239,68,68,.12), rgba(0,0,0,.4));
+    border:1.5px solid rgba(239,68,68,.35);
+    border-radius:16px;
+    padding:12px 14px;
+    box-shadow:0 10px 30px -10px rgba(239,68,68,.4), inset 0 0 20px rgba(239,68,68,.05);
+    flex-shrink:0;
+  }
+  .boss-hud .row1{
+    display:flex;align-items:center;gap:10px;margin-bottom:8px;
+  }
+  .boss-hud .boss-avatar{
+    width:44px;height:44px;border-radius:12px;
+    background:radial-gradient(circle, #ef4444, #7f1d1d);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;color:#fff;flex-shrink:0;
+    box-shadow:0 0 20px rgba(239,68,68,.6), inset 0 0 15px rgba(0,0,0,.5);
+    position:relative;
+    animation:bossAura 2.5s ease-in-out infinite;
+  }
+  @keyframes bossAura{0%,100%{box-shadow:0 0 20px rgba(239,68,68,.6);}50%{box-shadow:0 0 30px rgba(239,68,68,.9);}}
+  .boss-hud .boss-name{
+    flex:1;min-width:0;
+  }
+  .boss-hud .boss-name .n{
+    font-size:14px;font-weight:900;color:#fca5a5;
+    text-shadow:0 0 12px rgba(239,68,68,.5);
+    display:flex;align-items:center;gap:6px;
+  }
+  .boss-hud .boss-name .s{
+    font-size:10px;color:var(--txt-2);font-weight:700;margin-top:2px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .boss-hud .phase-badge{
+    padding:3px 10px;border-radius:999px;
+    background:linear-gradient(135deg,#ec4899,#8b5cf6);
+    color:#fff;font-size:9.5px;font-weight:900;
+    letter-spacing:.5px;
+    box-shadow:0 4px 12px -3px #ec4899;
+  }
+  .boss-hud .hp-num{
+    font-size:15px;font-weight:900;
+    color:#fff;font-variant-numeric:tabular-nums;
+    text-shadow:0 0 10px rgba(239,68,68,.6);
+  }
+  .boss-hud .hp-track{
+    height:14px;border-radius:999px;
+    background:rgba(0,0,0,.6);
+    overflow:hidden;
+    border:1px solid rgba(239,68,68,.4);
+    position:relative;
+    box-shadow:inset 0 2px 8px rgba(0,0,0,.6);
+  }
+  .boss-hud .hp-fill{
+    height:100%;width:100%;border-radius:999px;
+    background:linear-gradient(90deg,#ef4444,#f97316,#fbbf24,#ef4444);
+    background-size:300% 100%;
+    transition:width .8s cubic-bezier(.16,1,.3,1);
+    animation:hpShimmer 2s linear infinite;
+    position:relative;
+    box-shadow:0 0 20px rgba(239,68,68,.7), inset 0 -2px 4px rgba(0,0,0,.3);
+  }
+  @keyframes hpShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  .boss-hud .hp-fill::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(255,255,255,.25), transparent 50%, rgba(0,0,0,.15));
+    border-radius:999px;
+  }
+  .boss-hud .phases{
+    display:flex;gap:6px;margin-top:8px;
+  }
+  .boss-hud .phases .ph{
+    flex:1;padding:5px 8px;border-radius:9px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.1);
+    font-size:9.5px;font-weight:800;color:rgba(255,255,255,.35);
+    text-align:center;transition:.3s;
+    display:flex;align-items:center;justify-content:center;gap:4px;
+  }
+  .boss-hud .phases .ph.on{
+    background:linear-gradient(135deg,var(--c2),var(--c1));
+    color:#fff;border-color:transparent;
+    box-shadow:0 4px 12px -3px var(--c2);
+  }
+  .boss-hud .phases .ph.done{
+    background:linear-gradient(135deg,rgba(52,211,153,.2),rgba(16,185,129,.1));
+    color:#6ee7b7;border-color:rgba(52,211,153,.4);
+  }
+  .boss-figure-wrap{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    position:relative;min-height:0;
+  }
+  .boss-figure{
+    position:relative;width:min(300px,68vw);aspect-ratio:1;
+    max-height:100%;z-index:2;
+  }
+  .boss-img-wrap{
+    width:100%;height:100%;position:relative;
+    overflow:hidden;border-radius:50%;
+    background:radial-gradient(circle, rgba(239,68,68,.15), rgba(10,6,24,.4));
+    box-shadow:0 0 60px -10px rgba(239,68,68,.6), inset 0 0 40px rgba(239,68,68,.2);
+    border:2px solid rgba(239,68,68,.4);
+  }
+  .boss-img-wrap canvas{
+    width:100%!important;height:100%!important;
+    display:block;border-radius:50%;touch-action:none;
+  }
+  .boss-figure::before{
+    content:"";position:absolute;inset:-40px;border-radius:50%;
+    background:radial-gradient(circle, rgba(239,68,68,.55), transparent 65%);
+    filter:blur(30px);
+    animation:glowPulse 3s ease-in-out infinite;
+    z-index:-1;
+  }
+  @keyframes glowPulse{0%,100%{transform:scale(1);opacity:.7;}50%{transform:scale(1.1);opacity:1;}}
+  .boss-ring{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    border:2px dashed rgba(239,68,68,.3);
+    border-radius:50%;pointer-events:none;
+    animation:ringSpin 12s linear infinite;
+  }
+  .boss-ring.r1{width:calc(100% + 40px);height:calc(100% + 40px);}
+  .boss-ring.r2{
+    width:calc(100% + 80px);height:calc(100% + 80px);
+    border-color:rgba(251,191,36,.2);
+    border-style:dotted;
+    animation-direction:reverse;
+    animation-duration:18s;
+  }
+  @keyframes ringSpin{from{transform:translate(-50%,-50%) rotate(0);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+  .boss-figure.hit{animation:bossHit .5s;}
+  @keyframes bossHit{
+    0%,100%{transform:translateX(0) scale(1);}
+    25%{transform:translateX(-20px) scale(.94);filter:brightness(3) saturate(0);}
+    75%{transform:translateX(20px) scale(.94);filter:brightness(3) saturate(0);}
+  }
+  .boss-figure.dying{animation:bossDying 1.4s ease-in forwards;}
+  @keyframes bossDying{
+    0%{filter:brightness(1) saturate(1);}
+    15%{filter:brightness(3) saturate(0) drop-shadow(0 0 30px #fff);transform:translateX(-8px) scale(1.02);}
+    30%{filter:brightness(.3) saturate(2);transform:translateX(8px) scale(1);}
+    45%{filter:brightness(2) saturate(3) hue-rotate(320deg);transform:translateX(-6px) scale(1.04);}
+    60%{filter:brightness(4) saturate(0) drop-shadow(0 0 40px #ef4444);transform:translateX(0) scale(1.1);}
+    80%{filter:brightness(6) saturate(0) drop-shadow(0 0 60px #fbbf24);transform:scale(1.25);}
+    100%{filter:brightness(0) saturate(0);transform:scale(1.5);opacity:0;}
+  }
+  .boss-figure.shake-death{animation:bossShakeDeath 1.2s ease-in;}
+  @keyframes bossShakeDeath{
+    0%,100%{transform:translateX(0);}
+    10%{transform:translateX(-6px) rotate(-2deg);}
+    20%{transform:translateX(6px) rotate(2deg);}
+    30%{transform:translateX(-8px) rotate(-3deg);}
+    40%{transform:translateX(8px) rotate(3deg);}
+    50%{transform:translateX(-10px) rotate(-4deg);}
+    60%{transform:translateX(10px) rotate(4deg);}
+    70%{transform:translateX(-6px) rotate(-2deg);}
+    80%{transform:translateX(6px) rotate(2deg);}
+    90%{transform:translateX(-3px) rotate(-1deg);}
+  }
+  .dmg-float{
+    position:absolute;
+    font-size:32px;font-weight:900;
+    color:#fbbf24;
+    text-shadow:0 0 20px #ef4444, 0 4px 12px rgba(0,0,0,.7);
+    pointer-events:none;z-index:15;
+    animation:dmgFloat 1.2s ease-out forwards;
+    white-space:nowrap;
+  }
+  @keyframes dmgFloat{
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.5);}
+    20%{opacity:1;transform:translate(-50%,-80%) scale(1.3);}
+    100%{opacity:0;transform:translate(-50%,-160%) scale(1);}
+  }
+  .dmg-float.crit{font-size:46px;color:#fca5a5;}
+  .boss-loading{
+    position:absolute; inset:0; z-index:10;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(10,6,24,.75); backdrop-filter:blur(10px);
+    flex-direction:column; gap:14px; border-radius:50%;
+  }
+  .boss-loading.on{ display:flex; }
+  .boss-loading .big-spinner{
+    width:54px; height:54px; border-radius:50%;
+    border:4px solid rgba(239,68,68,.25);
+    border-top-color:#ef4444;
+    border-right-color:#fbbf24;
+    animation:spin 1s linear infinite;
+  }
+  .boss-loading .lbl{
+    font-size:12px; font-weight:800; color:#fff;
+    letter-spacing:1.5px; text-transform:uppercase;
+    text-shadow:0 0 20px rgba(239,68,68,.8);
+  }
+  .boss-log{
+    width:100%;max-height:50px;overflow-y:auto;
+    font-size:11px;line-height:1.4;padding:8px 12px;border-radius:12px;
+    background:rgba(0,0,0,.4);
+    border:1px solid rgba(239,68,68,.2);
+    font-family:ui-monospace,monospace;
+    position:relative;z-index:5;
+    flex-shrink:0;
+    backdrop-filter:blur(8px);
+  }
+  .boss-log p{opacity:.55;margin:2px 0;}
+  .boss-log p.new{
+    opacity:1;font-weight:800;color:#fca5a5;
+    animation:logSlide .3s ease-out;
+  }
+  @keyframes logSlide{from{transform:translateX(-8px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+  .boss-log p.dmg{color:#fbbf24;}
+  .boss-log p.heal{color:#6ee7b7;}
+  .boss-question{
+    width:100%;
+    background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+    border:1.5px solid rgba(239,68,68,.3);
+    border-radius:16px;
+    padding:14px;position:relative;z-index:5;
+    box-shadow:0 10px 30px -10px rgba(0,0,0,.6);
+    flex-shrink:0;
+  }
+  .boss-question::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,#ef4444,#fbbf24,#ef4444);
+    background-size:200% auto;
+    border-radius:16px 16px 0 0;
+    animation:expShimmer 3s linear infinite;
+  }
+  .boss-question .q-text{
+    font-size:13.5px;font-weight:700;margin-bottom:10px;color:#fff;
+    line-height:1.5;
+  }
+  .boss-question .q-opts{display:flex;flex-direction:column;gap:7px;}
+  .boss-question .q-opt{
+    padding:10px 13px;border-radius:11px;
+    border:1.5px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.03);
+    color:var(--txt-2);
+    font-size:12.5px;font-weight:600;cursor:pointer;
+    transition:.2s;text-align:left;font-family:inherit;
+  }
+  .boss-question .q-opt:active:not(.locked){
+    border-color:rgba(239,68,68,.5);
+    background:rgba(239,68,68,.1);
+    color:#fff;transform:translateX(4px);
+  }
+  .boss-question .q-opt.correct{
+    background:linear-gradient(135deg, rgba(52,211,153,.2), rgba(16,185,129,.08));
+    border-color:rgba(52,211,153,.5);color:#6ee7b7;
+    box-shadow:0 0 20px rgba(52,211,153,.3);
+  }
+  .boss-question .q-opt.wrong{
+    background:linear-gradient(135deg, rgba(251,113,133,.2), rgba(239,68,68,.08));
+    border-color:rgba(251,113,133,.5);color:#fca5a5;
+  }
+  .boss-question .q-opt.locked{cursor:default;}
+  .boss-win{
+    position:fixed;inset:0;z-index:200;
+    background:radial-gradient(ellipse at center, rgba(251,191,36,.2), rgba(10,6,24,.95));
+    backdrop-filter:blur(20px);
+    display:none;align-items:center;justify-content:center;padding:20px;
+  }
+  .boss-win.on{display:flex;animation:fadeIn .5s;}
+  .boss-win-card{
+    background:linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.04));
+    border:1.5px solid rgba(251,191,36,.4);
+    border-radius:26px;
+    padding:32px 24px;text-align:center;max-width:400px;width:100%;
+    box-shadow:0 40px 100px -20px rgba(251,191,36,.4);
+    animation:winPop .6s cubic-bezier(.16,1.3,.3,1);
+  }
+  @keyframes winPop{0%{opacity:0;transform:scale(.7);}100%{opacity:1;transform:scale(1);}}
+  .boss-win-card .trophy{
+    width:100px;height:100px;border-radius:50%;margin:0 auto 18px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    display:flex;align-items:center;justify-content:center;
+    font-size:44px;color:#fff;
+    box-shadow:0 20px 50px -10px var(--gold), inset 0 -6px 20px rgba(0,0,0,.2);
+    animation:trophyBounce 1s ease-in-out infinite;
+  }
+  @keyframes trophyBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .boss-win-card h2{
+    font-size:26px;font-weight:900;margin-bottom:6px;
+    background:linear-gradient(135deg,var(--gold),#fca5a5,var(--gold));
+    background-size:200% auto;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:expShimmer 3s linear infinite;
+    letter-spacing:1px;
+  }
+  .boss-win-card .sub{font-size:12.5px;color:var(--txt-2);margin-bottom:22px;font-weight:600;}
+  .boss-rewards{display:flex;gap:10px;justify-content:center;margin-bottom:22px;flex-wrap:wrap;}
+  .boss-reward{
+    padding:11px 16px;border-radius:13px;
+    background:linear-gradient(135deg, rgba(251,191,36,.15), rgba(245,158,11,.08));
+    border:1px solid rgba(251,191,36,.4);
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:900;color:var(--gold);
+    box-shadow:0 8px 20px -6px rgba(251,191,36,.4);
+  }
+  .boss-win-card button{
+    width:100%;padding:15px;border:none;border-radius:14px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    color:#422006;font-family:inherit;font-size:14.5px;font-weight:900;
+    cursor:pointer;letter-spacing:1px;
+    box-shadow:0 12px 30px -8px var(--gold);
+    transition:.2s;
+  }
+  .boss-win-card button:active{transform:translateY(-2px) scale(.98);}
+
+  #levelUp{position:fixed;inset:0;z-index:500;background:rgba(10,6,24,.85);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:20px;}
+  #levelUp.on{display:flex;}
+  .levelup-card{background:linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.04));border:1.5px solid var(--line-2);border-radius:22px;padding:28px 22px;text-align:center;max-width:320px;width:100%;}
+  .levelup-badge{width:70px;height:70px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--gold),var(--gold-2));display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;animation:pulse 1.4s ease-in-out infinite;}
+  .levelup-card h2{font-size:18px;font-weight:900;margin-bottom:5px;background:linear-gradient(135deg,var(--gold),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .levelup-card .sub{font-size:11.5px;color:var(--txt-2);margin-bottom:16px;}
+  .levelup-card .lvl-big{font-size:42px;font-weight:900;letter-spacing:-3px;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .levelup-card .lvl-lbl{font-size:10px;font-weight:800;color:var(--txt-dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;}
+  .levelup-card button{width:100%;padding:13px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;}
+
+  #comboFX{position:fixed;top:28%;left:50%;transform:translateX(-50%) scale(.3);z-index:200;pointer-events:none;opacity:0;transition:.45s cubic-bezier(.16,1,.3,1);text-align:center;}
+  #comboFX.on{opacity:1;transform:translateX(-50%) scale(1);}
+  #comboFX .cn{font-size:70px;font-weight:900;line-height:1;background:linear-gradient(135deg,#fbbf24,#ec4899,#8b5cf6,#fbbf24);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:comboGradient 2s linear infinite;}
+  @keyframes comboGradient{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  #comboFX .cl{font-size:14px;font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,var(--c2),var(--c1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase;margin-top:6px;}
+  #comboFX .csub{font-size:11px;font-weight:800;color:var(--txt-2);margin-top:8px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line-2);display:inline-block;}
+
+  #logPanel{position:fixed;bottom:calc(12px + var(--safe-bottom));left:12px;width:min(400px,92vw);max-height:200px;background:rgba(10,6,24,.94);border:1px solid var(--line-2);border-radius:14px;z-index:400;font-family:ui-monospace,monospace;font-size:10.5px;color:#c4b5fd;overflow:hidden;display:none;backdrop-filter:blur(14px);}
+  #logPanel.on{display:flex;flex-direction:column;}
+  #logPanel .lp-head{padding:7px 11px;display:flex;align-items:center;gap:7px;background:linear-gradient(135deg, rgba(139,92,246,.25), rgba(236,72,153,.15));border-bottom:1px solid var(--line);font-weight:800;color:#fff;font-size:10px;text-transform:uppercase;}
+  #logPanel .lp-head .sp{margin-left:auto;display:flex;gap:5px;}
+  #logPanel .lp-head button{width:22px;height:22px;border-radius:6px;background:var(--surface);border:1px solid var(--line-2);color:var(--txt-2);cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;}
+  #logBody{padding:7px 11px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:3px;}
+  #logBody .le{display:flex;gap:6px;line-height:1.4;word-break:break-all;}
+  #logBody .le .t{color:#6b7280;flex-shrink:0;}
+  #logBody .le.info .m{color:#a78bfa;}
+  #logBody .le.ok .m{color:#6ee7b7;}
+  #logBody .le.warn .m{color:#fbbf24;}
+  #logBody .le.err .m{color:#fca5a5;font-weight:700;}
+
+  .float-text{position:fixed;z-index:300;pointer-events:none;font-size:20px;font-weight:900;animation:floatUp 1.6s cubic-bezier(.16,1,.3,1) forwards;text-shadow:0 4px 16px rgba(0,0,0,.4);}
+  @keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(.5);}20%{opacity:1;transform:translateY(-14px) scale(1.2);}100%{opacity:0;transform:translateY(-100px) scale(1);}}
+
+  #toast{position:fixed;bottom:calc(24px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(140px);background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;padding:12px 20px;border-radius:13px;font-size:12.5px;font-weight:700;z-index:9999;display:flex;align-items:center;gap:9px;transition:transform .5s;pointer-events:none;max-width:90vw;box-shadow:0 15px 40px -8px rgba(139,92,246,.6);}
+  #toast.show{transform:translateX(-50%) translateY(0);}
+  #toast.gold{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#422006;}
+  #toast.cloud{background:linear-gradient(135deg,#06b6d4,#0e7490);}
+  #toast.success{background:linear-gradient(135deg,#34d399,#10b981);}
+  #toast.error{background:linear-gradient(135deg,#ef4444,#b91c1c);}
+
+  .confetti{position:fixed;width:12px;height:12px;z-index:400;pointer-events:none;border-radius:2px;animation:confFall 3s linear forwards;}
+  @keyframes confFall{0%{transform:translateY(0) rotate(0) scale(1);opacity:1;}100%{transform:translateY(100vh) rotate(900deg) scale(.5);opacity:0;}}
+
+  #petCanvas{position:absolute;width:140px;height:140px;bottom:8%;left:calc(50% + 90px);z-index:4;pointer-events:none;filter:drop-shadow(0 6px 16px rgba(139,92,246,.5));}
+  .pet-label{position:absolute;bottom:calc(8% + 145px);left:calc(50% + 90px);transform:translateX(-50%);font-size:9px;font-weight:800;color:var(--txt-2);background:rgba(10,6,24,.75);padding:2px 8px;border-radius:999px;border:1px solid var(--line-2);z-index:8;white-space:nowrap;pointer-events:none;}
+
+  #rpgGameShell{display:none;position:fixed;inset:0;z-index:10000010;background:#08040f;}
+  #rpgGameShell.on{display:block}
+  #rpgGameFrame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#08040f}
+  #rpgExit{
+    position:absolute;
+    top:calc(12px + env(safe-area-inset-top, 0px));
+    left:12px;
+    z-index:10000012;
+    display:flex;align-items:center;gap:8px;
+    padding:10px 16px 10px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.15);
+    background:linear-gradient(135deg, rgba(20,10,40,.9), rgba(40,20,60,.75));
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    color:#fff;
+    font:800 13px/1 system-ui,'Be Vietnam Pro',sans-serif;
+    letter-spacing:.3px;
+    cursor:pointer;
+    box-shadow:0 12px 32px -8px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.1);
+    transition:transform .2s, box-shadow .2s, background .2s;
+  }
+  #rpgExit::before{
+    content:"";
+    width:24px;height:24px;border-radius:50%;
+    background:linear-gradient(135deg,#ef4444,#b91c1c);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 16px rgba(239,68,68,.6);
+  }
+  #rpgExit i{
+    font-size:11px;position:absolute;left:18px;top:50%;
+    transform:translateY(-50%);color:#fff;z-index:2;
+  }
+  #rpgExit:active{transform:scale(.95)}
+  #rpgExit:hover{
+    background:linear-gradient(135deg, rgba(139,92,246,.9), rgba(236,72,153,.8));
+    box-shadow:0 16px 40px -8px rgba(139,92,246,.6);
+  }
+
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:rgba(139,92,246,.3);border-radius:3px;}
+
+  @media (max-width:640px){
+    .rpg-avatar{width:40px;height:40px;border-radius:12px;}
+    .rpg-user .name{font-size:12px;}
+    .rpg-user .title{font-size:9px;}
+    .hub-menu{grid-template-columns:repeat(5,1fr);gap:4px;padding:8px 8px calc(10px + var(--safe-bottom));}
+    .hub-btn{padding:6px 1px;}
+    .hub-btn .ic{width:28px;height:28px;font-size:11px;border-radius:8px;}
+    .hub-btn .tx{font-size:8.5px;}
+    .avatar-grid{grid-template-columns:repeat(4,1fr);}
+    .boss-figure{width:min(240px,62vw);}
+    .boss-hud .boss-avatar{width:38px;height:38px;font-size:17px;}
+    .boss-hud .boss-name .n{font-size:12.5px;}
+    .boss-hud .hp-num{font-size:13px;}
+    .boss-hud .hp-track{height:12px;}
+    #logPanel{max-height:140px;}
+    .emote-btn{width:40px;height:40px;font-size:15px;border-radius:12px;}
+    .study-question-badge{font-size:9.5px;padding:5px 10px;}
+    .stat-pill{padding:4px 7px;font-size:9.5px;}
+    #petCanvas{width:110px;height:110px;left:auto;right:12px;bottom:10%;}
+    .pet-label{left:auto;right:12px;transform:none;bottom:calc(10% + 115px);}
+    .slot-grid{grid-template-columns:1fr;}
+    #rpgExit{padding:9px 14px 9px 10px;font-size:12px}
+    #rpgExit::before{width:22px;height:22px}
+    #rpgExit i{left:15px;font-size:10px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="bootLoader">
+  <div class="boot-card">
+    <div class="boot-logo"><i class="fas fa-heart-pulse"></i></div>
+    <div class="boot-title">RPG Ôn Thi</div>
+    <div class="boot-sub">Nguyễn Phi Nhật</div>
+    <div class="boot-status" id="bootStatus">
+      <div class="boot-spinner"></div>
+      <div>
+        <div class="boot-status-text" id="bootStatusText">Đang khởi động...</div>
+        <div class="boot-status-sub" id="bootStatusSub">Vui lòng chờ</div>
+      </div>
+    </div>
+    <div class="boot-foot"><i class="fas fa-shield-halved"></i> Phiên bản 3.0</div>
+  </div>
+</div>
+
+<div id="studyQuestionBadge" class="study-question-badge">Đang chờ ngân hàng câu hỏi</div>
+
+<div id="logPanel">
+  <div class="lp-head">
+    <i class="fas fa-terminal"></i> Console
+    <div class="sp">
+      <button onclick="Logger.copy()"><i class="fas fa-copy"></i></button>
+      <button onclick="Logger.clear()"><i class="fas fa-trash"></i></button>
+      <button onclick="Logger.toggle()"><i class="fas fa-xmark"></i></button>
+    </div>
+  </div>
+  <div id="logBody"></div>
+</div>
+
+<input type="file" id="charModelInput" accept=".vrm,.glb,.gltf" style="display:none">
+<input type="file" id="bossModelInput" accept=".vrm,.glb,.gltf" style="display:none">
+<input type="file" id="petModelInput" accept=".vrm,.glb,.gltf" style="display:none">
+<input type="file" id="avatarFileInput" accept="image/*" style="display:none">
+
+<div id="hub">
+  <div class="rpg-top">
+    <button class="btn-back-web" onclick="backToWeb()" title="Quay lại">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="rpg-avatar" onclick="openAvatarModal()">
+      <img id="avatarImg" src="" alt="avatar">
+      <div class="edit-ic"><i class="fas fa-camera"></i></div>
+      <span class="lvl-badge" id="lvlBadge">Lv.1</span>
+    </div>
+    <div class="rpg-user">
+      <div class="name">
+        <span id="playerName">Nhân vật</span>
+        <button class="edit-name" onclick="openNameModal()"><i class="fas fa-pen"></i></button>
+      </div>
+      <div class="title"><i class="fas fa-star"></i> <span id="userTitle">Học viên mới</span></div>
+    </div>
+    <div class="rpg-stats">
+      <div class="stat-pill cloud" id="cloudPill" title="Firebase">
+        <i class="fas fa-cloud"></i>
+      </div>
+      <div class="stat-pill coin"><i class="fas fa-coins"></i><b id="coinVal">0</b></div>
+      <div class="stat-pill combo"><i class="fas fa-fire"></i><b id="comboVal">0</b></div>
+    </div>
+  </div>
+
+  <div class="exp-strip">
+    <div class="exp-top">
+      <span class="lbl"><i class="fas fa-bolt"></i> EXP</span>
+      <span><b id="expNow">0</b> / <span id="expMax">100</span></span>
+    </div>
+    <div class="exp-track"><div class="exp-fill" id="expFill"></div></div>
+  </div>
+
+  <div class="stage-area" id="stageArea">
+    <div class="spotlight"></div>
+    <div class="floor-grid"></div>
+    <canvas id="stage3D"></canvas>
+    <canvas id="petCanvas"></canvas>
+    <div class="pet-label" id="petLabel" style="display:none;">Pet</div>
+    <div class="stage-loader" id="stageLoader">
+      <div class="spinner-wrap">
+        <div class="big-spinner"></div>
+        <div class="lbl">Đang load model</div>
+        <div class="sub" id="stageLoaderSub">Vui lòng chờ...</div>
+      </div>
+    </div>
+    <div class="bubble" id="bubble">Chào bạn! Sẵn sàng chưa?</div>
+    <div class="stage-tools">
+      <button class="stage-tool" onclick="Model3D.faceCamera()" title="Nhìn thẳng"><i class="fas fa-camera"></i></button>
+      <button class="stage-tool" onclick="openUploadModal()" title="Nạp 3D"><i class="fas fa-cube"></i></button>
+    </div>
+
+    <button class="emote-btn" id="emoteBtn" onclick="EmoteMenu.toggle()">
+      <i class="fas fa-wand-magic-sparkles"></i>
+    </button>
+    <div class="emote-panel" id="emotePanel">
+      <div class="emote-head">
+        <i class="fas fa-wand-magic-sparkles"></i> Emote & VFX
+        <button onclick="EmoteMenu.toggle()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="emote-scroll" id="emoteScroll">
+        <div class="emote-grid" id="emoteGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hub-menu">
+    <button class="hub-btn" onclick="openGameModes()"><div class="ic"><i class="fas fa-play"></i></div><div class="tx">Chơi</div></button>
+    <button class="hub-btn" onclick="openQuest()"><div class="ic"><i class="fas fa-scroll"></i></div><div class="tx">N.vụ</div></button>
+    <button class="hub-btn boss" onclick="startBoss()"><div class="ic"><i class="fas fa-dragon"></i></div><div class="tx">Boss</div></button>
+    <button class="hub-btn shop" onclick="openShop()"><div class="ic"><i class="fas fa-store"></i></div><div class="tx">Shop</div></button>
+    <button class="hub-btn anim" onclick="EmoteMenu.toggle()"><div class="ic"><i class="fas fa-wand-magic-sparkles"></i></div><div class="tx">Emote</div></button>
+    <button class="hub-btn upload" onclick="openUploadModal()"><div class="ic"><i class="fas fa-cube"></i></div><div class="tx">Nạp 3D</div></button>
+    <button class="hub-btn map" onclick="openMap()"><div class="ic"><i class="fas fa-map"></i></div><div class="tx">B.đồ</div></button>
+    <button class="hub-btn ach" onclick="openCollection()"><div class="ic"><i class="fas fa-trophy"></i></div><div class="tx">S.tập</div></button>
+    <button class="hub-btn set" onclick="openSettings()"><div class="ic"><i class="fas fa-gear"></i></div><div class="tx">C.đặt</div></button>
+  </div>
+</div>
+
+<div class="overlay" id="shopOverlay">
+  <div class="modal-box" style="max-width:560px;">
+    <div class="modal-head">
+      <div class="ic" style="background:linear-gradient(135deg,#ec4899,#9d174d);"><i class="fas fa-store"></i></div>
+      <div><h3>Cửa hàng</h3><p>Nhân vật & Pet</p></div>
+      <button class="close" onclick="closeOverlay('shopOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="shop-tabs">
+        <button class="shop-tab active" data-tab="chars" onclick="switchShopTab('chars')">Nhân vật</button>
+        <button class="shop-tab" data-tab="pets" onclick="switchShopTab('pets')">Pet</button>
+        <button class="shop-tab" data-tab="code" onclick="switchShopTab('code')">Code</button>
+      </div>
+      <div id="shopTabChars"><div class="shop-grid" id="shopGridChars"></div></div>
+      <div id="shopTabPets" style="display:none;"><div class="shop-grid" id="shopGridPets"></div></div>
+      <div id="shopTabCode" style="display:none;">
+        <div class="code-input-wrap">
+          <input type="text" id="codeInput" placeholder="Nhập code..." maxlength="30">
+          <button onclick="redeemCode()">Nhập</button>
+        </div>
+        <div class="code-hint">
+          <b style="color:var(--c1);">Code:</b>
+          <code style="background:rgba(139,92,246,.2);padding:1px 6px;border-radius:5px;color:#c4b5fd;">ADMINNHAT</code> → +999999 xu
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="uploadOverlay">
+  <div class="modal-box" style="max-width:560px;">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-cube"></i></div>
+      <div><h3>Nạp model 3D</h3><p>Tự convert GitHub → jsDelivr + tự tải</p></div>
+      <button class="close" onclick="closeOverlay('uploadOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="padding:10px 12px;border-radius:11px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.3);margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:800;color:var(--cyan);margin-bottom:5px;">
+          <i class="fas fa-magic"></i> TỰ ĐỘNG
+        </div>
+        <div style="font-size:10.5px;color:var(--txt-2);line-height:1.55;">
+          • Dán link GitHub <b>blob</b> hoặc <b>raw</b> → tự convert sang jsDelivr CDN<br>
+          • Lưu Firebase ngay khi dán<br>
+          • Tự tải model vào scene (không cần bấm nút)
+        </div>
+      </div>
+
+      <div class="upload-tabs">
+        <button class="upload-tab active" data-utab="chars" onclick="switchUploadTab('chars')">Nhân vật (5)</button>
+        <button class="upload-tab" data-utab="pets" onclick="switchUploadTab('pets')">Pet (5)</button>
+        <button class="upload-tab" data-utab="boss" onclick="switchUploadTab('boss')">Boss</button>
+      </div>
+
+      <div id="uploadTabChars"><div class="slot-grid" id="charSlotGrid"></div></div>
+      <div id="uploadTabPets" style="display:none;"><div class="slot-grid" id="petSlotGrid"></div></div>
+      <div id="uploadTabBoss" style="display:none;">
+        <div class="slot-grid" style="grid-template-columns:1fr;">
+          <div class="slot-item" id="bossSlotCard">
+            <div class="slot-name"><span class="num">B</span> Boss Trùm</div>
+            <div class="slot-info" id="bossSlotInfo">Chưa có model</div>
+            <input type="url" class="upload-input" id="bossUrlInput" placeholder="Dán link GitHub / jsDelivr..." data-category="boss" data-slot="boss_main">
+            <div class="slot-actions">
+              <button onclick="saveSlotURL('boss', 'boss_main')">Lưu + Tải</button>
+              <button class="danger" onclick="deleteSlot('boss', 'boss_main')"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;font-size:10px;color:var(--txt-dim);line-height:1.5;padding:8px 10px;border-radius:10px;background:var(--surface-2);">
+        <b>Dạng link được hỗ trợ:</b><br>
+        <code style="color:#c4b5fd;">github.com/user/repo/blob/main/file.vrm</code><br>
+        <code style="color:#c4b5fd;">github.com/user/repo/raw/main/file.vrm</code><br>
+        <code style="color:#c4b5fd;">github.com/user/repo/raw/refs/heads/main/file.vrm</code><br>
+        <code style="color:#c4b5fd;">cdn.jsdelivr.net/gh/user/repo@main/file.vrm</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="avatarOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-user-circle"></i></div>
+      <div><h3>Đổi Avatar</h3><p>Chọn từ thư viện hoặc tải ảnh lên</p></div>
+      <button class="close" onclick="closeOverlay('avatarOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="avatar-preview-big"><img id="avatarPreviewBig" src="" alt=""></div>
+      <div class="avatar-actions">
+        <button class="avatar-action" onclick="document.getElementById('avatarFileInput').click()">
+          <i class="fas fa-cloud-arrow-up"></i>
+          <div class="t">Tải ảnh lên</div>
+          <div class="d">JPG, PNG, GIF</div>
+        </button>
+        <button class="avatar-action" onclick="randomizeAvatarSeed()">
+          <i class="fas fa-shuffle"></i>
+          <div class="t">Random mới</div>
+          <div class="d">DiceBear API</div>
+        </button>
+      </div>
+      <div class="avatar-section-title">Thư viện DiceBear</div>
+      <div class="avatar-grid" id="avatarGrid"></div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button onclick="confirmAvatar()">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modesOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-gamepad"></i></div>
+      <div><h3>Chọn chế độ</h3><p>Mỗi chế độ có luật riêng</p></div>
+      <button class="close" onclick="closeOverlay('modesOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="mode-grid">
+        <div class="mode-item" onclick="startMode('classic')"><div class="mi"><i class="fas fa-play"></i></div><div class="mn">Cổ điển</div><div class="md">8 câu</div></div>
+        <div class="mode-item" onclick="startMode('survival')"><div class="mi" style="background:linear-gradient(135deg,#ef4444,#b91c1c);"><i class="fas fa-heart-pulse"></i></div><div class="mn">Sinh tồn</div><div class="md">3 mạng</div></div>
+        <div class="mode-item" onclick="startMode('speedrun')"><div class="mi" style="background:linear-gradient(135deg,#f59e0b,#b45309);"><i class="fas fa-bolt"></i></div><div class="mn">Speedrun</div><div class="md">60s</div></div>
+        <div class="mode-item" onclick="startMode('perfect')"><div class="mi" style="background:linear-gradient(135deg,#10b981,#047857);"><i class="fas fa-gem"></i></div><div class="mn">Perfect</div><div class="md">Không sai</div></div>
+        <div class="mode-item" onclick="startMode('arcade')"><div class="mi" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);"><i class="fas fa-coins"></i></div><div class="mn">Arcade</div><div class="md">Điểm số</div></div>
+        <div class="mode-item" onclick="startMode('random')"><div class="mi" style="background:linear-gradient(135deg,#06b6d4,#0e7490);"><i class="fas fa-shuffle"></i></div><div class="mn">Ngẫu nhiên</div><div class="md">Xáo trộn</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="questOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-scroll"></i></div>
+      <div><h3>Nhiệm vụ</h3><p>Tự động đổi nhiệm vụ mới</p></div>
+      <button class="close" onclick="closeOverlay('questOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body"><div id="questList" style="display:flex;flex-direction:column;gap:10px;"></div></div>
+  </div>
+</div>
+
+<div class="overlay" id="settingsOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-gear"></i></div>
+      <div><h3>Cài đặt</h3><p>Dữ liệu & công cụ</p></div>
+      <button class="close" onclick="closeOverlay('settingsOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="hub-btn" style="flex-direction:row;padding:12px;justify-content:flex-start;gap:10px;" onclick="exportData()"><div class="ic"><i class="fas fa-download"></i></div><div class="tx" style="text-align:left;">Xuất dữ liệu</div></button>
+        <button class="hub-btn" style="flex-direction:row;padding:12px;justify-content:flex-start;gap:10px;" onclick="document.getElementById('importFile').click()"><div class="ic"><i class="fas fa-upload"></i></div><div class="tx" style="text-align:left;">Nhập dữ liệu</div></button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+        <button class="hub-btn" style="flex-direction:row;padding:12px;justify-content:flex-start;gap:10px;" onclick="toggleLog()"><div class="ic" style="background:linear-gradient(135deg,#06b6d4,#0e7490);"><i class="fas fa-terminal"></i></div><div class="tx" style="text-align:left;">Console log</div></button>
+        <button class="hub-btn" style="flex-direction:row;padding:12px;justify-content:flex-start;gap:10px;" onclick="resetAll()"><div class="ic" style="background:linear-gradient(135deg,#ef4444,#b91c1c);"><i class="fas fa-trash-can"></i></div><div class="tx" style="text-align:left;">Xóa toàn bộ</div></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="mapOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-map"></i></div>
+      <div><h3>Bản đồ</h3><p>Mở khóa theo cấp độ</p></div>
+      <button class="close" onclick="closeOverlay('mapOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body"><div class="map-wrap" id="mapWrap"></div></div>
+  </div>
+</div>
+
+<div class="overlay" id="collectionOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-trophy"></i></div>
+      <div><h3>Bộ sưu tập</h3><p>Đã mở khóa <span id="achCount">0/13</span></p></div>
+      <button class="close" onclick="closeOverlay('collectionOverlay')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body"><div class="ach-grid" id="achGrid"></div></div>
+  </div>
+</div>
+
+<div id="quizScreen">
+  <div class="q-topbar">
+    <button class="q-back" onclick="exitQuiz()"><i class="fas fa-arrow-left"></i></button>
+    <div class="q-title"><h2 id="qModeTitle">Chế độ Cổ điển</h2><p id="qSubtitle">Câu 1 / 8</p></div>
+    <div class="q-progress-mini">
+      <span id="qTimer" style="color:var(--gold);font-weight:900;"></span>
+      <span id="qProgText">0%</span>
+      <div class="bar"><i id="qProgBar"></i></div>
+    </div>
+  </div>
+  <div class="q-body">
+    <div class="q-card">
+      <span class="q-tag"><i class="fas fa-check-double"></i> Câu hỏi</span>
+      <div class="q-text" id="qText">Đang tải...</div>
+      <div class="q-opts" id="qOpts"></div>
+      <div class="q-feedback" id="qFeedback">
+        <div class="fi" id="qFi"><i class="fas fa-check"></i></div>
+        <div class="ft"><div class="t" id="qFt">Chính xác!</div><div class="d" id="qFd">+10 EXP</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bossScreen">
+  <div class="boss-top">
+    <button class="back" onclick="exitBoss()"><i class="fas fa-arrow-left"></i></button>
+    <div class="info">
+      <div class="t"><i class="fas fa-dragon"></i> TRÙM PHÁP LUẬT</div>
+      <div class="d">Hạ gục để nhận phần thưởng</div>
+    </div>
+    <button class="boss-menu-btn" onclick="openUploadModal()" title="Nạp Boss">
+      <i class="fas fa-cube"></i>
+    </button>
+  </div>
+
+  <div class="boss-arena">
+    <div class="boss-hud">
+      <div class="row1">
+        <div class="boss-avatar"><i class="fas fa-dragon"></i></div>
+        <div class="boss-name">
+          <div class="n">
+            Trùm Pháp luật
+            <span class="phase-badge" id="bossPhaseBadge">GĐ 1</span>
+          </div>
+          <div class="s">
+            <i class="fas fa-heart" style="color:#ef4444;"></i>
+            <span>HP:</span>
+            <b id="bossHpText" style="color:#fff;">100 / 100</b>
+          </div>
+        </div>
+        <div class="hp-num" id="bossHpPercent">100%</div>
+      </div>
+      <div class="hp-track">
+        <div class="hp-fill" id="bossHpBar"></div>
+      </div>
+      <div class="phases">
+        <div class="ph on" data-phase="1"><i class="fas fa-shield-halved"></i> GĐ 1</div>
+        <div class="ph" data-phase="2"><i class="fas fa-fire"></i> GĐ 2</div>
+        <div class="ph" data-phase="3"><i class="fas fa-skull"></i> GĐ 3</div>
+      </div>
+    </div>
+
+    <div class="boss-figure-wrap">
+      <div class="boss-figure" id="bossFigure">
+        <div class="boss-ring r1"></div>
+        <div class="boss-ring r2"></div>
+        <div class="boss-img-wrap" id="bossImgWrap">
+          <canvas id="bossCanvas"></canvas>
+          <div class="boss-loading" id="bossLoading">
+            <div class="big-spinner"></div>
+            <div class="lbl">Đang load Boss</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="boss-log" id="bossLog"><p class="new">⚔️ Trận chiến bắt đầu!</p></div>
+
+    <div class="boss-question">
+      <div class="q-text" id="bossQText">Đang tải...</div>
+      <div class="q-opts" id="bossQOpts"></div>
+    </div>
+  </div>
+</div>
+
+<div class="boss-win" id="bossWin">
+  <div class="boss-win-card">
+    <div class="trophy"><i class="fas fa-crown"></i></div>
+    <h2>CHIẾN THẮNG!</h2>
+    <div class="sub">Bạn đã hạ gục Trùm Pháp luật</div>
+    <div class="boss-rewards">
+      <div class="boss-reward"><i class="fas fa-star"></i> +200 EXP</div>
+      <div class="boss-reward"><i class="fas fa-coins"></i> +50 Coin</div>
+    </div>
+    <button onclick="closeBossWin()">TUYỆT VỜI!</button>
+  </div>
+</div>
+
+<div id="levelUp">
+  <div class="levelup-card">
+    <div class="levelup-badge"><i class="fas fa-arrow-up"></i></div>
+    <h2>LÊN CẤP!</h2>
+    <div class="sub">Bạn đã mạnh mẽ hơn rồi</div>
+    <div class="lvl-big" id="levelUpNum">2</div>
+    <div class="lvl-lbl">Level mới</div>
+    <button onclick="closeLevelUp()">Tiếp tục</button>
+  </div>
+</div>
+
+<div id="comboFX">
+  <div class="cn" id="comboNum">3</div>
+  <div class="cl">COMBO</div>
+  <div class="csub" id="comboSub">Tuyệt vời!</div>
+</div>
+
+<div class="overlay" id="nameModal">
+  <div class="modal-box" style="max-width:340px;">
+    <div class="modal-head">
+      <div class="ic"><i class="fas fa-pen"></i></div>
+      <div><h3>Đặt tên nhân vật</h3><p>Tên hiển thị trên thanh EXP</p></div>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="nameInput" placeholder="Nhập tên..." maxlength="20" style="width:100%;padding:13px 14px;border-radius:13px;border:1.5px solid var(--line-2);background:var(--surface);color:#fff;font-family:inherit;font-size:14px;font-weight:700;outline:none;text-align:center;">
+      <div class="btn-row" style="margin-top:14px;">
+        <button style="background:var(--surface);color:var(--txt-2);" onclick="closeNameModal()">Bỏ qua</button>
+        <button onclick="confirmName()">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast">
+  <i class="fas fa-circle-check"></i>
+  <span id="toastText">Đã lưu!</span>
+</div>
+
+<div id="rpgGameShell" aria-label="Game RPG">
+  <button id="rpgExit" type="button" onclick="closeRPGGame()">
+    <i class="fas fa-arrow-left"></i>
+    <span>Thoát game</span>
+  </button>
+  <iframe id="rpgGameFrame" title="RPG v11"></iframe>
+</div>
+
+<script>
+const Logger = {
+  el: null, body: null, entries: [],
+  init() {
+    this.el = document.getElementById("logPanel");
+    this.body = document.getElementById("logBody");
+    this.patchConsole();
+    window.addEventListener("error", e => this.push("err", `${e.message} @ ${e.filename}:${e.lineno}`));
+    window.addEventListener("unhandledrejection", e => this.push("err", "Reject: " + (e.reason?.message || e.reason)));
+    if (typeof THREE === "undefined") this.push("err", "THREE chưa load");
+    else this.push("ok", "THREE r" + THREE.REVISION);
+  },
+  patchConsole() {
+    const orig = { log: console.log.bind(console), warn: console.warn.bind(console), error: console.error.bind(console) };
+    console.log = (...a) => { orig.log(...a); this.push("info", a.map(safeStr).join(" ")); };
+    console.warn = (...a) => { orig.warn(...a); this.push("warn", a.map(safeStr).join(" ")); };
+    console.error = (...a) => { orig.error(...a); this.push("err", a.map(safeStr).join(" ")); };
+  },
+  push(level, msg) {
+    if (!this.body) return;
+    const time = new Date().toLocaleTimeString("vi-VN", { hour12: false });
+    const row = document.createElement("div");
+    row.className = "le " + level;
+    const t = document.createElement("span"); t.className = "t"; t.textContent = time;
+    const m = document.createElement("span"); m.className = "m"; m.textContent = msg;
+    row.append(t, m);
+    this.body.appendChild(row);
+    this.body.scrollTop = this.body.scrollHeight;
+    this.entries.push({ time, level, msg });
+    if (this.entries.length > 300) { this.entries.shift(); this.body.firstChild?.remove(); }
+  },
+  toggle() { this.el.classList.toggle("on"); },
+  clear() { this.body.innerHTML = ""; this.entries = []; },
+  copy() {
+    const txt = this.entries.map(e => `[${e.time}] [${e.level}] ${e.msg}`).join("\n");
+    navigator.clipboard?.writeText(txt).then(() => toast("Đã copy log!")).catch(() => toast("Không copy được"));
+  }
+};
+function safeStr(v) { try { if (typeof v === "object") return JSON.stringify(v); return String(v); } catch(e) { return "[object]"; } }
+
+function convertToDirectModelURL(input) {
+  if (!input) return null;
+  const url = input.trim();
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split("/").filter(Boolean);
+    if (u.hostname === "cdn.jsdelivr.net" || u.hostname === "raw.githubusercontent.com") return u.href;
+    if (u.hostname === "github.com" && parts.length >= 4) {
+      const owner = parts[0], repo = parts[1];
+      const mode = parts[2];
+      if (mode === "blob" || mode === "raw") {
+        let rest = parts.slice(3);
+        if (rest[0] === "refs" && rest[1] === "heads") rest = rest.slice(2);
+        const branch = rest[0];
+        const filePath = rest.slice(1).join("/");
+        if (branch && filePath) return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${filePath}`;
+      }
+    }
+    if (u.hostname === "gist.github.com" && parts.length >= 4) {
+      const user = parts[0], gistId = parts[1];
+      if (parts[2] === "raw") return `https://gist.githubusercontent.com/${user}/${gistId}/raw/${parts.slice(3).join("/")}`;
+    }
+    return u.href;
+  } catch(e) { return null; }
+}
+
+function isValidModelURL(url) {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "https:") return false;
+    if (!/\.(vrm|glb|gltf)(\?|$)/i.test(u.pathname)) return false;
+    return true;
+  } catch(e) { return false; }
+}
+
+function getModelURLCandidates(url) {
+  const out = [];
+  const add = v => { if (v && !out.includes(v)) out.push(v); };
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split("/").filter(Boolean);
+    if (u.hostname === "cdn.jsdelivr.net") {
+      add(url);
+      const m = u.pathname.match(/^\/gh\/([^/]+)\/([^@/]+)@([^/]+)\/(.+)$/);
+      if (m) add(`https://raw.githubusercontent.com/${m[1]}/${m[2]}/${m[3]}/${m[4]}`);
+      return out;
+    }
+    if (u.hostname === "raw.githubusercontent.com" && parts.length >= 4) {
+      const owner = parts[0], repo = parts[1], branch = parts[2];
+      const file = parts.slice(3).join("/");
+      add(`https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${file}`);
+      add(url);
+      return out;
+    }
+    if (u.hostname === "github.com") {
+      const converted = convertToDirectModelURL(url);
+      if (converted && converted !== url) {
+        add(converted);
+        const cu = new URL(converted);
+        if (cu.hostname === "cdn.jsdelivr.net") {
+          const m = cu.pathname.match(/^\/gh\/([^/]+)\/([^@/]+)@([^/]+)\/(.+)$/);
+          if (m) add(`https://raw.githubusercontent.com/${m[1]}/${m[2]}/${m[3]}/${m[4]}`);
+        }
+        return out;
+      }
+    }
+    add(url);
+  } catch(e) { add(url); }
+  return out;
+}
+
+const ModelDB = {
+  db: null,
+  async open() {
+    if (this.db) return this.db;
+    return new Promise((res, rej) => {
+      const req = indexedDB.open("rpg_models_v20", 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains("models")) db.createObjectStore("models", { keyPath: "id" });
+      };
+      req.onsuccess = () => { this.db = req.result; res(this.db); };
+      req.onerror = () => rej(req.error);
+    });
+  },
+  async save(id, blob, name) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const tx = db.transaction("models", "readwrite");
+      tx.objectStore("models").put({ id, blob, name, ts: Date.now() });
+      tx.oncomplete = () => res(true);
+      tx.onerror = () => rej(tx.error);
+    });
+  },
+  async get(id) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const tx = db.transaction("models", "readonly");
+      const req = tx.objectStore("models").get(id);
+      req.onsuccess = () => res(req.result || null);
+      req.onerror = () => rej(req.error);
+    });
+  },
+  async delete(id) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const tx = db.transaction("models", "readwrite");
+      tx.objectStore("models").delete(id);
+      tx.oncomplete = () => res(true);
+      tx.onerror = () => rej(tx.error);
+    });
+  }
+};
+
+function requireModel(opts = {}) {
+  const { silent = false, target = "char" } = opts;
+  const M = target === "boss" ? Model3DBoss : Model3D;
+  if (M.ready && (M.currentVRM || M.currentGLB)) return true;
+  if (!silent) toast("⚠️ Chưa nạp model — vào Nạp 3D trước", "gold");
+  return false;
+}
+function hasModel(target = "char") {
+  const M = target === "boss" ? Model3DBoss : Model3D;
+  return M.ready && (M.currentVRM || M.currentGLB);
+}
+
+function createModel3D(opts) {
+  const M = {
+    _name: opts.name || "3d",
+    _canvasId: opts.canvasId,
+    _stageId: opts.stageId,
+    renderer: null, scene: null, camera: null, controls: null,
+    currentVRM: null, currentGLB: null, isVRM: false, vrmIsV0: false,
+    raf: null, ready: false,
+    restQuat: {}, originalMaterials: [], damageOverlay: null,
+    currentAnim: "idle", currentFx: "",
+    time: 0, fxTime: 0, clock: null,
+    _ro: null, _debrisGroup: null, _bossExploded: false,
+    isPet: !!opts.isPet,
+    _loadToken: 0,
+    _loadedSlot: null,
+    _loading: false,
+    _sleepAfter: 3.5,
+    _lastActionTime: 0,
+
+    init() {
+      if (this.ready) return true;
+      if (typeof THREE === "undefined") return false;
+      const canvas = document.getElementById(this._canvasId);
+      if (!canvas) return false;
+
+      this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      this.renderer.outputEncoding = THREE.sRGBEncoding;
+      this.renderer.setClearColor(0x000000, 0);
+
+      this.scene = new THREE.Scene();
+      this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+      this.camera.position.set(0, 1.2, 2.5);
+
+      if (!this.isPet) {
+        this.controls = new THREE.OrbitControls(this.camera, canvas);
+        this.controls.target.set(0, 1, 0);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.08;
+        this.controls.minDistance = 0.5;
+        this.controls.maxDistance = 15;
+        this.controls.update();
+      }
+
+      const dl = new THREE.DirectionalLight(0xffffff, 1.8); dl.position.set(2, 5, 3); this.scene.add(dl);
+      const dl2 = new THREE.DirectionalLight(0xec4899, 1.0); dl2.position.set(-2, 2, -2); this.scene.add(dl2);
+      const dl3 = new THREE.DirectionalLight(0x8b5cf6, 0.8); dl3.position.set(0, 1, -3); this.scene.add(dl3);
+      this.scene.add(new THREE.AmbientLight(0xffffff, 0.9));
+
+      this.clock = new THREE.Clock();
+      this.ready = true;
+
+      this.resize();
+      requestAnimationFrame(() => this.resize());
+      setTimeout(() => this.resize(), 100);
+      setTimeout(() => this.resize(), 400);
+
+      const stage = document.getElementById(this._stageId);
+      if (stage && "ResizeObserver" in window) {
+        this._ro = new ResizeObserver(() => this.resize());
+        this._ro.observe(stage);
+      }
+      return true;
+    },
+
+    resize() {
+      if (!this.renderer || !this.camera) return;
+      const stage = document.getElementById(this._stageId);
+      if (!stage) return;
+      const w = Math.max(1, stage.clientWidth);
+      const h = Math.max(1, stage.clientHeight);
+      this.renderer.setSize(w, h, false);
+      this.camera.aspect = w / h;
+      this.camera.updateProjectionMatrix();
+    },
+
+    setupOverlay() {
+      if (this.isPet) return;
+      if (!this.damageOverlay) {
+        this.damageOverlay = document.createElement("div");
+        this.damageOverlay.style.cssText = "position:fixed;inset:0;background:radial-gradient(circle at center, rgba(255,0,0,0) 20%, rgba(255,0,0,0.7) 100%);pointer-events:none;opacity:0;z-index:50;transition:opacity 0.05s linear;";
+        document.body.appendChild(this.damageOverlay);
+      }
+    },
+
+    cacheMaterials() {
+      this.originalMaterials = [];
+      const root = this.isVRM ? (this.currentVRM && this.currentVRM.scene) : this.currentGLB;
+      if (!root) return;
+      root.traverse(o => {
+        if (o.isMesh && o.material) {
+          const mats = Array.isArray(o.material) ? o.material : [o.material];
+          mats.forEach(m => {
+            this.originalMaterials.push({
+              material: m,
+              color: m.color ? m.color.clone() : null,
+              emissive: m.emissive ? m.emissive.clone() : null,
+              opacity: m.opacity !== undefined ? m.opacity : 1,
+              transparent: m.transparent
+            });
+          });
+        }
+      });
+    },
+
+    applyDamage(intensity, r, g, b) {
+      if (intensity === undefined) intensity = 0;
+      intensity = Math.max(0, Math.min(1, intensity));
+      if (this.damageOverlay) this.damageOverlay.style.opacity = intensity * 0.6;
+      const tint = new THREE.Color(r !== undefined ? r : 1, g !== undefined ? g : 0, b !== undefined ? b : 0);
+      this.originalMaterials.forEach(item => {
+        const m = item.material;
+        if (m.color && item.color) m.color.copy(item.color).lerp(tint, intensity);
+        if (m.emissive && item.emissive) m.emissive.copy(item.emissive).lerp(tint, intensity * 0.7);
+        m.needsUpdate = true;
+      });
+    },
+
+    setOpacity(alpha) {
+      alpha = Math.max(0, Math.min(1, alpha));
+      this.originalMaterials.forEach(item => {
+        const m = item.material;
+        if (alpha < 1) { m.transparent = true; m.opacity = alpha; }
+        else { m.transparent = item.transparent; m.opacity = 1; }
+        m.needsUpdate = true;
+      });
+    },
+
+    resetDamage() {
+      if (this.damageOverlay) this.damageOverlay.style.opacity = 0;
+      this.originalMaterials.forEach(item => {
+        const m = item.material;
+        if (m.color && item.color) m.color.copy(item.color);
+        if (m.emissive && item.emissive) m.emissive.copy(item.emissive);
+        m.transparent = item.transparent;
+        m.opacity = item.opacity;
+        m.needsUpdate = true;
+      });
+      const root = this.isVRM ? (this.currentVRM && this.currentVRM.scene) : this.currentGLB;
+      if (root) {
+        root.scale.set(1, 1, 1);
+        if (this.isVRM && this.vrmIsV0) root.rotation.set(0, Math.PI, 0);
+        else root.rotation.set(0, 0, 0);
+        root.position.set(0, 0, 0);
+      }
+    },
+
+    getBone(name) {
+      if (this.isVRM && this.currentVRM && this.currentVRM.humanoid) {
+        return this.currentVRM.humanoid.getNormalizedBoneNode(name);
+      }
+      const root = this.currentGLB;
+      if (!root) return null;
+      let found = null;
+      const target = name.toLowerCase().replace(/[_\s]/g, '');
+      root.traverse(o => {
+        if (found || !o.isBone) return;
+        const n = o.name.toLowerCase().replace(/[_\s]/g, '');
+        if (n.indexOf(target) !== -1) found = o;
+      });
+      return found;
+    },
+
+    saveRestPose() {
+      this.restQuat = {};
+      const names = ['hips','spine','chest','upperChest','neck','head','leftShoulder','leftUpperArm','leftLowerArm','leftHand','rightShoulder','rightUpperArm','rightLowerArm','rightHand','leftUpperLeg','leftLowerLeg','leftFoot','rightUpperLeg','rightLowerLeg','rightFoot'];
+      let count = 0;
+      if (this.isVRM && this.currentVRM && this.currentVRM.humanoid) {
+        names.forEach(n => {
+          const b = this.currentVRM.humanoid.getNormalizedBoneNode(n);
+          if (b) { this.restQuat[n] = { quat: b.quaternion.clone(), pos: b.position.clone() }; count++; }
+        });
+      } else if (this.currentGLB) {
+        this.currentGLB.traverse(o => {
+          if (o.isBone) { this.restQuat[o.name] = { quat: o.quaternion.clone(), pos: o.position.clone() }; count++; }
+        });
+      }
+      return count;
+    },
+
+    resetPose() {
+      for (const n in this.restQuat) {
+        let b = this.isVRM ? (this.currentVRM && this.currentVRM.humanoid ? this.currentVRM.humanoid.getNormalizedBoneNode(n) : null) : null;
+        if (!b && this.currentGLB) this.currentGLB.traverse(o => { if (!b && o.isBone && o.name === n) b = o; });
+        if (b) { b.quaternion.copy(this.restQuat[n].quat); b.position.copy(this.restQuat[n].pos); }
+      }
+      if (this.isVRM && this.currentVRM && this.currentVRM.expressionManager) {
+        this.currentVRM.expressionManager.setValue('blink', 0);
+        this.currentVRM.expressionManager.setValue('aa', 0);
+        this.currentVRM.expressionManager.setValue('happy', 0);
+        this.currentVRM.expressionManager.setValue('angry', 0);
+      }
+      this.resetDamage();
+    },
+
+    rotateBone(name, x, y, z) {
+      const b = this.getBone(name);
+      if (!b) return;
+      const rest = this.restQuat[name] || this.restQuat[b.name];
+      if (!rest) { b.rotation.set(x, y, z); return; }
+      const e = new THREE.Euler(x, y, z, 'XYZ');
+      const q = new THREE.Quaternion().setFromEuler(e);
+      b.quaternion.copy(rest.quat).multiply(q);
+    },
+
+    moveBone(name, dx, dy, dz) {
+      const b = this.getBone(name);
+      if (!b) return;
+      const rest = this.restQuat[name];
+      if (!rest) return;
+      b.position.copy(rest.pos);
+      b.position.x += dx; b.position.y += dy; b.position.z += dz;
+    },
+
+    get animLib() {
+      const self = this;
+      return {
+        idle(t) {
+          const breath = Math.sin(t * 1.5) * 0.025;
+          const sway = Math.sin(t * 0.7) * 0.04;
+          self.moveBone('spine', 0, breath, 0);
+          self.rotateBone('chest', 0, 0, sway * 0.6);
+          self.rotateBone('head', Math.sin(t * 1.1) * 0.03, Math.sin(t * 0.4) * 0.14, Math.sin(t * 0.6) * 0.02);
+          const armSway = Math.sin(t * 0.6) * 0.06;
+          const armSway2 = Math.cos(t * 0.5) * 0.04;
+          self.rotateBone('leftUpperArm', armSway2, 0, 1.2 + armSway);
+          self.rotateBone('rightUpperArm', -armSway2, 0, -1.2 - armSway);
+          self.rotateBone('leftLowerArm', 0, 0, 0.15 + armSway * 0.3);
+          self.rotateBone('rightLowerArm', 0, 0, -0.15 - armSway * 0.3);
+          if (self.isVRM && self.currentVRM && self.currentVRM.expressionManager) {
+            const blinkPhase = (t * 0.4) % 1;
+            const blink = blinkPhase < 0.06 ? 1 : (blinkPhase < 0.12 ? 1 - (blinkPhase - 0.06) * 16.6 : 0);
+            self.currentVRM.expressionManager.setValue('blink', Math.max(0, blink));
+          }
+        },
+        wave(t) {
+          const w = Math.sin(t * 8) * 0.5;
+          self.rotateBone('rightUpperArm', -2.6, 0, 0);
+          self.rotateBone('rightLowerArm', 0, 0, -0.5 + w * 0.4);
+          self.rotateBone('rightHand', 0, 0, w * 1.2);
+          self.rotateBone('leftUpperArm', 0, 0, 1.2);
+          self.rotateBone('leftLowerArm', 0, 0, 0.15);
+          self.rotateBone('head', 0, Math.sin(t * 3) * 0.08, 0);
+          if (self.isVRM && self.currentVRM && self.currentVRM.expressionManager) {
+            self.currentVRM.expressionManager.setValue('happy', 0.6);
+          }
+        },
+        nod(t) {
+          const n = Math.sin(t * 2) * 0.3;
+          self.rotateBone('head', -n, 0, 0);
+          self.rotateBone('neck', -n * 0.3, 0, 0);
+          self.rotateBone('leftUpperArm', 0, 0, 1.2);
+          self.rotateBone('rightUpperArm', 0, 0, -1.2);
+        },
+        bow(t) {
+          const c = (t % 4) / 4;
+          let bend = 0;
+          if (c < 0.25) bend = c * 4 * 0.7;
+          else if (c < 0.5) bend = 0.7;
+          else if (c < 0.75) bend = 0.7 - (c - 0.5) * 4 * 0.7;
+          self.rotateBone('spine', -bend * 0.5, 0, 0);
+          self.rotateBone('chest', -bend * 0.4, 0, 0);
+          self.rotateBone('neck', -bend * 0.2, 0, 0);
+          self.rotateBone('head', -bend * 0.15, 0, 0);
+        },
+        dance(t) {
+          const beat = Math.sin(t * 4), beat2 = Math.sin(t * 2);
+          self.rotateBone('hips', 0, 0, beat * 0.15);
+          self.rotateBone('chest', 0, beat * 0.15, 0);
+          self.rotateBone('leftUpperArm', 0, 0, 0.8 + beat * 0.4);
+          self.rotateBone('rightUpperArm', 0, 0, -0.8 - beat * 0.4);
+          self.rotateBone('head', Math.abs(beat) * 0.15, beat2 * 0.2, 0);
+        },
+        walk_inplace(t) {
+          const step = Math.sin(t * 3);
+          self.rotateBone('leftUpperLeg', step * 0.5, 0, 0);
+          self.rotateBone('rightUpperLeg', -step * 0.5, 0, 0);
+          self.rotateBone('leftUpperArm', -step * 0.4, 0, 1.2);
+          self.rotateBone('rightUpperArm', step * 0.4, 0, -1.2);
+        },
+        spin(t) {
+          const root = self.isVRM ? self.currentVRM.scene : self.currentGLB;
+          if (root) {
+            const base = (self.isVRM && self.vrmIsV0) ? Math.PI : 0;
+            root.rotation.y = base + t * 1.5;
+          }
+        },
+        none(t) {
+          self.rotateBone('leftUpperArm', 0, 0, 1.2);
+          self.rotateBone('rightUpperArm', 0, 0, -1.2);
+        }
+      };
+    },
+
+    get fxLib() {
+      const self = this;
+      return {
+        hurt(t) {
+          const cycle = (t % 1.5) / 1.5;
+          let hit = 0, shake = 0;
+          if (cycle < 0.15) { hit = Math.sin(cycle / 0.15 * Math.PI); shake = Math.sin(cycle * 200) * 0.08; }
+          else if (cycle < 0.7) { hit = 0.6 + Math.sin(t * 25) * 0.05; shake = Math.sin(t * 30) * 0.03; }
+          else { const k = (cycle - 0.7) / 0.3; hit = 0.6 * (1 - k); shake = Math.sin(t * 15) * 0.02 * (1 - k); }
+          self.rotateBone('spine', -hit * 0.4 + shake, 0, shake * 0.5);
+          self.applyDamage(cycle < 0.15 ? hit : (cycle < 0.7 ? 0.4 : hit), 1, 0, 0);
+        },
+        hit(t) {
+          let hit = 0;
+          if (t < 0.15) hit = Math.sin(t / 0.15 * Math.PI);
+          else if (t < 0.6) hit = 0.5 * Math.cos((t - 0.15) * 6);
+          self.rotateBone('spine', -hit * 0.5, 0, 0);
+          self.applyDamage(hit, 1, 0, 0);
+        },
+        shock(t) {
+          const intensity = Math.max(0, 1 - t / 3);
+          const s = Math.sin(t * 40) * 0.15 * intensity;
+          self.applyDamage(intensity * 0.5, 0.3, 0.6, 1);
+        },
+        dead(t) {
+          const d = Math.min(t / 2, 1);
+          const fall = 1 - Math.pow(1 - d, 3);
+          self.rotateBone('spine', -fall * 0.3, 0, 0);
+          self.applyDamage(fall * 0.4, 1, 0, 0);
+        },
+        explode(t) {
+          const root = self.isVRM ? self.currentVRM.scene : self.currentGLB;
+          if (!root) return;
+          const d = Math.min(t / 1.5, 1);
+          let scale, opacity;
+          if (d < 0.3) { scale = 1 + d / 0.3 * 0.3; opacity = 1; }
+          else { const k = (d - 0.3) / 0.7; scale = 1.3 * (1 - k); opacity = 1 - k; }
+          root.scale.set(scale, scale, scale);
+          self.setOpacity(opacity);
+          self.applyDamage(d < 0.3 ? d * 3 : (1 - d) * 0.7, 1, 0.5, 0);
+        },
+        fade(t) {
+          const d = Math.min(t / 2.5, 1);
+          self.setOpacity(1 - d);
+        },
+        freeze(t) {
+          const d = Math.min(t / 1.5, 1);
+          self.applyDamage(d, 0.2, 0.6, 1);
+        },
+        burn(t) {
+          const d = Math.min(t / 2, 1);
+          const flicker = 0.7 + Math.sin(t * 30) * 0.3;
+          self.applyDamage(flicker * 0.8, 1, 0.4, 0);
+        },
+        boss_death(t) {
+          const root = self.isVRM ? self.currentVRM.scene : self.currentGLB;
+          if (!root) return;
+          const d = Math.min(t / 3.0, 1);
+          if (d < 0.35) {
+            const k = d / 0.35;
+            root.position.x = Math.sin(t * 55) * 0.06 * k;
+            self.applyDamage(k * 0.5, 1, 0, 0);
+          } else if (d < 0.5) {
+            const k = (d - 0.35) / 0.15;
+            root.scale.set(1 + k * 0.25, 1 + k * 0.25, 1 + k * 0.25);
+            self.applyDamage(0.5 + k * 0.5, 1, 0.8, 0.2);
+          } else {
+            if (!self._bossExploded) {
+              self._bossExploded = true;
+              root.visible = false;
+            }
+          }
+        }
+      };
+    },
+
+    updateDebris(dt) {},
+    clearDebris() { this._bossExploded = false; },
+
+    _disposeModel() {
+      const disposeNode = (root) => {
+        if (!root) return;
+        try {
+          root.traverse(o => {
+            if (o.geometry) { try { o.geometry.dispose(); } catch(e){} }
+            if (o.material) {
+              const mats = Array.isArray(o.material) ? o.material : [o.material];
+              mats.forEach(m => {
+                try {
+                  ['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap','alphaMap','bumpMap','displacementMap'].forEach(k => {
+                    if (m[k] && m[k].dispose) m[k].dispose();
+                  });
+                  m.dispose();
+                } catch(e){}
+              });
+            }
+          });
+        } catch(e){}
+      };
+
+      if (this.currentVRM) {
+        try { this.scene.remove(this.currentVRM.scene); } catch(e) {}
+        disposeNode(this.currentVRM.scene);
+        try { this.currentVRM.dispose && this.currentVRM.dispose(); } catch(e) {}
+        this.currentVRM = null;
+      }
+      if (this.currentGLB) {
+        try { this.scene.remove(this.currentGLB); } catch(e) {}
+        disposeNode(this.currentGLB);
+        this.currentGLB = null;
+      }
+
+      const toRemove = [];
+      this.scene.children.forEach(child => {
+        if (child.isLight) return;
+        toRemove.push(child);
+      });
+      toRemove.forEach(c => { try { this.scene.remove(c); } catch(e) {} });
+
+      this.originalMaterials = [];
+      this.restQuat = {};
+      this._loadedSlot = null;
+    },
+
+    async loadBlob(blob, name) {
+      if (!this.init()) return false;
+      this.resize();
+
+      this._loadToken = (this._loadToken || 0) + 1;
+      const myToken = this._loadToken;
+
+      Logger.push("info", `[${this._name}] loadBlob token=${myToken}, name=${name}`);
+
+      this._disposeModel();
+
+      this.vrmIsV0 = false;
+      this.currentAnim = "idle";
+      this.currentFx = "";
+      this.time = 0;
+      this.fxTime = 0;
+      this.resetDamage();
+
+      const buf = await blob.arrayBuffer();
+
+      return new Promise((resolve) => {
+        const loader = new THREE.GLTFLoader();
+        if (THREE.VRMLoaderPlugin) loader.register(p => new THREE.VRMLoaderPlugin(p));
+
+        loader.parse(buf, '', (gltf) => {
+          if (myToken !== this._loadToken) {
+            Logger.push("warn", `[${this._name}] Load cũ bị bỏ qua`);
+            try {
+              const scene = gltf.userData?.vrm?.scene || gltf.scene;
+              if (scene) {
+                scene.traverse(o => {
+                  if (o.geometry) { try { o.geometry.dispose(); } catch(e){} }
+                  if (o.material) {
+                    const mats = Array.isArray(o.material) ? o.material : [o.material];
+                    mats.forEach(m => { try { if (m.map) m.map.dispose(); m.dispose(); } catch(e){} });
+                  }
+                });
+              }
+            } catch(e) {}
+            resolve(false);
+            return;
+          }
+
+          const vrm = gltf.userData.vrm;
+          if (vrm) {
+            this.isVRM = true;
+            const metaVer = (vrm.meta && vrm.meta.metaVersion) || '1';
+            this.vrmIsV0 = (metaVer === '0');
+            this.scene.add(vrm.scene);
+            this.currentVRM = vrm;
+            vrm.scene.traverse(o => { o.frustumCulled = false; });
+            if (this.vrmIsV0) vrm.scene.rotation.y = Math.PI;
+            try { vrm.update(0); } catch(e) {}
+            const cnt = this.saveRestPose();
+            if (cnt === 0) setTimeout(() => this.saveRestPose(), 100);
+            setTimeout(() => { this.setupOverlay(); this.cacheMaterials(); this.fitCamera(vrm.scene); }, 100);
+          } else {
+            this.isVRM = false;
+            this.scene.add(gltf.scene);
+            this.currentGLB = gltf.scene;
+            this.currentGLB.traverse(o => { o.frustumCulled = false; });
+            this.saveRestPose();
+            setTimeout(() => { this.setupOverlay(); this.cacheMaterials(); this.fitCamera(gltf.scene); }, 100);
+          }
+          this.resize();
+          if (!this.raf) this.loop();
+          Logger.push("ok", `[${this._name}] Model loaded: ${name}`);
+          resolve(true);
+        }, (err) => {
+          Logger.push("err", `[${this._name}] Parse error: ${err.message || err}`);
+          resolve(false);
+        });
+      });
+    },
+
+    fitCamera(root) {
+      const box = new THREE.Box3().setFromObject(root);
+      const size = new THREE.Vector3(), center = new THREE.Vector3();
+      box.getSize(size); box.getCenter(center);
+      if (size.y === 0 || !isFinite(size.y)) return;
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      const dist = this.isPet
+        ? Math.max(size.y * 1.6, size.z * 2.3, maxDim * 1.7)
+        : Math.max(size.y * 1.55, size.z * 2.3, maxDim * 1.6);
+      this.camera.position.set(center.x, center.y + size.y * 0.1, center.z + dist);
+      if (this.controls) {
+        this.controls.target.set(center.x, center.y + size.y * 0.02, center.z);
+        this.controls.update();
+      } else {
+        this.camera.lookAt(center.x, center.y + size.y * 0.02, center.z);
+      }
+      this.camera.near = Math.max(0.01, maxDim * 0.001);
+      this.camera.far = maxDim * 100;
+      this.camera.updateProjectionMatrix();
+    },
+
+    loop() {
+      this.raf = requestAnimationFrame(() => this.loop());
+      const dt = this.clock.getDelta();
+      this.time += dt;
+
+      const hasModel = (this.isVRM && this.currentVRM) || (!this.isVRM && this.currentGLB);
+
+      if (hasModel) {
+        const timeSinceAction = this.time - (this._lastActionTime || 0);
+        const isSleeping = this.currentAnim === "idle" && !this.currentFx && timeSinceAction > this._sleepAfter;
+
+        if (isSleeping) {
+          this._sleepFrame = (this._sleepFrame || 0) + 1;
+          if (this._sleepFrame % 3 === 0) {
+            if (Object.keys(this.restQuat).length > 0) {
+              const fn = this.animLib.idle;
+              if (fn) fn(this.time);
+            }
+          }
+        } else {
+          if (Object.keys(this.restQuat).length > 0) {
+            if (this.currentFx) {
+              this.fxTime += dt;
+              const fn = this.fxLib[this.currentFx];
+              if (fn) fn(this.fxTime);
+            } else {
+              const fn = this.animLib[this.currentAnim];
+              if (fn) fn(this.time);
+            }
+          }
+        }
+      }
+      if (this.isPet) {
+        const root = this.isVRM ? this.currentVRM?.scene : this.currentGLB;
+        if (root) {
+          root.position.y = Math.sin(this.time * 2) * 0.04 + 0.02;
+          root.rotation.y = Math.sin(this.time * 1.2) * 0.15;
+        }
+      }
+      if (this.currentVRM && this.currentVRM.update) this.currentVRM.update(dt);
+      if (this.controls) this.controls.update();
+      if (this.renderer) this.renderer.render(this.scene, this.camera);
+    },
+
+    setAnimation(name) {
+      if (!this.ready || (!this.currentVRM && !this.currentGLB)) return;
+      this.currentAnim = name; this.currentFx = ""; this.time = 0; this.resetPose();
+      this._lastActionTime = this.time;
+    },
+    setFx(name) {
+      if (!this.ready || (!this.currentVRM && !this.currentGLB)) return;
+      if (name === "boss_death") { this._bossExploded = false; this.clearDebris(); }
+      this.currentFx = name; this.fxTime = 0; this.resetPose();
+      this._lastActionTime = this.time;
+    },
+    reset() {
+      this.currentFx = ""; this.currentAnim = "idle"; this.time = 0; this.fxTime = 0;
+      this._bossExploded = false; this.clearDebris(); this.resetPose();
+      this._lastActionTime = this.time;
+    },
+    faceCamera() {
+      const root = this.isVRM ? (this.currentVRM && this.currentVRM.scene) : this.currentGLB;
+      if (!root) return;
+      const baseY = (this.isVRM && this.vrmIsV0) ? Math.PI : 0;
+      root.rotation.y = baseY;
+      root.rotation.x = 0;
+      root.position.set(0, 0, 0);
+    },
+    unload() {
+      this._loadToken++;
+      this._disposeModel();
+      Logger.push("info", `[${this._name}] Unloaded + disposed`);
+    }
+  };
+  return M;
+}
+
+const Model3D = createModel3D({ canvasId: "stage3D", stageId: "stageArea", name: "char" });
+const Model3DBoss = createModel3D({ canvasId: "bossCanvas", stageId: "bossImgWrap", name: "boss" });
+const Model3DPet = createModel3D({ canvasId: "petCanvas", stageId: "stageArea", name: "pet", isPet: true });
+
+const EMOTES = [
+  { id:"idle",         type:"anim", icon:"fa-person",                    label:"Idle" },
+  { id:"wave",         type:"anim", icon:"fa-hand",                      label:"Vẫy tay" },
+  { id:"nod",          type:"anim", icon:"fa-check",                     label:"Gật đầu" },
+  { id:"bow",          type:"anim", icon:"fa-person-arrow-down-to-line", label:"Cúi chào" },
+  { id:"dance",        type:"anim", icon:"fa-music",                     label:"Nhảy" },
+  { id:"walk_inplace", type:"anim", icon:"fa-person-walking",            label:"Đi bộ" },
+  { id:"spin",         type:"anim", icon:"fa-rotate",                    label:"Xoay" },
+  { id:"none",         type:"anim", icon:"fa-ban",                       label:"Đứng yên" },
+  { id:"hurt",    type:"fx", icon:"fa-heart-crack",  label:"Đau" },
+  { id:"hit",     type:"fx", icon:"fa-hand-fist",    label:"Trúng đòn" },
+  { id:"shock",   type:"fx", icon:"fa-bolt",         label:"Sốc điện" },
+  { id:"dead",    type:"fx", icon:"fa-skull",        label:"Chết" },
+  { id:"explode", type:"fx", icon:"fa-burst",        label:"Nổ" },
+  { id:"fade",    type:"fx", icon:"fa-wind",         label:"Tan biến" },
+  { id:"freeze",  type:"fx", icon:"fa-snowflake",    label:"Đóng băng" },
+  { id:"burn",    type:"fx", icon:"fa-fire",         label:"Bốc cháy" }
+];
+
+const EmoteMenu = {
+  activeId: "idle",
+  _fxTimer: null,
+  init() {
+    const grid = document.getElementById("emoteGrid");
+    if (!grid) return;
+    grid.innerHTML = "";
+    const animSec = document.createElement("div");
+    animSec.className = "emote-section";
+    animSec.innerHTML = '<i class="fas fa-person-running"></i> Animation';
+    grid.appendChild(animSec);
+    EMOTES.filter(e => e.type === "anim").forEach(e => this._makeBtn(e, grid));
+    const fxSec = document.createElement("div");
+    fxSec.className = "emote-section";
+    fxSec.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Hiệu ứng';
+    grid.appendChild(fxSec);
+    EMOTES.filter(e => e.type === "fx").forEach(e => this._makeBtn(e, grid));
+    this.highlight("idle");
+  },
+  _makeBtn(e, grid) {
+    const btn = document.createElement("button");
+    btn.className = "emote-item" + (e.type === "fx" ? " fx" : "");
+    btn.dataset.id = e.id;
+    btn.innerHTML = `<span class="em"><i class="fas ${e.icon}"></i></span><span class="lb">${e.label}</span>`;
+    btn.onclick = () => this.play(e);
+    grid.appendChild(btn);
+  },
+  toggle() {
+    document.getElementById("emotePanel").classList.toggle("on");
+    document.getElementById("emoteBtn").classList.toggle("active");
+  },
+  close() {
+    document.getElementById("emotePanel").classList.remove("on");
+    document.getElementById("emoteBtn").classList.remove("active");
+  },
+  play(e) {
+    if (!requireModel()) { this.close(); return; }
+    const M = Model3D;
+    if (e.type === "anim") M.setAnimation(e.id);
+    else M.setFx(e.id);
+    this.activeId = e.id;
+    this.highlight(e.id);
+    setTimeout(() => this.close(), 350);
+    if (e.type === "fx") {
+      clearTimeout(this._fxTimer);
+      this._fxTimer = setTimeout(() => {
+        M.reset();
+        this.activeId = "idle";
+        this.highlight("idle");
+      }, 2800);
+    }
+  },
+  highlight(id) {
+    document.querySelectorAll(".emote-item").forEach(b => {
+      b.classList.toggle("active", b.dataset.id === id);
+    });
+  }
+};
+
+const ACHIEVEMENTS = [
+  { id: "first_blood", name: "Khởi đầu", desc: "Trả lời câu đầu", icon: "fa-seedling" },
+  { id: "combo_5", name: "Combo 5", desc: "Đúng 5 liên tiếp", icon: "fa-fire" },
+  { id: "combo_10", name: "Combo 10", desc: "Đúng 10 liên tiếp", icon: "fa-fire-flame-curved" },
+  { id: "combo_20", name: "Combo 20", desc: "Đúng 20 liên tiếp", icon: "fa-fire-flame-simple" },
+  { id: "level_5", name: "Lv.5", desc: "Đạt cấp 5", icon: "fa-star" },
+  { id: "level_10", name: "Lv.10", desc: "Đạt cấp 10", icon: "fa-star-half-stroke" },
+  { id: "boss_slayer", name: "Diệt Boss", desc: "Hạ boss lần đầu", icon: "fa-dragon" },
+  { id: "quest_master", name: "Nhiệm vụ gia", desc: "Xong 3 nhiệm vụ", icon: "fa-scroll" },
+  { id: "perfect_run", name: "Hoàn hảo", desc: "Perfect không sai", icon: "fa-gem" },
+  { id: "survivor", name: "Sống sót", desc: "Thắng Survival", icon: "fa-heart-pulse" },
+  { id: "rich", name: "Tự phú", desc: "Đạt 5000 coin", icon: "fa-sack-dollar" },
+  { id: "explorer", name: "Thám hiểm", desc: "Mở 3 địa điểm", icon: "fa-compass" },
+  { id: "modeler", name: "Nhà tạo hình", desc: "Nạp model 3D đầu tiên", icon: "fa-cube" }
+];
+
+const MAP_NODES = [
+  { id: "academy", name: "Học viện", icon: "fa-school", x: 15, y: 50, reqLevel: 1 },
+  { id: "library", name: "Thư viện", icon: "fa-book", x: 35, y: 25, reqLevel: 2 },
+  { id: "lab", name: "Phòng Lab", icon: "fa-flask", x: 55, y: 50, reqLevel: 3 },
+  { id: "hospital", name: "Bệnh viện", icon: "fa-hospital", x: 75, y: 30, reqLevel: 4 },
+  { id: "forest", name: "Rừng", icon: "fa-tree", x: 85, y: 65, reqLevel: 5 },
+  { id: "temple", name: "Đền cổ", icon: "fa-place-of-worship", x: 50, y: 80, reqLevel: 6 }
+];
+
+const QUEST_POOL = [
+  { id: "q_answer_5",   name: "Trả lời 5 câu",     desc: "Hoàn thành 5 câu",         target: 5,  type: "answered",  reward: 100,  rewardCoin: 50 },
+  { id: "q_answer_10",  name: "Trả lời 10 câu",    desc: "Hoàn thành 10 câu",        target: 10, type: "answered",  reward: 200,  rewardCoin: 100 },
+  { id: "q_answer_20",  name: "Trả lời 20 câu",    desc: "Hoàn thành 20 câu",        target: 20, type: "answered",  reward: 400,  rewardCoin: 200 },
+  { id: "q_combo_3",    name: "Chuỗi 3 câu đúng",  desc: "Đúng liên tiếp 3 câu",     target: 3,  type: "combo",     reward: 150,  rewardCoin: 80 },
+  { id: "q_combo_5",    name: "Chuỗi 5 câu đúng",  desc: "Đúng liên tiếp 5 câu",     target: 5,  type: "combo",     reward: 300,  rewardCoin: 150 },
+  { id: "q_combo_10",   name: "Chuỗi 10 câu đúng", desc: "Đúng liên tiếp 10 câu",    target: 10, type: "combo",     reward: 600,  rewardCoin: 300 },
+  { id: "q_acc_60",     name: "Chính xác 60%",     desc: "Đạt tỷ lệ đúng 60%",       target: 60, type: "accuracy",  reward: 200,  rewardCoin: 100 },
+  { id: "q_acc_80",     name: "Chính xác 80%",     desc: "Đạt tỷ lệ đúng 80%",       target: 80, type: "accuracy",  reward: 400,  rewardCoin: 200 },
+  { id: "q_acc_90",     name: "Chính xác 90%",     desc: "Đạt tỷ lệ đúng 90%",       target: 90, type: "accuracy",  reward: 800,  rewardCoin: 400 },
+  { id: "q_correct_10", name: "Đúng 10 câu",       desc: "Trả lời đúng 10 câu",      target: 10, type: "correct",   reward: 300,  rewardCoin: 150 },
+  { id: "q_correct_25", name: "Đúng 25 câu",       desc: "Trả lời đúng 25 câu",      target: 25, type: "correct",   reward: 600,  rewardCoin: 300 },
+  { id: "q_correct_50", name: "Đúng 50 câu",       desc: "Trả lời đúng 50 câu",      target: 50, type: "correct",   reward: 1200, rewardCoin: 600 }
+];
+
+const GameState = {
+  data: {
+    playerName: "Nhân vật",
+    level: 1, exp: 0, expMax: 100, coin: 0,
+    combo: 0, maxCombo: 0, totalCorrect: 0, totalWrong: 0,
+    achievements: {},
+    unlockedLocations: ["academy"],
+    hasNamed: false,
+    avatarUrl: "",
+    avatarStyle: "adventurer",
+    avatarSeed: "",
+    ownedChars: ["char_1"],
+    ownedPets: ["pet_1"],
+    equippedChar: "char_1",
+    equippedPet: "pet_1",
+    usedCodes: [],
+    quests: {},
+    questCounter: 0,
+    questStats: { answered: 0, correct: 0, maxComboThisSession: 0 },
+    firebaseModels: { chars: {}, pets: {}, boss: {} }
+  },
+  load() {
+    try {
+      const saved = localStorage.getItem("rpg_state_v20");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        this.data = { ...this.data, ...parsed };
+        if (!this.data.ownedChars) this.data.ownedChars = ["char_1"];
+        if (!this.data.ownedPets) this.data.ownedPets = ["pet_1"];
+        if (!this.data.ownedPets.includes("pet_1")) this.data.ownedPets.push("pet_1");
+        if (!this.data.equippedPet) this.data.equippedPet = "pet_1";
+        if (!this.data.usedCodes) this.data.usedCodes = [];
+        if (!this.data.questStats) this.data.questStats = { answered: 0, correct: 0, maxComboThisSession: 0 };
+        if (!this.data.firebaseModels) this.data.firebaseModels = { chars: {}, pets: {}, boss: {} };
+      }
+    } catch(e) {}
+    if (!this.data.avatarSeed) this.data.avatarSeed = Math.random().toString(36).substring(2, 10);
+    if (!this.data.avatarUrl) this.updateAvatarUrl();
+    if (!this.data.quests || Object.keys(this.data.quests).length === 0) this.rollQuests();
+    this.updateUI();
+    this.updateAvatar();
+  },
+  save() { try { localStorage.setItem("rpg_state_v20", JSON.stringify(this.data)); } catch(e) {} },
+  updateAvatarUrl() {
+    const style = this.data.avatarStyle || "adventurer";
+    const seed = this.data.avatarSeed || "default";
+    this.data.avatarUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=8b5cf6,ec4899&radius=20`;
+  },
+  updateAvatar() {
+    if (this.data.avatarUrl) {
+      const img = document.getElementById("avatarImg");
+      img.src = this.data.avatarUrl;
+      const prev = document.getElementById("avatarPreviewBig");
+      if (prev) prev.src = this.data.avatarUrl;
+    }
+  },
+  rollQuests() {
+    const shuffled = [...QUEST_POOL].sort(() => Math.random() - 0.5);
+    const picked = shuffled.slice(0, 3);
+    this.data.quests = {};
+    picked.forEach(q => { this.data.quests[q.id] = { ...q, progress: 0, claimed: false }; });
+    this.data.questCounter = (this.data.questCounter || 0) + 1;
+    this.save();
+  },
+  checkAllQuestsComplete() {
+    const all = Object.values(this.data.quests);
+    if (all.length > 0 && all.every(q => q.claimed)) {
+      this.rollQuests();
+      toast("🎯 Nhiệm vụ mới!", "gold");
+      return true;
+    }
+    return false;
+  },
+  addExp(amount) {
+    this.data.exp += amount;
+    this.floatText("+" + amount + " EXP", "#a78bfa");
+    while (this.data.exp >= this.data.expMax) {
+      this.data.exp -= this.data.expMax;
+      this.data.level++;
+      this.data.expMax = Math.floor(this.data.expMax * 1.4);
+      this.showLevelUp();
+      this.checkAchievement("level_5", this.data.level >= 5);
+      this.checkAchievement("level_10", this.data.level >= 10);
+    }
+    this.save(); this.updateUI();
+  },
+  addCoin(amount) {
+    this.data.coin += amount;
+    this.floatText("+" + amount + " Coin", "#fbbf24");
+    this.checkAchievement("rich", this.data.coin >= 5000);
+    this.save(); this.updateUI();
+  },
+  onAnswer(isCorrect) {
+    this.data.questStats.answered++;
+    if (isCorrect) {
+      this.data.combo++;
+      this.data.totalCorrect++;
+      this.data.questStats.correct++;
+      if (this.data.combo > this.data.maxCombo) this.data.maxCombo = this.data.combo;
+      if (this.data.combo > this.data.questStats.maxComboThisSession) this.data.questStats.maxComboThisSession = this.data.combo;
+      if (this.data.combo >= 3) ComboFX.show(this.data.combo);
+      this.addExp(10 + Math.min(this.data.combo * 2, 20));
+      this.checkAchievement("first_blood", true);
+      this.checkAchievement("combo_5", this.data.combo >= 5);
+      this.checkAchievement("combo_10", this.data.combo >= 10);
+      this.checkAchievement("combo_20", this.data.combo >= 20);
+    } else {
+      this.data.combo = 0;
+      this.data.totalWrong++;
+      ComboFX.hide();
+    }
+    const total = this.data.totalCorrect + this.data.totalWrong;
+    const acc = total >= 5 ? Math.round(this.data.totalCorrect / total * 100) : 0;
+    for (const qid in this.data.quests) {
+      const q = this.data.quests[qid];
+      if (q.claimed) continue;
+      let val = 0;
+      if (q.type === "answered") val = this.data.questStats.answered;
+      else if (q.type === "correct") val = this.data.totalCorrect;
+      else if (q.type === "combo") val = this.data.questStats.maxComboThisSession;
+      else if (q.type === "accuracy") val = acc;
+      if (val > q.progress) q.progress = Math.min(val, q.target);
+    }
+    this.save(); this.updateUI();
+  },
+  checkAchievement(id, condition) {
+    if (!condition || this.data.achievements[id]) return;
+    this.data.achievements[id] = true;
+    const a = ACHIEVEMENTS.find(x => x.id === id);
+    if (a) toast(`🏆 ${a.name}`, "gold");
+    this.save();
+  },
+  updateUI() {
+    document.getElementById("lvlBadge").textContent = "Lv." + this.data.level;
+    document.getElementById("playerName").textContent = this.data.playerName;
+    document.getElementById("expNow").textContent = Math.floor(this.data.exp);
+    document.getElementById("expMax").textContent = this.data.expMax;
+    document.getElementById("expFill").style.width = (this.data.exp / this.data.expMax * 100) + "%";
+    document.getElementById("coinVal").textContent = this.data.coin;
+    document.getElementById("comboVal").textContent = this.data.combo;
+    const titles = ["Học viên mới", "Tân binh", "Chiến binh", "Hiệp sĩ", "Pháp sư", "Anh hùng", "Huyền thoại"];
+    document.getElementById("userTitle").textContent = titles[Math.min(this.data.level - 1, titles.length - 1)];
+    MAP_NODES.forEach(n => {
+      if (this.data.level >= n.reqLevel && !this.data.unlockedLocations.includes(n.id)) {
+        this.data.unlockedLocations.push(n.id);
+      }
+    });
+    const cloudPill = document.getElementById("cloudPill");
+    if (cloudPill && window.FirebaseAPI && window.FirebaseAPI.db) cloudPill.classList.add("on");
+  },
+  showLevelUp() {
+    document.getElementById("levelUpNum").textContent = this.data.level;
+    document.getElementById("levelUp").classList.add("on");
+    confettiBurst();
+  },
+  floatText(text, color) {
+    const el = document.createElement("div");
+    el.className = "float-text";
+    el.textContent = text;
+    el.style.color = color;
+    el.style.left = (window.innerWidth / 2 - 40) + "px";
+    el.style.top = (window.innerHeight / 2) + "px";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1700);
+  }
+};
+
+const ComboFX = {
+  el: null, timer: null,
+  show(combo) {
+    this.el = document.getElementById("comboFX");
+    document.getElementById("comboNum").textContent = combo;
+    const subs = { 3: "Tuyệt vời!", 5: "Xuất sắc!", 10: "BÙNG NỔ!", 20: "HUYỀN THOẠI!" };
+    const sub = combo >= 20 ? subs[20] : combo >= 10 ? subs[10] : combo >= 5 ? subs[5] : subs[3];
+    document.getElementById("comboSub").textContent = sub;
+    this.el.classList.add("on");
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => this.hide(), 1800);
+  },
+  hide() { if (this.el) this.el.classList.remove("on"); }
+};
+
+let QUIZ_DATA = [];
+
+window.addEventListener("message", event => {
+  const data = event.data;
+  if (!data || data.type !== "STUDY_QUESTIONS" || !Array.isArray(data.questions)) return;
+  const valid = data.questions.filter(item => item && typeof item.q === "string" && Array.isArray(item.opts) && item.opts.length >= 2 && Number.isInteger(item.correct) && item.correct >= 0 && item.correct < item.opts.length);
+  if (valid.length) {
+    QUIZ_DATA = valid;
+    window.studyExamMeta = { subject: data.subject || "Môn đang học", className: data.className || "Chưa chọn lớp", count: valid.length };
+    document.title = "RPG Ôn Thi • " + window.studyExamMeta.subject;
+    const badge = document.getElementById("studyQuestionBadge");
+    if (badge) badge.textContent = window.studyExamMeta.subject;
+  }
+});
+
+let quizState = { mode: "classic", index: 0, answered: false, correct: 0, wrong: 0, lives: 3, timeLeft: 60, score: 0, timer: null, questions: [] };
+
+window.backToWeb = function() {
+  if (window.parent && window.parent !== window) {
+    try { window.parent.postMessage({ type: "RPG_CLOSE" }, "*"); } catch(e) {}
+  }
+  if (document.referrer && document.referrer !== "") window.location.href = document.referrer;
+  else if (history.length > 1) history.back();
+  else window.location.href = "/";
+};
+
+const CHAR_SLOTS = [
+  { id: "char_1", name: "Nhân vật 1", price: 0 },
+  { id: "char_2", name: "Nhân vật 2", price: 1500 },
+  { id: "char_3", name: "Nhân vật 3", price: 2500 },
+  { id: "char_4", name: "Nhân vật 4", price: 4000 },
+  { id: "char_5", name: "Nhân vật 5", price: 6000 }
+];
+const PET_SLOTS = [
+  { id: "pet_1", name: "Pet 1", price: 0, free: true },
+  { id: "pet_2", name: "Pet 2", price: 1200 },
+  { id: "pet_3", name: "Pet 3", price: 1800 },
+  { id: "pet_4", name: "Pet 4", price: 2500 },
+  { id: "pet_5", name: "Pet 5", price: 3500 }
+];
+
+const CODES = { "ADMINNHAT": { type: "coins", amount: 999999, once: true } };
+
+async function loadModelFromURL(url, target, slotId) {
+  const M = target === "boss" ? Model3DBoss : target === "pet" ? Model3DPet : Model3D;
+  const cacheKey = `${target}_${slotId}`;
+
+  if (M._loading) { Logger.push("warn", `[${target}] Đang load, bỏ qua ${slotId}`); return false; }
+  if (M._loadedSlot === cacheKey && (M.currentVRM || M.currentGLB)) {
+    Logger.push("info", `[${target}] ${slotId} đã load rồi, skip`);
+    return true;
+  }
+
+  M._loading = true;
+
+  try {
+    try {
+      const cached = await ModelDB.get(cacheKey);
+      if (cached?.blob) {
+        Logger.push("info", `[${target}] Dùng cache cho ${slotId}`);
+        const ok = await M.loadBlob(cached.blob, cached.name || slotId);
+        if (ok) { M._loadedSlot = cacheKey; return true; }
+      }
+    } catch(e) {}
+
+    Logger.push("info", `[${target}] Fetch CDN: ${url}`);
+    const candidates = getModelURLCandidates(url);
+    let blob = null, usedUrl = "";
+    for (const c of candidates) {
+      try {
+        const res = await fetch(c, { mode: "cors", credentials: "omit" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const b = await res.blob();
+        if (!b.size) throw new Error("empty");
+        if (b.type.includes("text/html")) throw new Error("html");
+        blob = b; usedUrl = c; break;
+      } catch(e) { Logger.push("warn", `[${target}] Fail ${new URL(c).hostname}: ${e.message}`); }
+    }
+    if (!blob) throw new Error("Không tải được từ mọi CDN");
+    const name = decodeURIComponent(new URL(usedUrl).pathname.split("/").pop() || slotId);
+    const ext = name.split(".").pop().toLowerCase();
+    const mime = ext === "gltf" ? "model/gltf+json" : "model/gltf-binary";
+    const fileBlob = new Blob([blob], { type: mime });
+    try { await ModelDB.save(cacheKey, fileBlob, name); } catch(e) {}
+    const ok = await M.loadBlob(fileBlob, name);
+    if (ok) M._loadedSlot = cacheKey;
+    Logger.push(ok ? "ok" : "err", `[${target}] Loaded ${slotId}: ${ok}`);
+    return ok;
+  } catch(e) {
+    Logger.push("err", `[${target}] Load ${slotId} failed: ${e.message}`);
+    return false;
+  } finally { M._loading = false; }
+}
+
+function showPetLabel(name) {
+  const l = document.getElementById("petLabel");
+  if (l) { l.textContent = name; l.style.display = "block"; }
+  const c = document.getElementById("petCanvas");
+  if (c) c.style.display = "block";
+}
+function hidePetLabel() {
+  const l = document.getElementById("petLabel");
+  if (l) l.style.display = "none";
+  const c = document.getElementById("petCanvas");
+  if (c) c.style.display = "none";
+}
+
+function showStageLoader(text, sub) {
+  const el = document.getElementById("stageLoader");
+  const lbl = el.querySelector(".lbl");
+  const sb = document.getElementById("stageLoaderSub");
+  if (lbl) lbl.textContent = text || "Đang load model";
+  if (sb) sb.textContent = sub || "Vui lòng chờ...";
+  el.classList.add("on");
+}
+function hideStageLoader() { document.getElementById("stageLoader").classList.remove("on"); }
+function showBossLoader() { document.getElementById("bossLoading").classList.add("on"); }
+function hideBossLoader() { document.getElementById("bossLoading").classList.remove("on"); }
+
+function bootSetStatus(text, sub) {
+  document.getElementById("bootStatusText").textContent = text;
+  document.getElementById("bootStatusSub").textContent = sub || "";
+}
+function bootSetDone(text, sub) {
+  document.getElementById("bootStatus").classList.add("done");
+  document.getElementById("bootStatusText").textContent = text;
+  document.getElementById("bootStatusSub").textContent = sub || "";
+}
+function bootHide() {
+  const el = document.getElementById("bootLoader");
+  el.classList.add("hidden");
+  setTimeout(() => { el.style.display = "none"; }, 700);
+}
+
+async function pullFirebaseModels() {
+  if (!window.FirebaseAPI || !window.FirebaseAPI.db) return;
+  try {
+    const [chars, pets, boss] = await Promise.all([
+      window.FirebaseAPI.getAllModels("chars"),
+      window.FirebaseAPI.getAllModels("pets"),
+      window.FirebaseAPI.getAllModels("boss")
+    ]);
+    GameState.data.firebaseModels = { chars: chars || {}, pets: pets || {}, boss: boss || {} };
+    GameState.save();
+    Logger.push("ok", `[FB] Pull: ${Object.keys(chars||{}).length} chars, ${Object.keys(pets||{}).length} pets, ${Object.keys(boss||{}).length} boss`);
+  } catch(e) { Logger.push("err", "[FB] pull error: " + e.message); }
+}
+
+let currentShopTab = "chars";
+
+window.openShop = () => { renderShop(); document.getElementById("shopOverlay").classList.add("on"); };
+
+window.switchShopTab = (tab) => {
+  currentShopTab = tab;
+  document.querySelectorAll(".shop-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+  document.getElementById("shopTabChars").style.display = tab === "chars" ? "block" : "none";
+  document.getElementById("shopTabPets").style.display = tab === "pets" ? "block" : "none";
+  document.getElementById("shopTabCode").style.display = tab === "code" ? "block" : "none";
+  renderShop();
+};
+
+function renderShop() {
+  renderShopGrid(CHAR_SLOTS, "chars");
+  renderShopGrid(PET_SLOTS, "pets");
+}
+
+function renderShopGrid(items, type) {
+  const grid = document.getElementById(type === "chars" ? "shopGridChars" : "shopGridPets");
+  if (!grid) return;
+  grid.innerHTML = "";
+  const owned = type === "chars" ? GameState.data.ownedChars : GameState.data.ownedPets;
+  const equippedId = type === "chars" ? GameState.data.equippedChar : GameState.data.equippedPet;
+  const fb = GameState.data.firebaseModels;
+
+  items.forEach(it => {
+    const isOwned = owned.includes(it.id);
+    const isEquipped = equippedId === it.id;
+    const fbEntry = (type === "chars" ? fb.chars : fb.pets)?.[it.id];
+    const hasModel = !!fbEntry?.url;
+    const div = document.createElement("div");
+    div.className = "shop-item" + (isOwned ? " owned" : "") + (isEquipped ? " equipped" : "");
+    div.innerHTML = `
+      ${it.free ? '<div class="tag-free"><i class="fas fa-gift"></i> FREE</div>' : (hasModel ? '<div class="tag-fb"><i class="fas fa-cloud"></i> FB</div>' : "")}
+      ${isEquipped ? `<div class="tag-equipped">ĐANG DÙNG</div>` : isOwned ? `<div class="tag-owned">ĐÃ MUA</div>` : ""}
+      <div class="swatch">
+        <i class="fas ${type === "chars" ? "fa-user-astronaut" : "fa-paw"}" style="opacity:.5;font-size:24px;"></i>
+      </div>
+      <div class="nm">${it.name}</div>
+      <div style="font-size:9px;color:${hasModel ? 'var(--green)' : 'var(--txt-dim)'};font-weight:700;margin-top:2px;">
+        ${hasModel ? "✓ Có model" : "Chưa có model"}
+      </div>
+      <div class="price"><i class="fas fa-coins"></i> ${it.price === 0 ? "Miễn phí" : it.price.toLocaleString()}</div>
+      ${isEquipped
+        ? `<button class="buy-btn equipped-btn" disabled>Đang dùng</button>`
+        : isOwned
+          ? `<button class="buy-btn owned-btn" onclick="equipItem('${it.id}','${type}')">Trang bị</button>`
+          : `<button class="buy-btn" onclick="buyItem('${it.id}','${type}')">Mua</button>`}
+    `;
+    grid.appendChild(div);
+  });
+}
+
+window.buyItem = (id, type) => {
+  const list = type === "chars" ? CHAR_SLOTS : PET_SLOTS;
+  const it = list.find(x => x.id === id);
+  if (!it) return;
+  const owned = type === "chars" ? GameState.data.ownedChars : GameState.data.ownedPets;
+  if (owned.includes(id)) return;
+  if (GameState.data.coin < it.price) { toast("Không đủ xu! Cần " + it.price.toLocaleString(), "gold"); return; }
+  GameState.data.coin -= it.price;
+  owned.push(id);
+  GameState.save();
+  GameState.updateUI();
+  toast("✓ Đã mua: " + it.name, "success");
+  confettiBurst();
+  renderShop();
+};
+
+window.equipItem = async (id, type) => {
+  if (type === "chars") {
+    if (GameState.data.equippedChar === id && Model3D._loadedSlot === `char_${id}` && (Model3D.currentVRM || Model3D.currentGLB)) {
+      toast("Nhân vật này đang được trang bị rồi", "gold"); return;
+    }
+    GameState.data.equippedChar = id;
+  } else {
+    if (GameState.data.equippedPet === id && Model3DPet._loadedSlot === `pet_${id}` && (Model3DPet.currentVRM || Model3DPet.currentGLB)) {
+      toast("Pet này đang được trang bị rồi", "gold"); return;
+    }
+    GameState.data.equippedPet = id;
+  }
+  GameState.save();
+  renderShop();
+  const it = (type === "chars" ? CHAR_SLOTS : PET_SLOTS).find(x => x.id === id);
+  toast("✓ Đang trang bị: " + (it ? it.name : id), "success");
+
+  if (type === "chars") {
+    showStageLoader("Đang load nhân vật", it?.name || id);
+    if (Model3D.currentVRM || Model3D.currentGLB) {
+      Model3D.unload();
+      await new Promise(r => setTimeout(r, 100));
+    }
+  } else {
+    showStageLoader("Đang load pet", it?.name || id);
+    if (Model3DPet.currentVRM || Model3DPet.currentGLB) {
+      Model3DPet.unload();
+      await new Promise(r => setTimeout(r, 100));
+    }
+    hidePetLabel();
+  }
+
+  const fb = GameState.data.firebaseModels;
+  const entry = (type === "chars" ? fb.chars : fb.pets)?.[id];
+  try {
+    if (entry?.url) {
+      if (type === "chars") {
+        const ok = await loadModelFromURL(entry.url, "char", id);
+        if (ok) toast("✓ Đã load nhân vật mới", "success");
+        else toast("✗ Không load được model", "error");
+      } else {
+        const ok = await loadModelFromURL(entry.url, "pet", id);
+        if (ok) { showPetLabel(entry.name || it.name); toast("✓ Đã load pet mới", "success"); }
+        else toast("✗ Không load được pet", "error");
+      }
+    } else {
+      if (type === "chars") Model3D.unload();
+      else { Model3DPet.unload(); hidePetLabel(); }
+      toast("Slot này chưa có model. Vào Nạp 3D để thêm URL.", "gold");
+    }
+  } finally { hideStageLoader(); }
+};
+
+window.redeemCode = () => {
+  const input = document.getElementById("codeInput");
+  const code = (input.value || "").trim().toUpperCase();
+  if (!code) { toast("Nhập code trước!"); return; }
+  const entry = CODES[code];
+  if (!entry) { toast("Code không hợp lệ!", "gold"); return; }
+  if (entry.once && GameState.data.usedCodes.includes(code)) { toast("Code này đã dùng rồi!", "gold"); return; }
+  if (entry.type === "coins") { GameState.addCoin(entry.amount); toast(`✓ +${entry.amount.toLocaleString()} xu!`, "success"); }
+  GameState.data.usedCodes.push(code);
+  GameState.save();
+  GameState.updateUI();
+  input.value = "";
+  renderShop();
+};
+
+let currentUploadTab = "chars";
+let _autoSaveTimers = {};
+
+window.openUploadModal = async () => {
+  renderSlotGrids();
+  document.getElementById("uploadOverlay").classList.add("on");
+  setTimeout(() => attachAutoSaveListeners(), 100);
+};
+
+window.switchUploadTab = (tab) => {
+  currentUploadTab = tab;
+  document.querySelectorAll(".upload-tab").forEach(t => t.classList.toggle("active", t.dataset.utab === tab));
+  document.getElementById("uploadTabChars").style.display = tab === "chars" ? "block" : "none";
+  document.getElementById("uploadTabPets").style.display = tab === "pets" ? "block" : "none";
+  document.getElementById("uploadTabBoss").style.display = tab === "boss" ? "block" : "none";
+  renderSlotGrids();
+  setTimeout(() => attachAutoSaveListeners(), 100);
+};
+
+function renderSlotGrids() {
+  renderSlotGrid(CHAR_SLOTS, "chars", "charSlotGrid");
+  renderSlotGrid(PET_SLOTS, "pets", "petSlotGrid");
+  renderBossSlot();
+}
+
+function renderSlotGrid(items, category, gridId) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.innerHTML = "";
+  const fb = GameState.data.firebaseModels[category] || {};
+  items.forEach(slot => {
+    const entry = fb[slot.id];
+    const filled = !!entry?.url;
+    const div = document.createElement("div");
+    div.className = "slot-item" + (filled ? " filled" : "");
+    div.innerHTML = `
+      <div class="slot-name"><span class="num">${slot.id.split("_")[1]}</span> ${slot.name}${slot.free ? ' <span style="color:var(--gold);font-size:9px;">★ FREE</span>' : ''}</div>
+      <div class="slot-info">${filled ? "✓ " + (entry.name || entry.url).slice(0, 30) : "Chưa có model"}</div>
+      <input type="url" class="upload-input${filled ? ' auto-filled' : ''}"
+        id="input_${category}_${slot.id}"
+        placeholder="Dán link GitHub / jsDelivr..."
+        data-category="${category}"
+        data-slot="${slot.id}"
+        value="${entry?.url || ""}">
+      <div class="slot-actions">
+        <button onclick="saveSlotURL('${category}', '${slot.id}')">Lưu ngay</button>
+        <button class="danger" onclick="deleteSlot('${category}', '${slot.id}')"><i class="fas fa-trash"></i></button>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function renderBossSlot() {
+  const entry = GameState.data.firebaseModels.boss?.boss_main;
+  const info = document.getElementById("bossSlotInfo");
+  const input = document.getElementById("bossUrlInput");
+  if (entry?.url) {
+    info.textContent = "✓ " + (entry.name || entry.url).slice(0, 40);
+    info.style.color = "var(--green)";
+    input.value = entry.url;
+    input.classList.add("auto-filled");
+  } else {
+    info.textContent = "Chưa có model";
+    info.style.color = "";
+    input.value = "";
+    input.classList.remove("auto-filled");
+  }
+  document.getElementById("bossSlotCard").classList.toggle("filled", !!entry?.url);
+}
+
+function attachAutoSaveListeners() {
+  document.querySelectorAll('.upload-input').forEach(inp => {
+    if (inp.dataset.autoSaveAttached) return;
+    inp.dataset.autoSaveAttached = "1";
+
+    const handler = () => {
+      const url = inp.value.trim();
+      if (!url || !url.startsWith("http")) return;
+      const cat = inp.dataset.category;
+      const slot = inp.dataset.slot;
+      if (!cat || !slot) return;
+      clearTimeout(_autoSaveTimers[cat + "_" + slot]);
+      _autoSaveTimers[cat + "_" + slot] = setTimeout(() => {
+        autoSaveAndLoad(cat, slot, url);
+      }, 800);
+    };
+
+    inp.addEventListener("paste", () => setTimeout(handler, 50));
+    inp.addEventListener("input", handler);
+    inp.addEventListener("change", handler);
+    inp.addEventListener("blur", handler);
+  });
+}
+
+async function autoSaveAndLoad(category, slotId, rawUrl) {
+  const converted = convertToDirectModelURL(rawUrl);
+  if (!converted) { Logger.push("warn", `[Auto] URL lỗi: ${rawUrl}`); return; }
+  if (!isValidModelURL(converted)) { Logger.push("warn", `[Auto] Không phải file model: ${converted}`); return; }
+
+  const input = document.getElementById(`input_${category}_${slotId}`) || document.getElementById("bossUrlInput");
+  if (input && input.value !== converted) {
+    input.value = converted;
+    input.classList.add("auto-filled");
+  }
+
+  if (window.FirebaseAPI?.db) {
+    try {
+      const name = decodeURIComponent(new URL(converted).pathname.split("/").pop() || slotId);
+      await window.FirebaseAPI.saveModelURL(category, slotId, converted, name);
+      if (!GameState.data.firebaseModels[category]) GameState.data.firebaseModels[category] = {};
+      GameState.data.firebaseModels[category][slotId] = { url: converted, name, updatedAt: Date.now() };
+      GameState.save();
+      const changed = converted !== rawUrl;
+      toast(changed ? "✓ Convert + lưu Firebase" : "✓ Đã lưu Firebase", "success");
+      renderShop();
+    } catch(e) {
+      Logger.push("err", `[Auto] FB save lỗi: ${e.message}`);
+      toast("Lỗi lưu Firebase", "error");
+      return;
+    }
+  }
+
+  const target = category === "chars" ? "char" : category === "pets" ? "pet" : "boss";
+  showStageLoader(`Đang load ${category === "chars" ? "nhân vật" : category === "pets" ? "pet" : "boss"}`, slotId);
+
+  const M = target === "boss" ? Model3DBoss : target === "pet" ? Model3DPet : Model3D;
+  if (M.currentVRM || M.currentGLB) {
+    M.unload();
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  const ok = await loadModelFromURL(converted, target, slotId);
+  hideStageLoader();
+
+  if (ok) {
+    toast("✓ Đã tải model xong!", "success");
+    if (target === "pet") showPetLabel(GameState.data.firebaseModels.pets?.[slotId]?.name || slotId);
+    renderSlotGrids();
+    setTimeout(() => attachAutoSaveListeners(), 100);
+  } else {
+    toast("✗ Không tải được model", "error");
+  }
+}
+
+window.saveSlotURL = async (category, slotId) => {
+  const input = document.getElementById(`input_${category}_${slotId}`) || document.getElementById("bossUrlInput");
+  if (!input) return;
+  const rawUrl = input.value.trim();
+  if (!rawUrl) { toast("Nhập URL trước!", "gold"); return; }
+  await autoSaveAndLoad(category, slotId, rawUrl);
+};
+
+window.deleteSlot = async (category, slotId) => {
+  if (!confirm(`Xóa slot ${slotId}?`)) return;
+  try {
+    if (window.FirebaseAPI?.db) await window.FirebaseAPI.deleteModel(category, slotId);
+    if (GameState.data.firebaseModels[category]) delete GameState.data.firebaseModels[category][slotId];
+    GameState.save();
+    const target = category === "chars" ? "char" : category === "pets" ? "pet" : "boss";
+    try { await ModelDB.delete(`${target}_${slotId}`); } catch(e) {}
+    const M = target === "boss" ? Model3DBoss : target === "pet" ? Model3DPet : Model3D;
+    M.unload();
+    if (target === "pet") hidePetLabel();
+    toast("Đã xóa slot", "success");
+    renderSlotGrids();
+    renderShop();
+    setTimeout(() => attachAutoSaveListeners(), 100);
+  } catch(e) { toast("Lỗi: " + e.message, "gold"); }
+};
+
+window.openAvatarModal = () => {
+  document.getElementById("avatarPreviewBig").src = GameState.data.avatarUrl;
+  renderAvatarGrid();
+  document.getElementById("avatarOverlay").classList.add("on");
+};
+
+function renderAvatarGrid() {
+  const grid = document.getElementById("avatarGrid");
+  grid.innerHTML = "";
+  const styles = ["adventurer", "bottts", "fun-emoji", "lorelei", "micah", "miniavs", "notionists", "open-peeps", "personas", "thumbs"];
+  styles.forEach(style => {
+    const seed = GameState.data.avatarSeed + style;
+    const url = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=8b5cf6,ec4899&radius=20`;
+    const div = document.createElement("div");
+    div.className = "avatar-option";
+    div.innerHTML = `<img src="${url}" alt="${style}" loading="lazy">`;
+    div.onclick = () => {
+      GameState.data.avatarStyle = style;
+      GameState.data.avatarUrl = url;
+      document.getElementById("avatarPreviewBig").src = url;
+    };
+    grid.appendChild(div);
+  });
+}
+
+window.randomizeAvatarSeed = () => {
+  GameState.data.avatarSeed = Math.random().toString(36).substring(2, 10);
+  renderAvatarGrid();
+  const style = GameState.data.avatarStyle || "adventurer";
+  const url = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(GameState.data.avatarSeed)}&backgroundColor=8b5cf6,ec4899&radius=20`;
+  GameState.data.avatarUrl = url;
+  document.getElementById("avatarPreviewBig").src = url;
+};
+
+window.confirmAvatar = () => {
+  GameState.save(); GameState.updateAvatar();
+  closeOverlay("avatarOverlay"); toast("Đã đổi avatar!");
+};
+
+document.getElementById("avatarFileInput").addEventListener("change", (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    GameState.data.avatarUrl = ev.target.result;
+    GameState.save(); GameState.updateAvatar();
+    closeOverlay("avatarOverlay"); toast("Đã đổi avatar!");
+  };
+  reader.readAsDataURL(f); e.target.value = "";
+});
+
+window.openGameModes = () => { if (!requireModel()) return; document.getElementById("modesOverlay").classList.add("on"); };
+
+window.startMode = (mode) => {
+  closeOverlay("modesOverlay");
+  if (!requireModel()) return;
+  GameState.data.questStats.maxComboThisSession = 0;
+  GameState.save();
+  quizState = { mode, index: 0, answered: false, correct: 0, wrong: 0, lives: 3, timeLeft: 60, score: 0, timer: null, questions: shuffleArray([...QUIZ_DATA]).slice(0, 80) };
+  if (mode === "random") quizState.questions = shuffleArray([...QUIZ_DATA]).slice(0, 80);
+  document.getElementById("qModeTitle").textContent = {
+    classic: "Cổ điển", survival: "Sinh tồn", speedrun: "Speedrun",
+    perfect: "Perfect", arcade: "Arcade", random: "Ngẫu nhiên"
+  }[mode];
+  document.getElementById("hub").classList.add("hidden");
+  document.getElementById("quizScreen").classList.add("on");
+  if (mode === "speedrun") startQuizTimer();
+  renderQuiz();
+};
+
+function startQuizTimer() {
+  clearInterval(quizState.timer);
+  document.getElementById("qTimer").textContent = "⏱ 60s";
+  quizState.timer = setInterval(() => {
+    quizState.timeLeft--;
+    document.getElementById("qTimer").textContent = "⏱ " + quizState.timeLeft + "s";
+    if (quizState.timeLeft <= 0) { clearInterval(quizState.timer); finishQuiz(); }
+  }, 1000);
+}
+
+window.exitQuiz = () => {
+  clearInterval(quizState.timer);
+  document.getElementById("quizScreen").classList.remove("on");
+  document.getElementById("hub").classList.remove("hidden");
+  document.getElementById("qTimer").textContent = "";
+  ComboFX.hide();
+  if (hasModel()) Model3D.reset();
+  setTimeout(() => Model3D.resize(), 150);
+};
+
+function renderQuiz() {
+  const item = quizState.questions[quizState.index];
+  if (!item) { finishQuiz(); return; }
+  quizState.answered = false;
+  document.getElementById("qText").textContent = item.q;
+  document.getElementById("qSubtitle").textContent = `Câu ${quizState.index + 1} / ${quizState.questions.length}`;
+  const pct = (quizState.index / quizState.questions.length * 100);
+  document.getElementById("qProgText").textContent = Math.round(pct) + "%";
+  document.getElementById("qProgBar").style.width = pct + "%";
+  document.getElementById("qFeedback").classList.remove("on");
+  const opts = document.getElementById("qOpts");
+  opts.innerHTML = "";
+  const labels = ["A", "B", "C", "D", "E"];
+  item.opts.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "q-opt";
+    btn.innerHTML = `<span class="letter">${labels[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => answerQuiz(i, btn);
+    opts.appendChild(btn);
+  });
+}
+
+function answerQuiz(idx, btn) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const item = quizState.questions[quizState.index];
+  const allOpts = document.querySelectorAll("#qOpts .q-opt");
+  allOpts.forEach(o => o.classList.add("locked"));
+  const isCorrect = idx === item.correct;
+  if (isCorrect) {
+    btn.classList.add("correct");
+    btn.innerHTML += '<i class="fas fa-check check"></i>';
+    quizState.correct++;
+    let gainedExp = 10 + Math.min(GameState.data.combo * 2, 20);
+    document.getElementById("qFeedback").className = "q-feedback on ok";
+    document.getElementById("qFi").innerHTML = '<i class="fas fa-check"></i>';
+    document.getElementById("qFt").textContent = "Chính xác!";
+    document.getElementById("qFd").textContent = `+${gainedExp} EXP • Combo ${GameState.data.combo + 1}`;
+    if (hasModel()) Model3D.setAnimation("wave");
+  } else {
+    btn.classList.add("wrong");
+    btn.innerHTML += '<i class="fas fa-xmark check"></i>';
+    allOpts[item.correct].classList.add("correct");
+    allOpts[item.correct].innerHTML += '<i class="fas fa-check check"></i>';
+    quizState.wrong++;
+    if (hasModel()) Model3D.setFx("hurt");
+    if (quizState.mode === "survival") {
+      quizState.lives--;
+      document.getElementById("qSubtitle").textContent = `Câu ${quizState.index + 1} / ${quizState.questions.length} • ${quizState.lives} mạng`;
+      if (quizState.lives <= 0) {
+        document.getElementById("qFeedback").className = "q-feedback on no";
+        document.getElementById("qFi").innerHTML = '<i class="fas fa-heart-crack"></i>';
+        document.getElementById("qFt").textContent = "Hết mạng!";
+        document.getElementById("qFd").textContent = "Bạn đã thua...";
+        if (hasModel()) Model3D.setFx("dead");
+        GameState.onAnswer(false);
+        setTimeout(() => finishQuiz(), 1800);
+        return;
+      }
+    }
+    if (quizState.mode === "perfect") {
+      document.getElementById("qFeedback").className = "q-feedback on no";
+      document.getElementById("qFi").innerHTML = '<i class="fas fa-gem"></i>';
+      document.getElementById("qFt").textContent = "Perfect thất bại!";
+      document.getElementById("qFd").textContent = "Bạn đã sai.";
+      GameState.onAnswer(false);
+      setTimeout(() => finishQuiz(), 1800);
+      return;
+    }
+    document.getElementById("qFeedback").className = "q-feedback on no";
+    document.getElementById("qFi").innerHTML = '<i class="fas fa-xmark"></i>';
+    document.getElementById("qFt").textContent = "Sai rồi!";
+    document.getElementById("qFd").textContent = "Đáp án: " + item.opts[item.correct];
+  }
+  GameState.onAnswer(isCorrect);
+  setTimeout(() => {
+    quizState.index++;
+    if (quizState.index >= quizState.questions.length) finishQuiz();
+    else renderQuiz();
+  }, 2200);
+}
+
+function finishQuiz() {
+  clearInterval(quizState.timer);
+  const pct = Math.round(quizState.correct / quizState.questions.length * 100);
+  document.getElementById("qProgText").textContent = "100%";
+  document.getElementById("qProgBar").style.width = "100%";
+  document.getElementById("qOpts").innerHTML = "";
+  document.getElementById("qFeedback").classList.remove("on");
+  const won = quizState.wrong === 0 || (quizState.mode === "survival" && quizState.lives > 0);
+  document.getElementById("qText").textContent = won
+    ? `Hoàn thành! Đúng ${quizState.correct}/${quizState.questions.length} (${pct}%)`
+    : `Kết thúc. Đúng ${quizState.correct}/${quizState.questions.length}`;
+  if (won && hasModel()) Model3D.setAnimation("dance");
+  if (quizState.mode === "perfect" && quizState.wrong === 0) GameState.checkAchievement("perfect_run", true);
+  if (quizState.mode === "survival" && quizState.lives > 0) GameState.checkAchievement("survivor", true);
+  GameState.addExp(50);
+  GameState.addCoin(20);
+  toast(`Hoàn thành! +50 EXP +20 Coin`, "gold");
+  setTimeout(() => exitQuiz(), 3500);
+}
+
+let bossHp = 100, bossMaxHp = 100, bossPhase = 1, bossQIndex = 0, bossAnswered = false;
+
+window.startBoss = async () => {
+  bossHp = bossMaxHp; bossPhase = 1; bossQIndex = 0;
+  document.getElementById("hub").classList.add("hidden");
+  document.getElementById("bossScreen").classList.add("on");
+  document.getElementById("bossLog").innerHTML = "<p class='new'>⚔️ Trận chiến bắt đầu!</p>";
+  updateBossHp(); renderBossQuestion();
+
+  const wrap = document.getElementById("bossImgWrap");
+  wrap.querySelectorAll(".boss-placeholder").forEach(e => e.remove());
+  document.getElementById("bossFigure").classList.remove("dying", "shake-death");
+  Model3DBoss._bossExploded = false;
+
+  setTimeout(() => Model3DBoss.resize(), 150);
+  setTimeout(() => Model3DBoss.resize(), 500);
+
+  if (Model3DBoss._loadedSlot === "boss_boss_main" && (Model3DBoss.currentVRM || Model3DBoss.currentGLB)) {
+    Logger.push("info", "[Boss] Đã load rồi, skip");
+    return;
+  }
+
+  showBossLoader();
+  try {
+    const bossEntry = GameState.data.firebaseModels.boss?.boss_main;
+    if (bossEntry?.url) {
+      const ok = await loadModelFromURL(bossEntry.url, "boss", "boss_main");
+      if (ok) wrap.querySelectorAll(".boss-placeholder").forEach(e => e.remove());
+    }
+  } catch(e) { Logger.push("warn", "[boss] Load lỗi: " + e.message); }
+  finally { hideBossLoader(); }
+};
+
+window.exitBoss = () => {
+  document.getElementById("bossScreen").classList.remove("on");
+  document.getElementById("hub").classList.remove("hidden");
+  document.getElementById("bossFigure").classList.remove("dying", "shake-death");
+  setTimeout(() => Model3D.resize(), 150);
+};
+
+function updateBossHp() {
+  const pct = Math.max(0, bossHp / bossMaxHp * 100);
+  document.getElementById("bossHpBar").style.width = pct + "%";
+  document.getElementById("bossHpText").textContent = Math.max(0, bossHp) + " / " + bossMaxHp;
+  document.getElementById("bossHpPercent").textContent = Math.round(pct) + "%";
+  const badge = document.getElementById("bossPhaseBadge");
+  if (badge) badge.textContent = "GĐ " + bossPhase;
+
+  document.querySelectorAll(".boss-hud .phases .ph").forEach(s => {
+    const ph = parseInt(s.dataset.phase);
+    s.classList.toggle("on", ph === bossPhase);
+    s.classList.toggle("done", ph < bossPhase);
+  });
+}
+
+function renderBossQuestion() {
+  bossAnswered = false;
+  const item = QUIZ_DATA[bossQIndex % QUIZ_DATA.length];
+  document.getElementById("bossQText").textContent = item.q;
+  const opts = document.getElementById("bossQOpts");
+  opts.innerHTML = "";
+  item.opts.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "q-opt";
+    btn.textContent = opt;
+    btn.onclick = () => answerBoss(i, btn);
+    opts.appendChild(btn);
+  });
+}
+
+function showDmgFloat(text, x, y, isCrit) {
+  const el = document.createElement("div");
+  el.className = "dmg-float" + (isCrit ? " crit" : "");
+  el.textContent = text;
+  el.style.left = (x || 50) + "%";
+  el.style.top = (y || 50) + "%";
+  document.getElementById("bossFigure").appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+}
+
+function answerBoss(idx, btn) {
+  if (bossAnswered) return;
+  bossAnswered = true;
+  const item = QUIZ_DATA[bossQIndex % QUIZ_DATA.length];
+  const allOpts = document.querySelectorAll("#bossQOpts .q-opt");
+  allOpts.forEach(o => o.classList.add("locked"));
+  const isCorrect = idx === item.correct;
+  const log = document.getElementById("bossLog");
+  if (isCorrect) {
+    const dmg = 10 + Math.min(GameState.data.combo * 2, 20) + (bossPhase === 3 ? 5 : 0);
+    const isCrit = Math.random() < 0.15;
+    const finalDmg = isCrit ? dmg * 2 : dmg;
+    bossHp -= finalDmg;
+    btn.classList.add("correct");
+    document.getElementById("bossFigure").classList.add("hit");
+    setTimeout(() => document.getElementById("bossFigure").classList.remove("hit"), 500);
+    showDmgFloat("-" + finalDmg + (isCrit ? " CRIT!" : ""), 50, 50, isCrit);
+    log.innerHTML = `<p class='new dmg'>⚔️ Gây ${finalDmg} sát thương${isCrit ? " (CRIT!)" : ""}!</p>` + log.innerHTML;
+    GameState.onAnswer(true);
+    if (hasModel("boss")) Model3DBoss.setFx("hurt");
+  } else {
+    btn.classList.add("wrong");
+    allOpts[item.correct].classList.add("correct");
+    log.innerHTML = `<p class='new'>💢 Boss phản công!</p>` + log.innerHTML;
+    GameState.onAnswer(false);
+    const arena = document.querySelector(".boss-arena");
+    if (arena) {
+      arena.style.animation = "none";
+      setTimeout(() => { arena.style.animation = "bossShakeDeath .3s"; }, 10);
+    }
+  }
+  const ps = log.querySelectorAll("p");
+  if (ps.length > 6) for (let i = 6; i < ps.length; i++) ps[i].remove();
+
+  updateBossHp();
+  const newPhase = bossHp > 66 ? 1 : bossHp > 33 ? 2 : 3;
+  if (newPhase !== bossPhase) {
+    bossPhase = newPhase;
+    log.innerHTML = `<p class='new'>🔥 Giai đoạn ${bossPhase}!</p>` + log.innerHTML;
+    updateBossHp();
+    if (bossPhase === 3 && hasModel("boss")) Model3DBoss.setFx("shock");
+  }
+  if (bossHp <= 0) { setTimeout(winBoss, 800); return; }
+  setTimeout(() => { bossQIndex++; renderBossQuestion(); }, 1500);
+}
+
+function winBoss() {
+  const fig = document.getElementById("bossFigure");
+  fig.classList.add("shake-death");
+  if (hasModel("boss")) Model3DBoss.setFx("boss_death");
+  setTimeout(() => { fig.classList.remove("shake-death"); fig.classList.add("dying"); }, 1200);
+  setTimeout(() => {
+    document.getElementById("bossWin").classList.add("on");
+    GameState.addExp(200); GameState.addCoin(50);
+    GameState.checkAchievement("boss_slayer", true);
+    confettiBurst();
+  }, 2600);
+}
+
+window.closeBossWin = () => {
+  document.getElementById("bossWin").classList.remove("on");
+  document.getElementById("bossFigure").classList.remove("dying", "shake-death");
+  Model3DBoss.clearDebris();
+  exitBoss();
+};
+
+function renderQuest() {
+  const list = document.getElementById("questList");
+  list.innerHTML = "";
+  const entries = Object.entries(GameState.data.quests);
+  if (entries.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--txt-dim);font-size:12px;">Chưa có nhiệm vụ.</div>`;
+    return;
+  }
+  entries.forEach(([id, q]) => {
+    const pct = Math.min(q.progress / q.target * 100, 100);
+    const done = q.progress >= q.target;
+    const claimed = q.claimed;
+    const div = document.createElement("div");
+    div.className = "quest-item" + (done ? " done" : "") + (claimed ? " claimed" : "");
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:9px;">
+        <div style="width:32px;height:32px;border-radius:10px;flex-shrink:0;background:${done ? "linear-gradient(135deg,#34d399,#10b981)" : "var(--c1-soft)"};color:${done ? "#fff" : "var(--c1)"};display:flex;align-items:center;justify-content:center;font-size:13px;"><i class="fas fa-${done ? "check" : "bullseye"}"></i></div>
+        <div style="flex:1;"><div style="font-size:12.5px;font-weight:800;">${q.name}</div><div style="font-size:10.5px;color:var(--txt-dim);font-weight:600;margin-top:2px;">${q.desc}</div></div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:11px;font-weight:800;color:var(--gold);padding:3px 8px;border-radius:999px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);"><i class="fas fa-star"></i> +${q.reward}</div>
+      </div>
+      <div style="height:6px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;"><i style="display:block;height:100%;width:${pct}%;border-radius:999px;background:${done ? "linear-gradient(90deg,#34d399,#10b981)" : "linear-gradient(90deg,var(--c1),var(--c2))"};"></i></div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:var(--txt-dim);margin-top:5px;"><span>${q.progress} / ${q.target}</span><span>${Math.round(pct)}%</span></div>
+      ${done && !claimed ? `<button onclick="claimQuest('${id}')" style="margin-top:9px;width:100%;padding:9px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#422006;font-family:inherit;font-size:12px;font-weight:900;cursor:pointer;">Nhận thưởng</button>` : ""}
+      ${claimed ? `<div style="text-align:center;font-size:10.5px;color:#34d399;font-weight:800;margin-top:7px;"><i class="fas fa-check-circle"></i> Đã nhận</div>` : ""}
+    `;
+    list.appendChild(div);
+  });
+}
+
+window.claimQuest = (id) => {
+  const q = GameState.data.quests[id];
+  if (!q || q.claimed || q.progress < q.target) return;
+  q.claimed = true;
+  GameState.addExp(q.reward);
+  GameState.addCoin(q.rewardCoin || 0);
+  GameState.save();
+  renderQuest();
+  toast(`+${q.reward} EXP +${q.rewardCoin} xu`, "gold");
+  confettiBurst();
+  const claimedCount = Object.values(GameState.data.quests).filter(x => x.claimed).length;
+  if (claimedCount >= 3) GameState.checkAchievement("quest_master", true);
+  setTimeout(() => {
+    const rolled = GameState.checkAllQuestsComplete();
+    if (rolled) renderQuest();
+  }, 800);
+};
+
+function renderMap() {
+  const wrap = document.getElementById("mapWrap");
+  wrap.innerHTML = "";
+  for (let i = 0; i < MAP_NODES.length - 1; i++) {
+    const a = MAP_NODES[i], b = MAP_NODES[i+1];
+    const path = document.createElement("div");
+    path.className = "map-path";
+    path.style.left = a.x + "%"; path.style.top = a.y + "%"; path.style.width = "20%";
+    path.style.transform = `rotate(${Math.atan2(b.y - a.y, (b.x - a.x) * 0.6) * 180 / Math.PI}deg)`;
+    wrap.appendChild(path);
+  }
+  MAP_NODES.forEach(n => {
+    const unlocked = GameState.data.unlockedLocations.includes(n.id);
+    const div = document.createElement("div");
+    div.className = "map-node" + (unlocked ? "" : " locked");
+    div.style.left = n.x + "%"; div.style.top = n.y + "%";
+    if (unlocked) div.style.background = "linear-gradient(135deg,var(--c1),var(--c2))";
+    div.innerHTML = `<i class="fas ${n.icon}"></i><span class="nm">${n.name}${unlocked ? '' : ' • Lv.' + n.reqLevel}</span>`;
+    if (unlocked) div.onclick = () => { closeOverlay("mapOverlay"); startMode("classic"); };
+    wrap.appendChild(div);
+  });
+}
+
+function renderCollection() {
+  const grid = document.getElementById("achGrid");
+  grid.innerHTML = "";
+  let count = 0;
+  ACHIEVEMENTS.forEach(a => {
+    const unlocked = !!GameState.data.achievements[a.id];
+    if (unlocked) count++;
+    const div = document.createElement("div");
+    div.className = "ach-item";
+    div.style.cssText = `background:${unlocked ? "linear-gradient(135deg,rgba(251,191,36,.15),rgba(245,158,11,.05))" : "rgba(255,255,255,.04)"};border:1.5px solid ${unlocked ? "rgba(251,191,36,.4)" : "rgba(255,255,255,.1)"};${unlocked ? "" : "opacity:.45;"}`;
+    div.innerHTML = `
+      <div style="width:38px;height:38px;border-radius:50%;margin:0 auto 7px;background:${unlocked ? "linear-gradient(135deg,#fbbf24,#f59e0b)" : "linear-gradient(135deg,#374151,#1f2937)"};display:flex;align-items:center;justify-content:center;font-size:16px;color:${unlocked ? "#422006" : "#6b7280"};"><i class="fas ${a.icon}"></i></div>
+      <div style="font-size:11px;font-weight:800;">${a.name}</div>
+      <div style="font-size:9.5px;color:var(--txt-dim);font-weight:600;margin-top:2px;">${a.desc}</div>
+    `;
+    grid.appendChild(div);
+  });
+  document.getElementById("achCount").textContent = `${count}/${ACHIEVEMENTS.length}`;
+}
+
+window.openQuest = () => { renderQuest(); document.getElementById("questOverlay").classList.add("on"); };
+window.openSettings = () => document.getElementById("settingsOverlay").classList.add("on");
+window.openMap = () => { renderMap(); document.getElementById("mapOverlay").classList.add("on"); };
+window.openCollection = () => { renderCollection(); document.getElementById("collectionOverlay").classList.add("on"); };
+window.closeOverlay = (id) => document.getElementById(id).classList.remove("on");
+window.closeLevelUp = () => document.getElementById("levelUp").classList.remove("on");
+window.toggleLog = () => Logger.toggle();
+
+window.exportData = () => {
+  const data = JSON.stringify(GameState.data, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `rpg-save-${Date.now()}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  toast("Đã xuất!");
+};
+
+window.importData = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      GameState.data = { ...GameState.data, ...data };
+      GameState.save(); GameState.updateUI(); GameState.updateAvatar();
+      toast("Đã nhập!");
+    } catch(err) { toast("File không hợp lệ!"); }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+};
+
+window.resetAll = () => {
+  if (!confirm("Xóa toàn bộ tiến trình?")) return;
+  localStorage.removeItem("rpg_state_v20");
+  location.reload();
+};
+
+let toastTimer;
+window.toast = (msg, type = "") => {
+  const t = document.getElementById("toast");
+  document.getElementById("toastText").textContent = msg;
+  t.className = type;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
+};
+
+function confettiBurst() {
+  const colors = ["#8b5cf6", "#ec4899", "#fbbf24", "#34d399", "#06b6d4", "#f472b6"];
+  for (let i = 0; i < 50; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.top = "-20px";
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 0.5 + "s";
+    c.style.animationDuration = (2 + Math.random() * 1.5) + "s";
+    if (Math.random() > 0.5) c.style.borderRadius = "50%";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4000);
+  }
+}
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+window.openNameModal = () => {
+  document.getElementById("nameInput").value = GameState.data.playerName === "Nhân vật" ? "" : GameState.data.playerName;
+  document.getElementById("nameModal").classList.add("on");
+  setTimeout(() => document.getElementById("nameInput").focus(), 200);
+};
+window.closeNameModal = () => document.getElementById("nameModal").classList.remove("on");
+window.confirmName = () => {
+  const newName = document.getElementById("nameInput").value.trim();
+  if (!newName) { toast("Vui lòng nhập tên!"); return; }
+  GameState.data.playerName = newName;
+  GameState.data.hasNamed = true;
+  GameState.save(); GameState.updateUI(); closeNameModal();
+  toast(`Xin chào ${newName}!`, "gold");
+};
+
+window.closeRPGGame = function() {
+  document.getElementById("rpgGameShell").classList.remove("on");
+};
+
+Logger.init();
+GameState.load();
+EmoteMenu.init();
+
+if (!GameState.data.hasNamed) setTimeout(() => openNameModal(), 500);
+
+document.getElementById("nameInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") confirmName();
+});
+
+document.getElementById("codeInput")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") redeemCode();
+});
+
+window.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "l") {
+    e.preventDefault(); Logger.toggle();
+  }
+  if (e.key === "Escape") {
+    EmoteMenu.close();
+    if (document.getElementById("rpgGameShell").classList.contains("on")) window.closeRPGGame();
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (Model3D.ready) Model3D.resize();
+  if (Model3DBoss.ready) Model3DBoss.resize();
+  if (Model3DPet.ready) Model3DPet.resize();
+});
+
+let _rpgModelsBooted = false;
+async function bootRPGModels() {
+  if (_rpgModelsBooted) return;
+  _rpgModelsBooted = true;
+
+  bootSetStatus("Khởi động engine 3D...", "Chuẩn bị scene");
+  await new Promise(r => setTimeout(r, 100));
+
+  Model3D.init(); Model3DBoss.init(); Model3DPet.init();
+  Model3D.resize(); Model3DBoss.resize(); Model3DPet.resize();
+
+  bootSetStatus("Đang kết nối Firebase...", "Đồng bộ model");
+  await new Promise(r => setTimeout(r, 400));
+
+  await pullFirebaseModels();
+
+  const charEntry = GameState.data.firebaseModels.chars?.[GameState.data.equippedChar];
+  if (charEntry?.url) {
+    bootSetStatus("Đang load model nhân vật...", charEntry.name || GameState.data.equippedChar);
+    showStageLoader("Đang load model", charEntry.name || GameState.data.equippedChar);
+    await loadModelFromURL(charEntry.url, "char", GameState.data.equippedChar);
+    hideStageLoader();
+  } else {
+    bootSetStatus("Chưa có model nhân vật", "Vào Nạp 3D để thêm");
+    await new Promise(r => setTimeout(r, 300));
+  }
+
+  const petId = GameState.data.equippedPet;
+  if (petId) {
+    const petEntry = GameState.data.firebaseModels.pets?.[petId];
+    if (petEntry?.url) {
+      bootSetStatus("Đang load pet...", petEntry.name || petId);
+      showStageLoader("Đang load pet", petEntry.name || petId);
+      await loadModelFromURL(petEntry.url, "pet", petId);
+      showPetLabel(petEntry.name || petId);
+      hideStageLoader();
+    } else hidePetLabel();
+  } else hidePetLabel();
+
+  const bossEntry = GameState.data.firebaseModels.boss?.boss_main;
+  if (bossEntry?.url) {
+    bootSetStatus("Đang load Boss...", bossEntry.name || "Boss");
+    showStageLoader("Đang load Boss", bossEntry.name || "Boss");
+    await loadModelFromURL(bossEntry.url, "boss", "boss_main");
+    hideStageLoader();
+  }
+
+  bootSetDone("Hoàn tất!", "Vào game thôi 🎮");
+  await new Promise(r => setTimeout(r, 400));
+  bootHide();
+}
+
+window.addEventListener("load", () => setTimeout(bootRPGModels, 100), { once: true });
+if (document.readyState === "complete") setTimeout(bootRPGModels, 100);
+
+Logger.push("ok", "RPG v20 ready");
+</script>
+
+</body>
+</html>
