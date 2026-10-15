@@ -2142,6 +2142,15 @@ B. Đúng"></textarea>
     setTimeout(() => {
       gateRoot.style.display = 'none';
       if (typeof window.startClassSelection === 'function') window.startClassSelection();
+      const saved = localStorage.getItem("currentSubject");
+      if(saved && typeof SUBJECTS !== "undefined" && SUBJECTS[saved]){
+        currentSubject = saved;
+        window.currentSubject = saved;
+        if (typeof hideSubjectSelect === "function") hideSubjectSelect();
+        if (typeof loadQuestionFiles === "function") loadQuestionFiles();
+      } else if (typeof showSubjectSelect === "function") {
+        showSubjectSelect();
+      }
     }, 600);
   }
 
@@ -3503,16 +3512,6 @@ window.addEventListener("scroll", ()=>{
     backBtn.style.display = window.scrollY > 300 ? "flex" : "none";
 });
 backBtn.onclick = ()=>{ window.scrollTo({top:0,behavior:"smooth"}); };
-
-window.addEventListener("load", function(){
-    const saved = localStorage.getItem("currentSubject");
-    if(saved && SUBJECTS[saved]){
-        currentSubject = saved;
-        window.currentSubject = saved;
-        hideSubjectSelect();
-        loadQuestionFiles();
-    }
-});
 
 document.getElementById("editAnswerModal").addEventListener("click", (e)=>{
     if(e.target.id === "editAnswerModal") closeEditModal();
