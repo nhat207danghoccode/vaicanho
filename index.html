@@ -3721,10 +3721,9 @@ if(savedTheme){
 #classGate .cg-error{display:none;margin-top:9px;color:#b91c1c;font-size:12px;font-weight:700}#classGate .cg-error.on{display:block}
 #rpgGameShell{display:none;position:fixed;inset:0;z-index:10000010;background:#0f0a1f}
 #rpgGameShell.on{display:block}#rpgGameFrame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0f0a1f}
-#rpgExit{position:absolute;top:12px;left:12px;z-index:10000012;border:1px solid #ffffff35;border-radius:11px;background:#20143cdd;color:#fff;padding:10px 13px;font:800 12px system-ui;cursor:pointer;box-shadow:0 8px 25px #0005}
-#rpgExit:hover{background:#7c3aed}
 @media(max-width:520px){#classGate .cg-card{padding:22px 16px}#classGate .cg-class{padding:12px 2px}}
 </style>
+
 <div id="classGate" role="dialog" aria-modal="true" aria-labelledby="cgTitle">
  <div class="cg-card">
   <div class="cg-icon"><i class="fas fa-user-graduate"></i></div>
@@ -3746,8 +3745,8 @@ if(savedTheme){
   </div>
  </div>
 </div>
+
 <div id="rpgGameShell" aria-label="Game RPG">
- <button id="rpgExit" type="button" onclick="closeRPGGame()"><i class="fas fa-arrow-left"></i> Thoát game</button>
  <iframe id="rpgGameFrame" title="RPG v2" data-src="rpg.html"></iframe>
 </div>
 
@@ -3774,7 +3773,6 @@ if(savedTheme){
  window.verifyStudyGate=function(){return;};
  document.getElementById('cgPassword').addEventListener('keydown',e=>{if(e.key==='Enter')window.verifyStudyGate();});
 
- // ===== RPG INTEGRATION (v2 – file rpg.html) =====
  function buildRPGQuestionSet(){
    const bank=(parsedQuestionsDS||[]).map(item=>{
      const rawOptions=(item.arr||[]);
@@ -3817,14 +3815,12 @@ if(savedTheme){
    if(!rpgBooted){
      rpgBooted = true;
      frame.addEventListener('load', function onLoad(){
-       // Đợi RPG khởi động xong (boot loader) rồi đẩy câu hỏi sang
        setTimeout(sendRPGQuestionSet, 500);
        setTimeout(sendRPGQuestionSet, 1500);
        setTimeout(sendRPGQuestionSet, 2500);
      }, { once: true });
      frame.src = src;
    } else {
-     // Mở lại → đẩy câu hỏi mới
      setTimeout(sendRPGQuestionSet, 200);
      setTimeout(sendRPGQuestionSet, 800);
    }
@@ -3834,7 +3830,6 @@ if(savedTheme){
    document.getElementById('rpgGameShell').classList.remove('on');
  };
 
- // Nhận tín hiệu đóng từ RPG (nút "Quay lại" trong file rpg.html)
  window.addEventListener('message', function(e){
    if(e.data && e.data.type === 'RPG_CLOSE'){
      document.getElementById('rpgGameShell').classList.remove('on');
