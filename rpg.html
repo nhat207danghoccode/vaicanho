@@ -309,7 +309,7 @@ console.log("[FB] FirebaseAPI ready");
     display:block;touch-action:none;cursor:grab;z-index:3;
   }
 
-  /* Pet canvas — góc dưới trái, không đè player */
+  
   #petCanvas{
     position:absolute;
     width:150px;
@@ -1493,6 +1493,222 @@ console.log("[FB] FirebaseAPI ready");
     *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
   }
 </style>
+
+<style id="rpgVfxBossUpgrade">
+#stageArea{isolation:isolate}
+#petCanvas{width:164px!important;height:164px!important;left:12px!important;bottom:7%!important;z-index:6!important;display:block;visibility:visible;pointer-events:none;filter:drop-shadow(0 0 10px rgba(167,139,250,.42));transform:none!important;animation:none!important}
+.pet-label{z-index:8!important;bottom:calc(7% + 164px)!important;left:12px!important;padding:5px 11px!important;background:linear-gradient(135deg,rgba(17,10,35,.95),rgba(54,23,86,.92))!important;border-color:rgba(196,181,253,.65)!important;box-shadow:0 0 24px rgba(139,92,246,.25)}
+#emoteVfxLayer,.boss-vfx-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:7;isolation:isolate}
+.vfx-aura{position:absolute;left:var(--x,50%);top:var(--y,58%);width:var(--size,180px);height:var(--size,180px);transform:translate(-50%,-50%);border-radius:50%;border:2px solid var(--c,#a78bfa);box-shadow:0 0 18px var(--c,#a78bfa),inset 0 0 24px var(--c,#a78bfa);animation:vfxAura 1.15s ease-out forwards}
+.vfx-aura:before,.vfx-aura:after{content:"";position:absolute;inset:10%;border:1px dashed var(--c,#a78bfa);border-radius:50%;animation:vfxSpin 2.4s linear infinite}
+.vfx-aura:after{inset:24%;border-style:solid;animation-direction:reverse}
+.vfx-particle{position:absolute;left:var(--x);top:var(--y);width:var(--s,6px);height:var(--s,6px);background:var(--c,#fff);border-radius:var(--shape,50%);box-shadow:0 0 10px var(--c,#fff),0 0 22px var(--c,#fff);animation:vfxParticle var(--dur,1s) cubic-bezier(.15,.7,.25,1) forwards;transform:translate(-50%,-50%) rotate(0)}
+.vfx-particle.streak{height:var(--s,6px);width:calc(var(--s,6px)*.35);border-radius:99px}
+.vfx-ring{position:absolute;left:var(--x,50%);top:var(--y,58%);width:30px;height:30px;border:3px solid var(--c,#fff);border-radius:50%;transform:translate(-50%,-50%) scale(.2);box-shadow:0 0 24px var(--c,#fff);animation:vfxRing .8s cubic-bezier(.1,.8,.2,1) forwards}
+.vfx-title{position:absolute;left:50%;top:27%;transform:translate(-50%,15px) scale(.7);font-size:clamp(20px,4vw,40px);font-weight:1000;font-style:italic;letter-spacing:2px;color:var(--c,#fff);text-shadow:0 0 12px var(--c,#fff),0 4px 0 rgba(0,0,0,.5);white-space:nowrap;animation:vfxTitle 1.05s cubic-bezier(.12,.8,.2,1) forwards}
+.vfx-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 58%,var(--c,rgba(255,255,255,.7)),transparent 65%);mix-blend-mode:screen;animation:vfxFlash .36s ease-out forwards}
+@keyframes vfxAura{0%{opacity:0;scale:.2}20%{opacity:1}100%{opacity:0;scale:1.65;rotate:25deg}}
+@keyframes vfxSpin{to{rotate:360deg}}
+@keyframes vfxParticle{0%{opacity:0;transform:translate(-50%,-50%) rotate(0) scale(.2)}12%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--rot,180deg)) scale(.05)}}
+@keyframes vfxRing{0%{opacity:1;scale:.15}100%{opacity:0;scale:8}}
+@keyframes vfxTitle{0%{opacity:0;transform:translate(-50%,22px) scale(.55) skewX(-12deg)}25%{opacity:1;transform:translate(-50%,0) scale(1.08) skewX(-4deg)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-28px) scale(1.15)}}
+@keyframes vfxFlash{0%{opacity:.85}100%{opacity:0}}
+#bossScreen{background-image:radial-gradient(ellipse 70% 65% at 50% 42%,rgba(239,68,68,.17),transparent 65%),radial-gradient(ellipse 90% 45% at 50% 0%,rgba(251,146,60,.13),transparent 65%),linear-gradient(180deg,#07040c 0%,#160817 48%,#06040a 100%)!important}
+#bossScreen:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.28;background:repeating-linear-gradient(115deg,transparent 0 42px,rgba(248,113,113,.08) 43px 44px,transparent 45px 84px);mask-image:linear-gradient(90deg,transparent,#000,transparent);animation:bossScan 12s linear infinite}
+@keyframes bossScan{to{background-position:300px 0}}
+.boss-top{border-bottom:1px solid rgba(248,113,113,.35)!important;box-shadow:0 8px 28px rgba(239,68,68,.08)}
+.boss-arena{position:relative;isolation:isolate;gap:10px!important;padding:12px clamp(10px,2vw,24px) 16px!important}
+.vs-hud{gap:12px!important}
+.vs-side{position:relative;overflow:hidden;min-height:68px;padding:10px 12px!important;backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.08);border-radius:15px!important}
+.vs-side:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent,rgba(255,255,255,.07),transparent);transform:translateX(-120%);animation:bossHudSweep 5s ease-in-out infinite}
+@keyframes bossHudSweep{50%,100%{transform:translateX(120%)}}
+.vs-side.player{background:linear-gradient(125deg,rgba(6,78,59,.62),rgba(7,14,24,.92))!important}
+.vs-side.boss{background:linear-gradient(125deg,rgba(69,10,10,.9),rgba(20,7,16,.95))!important}
+.vs-avatar{width:44px!important;height:44px!important;border-radius:13px!important;border:1px solid rgba(255,255,255,.2);box-shadow:0 0 22px rgba(124,58,237,.42)!important}
+.vs-avatar.boss-avatar{box-shadow:0 0 25px rgba(239,68,68,.55)!important}
+.vs-hp-bar{height:11px!important;background:rgba(0,0,0,.65)!important;border:1px solid rgba(255,255,255,.18)!important}
+.vs-hp-fill{position:relative;box-shadow:0 0 12px currentColor;transition:width .55s cubic-bezier(.2,.8,.2,1)!important}
+.boss-stage{position:relative;flex:1;min-height:180px;isolation:isolate;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 50% 80%,rgba(127,29,29,.27),transparent 55%),linear-gradient(180deg,rgba(10,4,14,.15),rgba(0,0,0,.38));border:1px solid rgba(248,113,113,.18);box-shadow:inset 0 0 55px rgba(239,68,68,.07),0 15px 45px rgba(0,0,0,.24)}
+.boss-stage:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 49.8%,rgba(248,113,113,.08) 50%,transparent 50.2%),radial-gradient(ellipse at 50% 100%,rgba(248,113,113,.13),transparent 55%)}
+.boss-figure{z-index:2;filter:drop-shadow(0 0 20px rgba(239,68,68,.25))}
+.boss-ring{border-color:rgba(248,113,113,.5)!important;box-shadow:0 0 24px rgba(239,68,68,.2),inset 0 0 20px rgba(239,68,68,.12)!important}
+.boss-img-wrap{filter:drop-shadow(0 0 16px rgba(248,113,113,.2))}
+.boss-log{backdrop-filter:blur(12px);border:1px solid rgba(248,113,113,.15)!important;background:linear-gradient(135deg,rgba(24,8,18,.92),rgba(8,5,13,.94))!important;border-radius:14px!important}
+#bossQCard,.boss-q-card,.boss-question{border:1px solid rgba(248,113,113,.24)!important;background:linear-gradient(145deg,rgba(35,13,27,.96),rgba(10,7,16,.98))!important;box-shadow:0 18px 50px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.05)!important}
+#bossQText{font-weight:800;line-height:1.65}
+#bossQOpts .q-opt{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.13)!important;background:linear-gradient(115deg,rgba(255,255,255,.065),rgba(255,255,255,.018))!important;transition:transform .18s,border-color .18s,background .18s,box-shadow .18s!important}
+#bossQOpts .q-opt:not(.locked):hover{transform:translateY(-2px);border-color:rgba(251,146,60,.7)!important;box-shadow:0 8px 22px rgba(239,68,68,.14)}
+#bossQOpts .q-opt.correct{border-color:#34d399!important;background:linear-gradient(110deg,rgba(16,185,129,.3),rgba(6,78,59,.2))!important;box-shadow:0 0 25px rgba(52,211,153,.22)!important;animation:answerCorrect .4s ease-out}
+#bossQOpts .q-opt.wrong{border-color:#fb7185!important;background:linear-gradient(110deg,rgba(225,29,72,.3),rgba(69,10,10,.3))!important;animation:answerWrong .35s ease-in-out}
+@keyframes answerCorrect{50%{transform:scale(1.025)}}
+@keyframes answerWrong{25%,75%{transform:translateX(-5px)}50%{transform:translateX(5px)}}
+#bossScreen.battle-hit{animation:battleHit .24s ease-out}
+#bossScreen.battle-crit{animation:battleCrit .48s ease-out}
+#bossScreen.battle-counter{animation:battleCounter .34s ease-out}
+#bossScreen.battle-victory .boss-stage{animation:battleVictory 1s ease-out}
+@keyframes battleHit{25%{transform:translateX(-3px)}60%{transform:translateX(3px)}}
+@keyframes battleCrit{0%,100%{filter:none}35%{filter:brightness(1.8) saturate(1.5)}}
+@keyframes battleCounter{25%{transform:translateX(5px)}60%{transform:translateX(-5px)}}
+@keyframes battleVictory{50%{filter:brightness(1.8) saturate(1.6);box-shadow:inset 0 0 100px rgba(251,191,36,.3)}}
+#bossScreen .dmg-float{z-index:15;text-shadow:0 3px 0 rgba(0,0,0,.6),0 0 20px currentColor;font-weight:1000}
+#bossFigure.dying{animation:bossDying 1.4s ease-in forwards, bossFadeOut 1.4s ease-in forwards!important}
+@keyframes bossFadeOut{0%,40%{opacity:1}100%{opacity:.08;filter:brightness(3) saturate(0) blur(4px)}}
+#bossFigure.player-dead{animation:playerCollapse .9s ease-in forwards;filter:grayscale(.8) brightness(.65)}
+@keyframes playerCollapse{0%{transform:translateY(0) rotate(0) scale(1)}35%{transform:translateY(4px) rotate(-5deg) scale(.98)}70%{transform:translateY(15px) rotate(-16deg) scale(.9)}100%{transform:translateY(24px) rotate(-25deg) scale(.82);opacity:.65}}
+@media(max-width:600px){#petCanvas{width:112px!important;height:112px!important;left:7px!important;bottom:6%!important;transform:none!important;animation:none!important}.pet-label{bottom:calc(6% + 112px)!important;left:7px!important}.boss-arena{padding:8px 8px 10px!important;gap:7px!important}.vs-side{min-height:56px;padding:7px!important;gap:6px!important}.vs-avatar{width:32px!important;height:32px!important}.boss-stage{min-height:140px;border-radius:15px}.vs-name{font-size:9px}.vs-hp-bar{height:8px!important}}
+
+.special-impact{position:absolute;left:var(--ix);top:var(--iy);width:min(42vw,360px);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;border-radius:50%;z-index:9;animation:impactShock .72s cubic-bezier(.12,.7,.2,1) forwards}
+.special-impact:before,.special-impact:after{content:"";position:absolute;inset:8%;border:5px solid var(--impact-color);border-radius:50%;filter:drop-shadow(0 0 14px var(--impact-color));animation:impactRing .72s ease-out forwards}
+.special-impact:after{inset:28%;border-width:2px;border-style:dashed;animation:impactRing .58s ease-out reverse forwards}
+.impact-crit{background:radial-gradient(circle,rgba(255,255,255,.95),color-mix(in srgb,var(--impact-color) 50%,transparent) 18%,transparent 68%);mix-blend-mode:screen}
+.impact-counter:before{border-width:9px;transform:rotate(24deg) scaleX(1.25)}
+.special-slash{position:absolute;left:var(--ix);top:var(--iy);width:min(48vw,420px);height:8px;background:linear-gradient(90deg,transparent,#fff,var(--impact-color),transparent);box-shadow:0 0 14px var(--impact-color),0 0 35px var(--impact-color);transform:translate(-50%,-50%) rotate(-24deg) scaleX(.05);z-index:10;animation:slashCut .48s cubic-bezier(.1,.8,.2,1) forwards}
+.slash-1{transform:translate(-50%,-50%) rotate(18deg) scaleX(.05);animation-delay:.07s;height:5px}
+.slash-2{transform:translate(-50%,-50%) rotate(-48deg) scaleX(.05);animation-delay:.13s;height:4px}
+#bossScreen.battle-hit .boss-stage{animation:impactShake .28s linear 2}
+#bossScreen.battle-crit .boss-stage{animation:critShake .55s cubic-bezier(.2,.8,.2,1)}
+#bossScreen.battle-counter .boss-stage{animation:counterShake .38s linear 2}
+#bossScreen.battle-death .boss-stage{animation:deathDim .8s ease-out}
+#bossScreen.battle-crit:after{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.9) 49%,rgba(255,220,70,.65) 51%,transparent 72%);animation:critFlash .45s ease-out forwards}
+@keyframes impactShock{0%{opacity:0;scale:.12}14%{opacity:1}100%{opacity:0;scale:1.65}}
+@keyframes impactRing{0%{opacity:1;scale:.25}100%{opacity:0;scale:1.8}}
+@keyframes slashCut{0%{opacity:0;scaleX:.02}25%{opacity:1}100%{opacity:0;scaleX:1.2}}
+@keyframes impactShake{0%,100%{translate:0 0}25%{translate:-7px 2px}50%{translate:6px -2px}75%{translate:-4px 1px}}
+@keyframes critShake{0%{translate:0 0;filter:brightness(1)}18%{translate:-10px 2px;filter:brightness(2.1)}36%{translate:8px -3px}54%{translate:-6px 2px;filter:brightness(1.5)}100%{translate:0 0;filter:brightness(1)}}
+@keyframes counterShake{0%,100%{translate:0 0}20%{translate:8px 0}40%{translate:-9px 1px}60%{translate:6px -1px}80%{translate:-4px 0}}
+@keyframes deathDim{0%{filter:brightness(1)}25%{filter:brightness(1.7)}100%{filter:brightness(.55) saturate(.6)}}
+@keyframes critFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.vfx-aura,.vfx-particle,.vfx-ring,.vfx-title,.vfx-flash,#bossScreen:before{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+
+
+<style id="boss-total-redesign">
+#bossScreen{background:#070914!important;color:#f7f8ff!important;isolation:isolate}
+#bossScreen:before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(ellipse at 50% 38%,rgba(83,47,173,.27),transparent 42%),radial-gradient(ellipse at 12% 55%,rgba(12,173,193,.11),transparent 34%),radial-gradient(ellipse at 90% 44%,rgba(245,55,91,.15),transparent 36%),linear-gradient(180deg,#090b19 0%,#0d1024 48%,#070914 100%)}
+#bossScreen:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 80%,transparent)}
+#bossScreen .boss-top{background:rgba(8,11,25,.86);border-bottom:1px solid rgba(145,160,255,.18);padding:calc(10px + var(--safe-top)) 18px 10px;backdrop-filter:blur(18px)}
+#bossScreen .boss-top .back,#bossScreen .boss-menu-btn{border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.025));border:1px solid rgba(180,190,255,.22);box-shadow:inset 0 1px rgba(255,255,255,.08)}
+#bossScreen .boss-top .t{font-size:14px;letter-spacing:1.6px;color:#ff637e;text-shadow:0 0 18px rgba(255,55,100,.35)}
+#bossScreen .boss-top .d{color:#969fca;font-size:10px;letter-spacing:.3px}
+#bossScreen .boss-arena{display:grid;grid-template-rows:auto auto minmax(220px,1fr) auto;gap:10px;padding:12px clamp(10px,2.2vw,28px) max(12px,env(safe-area-inset-bottom));overflow:hidden}
+#bossScreen .vs-hud{gap:12px;align-items:center}
+#bossScreen .vs-side{min-height:64px;padding:10px 13px;border-radius:15px;gap:11px;backdrop-filter:blur(14px);box-shadow:0 8px 28px rgba(0,0,0,.16);position:relative;overflow:hidden}
+#bossScreen .vs-side.player{background:linear-gradient(110deg,rgba(16,185,129,.14),rgba(12,18,38,.85));border-color:rgba(52,211,153,.35)}
+#bossScreen .vs-side.boss{background:linear-gradient(110deg,rgba(48,16,39,.82),rgba(239,68,68,.12));border-color:rgba(255,80,111,.4)}
+#bossScreen .vs-side:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:#39e6b0;box-shadow:0 0 18px #39e6b0}
+#bossScreen .vs-side.boss:before{left:auto;right:0;background:#ff466b;box-shadow:0 0 18px #ff466b}
+#bossScreen .vs-avatar{width:42px;height:42px;border-radius:13px;font-size:17px;box-shadow:0 0 24px rgba(139,92,246,.25);border:1px solid rgba(255,255,255,.16)}
+#bossScreen .vs-avatar.boss-avatar{box-shadow:0 0 25px rgba(255,60,90,.24)}
+#bossScreen .vs-name{font-size:10px;letter-spacing:1.6px}
+#bossScreen .vs-hp-bar{height:8px;background:rgba(0,0,0,.48);border:1px solid rgba(255,255,255,.12)}
+#bossScreen .vs-side.player .vs-hp-fill{background:linear-gradient(90deg,#22d3a2,#86f7ce)}
+#bossScreen .vs-side.boss .vs-hp-fill{background:linear-gradient(90deg,#ff315e,#ff9b6b)}
+#bossScreen .vs-badge{position:relative;z-index:1;min-width:50px}
+#bossScreen .vs-badge>span{font-size:17px;letter-spacing:2px;background:linear-gradient(135deg,#fff,#a9a5ff 55%,#ff6e91);-webkit-background-clip:text;background-clip:text}
+#bossScreen .vs-phase{background:rgba(132,91,255,.2);border:1px solid rgba(163,139,255,.35);box-shadow:none;color:#d9d0ff;font-size:9px}
+#bossScreen .phase-tracker{background:rgba(12,15,34,.7);border:1px solid rgba(143,153,224,.16);border-radius:13px;padding:7px 9px;backdrop-filter:blur(10px)}
+#bossScreen .pt-item{padding:5px 3px;position:relative}
+#bossScreen .pt-item.on{background:linear-gradient(90deg,rgba(132,91,255,.17),rgba(132,91,255,.04));box-shadow:inset 0 0 0 1px rgba(153,125,255,.16)}
+#bossScreen .pt-item .pt-num{width:21px;height:21px;background:#202542;color:#aab1dc}
+#bossScreen .pt-item.on .pt-num{background:linear-gradient(135deg,#a855f7,#5b6cff);box-shadow:0 0 14px rgba(139,92,246,.45)}
+#bossScreen .pt-item.done .pt-num{background:linear-gradient(135deg,#20c997,#138a70)}
+#bossScreen .pt-line{background:linear-gradient(90deg,rgba(132,91,255,.6),rgba(132,91,255,.1));height:2px}
+#bossScreen .boss-stage{min-height:220px;border:1px solid rgba(150,157,255,.18);border-radius:22px;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 70%,rgba(102,69,204,.2),transparent 44%),linear-gradient(120deg,rgba(15,20,46,.92),rgba(20,13,38,.8) 52%,rgba(35,12,35,.78));box-shadow:inset 0 1px rgba(255,255,255,.06),0 16px 44px rgba(0,0,0,.22)}
+#bossScreen .boss-stage:before{content:"BOSS ENCOUNTER  /  PHASE ACTIVE";position:absolute;top:16px;left:19px;z-index:2;color:#9ba5d7;font-size:9px;font-weight:900;letter-spacing:2.4px}
+#bossScreen .boss-stage:after{content:"";position:absolute;left:12%;right:12%;bottom:18%;height:1px;background:linear-gradient(90deg,transparent,rgba(151,139,255,.7),rgba(255,93,128,.65),transparent);box-shadow:0 0 25px rgba(130,107,255,.5);z-index:-1}
+#bossScreen .boss-figure{width:min(330px,42vw);height:min(330px,100%);aspect-ratio:1;max-height:100%;z-index:1;filter:drop-shadow(0 18px 25px rgba(0,0,0,.45))}
+#bossScreen .boss-img-wrap{border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+#bossScreen .boss-img-wrap canvas{border-radius:0!important;touch-action:none;filter:drop-shadow(0 0 18px rgba(255,121,159,.18))}
+#bossScreen .boss-figure:before{inset:12% -18%;background:radial-gradient(ellipse,rgba(123,86,255,.24),rgba(244,62,111,.13) 35%,transparent 70%);filter:blur(22px);animation:bossAuraBreathe 3.2s ease-in-out infinite}
+@keyframes bossAuraBreathe{0%,100%{transform:scale(.92);opacity:.6}50%{transform:scale(1.12);opacity:1}}
+#bossScreen .boss-ring.r1{width:88%;height:88%;border:1px solid rgba(139,125,255,.55);border-left-color:transparent;border-right-color:rgba(255,91,135,.65);box-shadow:0 0 25px rgba(122,92,255,.12);animation:ringSpin 16s linear infinite}
+#bossScreen .boss-ring.r2{width:108%;height:108%;border:1px dashed rgba(255,111,146,.35);animation:ringSpin 27s linear infinite reverse}
+#bossScreen .boss-ring.r3{width:128%;height:128%;border:1px solid rgba(103,222,255,.15);animation:ringSpin 36s linear infinite}
+#bossScreen .boss-log{left:14px;right:14px;bottom:12px;max-height:32px;border-radius:10px;background:rgba(7,10,24,.78);border:1px solid rgba(154,161,240,.18);color:#c3c9ef;padding:7px 12px;z-index:4}
+#bossScreen .boss-log p.new{color:#ffb1c4}
+#bossScreen .boss-question{background:linear-gradient(115deg,rgba(20,24,49,.97),rgba(18,15,36,.97));border:1px solid rgba(145,151,234,.24);border-radius:17px;padding:14px 16px;box-shadow:0 12px 32px rgba(0,0,0,.22);max-height:34vh;overflow:auto}
+#bossScreen .boss-question:before{height:2px;background:linear-gradient(90deg,#8b5cf6,#54d9f4,#ff5e8a,#8b5cf6);background-size:250% 100%;animation:shimmer 4s linear infinite}
+#bossScreen .bq-header{font-size:10px;letter-spacing:.8px;color:#aeb7e4}
+#bossScreen .bq-phase{border:1px solid rgba(151,123,255,.35);background:rgba(124,92,255,.16);color:#d9ccff;border-radius:99px;padding:4px 9px}
+#bossScreen .q-text{font-size:clamp(13px,1.3vw,17px);line-height:1.5;color:#fff;font-weight:800}
+#bossScreen .q-opts{gap:8px}
+#bossScreen .q-opts>*{border-radius:12px!important;border-color:rgba(152,164,235,.2)!important;background:rgba(255,255,255,.035)!important;transition:transform .18s,border-color .18s,background .18s}
+#bossScreen .q-opts>*:hover{transform:translateY(-2px);border-color:rgba(146,121,255,.65)!important;background:rgba(123,92,255,.1)!important}
+#bossScreen .dmg-float{z-index:20;letter-spacing:.5px;text-shadow:0 0 14px currentColor}
+#bossScreen .dmg-float.crit{font-size:clamp(24px,3vw,36px);border-radius:14px;transform-origin:center;box-shadow:0 0 35px rgba(255,66,105,.5),inset 0 0 18px rgba(255,255,255,.08)}
+@media(min-width:900px){#bossScreen .boss-arena{grid-template-rows:auto auto minmax(250px,1fr) auto}#bossScreen .boss-stage{min-height:250px}#bossScreen .boss-question{max-height:31vh}}
+@media(max-width:640px){#bossScreen .boss-top{padding-left:10px;padding-right:10px}#bossScreen .boss-arena{padding:8px 8px max(8px,env(safe-area-inset-bottom));gap:7px;grid-template-rows:auto auto minmax(180px,1fr) auto}#bossScreen .vs-hud{gap:5px}#bossScreen .vs-side{padding:7px 7px;gap:6px;min-height:54px;border-radius:11px}#bossScreen .vs-avatar{width:30px;height:30px;border-radius:9px;font-size:12px}#bossScreen .vs-name{font-size:8px;letter-spacing:.8px}#bossScreen .vs-hp-bar{height:7px}#bossScreen .vs-stats{font-size:8px;gap:4px}#bossScreen .vs-stats .score-text{padding:1px 4px}#bossScreen .vs-badge{min-width:34px;padding:0}#bossScreen .vs-badge>span{font-size:13px}#bossScreen .vs-phase{font-size:7px;padding:3px 5px}#bossScreen .phase-tracker{padding:5px 5px;gap:2px}#bossScreen .pt-label{font-size:8px!important}#bossScreen .pt-target{font-size:7px!important}#bossScreen .pt-line{flex-basis:6px}#bossScreen .boss-stage{min-height:180px;border-radius:16px}#bossScreen .boss-stage:before{top:10px;left:11px;font-size:7px;letter-spacing:1.3px}#bossScreen .boss-figure{width:min(240px,58vw);height:min(240px,100%)}#bossScreen .boss-ring.r2{width:110%;height:110%}#bossScreen .boss-ring.r3{width:125%;height:125%}#bossScreen .boss-log{left:7px;right:7px;bottom:6px;font-size:8px;max-height:26px;padding:5px 8px}#bossScreen .boss-question{padding:10px 11px;border-radius:13px;max-height:38vh}#bossScreen .q-text{font-size:13px}}
+@media(prefers-reduced-motion:reduce){#bossScreen .boss-ring,#bossScreen .boss-figure:before{animation:none!important}}
+</style>
+
+<style id="boss-complete-overhaul">
+#bossScreen{background:#e8edf2!important;color:#142235!important;font-family:Inter,system-ui,sans-serif!important}
+#bossScreen.on{animation:bossEntry .42s ease-out}
+@keyframes bossEntry{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#bossScreen .boss-top{height:62px;box-sizing:border-box;padding:calc(8px + var(--safe-top)) 22px 8px!important;background:#101d31!important;border:0!important;border-bottom:4px solid #28d7c5!important;box-shadow:0 6px 20px #10213a20!important}
+#bossScreen .boss-top .back,#bossScreen .boss-menu-btn{border-radius:7px!important;background:#203651!important;border:1px solid #42617f!important;color:#eafaff!important;width:40px;height:40px}
+#bossScreen .boss-top .info .t{font-size:15px!important;letter-spacing:1.8px;color:#f4fbff!important}
+#bossScreen .boss-top .info .t i{color:#2fe0cf!important}
+#bossScreen .boss-top .info .d{color:#9db4c9!important;font-size:11px!important}
+#bossScreen .boss-arena{display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(330px,.8fr);grid-template-rows:auto auto minmax(270px,1fr);grid-template-areas:'hud hud' 'phase phase' 'stage question';gap:12px!important;padding:16px 20px 20px!important;overflow:auto!important;background:linear-gradient(135deg,#e8edf2 0%,#dce5ed 50%,#edf2f5 100%)!important}
+#bossScreen .vs-hud{grid-area:hud;gap:12px!important;align-items:stretch}
+#bossScreen .vs-side{padding:12px 16px!important;border-radius:9px!important;border-width:0 0 0 5px!important;box-shadow:0 8px 20px #14223512!important;min-height:70px;background:#fff!important}
+#bossScreen .vs-side.player{border-color:#17b9a9!important}
+#bossScreen .vs-side.boss{border-left:0!important;border-right:5px solid #f05b66!important;background:#fff!important}
+#bossScreen .vs-avatar{width:44px;height:44px;border-radius:8px!important;background:#d8fbf6!important;color:#087f79!important;box-shadow:none!important;font-size:18px}
+#bossScreen .vs-avatar.boss-avatar{background:#ffe2e4!important;color:#b52d3a!important;box-shadow:none!important}
+#bossScreen .vs-name,#bossScreen .vs-side.player .vs-name,#bossScreen .vs-side.boss .vs-name{font-size:11px!important;letter-spacing:1.5px;color:#53677b!important}
+#bossScreen .vs-hp-bar{height:10px!important;background:#e5ebf0!important;border:0!important;border-radius:3px!important}
+#bossScreen .vs-side.player .vs-hp-fill{background:linear-gradient(90deg,#21cdb9,#087f79)!important;box-shadow:none!important;border-radius:3px!important}
+#bossScreen .vs-side.boss .vs-hp-fill{background:linear-gradient(90deg,#ff777b,#d93648)!important;box-shadow:none!important;border-radius:3px!important}
+#bossScreen .vs-stats .hp-text{color:#142235!important}
+#bossScreen .vs-stats .hp-detail{color:#718399!important}
+#bossScreen .vs-stats .score-text{background:#fff4cc!important;color:#876100!important;border:1px solid #f1d46a!important;border-radius:4px!important}
+#bossScreen .vs-badge{padding:0 12px!important}
+#bossScreen .vs-badge>span{font-size:18px!important;background:none!important;-webkit-text-fill-color:#172a42!important;color:#172a42!important;text-shadow:none!important}
+#bossScreen .vs-phase{background:#142b45!important;border-radius:4px!important;box-shadow:none!important;padding:4px 8px!important}
+#bossScreen .phase-tracker{grid-area:phase;background:#fff!important;border:1px solid #d0dce5!important;border-radius:8px!important;padding:7px 12px!important;box-shadow:0 4px 12px #14223508!important}
+#bossScreen .pt-item{border-radius:5px!important;opacity:.55;padding:6px 4px!important}
+#bossScreen .pt-item.on{background:#d8f8f3!important;opacity:1}
+#bossScreen .pt-item.done{background:#e3f6e9!important;opacity:1}
+#bossScreen .pt-item .pt-num{border-radius:5px!important;background:#e7edf2!important;color:#65788b!important}
+#bossScreen .pt-item.on .pt-num{background:#10b9a7!important;color:#fff!important}
+#bossScreen .pt-item.done .pt-num{background:#269b66!important;color:#fff!important}
+#bossScreen .pt-item .pt-label{color:#586c80!important;font-size:10px!important}
+#bossScreen .pt-item.on .pt-label{color:#087f79!important}
+#bossScreen .pt-item .pt-target{color:#8a9aaa!important}
+#bossScreen .pt-line{background:#c7d5df!important}
+#bossScreen .boss-stage{grid-area:stage;min-height:340px!important;align-self:stretch;border-radius:12px!important;overflow:hidden!important;background:linear-gradient(145deg,#142a43 0%,#203c59 55%,#102238 100%)!important;border:1px solid #35536d!important;box-shadow:0 14px 30px #14223520!important;isolation:isolate}
+#bossScreen .boss-stage:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,transparent 49.8%,#70d6dc18 50%,transparent 50.2%),linear-gradient(0deg,transparent 49.8%,#70d6dc18 50%,transparent 50.2%),repeating-linear-gradient(120deg,transparent 0 42px,#8fe8e018 43px,#8fe8e018 44px,transparent 45px 84px);mask-image:linear-gradient(transparent,#000 15%,#000 85%,transparent)}
+#bossScreen .boss-stage:after{content:"BOSS ENCOUNTER  /  LIVE COMBAT";position:absolute;top:16px;left:18px;color:#7ee9e0;font-size:10px;letter-spacing:2px;font-weight:900;z-index:2;pointer-events:none}
+#bossScreen .boss-figure{width:min(420px,72%)!important;aspect-ratio:1!important;max-height:92%!important;z-index:1}
+#bossScreen .boss-img-wrap{border-radius:0!important;border:0!important;background:radial-gradient(ellipse at 50% 65%,#4b829050 0%,#23456318 48%,transparent 72%)!important;box-shadow:none!important;overflow:visible!important}
+#bossScreen .boss-img-wrap canvas{border-radius:0!important;filter:drop-shadow(0 18px 22px #0008)!important}
+#bossScreen .boss-figure:before{inset:8% 4% -8%!important;border-radius:50%!important;background:radial-gradient(ellipse,#2fe0cf38,transparent 66%)!important;filter:blur(22px)!important}
+#bossScreen .boss-ring{display:none!important}
+#bossScreen .boss-figure:after{content:"";position:absolute;left:10%;right:10%;bottom:4%;height:13%;border-radius:50%;background:radial-gradient(ellipse,#48e0d66b,transparent 70%);filter:blur(8px);z-index:-1}
+#bossScreen .boss-log{left:14px!important;right:14px!important;bottom:12px!important;max-height:52px!important;border:1px solid #52758b!important;border-radius:6px!important;background:#0b1a2bd9!important;color:#d7e8ef!important;padding:8px 12px!important;font-size:11px!important}
+#bossScreen .boss-log p.new{color:#8cf4e8!important}
+#bossScreen .boss-log p.dmg{color:#ffdb83!important}
+#bossScreen .boss-log p.player-hit{color:#ff9da4!important}
+#bossScreen .boss-question{grid-area:question;align-self:stretch;min-width:0;background:#fff!important;border:1px solid #d0dce5!important;border-radius:12px!important;padding:20px!important;box-shadow:0 14px 30px #14223512!important;display:flex;flex-direction:column;justify-content:flex-start}
+#bossScreen .boss-question:before{height:5px!important;background:linear-gradient(90deg,#20cbbb,#72e4da,#f0c45b)!important;animation:none!important}
+#bossScreen .bq-header{margin:0 0 18px!important;padding-bottom:12px;border-bottom:1px solid #e4ebf0;font-size:11px!important}
+#bossScreen .bq-index{color:#73869a!important}
+#bossScreen .bq-index b{color:#087f79!important;font-size:14px}
+#bossScreen .bq-phase{background:#e1faf6!important;color:#087f79!important;border:1px solid #b5eee6!important;border-radius:4px!important}
+#bossScreen .boss-question .q-text{font-size:16px!important;line-height:1.65!important;color:#142235!important;margin-bottom:18px!important}
+#bossScreen .boss-question .q-opts{gap:10px!important}
+#bossScreen .boss-question .q-opt{display:flex;align-items:center;min-height:48px;padding:12px 14px!important;border:1px solid #d8e2e9!important;border-radius:7px!important;background:#f5f8fa!important;color:#344b60!important;font-size:13px!important;line-height:1.45!important;box-shadow:0 2px 0 #dce5eb!important}
+#bossScreen .boss-question .q-opt:active:not(.locked){transform:translateY(1px)!important;background:#e0faf6!important;border-color:#1bb9a9!important;color:#087f79!important}
+#bossScreen .boss-question .q-opt.correct{background:#e2f8eb!important;border-color:#37b878!important;color:#167345!important;box-shadow:0 2px 0 #b9e9cd!important}
+#bossScreen .boss-question .q-opt.wrong{background:#fff0f0!important;border-color:#ed7279!important;color:#b52d3a!important;box-shadow:0 2px 0 #f5c9cb!important}
+#bossScreen .dmg-float{z-index:30!important}
+#bossScreen.finisher-flash:after{background:radial-gradient(circle at 50% 48%,#fff9d9e8,#4fe6d000 68%)!important}
+@media(max-width:760px){#bossScreen .boss-top{padding-left:12px!important;padding-right:12px!important}#bossScreen .boss-arena{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto minmax(230px,36vh) auto!important;grid-template-areas:'hud' 'phase' 'stage' 'question'!important;padding:10px!important;gap:9px!important}#bossScreen .vs-hud{gap:5px!important}#bossScreen .vs-side{padding:8px!important;gap:6px!important;min-height:58px!important}#bossScreen .vs-avatar{width:30px;height:30px;font-size:13px}#bossScreen .vs-name{font-size:9px!important;letter-spacing:.6px!important}#bossScreen .vs-badge{padding:0 2px!important}#bossScreen .vs-badge>span{font-size:14px!important}#bossScreen .vs-phase{font-size:8px!important;padding:3px 5px!important}#bossScreen .phase-tracker{padding:5px!important}#bossScreen .pt-item .pt-label{font-size:8px!important}#bossScreen .pt-item .pt-target{font-size:7px!important}#bossScreen .boss-stage{min-height:230px!important}#bossScreen .boss-figure{width:min(280px,70%)!important}#bossScreen .boss-question{padding:15px!important}#bossScreen .boss-question .q-text{font-size:14px!important;margin-bottom:12px!important}#bossScreen .boss-question .q-opt{min-height:42px;padding:10px!important;font-size:12px!important}}
+@media(min-width:761px) and (max-height:720px){#bossScreen .boss-arena{grid-template-rows:auto auto minmax(220px,1fr)}#bossScreen .boss-stage{min-height:220px!important}#bossScreen .boss-question{padding:14px!important}#bossScreen .boss-question .q-text{font-size:14px!important;margin-bottom:10px!important}}
+</style>
+
 </head>
 <body>
 
@@ -2218,8 +2434,14 @@ function createModel3D(opts) {
       if (!this.renderer || !this.camera) return;
       const stage = document.getElementById(this._stageId);
       if (!stage) return;
-      const w = Math.max(1, stage.clientWidth);
-      const h = Math.max(1, stage.clientHeight);
+      const canvas = document.getElementById(this._canvasId);
+      const w = Math.max(1, this.isPet && canvas ? canvas.clientWidth : stage.clientWidth);
+      const h = Math.max(1, this.isPet && canvas ? canvas.clientHeight : stage.clientHeight);
+      if (this.isPet && canvas) {
+        canvas.style.display = "block";
+        canvas.style.visibility = "visible";
+        canvas.style.opacity = "1";
+      }
       this.renderer.setSize(w, h, false);
       this.camera.aspect = w / h;
       this.camera.updateProjectionMatrix();
@@ -2368,12 +2590,14 @@ function createModel3D(opts) {
       return {
         idle(t) {
           if (self.isPet) {
-            const wave = Math.sin(t * 2.5) * 0.35;
-            self.rotateBone('rightUpperArm', 0, 0, -1.2 - wave * 0.6);
-            self.rotateBone('rightLowerArm', 0, 0, -0.3 - wave * 0.5);
-            self.rotateBone('leftUpperArm', 0, 0, 1.2 + wave * 0.6);
-            self.rotateBone('leftLowerArm', 0, 0, 0.3 + wave * 0.5);
-            self.rotateBone('head', 0, Math.sin(t * 1.2) * 0.1, 0);
+            const breath = Math.sin(t * 1.35) * 0.018;
+            const sway = Math.sin(t * 0.65) * 0.018;
+            self.moveBone('spine', 0, breath, 0);
+            self.rotateBone('rightUpperArm', 0, 0, -0.08 - sway * 0.25);
+            self.rotateBone('rightLowerArm', 0, 0, -0.03);
+            self.rotateBone('leftUpperArm', 0, 0, 0.08 + sway * 0.25);
+            self.rotateBone('leftLowerArm', 0, 0, 0.03);
+            self.rotateBone('head', Math.sin(t * 0.7) * 0.018, Math.sin(t * 0.45) * 0.025, 0);
             if (self.isVRM && self.currentVRM && self.currentVRM.expressionManager) {
               const blinkPhase = (t * 0.5) % 1;
               const blink = blinkPhase < 0.06 ? 1 : (blinkPhase < 0.12 ? 1 - (blinkPhase - 0.06) * 16.6 : 0);
@@ -2418,15 +2642,19 @@ function createModel3D(opts) {
           self.rotateBone('rightUpperArm', 0, 0, -1.2);
         },
         bow(t) {
-          const c = (t % 4) / 4;
+          const phase = (t % 3.2) / 3.2;
           let bend = 0;
-          if (c < 0.25) bend = c * 4 * 0.7;
-          else if (c < 0.5) bend = 0.7;
-          else if (c < 0.75) bend = 0.7 - (c - 0.5) * 4 * 0.7;
-          self.rotateBone('spine', -bend * 0.5, 0, 0);
-          self.rotateBone('chest', -bend * 0.4, 0, 0);
-          self.rotateBone('neck', -bend * 0.2, 0, 0);
-          self.rotateBone('head', -bend * 0.15, 0, 0);
+          if (phase < 0.22) bend = (phase / 0.22) * 0.48;
+          else if (phase < 0.48) bend = 0.48;
+          else if (phase < 0.72) bend = (1 - (phase - 0.48) / 0.24) * 0.48;
+          self.rotateBone('spine', -bend * 0.62, 0, 0);
+          self.rotateBone('chest', -bend * 0.22, 0, 0);
+          self.rotateBone('neck', -bend * 0.16, 0, 0);
+          self.rotateBone('head', -bend * 0.30, 0, 0);
+          self.rotateBone('leftUpperArm', 0.02, 0, 0.10);
+          self.rotateBone('rightUpperArm', -0.02, 0, -0.10);
+          self.rotateBone('leftLowerArm', 0, 0, 0.08);
+          self.rotateBone('rightLowerArm', 0, 0, -0.08);
         },
         dance(t) {
           const beat = Math.sin(t * 4), beat2 = Math.sin(t * 2);
@@ -2477,15 +2705,33 @@ function createModel3D(opts) {
           self.applyDamage(hit, 1, 0, 0);
         },
         shock(t) {
-          const intensity = Math.max(0, 1 - t / 3);
-          const s = Math.sin(t * 40) * 0.15 * intensity;
-          self.applyDamage(intensity * 0.5, 0.3, 0.6, 1);
+          const intensity = Math.max(0, 1 - t / 1.65);
+          const s = Math.sin(t * 58) * 0.075 * intensity;
+          const root = self.isVRM ? (self.currentVRM && self.currentVRM.scene) : self.currentGLB;
+          self.rotateBone('spine', s * 1.8, 0, s);
+          self.rotateBone('head', Math.sin(t * 44) * 0.11 * intensity, Math.sin(t * 37) * 0.13 * intensity, s * 0.7);
+          self.rotateBone('leftUpperArm', Math.sin(t * 48) * 0.20 * intensity, 0, 0.28 * intensity);
+          self.rotateBone('rightUpperArm', Math.cos(t * 48) * 0.20 * intensity, 0, -0.28 * intensity);
+          if (root) { root.position.x = Math.sin(t * 52) * 0.035 * intensity; root.rotation.y += Math.sin(t * 45) * 0.008 * intensity; }
+          self.applyDamage(intensity * 0.75, 0.3, 0.6, 1);
         },
         dead(t) {
-          const d = Math.min(t / 2, 1);
+          const d = Math.min(t / 2.2, 1);
           const fall = 1 - Math.pow(1 - d, 3);
-          self.rotateBone('spine', -fall * 0.3, 0, 0);
-          self.applyDamage(fall * 0.4, 1, 0, 0);
+          self.rotateBone('spine', -fall * 0.95, 0, 0);
+          self.rotateBone('hips', -fall * 0.48, 0, 0);
+          self.rotateBone('leftUpperLeg', fall * 0.42, 0, 0);
+          self.rotateBone('rightUpperLeg', fall * 0.42, 0, 0);
+          self.rotateBone('leftLowerLeg', -fall * 0.55, 0, 0);
+          self.rotateBone('rightLowerLeg', -fall * 0.55, 0, 0);
+          self.rotateBone('leftUpperArm', 0, 0, fall * 0.35);
+          self.rotateBone('rightUpperArm', 0, 0, -fall * 0.35);
+          const root = self.isVRM ? (self.currentVRM && self.currentVRM.scene) : self.currentGLB;
+          if (root) {
+            root.rotation.z = -fall * 0.62;
+            root.position.y = -fall * 0.22;
+          }
+          self.applyDamage(fall * 0.55, 1, 0, 0);
         },
         explode(t) {
           const root = self.isVRM ? self.currentVRM.scene : self.currentGLB;
@@ -2663,7 +2909,7 @@ function createModel3D(opts) {
       if (size.y === 0 || !isFinite(size.y)) return;
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
       const dist = this.isPet
-        ? Math.max(size.y * 1.15, size.z * 1.5, maxDim * 1.2)
+        ? Math.max(size.y * 1.9, size.z * 2.2, maxDim * 2.0)
         : Math.max(size.y * 1.55, size.z * 2.3, maxDim * 1.6);
       this.camera.position.set(center.x, center.y + size.y * 0.05, center.z + dist);
       if (this.controls) {
@@ -2693,7 +2939,7 @@ function createModel3D(opts) {
         if (root) {
           root.position.x = 0;
           root.position.z = 0;
-          root.position.y = Math.sin(this.time * 1.4) * 0.012;
+          root.position.y = 0;
           root.rotation.z = 0;
         }
       } else if (hasModel) {
@@ -2740,6 +2986,16 @@ function createModel3D(opts) {
     reset() {
       this.currentFx = ""; this.currentAnim = "idle"; this.time = 0; this.fxTime = 0;
       this._bossExploded = false; this.clearDebris(); this.resetPose();
+      const root = this.isVRM ? (this.currentVRM && this.currentVRM.scene) : this.currentGLB;
+      if (root) {
+        root.rotation.x = 0;
+        root.rotation.z = 0;
+        root.position.x = 0;
+        root.position.y = 0;
+        root.position.z = 0;
+        root.visible = true;
+        this.setOpacity(1);
+      }
       this._lastActionTime = this.time;
     },
     faceCamera() {
@@ -4347,6 +4603,151 @@ window.addEventListener("load", () => setTimeout(bootRPGModels, 100), { once: tr
 if (document.readyState === "complete") setTimeout(bootRPGModels, 100);
 
 Logger.push("ok", "RPG v23 ready");
+
+(function(){
+  const vfxPalette = {
+    idle:{c:"#a78bfa",title:"AURA",n:20,kind:"aura"},
+    wave:{c:"#67e8f9",title:"HELLO!",n:24,kind:"spark"},
+    nod:{c:"#93c5fd",title:"YEAH!",n:18,kind:"spark"},
+    dance:{c:"#f0abfc",title:"DANCE!",n:34,kind:"spark"},
+    cheer:{c:"#fbbf24",title:"LET'S GO!",n:38,kind:"burst"},
+    laugh:{c:"#fde047",title:"HAHA!",n:26,kind:"spark"},
+    angry:{c:"#fb3d5d",title:"RAGE!",n:42,kind:"burst"},
+    hurt:{c:"#fb7185",title:"HIT!",n:28,kind:"burst"},
+    shock:{c:"#67e8f9",title:"SHOCK!",n:44,kind:"lightning"},
+    dead:{c:"#cbd5e1",title:"DOWN",n:42,kind:"fall"},
+    explode:{c:"#fb923c",title:"BOOM!",n:64,kind:"burst"},
+    fade:{c:"#c4b5fd",title:"VANISH",n:30,kind:"fall"},
+    freeze:{c:"#7dd3fc",title:"FREEZE!",n:38,kind:"ice"},
+    burn:{c:"#fb923c",title:"BURN!",n:48,kind:"burst"}
+  };
+  function ensureLayer(id, parent){
+    let el=document.getElementById(id);
+    if(!el){el=document.createElement("div");el.id=id;el.className=id==="emoteVfxLayer"?"":"boss-vfx-layer";parent.appendChild(el);}
+    return el;
+  }
+  function burst(layer, cfg, count, title){
+    const rect=layer.getBoundingClientRect();
+    if(!rect.width||!rect.height)return;
+    const x=cfg.x??50, y=cfg.y??58, c=cfg.c||"#fff";
+    const aura=document.createElement("div");
+    aura.className="vfx-aura";aura.style.setProperty("--x",x+"%");aura.style.setProperty("--y",y+"%");aura.style.setProperty("--c",c);aura.style.setProperty("--size",Math.min(rect.width*.52,260)+"px");layer.appendChild(aura);
+    const ring=document.createElement("div");ring.className="vfx-ring";ring.style.setProperty("--x",x+"%");ring.style.setProperty("--y",y+"%");ring.style.setProperty("--c",c);layer.appendChild(ring);
+    const flash=document.createElement("div");flash.className="vfx-flash";flash.style.setProperty("--c",c+"55");layer.appendChild(flash);
+    for(let i=0;i<count;i++){
+      const p=document.createElement("i");
+      p.className="vfx-particle"+(Math.random()>.55?" streak":"");
+      const angle=Math.random()*Math.PI*2;
+      const radius=(cfg.kind==="fall"?25:45)+Math.random()*Math.min(rect.width,rect.height)*.34;
+      p.style.setProperty("--x",x+"%");p.style.setProperty("--y",y+"%");
+      p.style.setProperty("--dx",Math.cos(angle)*radius+"px");p.style.setProperty("--dy",(Math.sin(angle)*radius-(cfg.kind==="fall"?-40:20))+"px");
+      p.style.setProperty("--s",(3+Math.random()*8)+"px");p.style.setProperty("--c",c);
+      p.style.setProperty("--dur",(.55+Math.random()*1.05)+"s");p.style.setProperty("--rot",(Math.random()*720-360)+"deg");
+      if(cfg.kind==="fall")p.style.setProperty("--dy",(30+Math.random()*130)+"px");
+      if(cfg.kind==="lightning")p.style.setProperty("--shape","2px");
+      if(cfg.kind==="ice")p.style.setProperty("--shape","2px");
+      layer.appendChild(p);
+      setTimeout(()=>p.remove(),1900);
+    }
+    if(title){
+      const t=document.createElement("div");t.className="vfx-title";t.textContent=title;t.style.setProperty("--c",c);layer.appendChild(t);setTimeout(()=>t.remove(),1200);
+    }
+    setTimeout(()=>{aura.remove();ring.remove();flash.remove();},1300);
+  }
+  window.triggerEmoteVfx=function(id){
+    const cfg=vfxPalette[id]||{c:"#a78bfa",title:String(id).toUpperCase(),n:24,kind:"spark"};
+    const stage=document.getElementById("stageArea");if(!stage)return;
+    const layer=ensureLayer("emoteVfxLayer",stage);
+    burst(layer,cfg,cfg.n,cfg.title);
+    stage.classList.remove("emote-vfx-pulse");void stage.offsetWidth;stage.classList.add("emote-vfx-pulse");
+  };
+  window.triggerBossVfx=function(kind){
+    const stage=document.querySelector(".boss-stage");
+    const screen=document.getElementById("bossScreen");
+    if(!stage||!screen)return;
+    const layer=ensureLayer("bossVfxLayer",stage);
+    const configs={
+      hit:{c:"#ff3158",title:"IMPACT!",n:24,kind:"impact",x:64,y:48},
+      crit:{c:"#ffe45e",title:"CRITICAL BREAK!",n:76,kind:"lightning",x:64,y:46},
+      counter:{c:"#ff4d6d",title:"COUNTER!",n:52,kind:"slash",x:34,y:55},
+      victory:{c:"#fff0a6",title:"VICTORY!",n:88,kind:"burst",x:50,y:48},
+      death:{c:"#b7d9ff",title:"K.O.",n:62,kind:"fall",x:34,y:55}
+    };
+    const cfg=configs[kind]||configs.hit;
+    burst(layer,cfg,cfg.n,cfg.title);
+    const impact=document.createElement("div");
+    impact.className="special-impact impact-"+kind;
+    impact.style.setProperty("--impact-color",cfg.c);
+    impact.style.setProperty("--ix",cfg.x+"%");
+    impact.style.setProperty("--iy",cfg.y+"%");
+    layer.appendChild(impact);
+    if(kind==="crit"||kind==="counter"){
+      for(let j=0;j<3;j++){
+        const slash=document.createElement("div");
+        slash.className="special-slash slash-"+j;
+        slash.style.setProperty("--impact-color",cfg.c);
+        slash.style.setProperty("--ix",(cfg.x+(Math.random()*12-6))+"%");
+        slash.style.setProperty("--iy",(cfg.y+(Math.random()*12-6))+"%");
+        layer.appendChild(slash);
+        setTimeout(()=>slash.remove(),650);
+      }
+    }
+    screen.classList.remove("battle-hit","battle-crit","battle-counter","battle-victory","battle-death");
+    void screen.offsetWidth;
+    screen.classList.add(kind==="crit"?"battle-crit":kind==="counter"?"battle-counter":kind==="victory"?"battle-victory":kind==="death"?"battle-death":"battle-hit");
+    setTimeout(()=>{screen.classList.remove("battle-hit","battle-crit","battle-counter","battle-victory","battle-death");impact.remove();},900);
+  };
+  const originalPlay=EmoteMenu.play.bind(EmoteMenu);
+  EmoteMenu.play=function(e){
+    originalPlay(e);
+    if(e&&e.id)window.triggerEmoteVfx(e.id);
+  };
+  const originalAnswer=answerBoss;
+  answerBoss=function(idx,btn){
+    const beforeBoss=bossHp, beforePlayer=playerHp;
+    originalAnswer(idx,btn);
+    if(bossHp<beforeBoss){
+      const isCrit=!!(btn&&document.getElementById("bossLog")&&document.getElementById("bossLog").textContent.includes("CRIT!"));
+      window.triggerBossVfx(isCrit?"crit":"hit");
+    }
+    if(playerHp<beforePlayer){
+      window.triggerBossVfx("counter");
+      if(playerHp<=0){
+        const figure=document.getElementById("bossFigure");
+        if(figure)figure.classList.add("player-dead");
+        if(hasModel())Model3D.setFx("dead");
+        window.triggerBossVfx("death");
+      }else if(hasModel())Model3D.setFx("hurt");
+    }
+  };
+  const oldShowFinisher=showFinisherEffect;
+  showFinisherEffect=function(success){
+    oldShowFinisher(success);
+    window.triggerBossVfx(success?"crit":"counter");
+    if(!success){
+      const figure=document.getElementById("bossFigure");
+      if(figure)figure.classList.add("player-dead");
+    }
+  };
+  const oldCloseWin=window.closeBossWin;
+  if(typeof oldCloseWin==="function")window.closeBossWin=function(){const f=document.getElementById("bossFigure");if(f)f.classList.remove("player-dead");oldCloseWin();};
+  const oldCloseLose=window.closeBossLose;
+  if(typeof oldCloseLose==="function")window.closeBossLose=function(){const f=document.getElementById("bossFigure");if(f)f.classList.remove("player-dead");if(hasModel())Model3D.reset();oldCloseLose();};
+  const oldShowPetLabel=window.showPetLabel;
+  window.showPetLabel=function(name){
+    if(typeof oldShowPetLabel==="function")oldShowPetLabel(name);
+    const c=document.getElementById("petCanvas");
+    if(c){c.style.display="block";c.style.visibility="visible";c.style.opacity="1";}
+    requestAnimationFrame(()=>{if(Model3DPet){Model3DPet.resize();if(Model3DPet.currentVRM||Model3DPet.currentGLB)Model3DPet.fitCamera(Model3DPet.currentVRM?Model3DPet.currentVRM.scene:Model3DPet.currentGLB);}});
+  };
+  const oldHidePetLabel=window.hidePetLabel;
+  window.hidePetLabel=function(){
+    if(typeof oldHidePetLabel==="function")oldHidePetLabel();
+    const c=document.getElementById("petCanvas");if(c)c.style.display="none";
+  };
+  window.addEventListener("resize",()=>{setTimeout(()=>{if(Model3DPet&&(Model3DPet.currentVRM||Model3DPet.currentGLB))Model3DPet.resize();},80);});
+})();
+
 </script>
 
 </body>
