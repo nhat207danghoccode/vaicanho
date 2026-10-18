@@ -6166,7 +6166,9 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
      root.position.x+=worldX*speed;
      root.position.z+=worldZ*speed;
      root.position.x=Math.max(-42,Math.min(42,root.position.x));root.position.z=Math.max(-100,Math.min(20,root.position.z));
-     root.rotation.y=(M.isVRM&&M.vrmIsV0?Math.PI:0)+Math.atan2(worldX,-worldZ);
+     // This model faces the opposite local axis; add PI so its front follows travel.
+     // Keep the angle tied to the actual world-space movement vector.
+     root.rotation.y=Math.atan2(worldX,worldZ)+Math.PI;
      M.currentAnim='walk_inplace';M.currentFx='';
      if(M.restQuat&&Object.keys(M.restQuat).length&&M.animLib.walk_inplace)M.animLib.walk_inplace(worldTime*(runFast?1.65:1));
    }else{
