@@ -2372,42 +2372,37 @@ async function loadQuestionFiles(){
 
     try{
         const subject=SUBJECTS[loadingSubject];
-        const response=await fetch(subject.ds);
+        const response=await fetch(subject.ds, {cache:"force-cache"});
+        if(!response.ok) throw new Error("HTTP "+response.status);
         const text=await response.text();
-        parsedQuestionsDS=parseRawText(text);
-        parsedQuestionsDS.forEach((question,index)=>{
-            question.id="q_"+(index+1);
-        });
-
-        const corrections=await window.getFirebaseCorrections(loadingSubject);
         if(loadToken!==subjectLoadToken || currentSubject!==loadingSubject)return;
-
-        window.firebaseCorrections=corrections||{};
-        lastCorrectionsJSON = JSON.stringify(corrections || {});
-
+        parsedQuestionsDS=parseRawText(text);
+        parsedQuestionsDS.forEach((question,index)=>{ question.id="q_"+(index+1); });
+        window.firebaseCorrections={};
+        lastCorrectionsJSON="{}";
         document.getElementById("subjectTitle").innerText="🩺 Môn "+subject.name;
-
-        document.getElementById("cntDS").innerText = parsedQuestionsDS.length;
-        document.getElementById("cntTF").innerText = parsedQuestionsDS.filter(q=>q.arr.length===2).length;
-        document.getElementById("cntMC").innerText = parsedQuestionsDS.filter(q=>q.arr.length>=3).length;
-
+        document.getElementById("cntDS").innerText=parsedQuestionsDS.length;
+        document.getElementById("cntTF").innerText=parsedQuestionsDS.filter(q=>q.arr.length===2).length;
+        document.getElementById("cntMC").innerText=parsedQuestionsDS.filter(q=>q.arr.length>=3).length;
+        clearAllContainers();
+        currentTab="";
+        switchTab("DS");
+        Promise.resolve(window.getFirebaseCorrections(loadingSubject)).then(corrections=>{
+            if(loadToken!==subjectLoadToken || currentSubject!==loadingSubject)return;
+            window.firebaseCorrections=corrections||{};
+            lastCorrectionsJSON=JSON.stringify(corrections||{});
+            refreshCorrectnessInPlace();
+        }).catch(()=>{});
         window.listenFirebaseCorrections(loadingSubject, corrections=>{
             if(loadToken!==subjectLoadToken || currentSubject!==loadingSubject)return;
-            const json = JSON.stringify(corrections || {});
-            if(json === lastCorrectionsJSON) return;
-            lastCorrectionsJSON = json;
+            const json=JSON.stringify(corrections||{});
+            if(json===lastCorrectionsJSON)return;
+            lastCorrectionsJSON=json;
             window.firebaseCorrections=corrections||{};
-            if(currentTab==="DS" || currentTab==="TF" || currentTab==="MC"){
-                refreshCorrectnessInPlace();
-            }
+            refreshCorrectnessInPlace();
         });
-
-        clearAllContainers();
-        currentTab = "";
-        switchTab("DS");
     }catch(err){
-        alert("Không tìm thấy file: "+SUBJECTS[loadingSubject].ds);
-        console.log(err);
+        if(loadToken===subjectLoadToken) alert("Không tìm thấy file: "+SUBJECTS[loadingSubject].ds);
     }
 }
 
@@ -2468,23 +2463,9 @@ document.querySelectorAll(".chip").forEach(chip => {
 });
 
 function switchTab(type){
-    if(currentTab === type && type !== "EXAM"){
-        const c = getActiveContainer();
-        if(c && c.children.length > 0){
-            document.querySelectorAll(".side-btn").forEach(b=>b.classList.remove("activeTab"));
-            const btn = document.querySelector(`.side-btn[data-tab="${type}"]`);
-            if(btn) btn.classList.add("activeTab");
-            return;
-        }
-    }
-
-    const isSameTab = (currentTab === type);
-
+    const previousTab=currentTab;
     currentTab=type;
-    document.querySelectorAll(".side-btn").forEach(b=>b.classList.remove("activeTab"));
-    const btn = document.querySelector(`.side-btn[data-tab="${type}"]`);
-    if(btn) btn.classList.add("activeTab");
-
+    document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("activeTab",b.dataset.tab===type));
     document.getElementById("noteBox").classList.add("hidden");
     document.getElementById("createBox").classList.add("hidden");
     document.getElementById("examTop").classList.add("hidden");
@@ -2496,6 +2477,7 @@ function switchTab(type){
         document.getElementById("noteBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
+        clearInterval(examInterval);
         loadNote();
         return;
     }
@@ -2503,9 +2485,9 @@ function switchTab(type){
         document.getElementById("createBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
+        clearInterval(examInterval);
         return;
     }
-
     if(type==="EXAM"){
         document.getElementById("examTop").classList.remove("hidden");
         createExam();
@@ -2517,19 +2499,20 @@ function switchTab(type){
     }
 
     clearInterval(examInterval);
-
-    if(!isSameTab || getActiveContainer().children.length === 0){
-        clearAllContainers();
+    const target=getActiveContainer();
+    if(!target.children.length){
         buildQuizHTML();
-        buildNavPanel();
-    } else {
-        cachedQuestionNodes = Array.from(getActiveContainer().children).filter(el => el.classList.contains("q-item"));
-        originalOrder = [...cachedQuestionNodes];
-        buildNavPanel();
+    }else{
+        cachedQuestionNodes=Array.from(target.children).filter(el=>el.classList.contains("q-item"));
+        originalOrder=[...cachedQuestionNodes];
+        document.getElementById("totalQuestion").innerText=cachedQuestionNodes.length;
+        correctCount=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&!q.classList.contains("wrong-question")).length;
+        document.getElementById("correctAnswer").innerText=correctCount;
+        updateTopProgress();
     }
+    buildNavPanel();
     showActiveContainer();
 }
-
 function saveNote(){
     localStorage.setItem("nhat_note", document.getElementById("noteArea").value);
     showToast("Đã lưu ghi chú!");
