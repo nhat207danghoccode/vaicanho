@@ -6,6 +6,7 @@
 <title>Trắc nghiệm • Nguyễn Phi Nhật</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -1591,6 +1592,113 @@
 
   .hidden{ display: none !important; }
 .cg-class.selected{background:linear-gradient(135deg,#a3e635,#22d3ee)!important;color:#10131b!important;border-color:#d9f99d!important;box-shadow:0 0 28px #a3e63566!important}.cg-class:disabled{cursor:not-allowed;opacity:.65}
+
+#statsBox{display:none}
+#statsBox.on{display:block}
+.st-wrap{display:flex;flex-direction:column;gap:14px}
+.st-tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;width:fit-content;box-shadow:var(--shadow-sm)}
+.st-tab{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;background:transparent;color:var(--txt-2);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:.16s}
+.st-tab:hover{background:var(--line-soft);color:var(--txt)}
+.st-tab.on{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;box-shadow:0 6px 14px -6px var(--c1)}
+.st-tab.on.green{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 6px 14px -6px #10b981}
+.st-tab.on.red{background:linear-gradient(135deg,#dc2626,#ef4444);box-shadow:0 6px 14px -6px #ef4444}
+.st-tab.on.amber{background:linear-gradient(135deg,#d97706,#f59e0b);box-shadow:0 6px 14px -6px #f59e0b}
+.st-tab svg{width:14px;height:14px}
+.st-tab .st-badge{background:rgba(255,255,255,.25);padding:1px 7px;border-radius:999px;font-size:10.5px;font-weight:800}
+.st-tab:not(.on) .st-badge{background:var(--line-soft);color:var(--txt-dim)}
+.st-tab:not(.on).green .st-badge{background:var(--green-soft);color:#047857}
+.st-tab:not(.on).red .st-badge{background:var(--red-soft);color:#b91c1c}
+.st-tab:not(.on).amber .st-badge{background:var(--amber-soft);color:#b45309}
+
+.st-view{display:none}
+.st-view.on{display:block;animation:stFade .25s ease}
+@keyframes stFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.st-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px}
+.st-card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-sm);overflow:hidden;transition:.2s}
+.st-card::before{content:"";position:absolute;inset:0 auto auto 0;height:3px;width:100%;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.st-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.st-card.green::before{background:linear-gradient(90deg,#10b981,#34d399)}
+.st-card.red::before{background:linear-gradient(90deg,#ef4444,#f87171)}
+.st-card.amber::before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.st-card.purple::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.st-card .st-ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--c1-soft);color:var(--c1);margin-bottom:10px}
+.st-card .st-ico svg{width:18px;height:18px}
+.st-card.green .st-ico{background:var(--green-soft);color:#059669}
+.st-card.red .st-ico{background:var(--red-soft);color:#b91c1c}
+.st-card.amber .st-ico{background:var(--amber-soft);color:#b45309}
+.st-card.purple .st-ico{background:var(--c1-soft);color:var(--c1)}
+.st-label{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:2px}
+.st-value{font-size:22px;font-weight:900;letter-spacing:-.02em;line-height:1.15;color:var(--txt)}
+.st-detail{font-size:11.5px;color:var(--txt-2);margin-top:4px;font-weight:500}
+.st-trend{display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:11px;padding:2px 8px;border-radius:999px;margin-top:6px}
+.st-trend svg{width:11px;height:11px}
+.st-trend.up{background:var(--green-soft);color:#047857}
+.st-trend.down{background:var(--red-soft);color:#b91c1c}
+.st-trend.flat{background:var(--amber-soft);color:#b45309}
+
+.st-split{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:780px){.st-split{grid-template-columns:1fr}}
+.st-panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow-sm)}
+.st-panel h3{margin:0 0 14px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:8px;color:var(--txt)}
+.st-panel h3 .st-ico{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--c1-soft);color:var(--c1)}
+.st-panel h3 .st-ico svg{width:15px;height:15px}
+
+.st-chart-wrap{position:relative;height:230px;display:grid;place-items:center}
+.st-chart-wrap canvas{position:relative;z-index:1}
+.st-glow{position:absolute;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,var(--c1-soft) 0%,transparent 70%);filter:blur(28px);opacity:.85;z-index:0}
+
+.st-insight{background:linear-gradient(180deg,var(--surface-2),#fff);border:1px solid var(--line);border-radius:12px;padding:11px 14px;border-left:3px solid var(--c1);margin-bottom:8px}
+.st-insight.green{border-left-color:var(--green)}
+.st-insight.red{border-left-color:var(--red)}
+.st-insight.amber{border-left-color:var(--amber)}
+.st-insight .st-ih{display:flex;align-items:center;gap:6px;font-weight:800;font-size:11.5px;margin-bottom:4px;color:var(--txt)}
+.st-insight .st-ih svg{width:13px;height:13px;flex-shrink:0}
+.st-insight p{margin:2px 0;font-size:11.5px;color:var(--txt-2);line-height:1.5}
+.st-insight p b{color:var(--txt)}
+.st-insight .tip{font-size:10.5px;color:var(--txt-dim);font-style:italic}
+
+.st-rank{display:flex;flex-direction:column;gap:7px}
+.st-rank-row{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:10px 12px;transition:.15s}
+.st-rank-row:hover{background:var(--c1-soft);border-color:var(--c1-line)}
+.st-rank-row.top{background:linear-gradient(90deg,#fffbeb,#fff);border-color:var(--amber-line)}
+.st-rank-num{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:12px;background:var(--c1-soft);color:var(--c1);flex-shrink:0}
+.st-rank-row.top .st-rank-num{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff}
+.st-rank-name{font-weight:700;font-size:11.5px;min-width:90px;color:var(--txt);display:flex;align-items:center;gap:6px}
+.st-rank-name .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.st-rank-name .dot.ok{background:var(--green)}
+.st-rank-name .dot.bad{background:var(--red)}
+.st-rank-bar{flex:1;min-width:80px}
+.st-rank-track{height:7px;background:var(--line-soft);border-radius:99px;overflow:hidden}
+.st-rank-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.st-rank-pct{font-weight:900;font-size:12px;min-width:44px;text-align:right}
+.st-rank-detail{font-size:10.5px;color:var(--txt-dim);font-weight:600;min-width:60px;text-align:right}
+
+.st-list{display:flex;flex-direction:column;gap:6px;max-height:460px;overflow-y:auto;padding-right:3px}
+.st-list::-webkit-scrollbar{width:5px}
+.st-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.st-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);padding:10px 13px;transition:.15s}
+.st-row:hover{border-color:var(--c1-line);background:var(--c1-soft)}
+.st-row.done{border-left:3px solid var(--green)}
+.st-row.pending{border-left:3px solid var(--amber)}
+.st-row-status{display:inline-flex;align-items:center;gap:4px;font-weight:800;font-size:10.5px;padding:3px 9px;border-radius:999px;flex-shrink:0}
+.st-row-status svg{width:11px;height:11px}
+.st-row-status.done{background:var(--green-soft);color:#047857}
+.st-row-status.pending{background:var(--amber-soft);color:#b45309}
+.st-row-score{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12px;color:var(--txt)}
+.st-row-score .dot{width:6px;height:6px;border-radius:50%}
+.st-row-score .dot.g{background:var(--green)}
+.st-row-score .dot.r{background:var(--red)}
+.st-row-pct{font-weight:900;font-size:12px;padding:3px 9px;border-radius:999px}
+.st-row-pct.hi{background:var(--green-soft);color:#047857}
+.st-row-pct.mid{background:var(--amber-soft);color:#b45309}
+.st-row-pct.lo{background:var(--red-soft);color:#b91c1c}
+.st-row-date{color:var(--txt-dim);font-size:10.5px;font-weight:600;margin-left:auto}
+
+.st-empty{color:var(--txt-dim);text-align:center;padding:22px;font-style:italic;font-size:12px}
+.st-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.st-count{background:var(--c1-soft);color:var(--c1);font-weight:800;font-size:10.5px;padding:4px 11px;border-radius:999px}
+@media(max-width:600px){.st-tabs{width:100%;flex-wrap:wrap}.st-tab{flex:1;justify-content:center;padding:7px 8px;font-size:11px}.st-row-date{margin-left:0}}
 </style>
 </head>
 <body>
@@ -1746,6 +1854,13 @@
       <button class="side-btn" data-tab="CREATE" onclick="switchTab('CREATE')">
         <i class="fas fa-wand-magic-sparkles"></i> Tạo đề
       </button>
+      <button class="side-btn" data-tab="STATS" onclick="switchTab('STATS')">
+        <i class="fas fa-chart-pie"></i> Thống kê
+      </button>
+      <div class="side-group-label">Giải trí</div>
+      <button class="side-btn" onclick="openRPGGame()">
+        <i class="fas fa-gamepad"></i> Game RPG
+      </button>
     </aside>
 
     <main class="main">
@@ -1848,15 +1963,81 @@ B. Đúng"></textarea>
           <button class="qbtn" onclick="changeSubject()">
             <i class="fas fa-book-open"></i> Đổi môn
           </button>
-          <button class="qbtn primary" type="button" onclick="openRPGGame()" title="Mở game RPG">
-            <i class="fas fa-gamepad"></i> Game RPG
-          </button>
         </div>
       </div>
 
       <div id="quiz-container"></div>
       <div id="quiz-container-TF" class="hidden"></div>
       <div id="quiz-container-MC" class="hidden"></div>
+
+      <div class="panel hidden" id="statsBox">
+        <div class="st-wrap">
+          <div class="st-tabs">
+            <button class="st-tab on" data-st="all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+              Tất cả <span class="st-badge" id="stBadgeAll">0</span>
+            </button>
+            <button class="st-tab green" data-st="best">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/></svg>
+              Đúng nhất <span class="st-badge" id="stBadgeBest">0</span>
+            </button>
+            <button class="st-tab red" data-st="wrong">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              Đúng sai <span class="st-badge" id="stBadgeWrong">0</span>
+            </button>
+          </div>
+
+          <div class="st-view on" id="stViewAll">
+            <div class="st-grid" id="stStatsAll"></div>
+            <div class="st-split">
+              <div class="st-panel">
+                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg></span> Tổng hợp đúng / sai</h3>
+                <div class="st-chart-wrap"><div class="st-glow"></div><canvas id="stChartAll"></canvas></div>
+              </div>
+              <div class="st-panel">
+                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span> Đánh giá &amp; cải thiện</h3>
+                <div id="stInsightAll"></div>
+              </div>
+            </div>
+            <div class="st-panel">
+              <div class="st-head"><h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg></span> Tất cả lần làm bài</h3><span class="st-count" id="stCountAll">0 lần</span></div>
+              <div class="st-list" id="stListAll"></div>
+            </div>
+          </div>
+
+          <div class="st-view" id="stViewBest">
+            <div class="st-grid" id="stStatsBest"></div>
+            <div class="st-split">
+              <div class="st-panel">
+                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg></span> Lần đúng nhất</h3>
+                <div class="st-chart-wrap"><div class="st-glow"></div><canvas id="stChartBest"></canvas></div>
+              </div>
+              <div class="st-panel">
+                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg></span> Xếp hạng lần theo % đúng</h3>
+                <div class="st-rank" id="stRankBest"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="st-view" id="stViewWrong">
+            <div class="st-grid" id="stStatsWrong"></div>
+            <div class="st-split">
+              <div class="st-panel">
+                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg></span> Tổng hợp lần có câu sai</h3>
+                <div class="st-chart-wrap"><div class="st-glow"></div><canvas id="stChartWrong"></canvas></div>
+              </div>
+              <div class="st-panel">
+                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span> Đánh giá &amp; cải thiện</h3>
+                <div id="stInsightWrong"></div>
+              </div>
+            </div>
+            <div class="st-panel">
+              <div class="st-head"><h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg></span> Lịch sử lần có câu sai</h3><span class="st-count" id="stCountWrong">0 lần</span></div>
+              <div class="st-list" id="stListWrong"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="foot">Create @Nhat2007 <i class="fas fa-heart"></i></div>
     </main>
@@ -2471,12 +2652,14 @@ function switchTab(type){
     document.getElementById("examTop").classList.add("hidden");
     document.getElementById("infoStrip").classList.remove("hidden");
     document.getElementById("chipsRow").classList.remove("hidden");
+    document.getElementById("statsBox").classList.remove("hidden");
     resetChips();
 
     if(type==="NOTE"){
         document.getElementById("noteBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
+        document.getElementById("statsBox").classList.add("hidden");
         clearInterval(examInterval);
         loadNote();
         return;
@@ -2485,11 +2668,13 @@ function switchTab(type){
         document.getElementById("createBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
+        document.getElementById("statsBox").classList.add("hidden");
         clearInterval(examInterval);
         return;
     }
     if(type==="EXAM"){
         document.getElementById("examTop").classList.remove("hidden");
+        document.getElementById("statsBox").classList.add("hidden");
         createExam();
         startExam();
         buildQuizHTML();
@@ -2497,6 +2682,15 @@ function switchTab(type){
         showActiveContainer();
         return;
     }
+    if(type==="STATS"){
+        document.getElementById("statsBox").classList.add("on");
+        document.getElementById("infoStrip").classList.add("hidden");
+        document.getElementById("chipsRow").classList.add("hidden");
+        clearInterval(examInterval);
+        if(typeof window.renderStatsAll === "function") window.renderStatsAll();
+        return;
+    }
+    document.getElementById("statsBox").classList.remove("on");
 
     clearInterval(examInterval);
     const target=getActiveContainer();
@@ -2571,6 +2765,7 @@ async function finishExam(){
         if(q.classList.contains("wrong-question")){ wrong++; }else{ correct++; }
     });
     const score=(correct/(correct+wrong+todo||1)*10).toFixed(2);
+    if(typeof window.recordStatsSession === "function") window.recordStatsSession(correct, wrong);
     await showPopup("Kết quả thi thử",
         `Điểm: ${score}/10\nĐúng: ${correct}\nSai: ${wrong}\nChưa làm: ${todo}`,
         '<i class="fas fa-trophy" style="color:#fbbf24;"></i>');
@@ -3446,6 +3641,7 @@ function checkTestAnswers(){
     });
     const score = total ? (correct/total*10).toFixed(2) : "0.00";
     document.getElementById("testResultScore").innerHTML = `Kết quả: ${correct}/${total} đúng · Điểm: ${score}/10`;
+    if(typeof window.recordStatsSession === "function") window.recordStatsSession(correct, total - correct);
 }
 
 function resetTestQuiz(){
@@ -3518,6 +3714,231 @@ document.querySelectorAll(".side-btn").forEach(btn => {
         switchTab(t);
     });
 });
+
+window.SVGI = {
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+    x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+    target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>',
+    layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/></svg>',
+    alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L1 21h22L12 2z"/><path d="M12 9v5"/><path d="M12 17h.01"/></svg>',
+    up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>',
+    down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9l-7 7-7-7"/></svg>',
+    flat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>',
+    bulb:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>',
+    search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+    spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/></svg>',
+    checkCircle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>',
+    minusCircle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>'
+};
+
+const ST_KEY = 'nhat_stats_history_v1';
+let statsHistory = [];
+let curStTab = 'all';
+const stCharts = {all:null,best:null,wrong:null};
+
+function stLoad(){ try{ statsHistory = JSON.parse(localStorage.getItem(ST_KEY)||'[]'); }catch(e){ statsHistory=[]; } }
+function stSave(){ localStorage.setItem(ST_KEY, JSON.stringify(statsHistory)); }
+const stPct = (c,t)=> t? Math.round(c/t*100):0;
+const stTotal = s => s.correct + s.wrong;
+const stPctOf = s => stPct(s.correct, stTotal(s));
+const stIsDone = s => s.wrong === 0;
+const stSum = arr => arr.reduce((a,s)=>({correct:a.correct+s.correct,wrong:a.wrong+s.wrong}),{correct:0,wrong:0});
+const stFmtDate = iso => { try{ return new Date(iso).toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'}); }catch(e){ return iso; } };
+
+stLoad();
+
+window.recordStatsSession = function(correct, wrong){
+    if(correct + wrong === 0) return;
+    statsHistory.unshift({correct:correct, wrong:wrong, timestamp:new Date().toISOString()});
+    if(statsHistory.length > 100) statsHistory.pop();
+    stSave();
+    if(currentTab === 'STATS') window.renderStatsAll();
+};
+
+function stStatCard(o){
+    return '<div class="st-card '+o.cls+'"><div class="st-ico">'+o.icon+'</div><div class="st-label">'+o.label+'</div><div class="st-value">'+o.value+'</div><div class="st-detail">'+o.detail+'</div>'+(o.trend||'')+'</div>';
+}
+
+function stDrawChart(canvasId, correct, wrong, label){
+    const canvas = document.getElementById(canvasId);
+    if(!canvas || !window.Chart) return null;
+    const ctx = canvas.getContext('2d');
+    const gG = ctx.createLinearGradient(0,0,0,230); gG.addColorStop(0,'#34d399'); gG.addColorStop(1,'#059669');
+    const gR = ctx.createLinearGradient(0,0,0,230); gR.addColorStop(0,'#f87171'); gR.addColorStop(1,'#dc2626');
+    const has = correct+wrong > 0;
+    return new Chart(ctx,{
+        type:'doughnut',
+        data:{labels:['Đúng','Sai'],datasets:[{data:has?[correct,wrong]:[1,0],backgroundColor:has?[gG,gR]:['#cbd5e1','#fff'],borderWidth:3,borderColor:'#fff',hoverOffset:8,borderRadius:6,spacing:2}]},
+        options:{
+            responsive:true,maintainAspectRatio:false,
+            layout:{padding:6},
+            animation:{animateRotate:true,animateScale:true,duration:800,easing:'easeOutQuart'},
+            plugins:{
+                legend:{position:'bottom',labels:{font:{size:11,weight:'600'},usePointStyle:true,pointStyle:'circle',padding:12,color:'#475569'}},
+                tooltip:{backgroundColor:'rgba(15,23,42,.92)',padding:10,cornerRadius:8,titleFont:{size:12,weight:'700'},bodyFont:{size:12},callbacks:{label:c=>{const v=c.raw||0,t=correct+wrong,p=t?Math.round(v/t*100):0;return ' '+c.label+': '+v+' câu ('+p+'%)';}}}
+            },
+            cutout:'66%'
+        },
+        plugins:[{
+            id:'stCenter',
+            afterDraw(ch){
+                const meta = ch.getDatasetMeta(0); if(!meta.data||!meta.data.length) return;
+                const arc = meta.data[0]; const x=arc.x,y=arc.y;
+                const t = correct+wrong; if(!t) return;
+                const p = Math.round(correct/t*100);
+                let color,tag;
+                if(p>=85){color='#059669';tag='Xuất sắc';}
+                else if(p>=65){color='#b45309';tag='Khá tốt';}
+                else if(p>=50){color='#d97706';tag='Cần cố gắng';}
+                else {color='#b91c1c';tag='Yếu';}
+                const c2 = ch.ctx;
+                c2.save(); c2.textAlign='center'; c2.textBaseline='middle';
+                c2.fillStyle=color; c2.font='800 30px system-ui,sans-serif';
+                c2.fillText(p+'%',x,y-6);
+                c2.fillStyle='#64748b'; c2.font='600 10px system-ui,sans-serif';
+                c2.fillText(label,x,y+18);
+                c2.fillStyle=color; c2.font='700 10px system-ui,sans-serif';
+                c2.fillText(tag,x,y+33);
+                c2.restore();
+            }
+        }]
+    });
+}
+
+window.renderStatsAll = function(){
+    const totals = stSum(statsHistory);
+    const tt = totals.correct + totals.wrong;
+    const p = stPct(totals.correct, tt);
+    const doneCount = statsHistory.filter(stIsDone).length;
+    const latest = statsHistory[0], prev = statsHistory[1];
+    let trendHtml = '';
+    if(prev){
+        const lp = stPctOf(latest), pp = stPctOf(prev), d = lp-pp;
+        if(d>0) trendHtml = '<span class="st-trend up">'+SVGI.up+'Tăng '+d+'%</span>';
+        else if(d<0) trendHtml = '<span class="st-trend down">'+SVGI.down+'Giảm '+Math.abs(d)+'%</span>';
+        else trendHtml = '<span class="st-trend flat">'+SVGI.flat+'Không đổi</span>';
+    }
+    document.getElementById('stStatsAll').innerHTML =
+        stStatCard({icon:SVGI.layers,label:'Tổng số lần',value:statsHistory.length,detail:doneCount+' lần hoàn thành'})+
+        stStatCard({cls:'green',icon:SVGI.check,label:'Tổng câu đúng',value:totals.correct,detail:'trên '+tt+' câu'})+
+        stStatCard({cls:'red',icon:SVGI.x,label:'Tổng câu sai',value:totals.wrong,detail:'trên '+tt+' câu'})+
+        stStatCard({cls:'purple',icon:SVGI.target,label:'Tỷ lệ đúng',value:p+'%',detail:'trên mọi lần',trend:trendHtml});
+
+    let ins = '';
+    if(statsHistory.length === 0){
+        ins = '<div class="st-empty">Chưa có lần làm bài nào. Hãy trả lời hoặc nộp bài thi thử để bắt đầu thống kê.</div>';
+    } else {
+        if(prev){
+            const lp = stPctOf(latest), pp = stPctOf(prev), d = lp-pp;
+            if(d>0) ins += '<div class="st-insight green"><div class="st-ih">'+SVGI.up+' So với lần trước</div><p>Tăng <b>'+d+'%</b> — từ '+pp+'% lên '+lp+'%</p></div>';
+            else if(d<0) ins += '<div class="st-insight red"><div class="st-ih">'+SVGI.down+' So với lần trước</div><p>Giảm <b>'+Math.abs(d)+'%</b> — từ '+pp+'% xuống '+lp+'%</p></div>';
+            else ins += '<div class="st-insight amber"><div class="st-ih">'+SVGI.flat+' So với lần trước</div><p>Không thay đổi — vẫn <b>'+lp+'%</b></p></div>';
+        } else {
+            ins += '<div class="st-insight"><div class="st-ih">'+SVGI.spark+' Lần đầu tiên</div><p>Chưa có lần trước để so sánh.</p></div>';
+        }
+        const best = statsHistory.slice().sort((a,b)=>stPctOf(b)-stPctOf(a))[0];
+        if(best) ins += '<div class="st-insight"><div class="st-ih">'+SVGI.bulb+' Lần tốt nhất</div><p><b>'+best.correct+'/'+stTotal(best)+'</b> câu ('+stPctOf(best)+'%) — '+stFmtDate(best.timestamp)+'</p></div>';
+        const worst = statsHistory.slice().sort((a,b)=>stPctOf(a)-stPctOf(b))[0];
+        if(worst && worst.wrong > 0) ins += '<div class="st-insight red"><div class="st-ih">'+SVGI.search+' Lần cần cải thiện</div><p><b>'+worst.correct+'/'+stTotal(worst)+'</b> câu ('+stPctOf(worst)+'%) — '+stFmtDate(worst.timestamp)+'</p></div>';
+    }
+    document.getElementById('stInsightAll').innerHTML = ins;
+
+    const listAll = document.getElementById('stListAll');
+    document.getElementById('stCountAll').textContent = statsHistory.length + ' lần';
+    if(!statsHistory.length){ listAll.innerHTML = '<div class="st-empty">Chưa có dữ liệu.</div>'; }
+    else {
+        listAll.innerHTML = statsHistory.map(s=>{
+            const done = stIsDone(s); const pv = stPctOf(s);
+            const cls = pv>=85?'hi':pv>=65?'mid':'lo';
+            return '<div class="st-row '+(done?'done':'pending')+'"><span class="st-row-status '+(done?'done':'pending')+'">'+(done?SVGI.checkCircle+' Hoàn thành':SVGI.minusCircle+' Có câu sai')+'</span><span class="st-row-score"><span class="dot g"></span>'+s.correct+'<span class="dot r"></span>'+s.wrong+'</span><span class="st-row-pct '+cls+'">'+pv+'%</span><span class="st-row-date">'+stFmtDate(s.timestamp)+'</span></div>';
+        }).join('');
+    }
+
+    document.getElementById('stBadgeAll').textContent = statsHistory.length;
+    if(stCharts.all) stCharts.all.destroy();
+    stCharts.all = stDrawChart('stChartAll', totals.correct, totals.wrong, 'TỔNG ĐÚNG / SAI');
+};
+
+window.renderStatsBest = function(){
+    const sorted = statsHistory.slice().sort((a,b)=>stPctOf(b)-stPctOf(a) || b.correct-a.correct);
+    const best = sorted[0];
+    const perfect = statsHistory.filter(s=>s.correct===stTotal(s)).length;
+    const avg = statsHistory.length ? Math.round(statsHistory.reduce((a,s)=>a+stPctOf(s),0)/statsHistory.length) : 0;
+    document.getElementById('stStatsBest').innerHTML =
+        stStatCard({cls:'green',icon:SVGI.check,label:'Lần điểm cao nhất',value:best?stPctOf(best)+'%':'—',detail:best?best.correct+'/'+stTotal(best)+' câu':'Chưa có'})+
+        stStatCard({cls:'green',icon:SVGI.target,label:'Số lần đúng 100%',value:perfect,detail:'trên '+statsHistory.length+' lần'})+
+        stStatCard({cls:'purple',icon:SVGI.layers,label:'Số lần có dữ liệu',value:statsHistory.length,detail:'đã làm bài'})+
+        stStatCard({cls:'amber',icon:SVGI.bulb,label:'Điểm TB',value:avg+'%',detail:'trung bình các lần'});
+
+    const rank = document.getElementById('stRankBest');
+    if(!sorted.length){ rank.innerHTML = '<div class="st-empty">Chưa có dữ liệu.</div>'; }
+    else {
+        rank.innerHTML = sorted.map((s,i)=>{
+            const pv = stPctOf(s); const color = pv>=85?'#10b981':pv>=65?'#f59e0b':'#ef4444';
+            const top = i===0 && pv===100;
+            return '<div class="st-rank-row '+(top?'top':'')+'"><div class="st-rank-num">'+(i+1)+'</div><div class="st-rank-name"><span class="dot '+(pv===100?'ok':'bad')+'"></span>'+stFmtDate(s.timestamp)+'</div><div class="st-rank-bar"><div class="st-rank-track"><div class="st-rank-fill" style="width:'+pv+'%;background:'+color+'"></div></div></div><div class="st-rank-pct" style="color:'+color+'">'+pv+'%</div><div class="st-rank-detail">'+s.correct+'/'+stTotal(s)+'</div></div>';
+        }).join('');
+    }
+    document.getElementById('stBadgeBest').textContent = perfect;
+    if(stCharts.best) stCharts.best.destroy();
+    stCharts.best = stDrawChart('stChartBest', best?best.correct:0, best?best.wrong:0, 'LẦN TỐT NHẤT');
+};
+
+window.renderStatsWrong = function(){
+    const wrongList = statsHistory.filter(s=>s.wrong>0);
+    const totals = stSum(wrongList);
+    const tt = totals.correct + totals.wrong;
+    const p = stPct(totals.correct, tt);
+    const totalWrongAll = statsHistory.reduce((a,s)=>a+s.wrong,0);
+    document.getElementById('stStatsWrong').innerHTML =
+        stStatCard({cls:'red',icon:SVGI.x,label:'Lần có câu sai',value:wrongList.length,detail:'trên '+statsHistory.length+' lần'})+
+        stStatCard({cls:'red',icon:SVGI.alert,label:'Tổng câu sai',value:totalWrongAll,detail:'trên mọi lần'})+
+        stStatCard({cls:'amber',icon:SVGI.target,label:'Tỷ lệ đúng',value:p+'%',detail:'của các lần có sai'})+
+        stStatCard({cls:'purple',icon:SVGI.layers,label:'TB câu sai / lần',value:wrongList.length?(totalWrongAll/wrongList.length).toFixed(1):0,detail:'mỗi lần có sai'});
+
+    let ins = '';
+    if(wrongList.length){
+        const worst = wrongList.slice().sort((a,b)=>b.wrong-a.wrong)[0];
+        ins += '<div class="st-insight red"><div class="st-ih">'+SVGI.alert+' Lần sai nhiều nhất</div><p><b>'+worst.wrong+'</b> câu sai — '+stFmtDate(worst.timestamp)+'</p><p class="tip">Cần xem lại các câu sai ở lần này.</p></div>';
+        if(wrongList.length >= 2){
+            const latest = wrongList[0], prev = wrongList[1]; const d = latest.wrong - prev.wrong;
+            if(d<0) ins += '<div class="st-insight green"><div class="st-ih">'+SVGI.up+' Cải thiện</div><p>Số câu sai giảm <b>'+Math.abs(d)+'</b> so với lần có sai trước đó ('+prev.wrong+' → '+latest.wrong+').</p></div>';
+            else if(d>0) ins += '<div class="st-insight red"><div class="st-ih">'+SVGI.down+' Cần chú ý</div><p>Số câu sai tăng <b>'+d+'</b> so với lần có sai trước đó ('+prev.wrong+' → '+latest.wrong+').</p></div>';
+        }
+    } else {
+        ins = '<div class="st-empty">Không có lần nào có câu sai. Tuyệt vời!</div>';
+    }
+    document.getElementById('stInsightWrong').innerHTML = ins;
+
+    const list = document.getElementById('stListWrong');
+    document.getElementById('stCountWrong').textContent = wrongList.length + ' lần';
+    if(!wrongList.length){ list.innerHTML = '<div class="st-empty">Không có lần nào có câu sai.</div>'; }
+    else {
+        list.innerHTML = wrongList.map(s=>{
+            const pv = stPctOf(s); const cls = pv>=85?'hi':pv>=65?'mid':'lo';
+            return '<div class="st-row pending"><span class="st-row-status pending">'+SVGI.minusCircle+' Có câu sai</span><span class="st-row-score"><span class="dot g"></span>'+s.correct+'<span class="dot r"></span>'+s.wrong+'</span><span class="st-row-pct '+cls+'">'+pv+'%</span><span class="st-row-date">'+stFmtDate(s.timestamp)+'</span></div>';
+        }).join('');
+    }
+    document.getElementById('stBadgeWrong').textContent = wrongList.length;
+    if(stCharts.wrong) stCharts.wrong.destroy();
+    stCharts.wrong = stDrawChart('stChartWrong', totals.correct, totals.wrong, 'LẦN CÓ SAI');
+};
+
+document.querySelectorAll('.st-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+        document.querySelectorAll('.st-tab').forEach(t=>t.classList.remove('on'));
+        document.querySelectorAll('.st-view').forEach(v=>v.classList.remove('on'));
+        tab.classList.add('on');
+        document.getElementById('stView'+tab.dataset.st.charAt(0).toUpperCase()+tab.dataset.st.slice(1)).classList.add('on');
+        if(tab.dataset.st==='all') window.renderStatsAll();
+        else if(tab.dataset.st==='best') window.renderStatsBest();
+        else if(tab.dataset.st==='wrong') window.renderStatsWrong();
+    });
+});
+
+window.renderStatsAll();
+window.renderStatsBest();
+window.renderStatsWrong();
 </script>
 
 <script>
