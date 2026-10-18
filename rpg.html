@@ -500,6 +500,43 @@ console.log("[FB] FirebaseAPI ready");
   .hub-btn.set .ic{background:linear-gradient(135deg,#6b7280,#374151);}
   .hub-btn.shop .ic{background:linear-gradient(135deg,#ec4899,#9d174d);box-shadow:0 4px 12px -3px #ec4899;}
 
+
+/* Character wardrobe: real 3D preview inside the existing RPG, not a separate page */
+#characterSelectOverlay{z-index:190;padding:12px;background:rgba(5,3,15,.9)}
+#characterSelectOverlay .character-select-box{width:min(760px,100%);max-height:min(94dvh,900px);overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(167,139,250,.5);border-radius:22px;background:radial-gradient(ellipse at 50% 0%,rgba(91,33,182,.28),transparent 55%),linear-gradient(160deg,#100b24,#080713 72%);box-shadow:0 24px 90px rgba(0,0,0,.65),0 0 45px rgba(124,58,237,.18)}
+#characterSelectOverlay .character-select-head{display:flex;align-items:center;gap:12px;padding:15px 17px;border-bottom:1px solid rgba(167,139,250,.2)}
+#characterSelectOverlay .character-select-head .c-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#7c3aed,#ec4899);font-size:18px;color:white;box-shadow:0 0 24px rgba(124,58,237,.3)}
+#characterSelectOverlay .character-select-head h3{font-size:16px;color:#fff;font-weight:900}
+#characterSelectOverlay .character-select-head p{font-size:11px;color:#b8a9e9;margin-top:3px}
+#characterSelectOverlay .character-select-head .close{margin-left:auto}
+#characterSelectOverlay .character-select-body{padding:12px;overflow:auto;overscroll-behavior:contain}
+#characterPreviewStage{height:clamp(240px,43dvh,390px);position:relative;overflow:hidden;border:1px solid rgba(139,92,246,.35);border-radius:18px;background:radial-gradient(ellipse at 50% 72%,rgba(139,92,246,.34),transparent 42%),linear-gradient(180deg,rgba(34,22,77,.72),rgba(7,6,22,.92));touch-action:pan-y;}
+#characterPreviewStage:before{content:"";position:absolute;left:13%;right:13%;bottom:4%;height:17%;border:2px solid rgba(167,139,250,.8);border-radius:50%;box-shadow:0 0 20px rgba(139,92,246,.55),inset 0 0 20px rgba(139,92,246,.22);pointer-events:none}
+#characterPreviewCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+#characterPreviewHint{position:absolute;left:12px;right:12px;bottom:12px;text-align:center;font-size:10px;color:#d8ccff;text-shadow:0 1px 5px #090414;pointer-events:none}
+#characterPreviewStatus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;color:#d8ccff;font-size:12px;font-weight:800;pointer-events:none}
+.character-select-meta{display:flex;align-items:center;gap:10px;margin:12px 2px 10px}
+.character-select-name{font-size:16px;font-weight:900;color:#fff}
+.character-select-state{margin-left:auto;border:1px solid rgba(167,139,250,.35);border-radius:999px;padding:5px 9px;font-size:9px;font-weight:900;white-space:nowrap;color:#e9ddff;background:rgba(124,58,237,.16)}
+.character-select-price{font-size:11px;color:#fbbf24;font-weight:900;margin-top:4px}
+.character-select-arrows{display:flex;align-items:center;justify-content:center;gap:14px;margin:8px 0 12px}
+.character-select-arrow{width:42px;height:38px;border-radius:12px;border:1px solid rgba(167,139,250,.35);background:rgba(124,58,237,.16);color:#fff;font-size:15px;cursor:pointer}
+.character-select-dots{display:flex;align-items:center;justify-content:center;gap:7px}
+.character-select-dot{width:7px;height:7px;border-radius:99px;background:#43365f;border:0;padding:0;cursor:pointer}
+.character-select-dot.active{width:22px;background:linear-gradient(90deg,#8b5cf6,#ec4899);box-shadow:0 0 12px rgba(168,85,247,.6)}
+.character-select-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.character-select-action{min-height:43px;border:1px solid rgba(167,139,250,.32);border-radius:12px;color:#fff;background:rgba(124,58,237,.18);font-family:inherit;font-weight:900;font-size:12px;cursor:pointer}
+.character-select-action.primary{background:linear-gradient(135deg,#7c3aed,#c026d3);border-color:transparent;box-shadow:0 8px 22px rgba(124,58,237,.25)}
+.character-select-action.gold{background:linear-gradient(135deg,#f59e0b,#d97706);border-color:transparent;color:#1b1027}
+.character-select-action:disabled{opacity:.48;cursor:not-allowed;filter:saturate(.6)}
+.character-select-strip{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 7px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.character-select-card{position:relative;flex:0 0 100px;min-height:73px;padding:9px 7px;border:1px solid rgba(139,92,246,.23);border-radius:12px;background:rgba(255,255,255,.035);color:#d9d0f7;text-align:center;cursor:pointer;scroll-snap-align:center}
+.character-select-card.active{border-color:#c084fc;background:linear-gradient(145deg,rgba(124,58,237,.3),rgba(236,72,153,.13));box-shadow:0 0 18px rgba(124,58,237,.15)}
+.character-select-card .slot-no{font-size:10px;color:#a78bfa;font-weight:900}
+.character-select-card .slot-title{font-size:10px;font-weight:900;margin-top:6px;line-height:1.2}
+.character-select-card .slot-status{font-size:8px;margin-top:4px;color:#9d91bd}
+@media(max-width:520px){#characterSelectOverlay .character-select-box{border-radius:18px}#characterSelectOverlay .character-select-head{padding:12px}#characterSelectOverlay .character-select-body{padding:9px}#characterPreviewStage{height:clamp(220px,38dvh,330px)}.character-select-card{flex-basis:86px}#characterSelectOverlay .character-select-head h3{font-size:14px}}
+
   .overlay{
     position:fixed;inset:0;z-index:150;
     background:rgba(8,6,15,.85);backdrop-filter:blur(14px);
@@ -1784,6 +1821,55 @@ console.log("[FB] FirebaseAPI ready");
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
   }
+
+#explore3D{position:fixed;inset:0;z-index:180;display:none;flex-direction:column;overflow:hidden;background:#071019;color:#f5f8ff;font-family:var(--font);isolation:isolate}
+#explore3D.on{display:flex;animation:fadeIn .28s ease-out}
+#explore3D .explore-top{position:relative;z-index:4;display:flex;align-items:center;gap:10px;flex:0 0 auto;padding:calc(9px + var(--safe-top)) 12px 10px;background:linear-gradient(180deg,rgba(4,10,19,.98),rgba(4,10,19,.82));border-bottom:1px solid rgba(100,224,255,.2);box-shadow:0 8px 28px #0005}
+#explore3D .explore-back{width:40px;height:40px;flex-shrink:0;border:1px solid #6be7ff55;border-radius:13px;background:#0e2634;color:#dffaff;font-size:15px}
+#explore3D .explore-title{display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}
+#explore3D .explore-title strong{font:800 12px 'Orbitron',sans-serif;letter-spacing:1.2px;color:#9df3ff}
+#explore3D .explore-title span{font-size:10px;color:#a7c3d0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#explore3D .explore-level{font:800 10px 'Orbitron',sans-serif;color:#a7f3d0;border:1px solid #69f0c044;background:#0b2a27;border-radius:10px;padding:8px}
+#exploreViewport{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at 50% 20%,#244b61,#0b1c2a 52%,#071019)}
+#exploreViewport #stage3D{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;display:block;touch-action:none;cursor:grab}
+#exploreViewport::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(4,10,18,.3),transparent 25%,transparent 65%,rgba(3,9,16,.35));}
+#explore3D .explore-scene-label{position:absolute;z-index:3;top:14px;left:14px;padding:8px 11px;border:1px solid #8ceeff44;border-radius:10px;background:#071722b8;backdrop-filter:blur(10px);font:800 9px 'Orbitron',sans-serif;letter-spacing:1.2px;color:#aaf5ff;pointer-events:none}
+#explore3D .explore-scene-label small{display:block;margin-top:4px;font:700 8px var(--font);letter-spacing:1.1px;color:#b5d1dc}
+#explore3D .explore-live{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;background:#63f5bc;box-shadow:0 0 10px #63f5bc}
+#explore3D .explore-tip{position:absolute;z-index:3;top:14px;left:50%;transform:translateX(-50%);max-width:55%;padding:8px 11px;border-radius:10px;background:#071722a8;border:1px solid #fff2;color:#d9e8f0;text-align:center;font-size:10px;line-height:1.45;pointer-events:none}
+#explore3D .explore-controls{position:absolute;z-index:4;left:0;right:0;bottom:calc(36px + var(--safe-bottom));display:flex;align-items:flex-end;justify-content:space-between;padding:0 18px;pointer-events:none}
+#explore3D .explore-pad{position:relative;width:126px;height:126px;border-radius:50%;background:radial-gradient(circle,#163346d9,#071622b8 70%);border:1px solid #9deeff55;box-shadow:inset 0 0 24px #48d9ff12,0 10px 35px #0004;touch-action:none;pointer-events:auto;user-select:none}
+#explore3D .explore-pad-ring{position:absolute;inset:17px;border:1px dashed #9deeff45;border-radius:50%}
+#explore3D .explore-pad-knob{position:absolute;left:50%;top:50%;width:52px;height:52px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(145deg,#8cf2ff,#3286a7);border:2px solid #e2fcff;box-shadow:0 0 22px #47cfff66;color:#05202d;font-size:17px}
+#explore3D .explore-actions{display:flex;gap:10px;pointer-events:auto}
+#explore3D .explore-actions button{width:64px;height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border-radius:20px;border:1px solid #a6f4ff55;background:linear-gradient(145deg,#163749e8,#0a1a29ed);box-shadow:0 8px 25px #0005;color:#a8f4ff}
+#explore3D .explore-actions button i{font-size:19px}
+#explore3D .explore-actions button span{font:800 8px 'Orbitron',sans-serif;letter-spacing:1px}
+#explore3D .explore-actions button.active{background:linear-gradient(145deg,#287b77,#123d43);color:#d8fff2}
+#explore3D .emote-panel{position:absolute;right:12px;bottom:calc(112px + var(--safe-bottom));z-index:12;width:min(285px,calc(100vw - 24px));max-height:min(48dvh,350px);display:none;opacity:1;transform:none;pointer-events:auto}
+#explore3D .emote-panel.on{display:flex}
+#explore3D .emote-btn{display:none!important}
+#explore3D .explore-actions button#exploreEmoteBtn{width:56px;height:60px;border-radius:16px}
+#explore3D .emote-panel .emote-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+#explore3D .emote-panel .emote-item{min-height:58px}
+
+#explore3D .explore-bottom{position:absolute;z-index:3;left:12px;right:12px;bottom:calc(9px + var(--safe-bottom));display:flex;justify-content:space-between;gap:8px;font-size:9px;color:#b7ced8;pointer-events:none}
+#explore3D .explore-bottom span{padding:7px 9px;border-radius:9px;background:#071722b8;border:1px solid #bcefff20}
+#explore3D .explore-bottom i{color:#86eaff;margin-right:4px}
+.hub-btn.explore .ic{background:linear-gradient(135deg,#38bdf8,#0f766e);box-shadow:0 4px 12px -3px #38bdf8}
+@media(max-width:420px){#explore3D .explore-tip{top:66px;left:12px;right:12px;max-width:none;transform:none;font-size:9px}#explore3D .explore-pad{width:112px;height:112px}#explore3D .explore-pad-knob{width:48px;height:48px}#explore3D .explore-actions button{width:56px;height:62px;border-radius:17px}#explore3D .explore-controls{padding:0 13px;bottom:calc(36px + var(--safe-bottom))}}
+@media(max-height:600px) and (orientation:landscape){#explore3D .explore-top{padding-top:calc(4px + var(--safe-top));padding-bottom:4px}#explore3D .explore-back{width:34px;height:34px}#explore3D .explore-controls{bottom:calc(25px + var(--safe-bottom))}#explore3D .explore-pad{width:90px;height:90px}#explore3D .explore-pad-knob{width:42px;height:42px}#explore3D .explore-actions button{height:52px}#explore3D .explore-tip{top:8px}}
+@media(max-width:680px){
+ #bossScreen .boss-arena{grid-template-rows:auto auto minmax(245px,32vh) minmax(0,1fr);gap:7px;padding:7px 8px calc(8px + var(--safe-bottom));overflow:hidden}
+ #bossScreen .boss-stage{min-height:245px!important;height:32vh!important;max-height:360px!important}
+ #bossScreen .boss-figure{width:min(310px,76vw)!important;height:88%!important;max-height:94%!important}
+ #bossScreen .boss-question{padding:12px;overflow-y:auto;min-height:0}
+ #bossScreen .boss-question .q-text{font-size:clamp(14px,3.8vw,17px);line-height:1.5;margin-bottom:10px}
+ #bossScreen .boss-question .q-opt{font-size:clamp(12px,3.3vw,14px);min-height:44px;padding:10px 12px}
+}
+@media(max-width:380px){#bossScreen .boss-arena{grid-template-rows:auto auto minmax(225px,30vh) minmax(0,1fr)}#bossScreen .boss-stage{min-height:225px!important;height:30vh!important}#bossScreen .boss-question .q-opt{min-height:40px;padding:8px 10px}}
+@media(max-height:700px) and (max-width:680px) and (orientation:portrait){#bossScreen .boss-arena{grid-template-rows:auto auto minmax(205px,29vh) minmax(0,1fr)}#bossScreen .boss-stage{min-height:205px!important;height:29vh!important}#bossScreen .boss-top{padding-top:calc(5px + var(--safe-top));padding-bottom:5px}}
+
 </style>
 
 <style id="vfx-styles">
@@ -2002,6 +2088,120 @@ console.log("[FB] FirebaseAPI ready");
 @media(prefers-reduced-motion:reduce){.skill-flash,.skill-projectile,.skill-sigil,.skill-core,.skill-ring,.skill-slash,.skill-bolt,.skill-shard,.skill-particle,.skill-title,.skill-cutin,#bossScreen .boss-stage.skill-shake,#bossScreen .boss-stage.skill-shake-heavy,#bossScreen .boss-figure.skill-target-hit,#bossScreen .boss-figure.skill-target-critical,#bossScreen .boss-figure.skill-target-ultimate{animation-duration:.01ms!important;}}
 </style>
 
+
+<style id="lobby-image-integration-camera-fix">
+#stageArea {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 40%, rgba(124,58,237,.24) 0%, transparent 65%),
+    linear-gradient(180deg, #0f0b1a 0%, #161225 50%, #0f0b1a 100%) !important;
+}
+#stageArea::before {
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,rgba(7,5,18,.16),transparent 25%,transparent 72%,rgba(7,5,18,.30)),
+             linear-gradient(0deg,rgba(8,6,15,.36),transparent 35%,rgba(8,6,15,.12));
+}
+#stage3D {z-index:3!important;background:transparent!important}
+#petCanvas {z-index:4!important;background:transparent!important}
+#stageArea .floor-grid {opacity:.42}
+.lobby-event-cards {
+  position:absolute;right:62px;top:16px;z-index:8;width:min(190px,27%);
+  display:flex;flex-direction:column;gap:8px;pointer-events:auto;
+}
+.lobby-event {
+  min-height:68px;border:1px solid rgba(160,210,255,.65);border-radius:13px;
+  overflow:hidden;position:relative;text-align:left;padding:9px 10px;
+  color:#fff;font-family:var(--font);cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,0,0,.38),inset 0 0 18px rgba(255,255,255,.08);
+  background-size:cover;background-position:center;
+}
+.lobby-event::before {content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,12,30,.86),rgba(6,12,30,.25));}
+.lobby-event span,.lobby-event small {position:relative;display:block;text-shadow:0 2px 8px #000;}
+.lobby-event span {font-size:11px;font-weight:900;letter-spacing:.4px;}
+.lobby-event small {font-size:8px;font-weight:700;margin-top:3px;opacity:.94;}
+.lobby-event.explore-event {background-image:url("assets/lobby-image-1.jpg");border-color:#66caff;}
+.lobby-event.boss-event {background-image:url("assets/lobby-image-2.jpg");border-color:#fb65bc;}
+.lobby-event:active {transform:scale(.97)}
+#exploreViewport {
+  background: radial-gradient(ellipse at 50% 20%, #244b61, #0b1c2a 52%, #071019) !important;
+}
+@media(max-width:700px) {
+  .lobby-event-cards {right:58px;top:10px;width:clamp(104px,31%,145px);gap:6px;}
+  .lobby-event {min-height:52px;padding:6px 7px;border-radius:10px;}
+  .lobby-event span {font-size:9px;}
+  .lobby-event small {font-size:7px;}
+}
+@media(max-width:390px) {
+  .lobby-event-cards {right:52px;width:106px;}
+  .lobby-event {min-height:45px;}
+  .lobby-event small {display:none;}
+}
+</style>
+
+
+<style id="reference-lobby-exact-style">
+#hub.reference-lobby{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:0!important;display:block!important;overflow:hidden!important;background:#09051b url("assets/lobby-image-3.jpg") center center/100% 100% no-repeat!important;}
+#hub.reference-lobby.hidden{display:none!important}
+#hub.reference-lobby>.rpg-top,#hub.reference-lobby>.exp-strip,#hub.reference-lobby>.stage-area,#hub.reference-lobby>.hub-menu{display:none!important}
+#referenceLobbyHotspots{position:absolute;inset:0;z-index:20;pointer-events:none;}
+#referenceLobbyHotspots button{position:absolute;display:block;border:0;background:transparent;border-radius:12px;padding:0;margin:0;pointer-events:auto;cursor:pointer;touch-action:manipulation;outline:none;color:transparent;-webkit-tap-highlight-color:transparent}
+#referenceLobbyHotspots .lobby-live-avatar{position:absolute;left:10.2%;top:2.1%;width:6.4%;height:6.4%;min-width:28px;min-height:28px;max-width:64px;max-height:64px;object-fit:cover;border-radius:50%;border:2px solid #e9c8ff;box-shadow:0 0 0 2px #4b287d,0 0 16px #c084fc88;z-index:2;cursor:pointer;pointer-events:auto;background:#21123b}#referenceLobbyHotspots button:focus-visible{outline:2px solid #e9b8ff;background:#ffffff10}
+#referenceLobbyHotspots .hit-back{left:1.5%;top:1%;width:6.5%;height:9.5%}
+#referenceLobbyHotspots .hit-profile{left:9.4%;top:1%;width:16%;height:9.5%}
+#referenceLobbyHotspots .hit-emote,#referenceLobbyHotspots .hit-magic{display:none!important}
+#referenceLobbyHotspots .hit-cloud{left:67.5%;top:1.2%;width:5.5%;height:7%}
+#referenceLobbyHotspots .hit-settings-top{right:1.2%;top:1.3%;width:5.5%;height:7%}
+#referenceLobbyHotspots .hit-home{left:1.2%;top:15%;width:14.5%;height:7.5%}
+#referenceLobbyHotspots .hit-bag{left:1.5%;top:24.5%;width:13.5%;height:7%}
+#referenceLobbyHotspots .hit-quest{left:1.5%;top:32.7%;width:14%;height:7.5%}
+#referenceLobbyHotspots .hit-achieve{left:1.5%;top:41.2%;width:14%;height:7.5%}
+#referenceLobbyHotspots .hit-settings-left{left:1.5%;top:49.7%;width:14%;height:7.5%}
+#referenceLobbyHotspots .hit-explore{left:67.5%;top:12.2%;width:31.5%;height:20%}
+#referenceLobbyHotspots .hit-boss{left:67.5%;top:33.8%;width:31.5%;height:18.2%}
+#referenceLobbyHotspots .hit-daily{left:67.5%;top:53%;width:31.5%;height:12%}
+#referenceLobbyHotspots .hit-play{left:69.5%;top:67.5%;width:7.2%;height:11.5%}
+#referenceLobbyHotspots .hit-load{left:78.2%;top:67.5%;width:7.2%;height:11.5%}
+#referenceLobbyHotspots .hit-emote{left:86.3%;top:67.5%;width:7.2%;height:11.5%}
+#referenceLobbyHotspots .hit-magic{right:0.8%;top:67.5%;width:6.8%;height:11.5%}
+#referenceLobbyHotspots .hit-char-tab{left:59%;bottom:2.5%;width:7.2%;height:11.5%}
+#referenceLobbyHotspots .hit-weapon-tab{left:66.5%;bottom:2.5%;width:7.2%;height:11.5%}
+#referenceLobbyHotspots .hit-pet-tab{left:74.3%;bottom:2.5%;width:7.2%;height:11.5%}
+#referenceLobbyHotspots .hit-bag-tab{left:82%;bottom:2.5%;width:7.2%;height:11.5%}
+#referenceLobbyHotspots .hit-skill-tab{left:89.7%;bottom:2.5%;width:8%;height:11.5%}
+@media(max-width:700px){
+ #hub.reference-lobby{background-size:100% 100%!important}
+ #referenceLobbyHotspots .hit-back{left:0;top:0;width:9%;height:11%}
+ #referenceLobbyHotspots .hit-profile{left:9%;top:0;width:29%;height:11%}
+ #referenceLobbyHotspots .hit-cloud{left:75%;top:0;width:9%;height:9%}
+ #referenceLobbyHotspots .hit-settings-top{right:0;top:0;width:9%;height:9%}
+ #referenceLobbyHotspots .hit-home{left:0;top:14%;width:16%;height:9%}
+ #referenceLobbyHotspots .hit-bag{left:0;top:24%;width:16%;height:8%}
+ #referenceLobbyHotspots .hit-quest{left:0;top:33%;width:16%;height:8%}
+ #referenceLobbyHotspots .hit-achieve{left:0;top:42%;width:16%;height:8%}
+ #referenceLobbyHotspots .hit-settings-left{left:0;top:51%;width:16%;height:8%}
+ #referenceLobbyHotspots .hit-explore{left:67%;top:12%;width:33%;height:20%}
+ #referenceLobbyHotspots .hit-boss{left:67%;top:34%;width:33%;height:18%}
+ #referenceLobbyHotspots .hit-daily{left:67%;top:53%;width:33%;height:12%}
+ #referenceLobbyHotspots .hit-play{left:69%;top:68%;width:8%;height:12%}
+ #referenceLobbyHotspots .hit-load{left:78%;top:68%;width:8%;height:12%}
+ #referenceLobbyHotspots .hit-emote{left:86%;top:68%;width:8%;height:12%}
+ #referenceLobbyHotspots .hit-magic{right:0;top:68%;width:7%;height:12%}
+ #referenceLobbyHotspots .hit-char-tab{left:59%;bottom:1%;width:8%;height:13%}
+ #referenceLobbyHotspots .hit-weapon-tab{left:67%;bottom:1%;width:8%;height:13%}
+ #referenceLobbyHotspots .hit-pet-tab{left:75%;bottom:1%;width:8%;height:13%}
+ #referenceLobbyHotspots .hit-bag-tab{left:83%;bottom:1%;width:8%;height:13%}
+ #referenceLobbyHotspots .hit-skill-tab{left:91%;bottom:1%;width:8%;height:13%}
+}
+</style>
+
+
+<style id="keep-live-3d-models-fix">
+#stageArea{position:relative!important;overflow:hidden!important;background:radial-gradient(ellipse at 50% 28%,rgba(87,56,175,.35),transparent 58%),linear-gradient(180deg,#100d24,#21174a 58%,#080817)!important}
+#stageArea::before{pointer-events:none!important;z-index:1!important}
+#stage3D{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:3!important;background:transparent!important;object-fit:contain!important}
+#petCanvas{z-index:4!important;background:transparent!important;object-fit:contain!important}
+#stageArea img:not(.lobby-event img){pointer-events:none}
+#exploreViewport #stage3D{z-index:2!important}
+</style>
 </head>
 <body>
 
@@ -2040,7 +2240,30 @@ console.log("[FB] FirebaseAPI ready");
 <input type="file" id="petModelInput" accept=".vrm,.glb,.gltf" style="display:none">
 <input type="file" id="avatarFileInput" accept="image/*" style="display:none">
 
-<div id="hub">
+<div id="hub" class="reference-lobby">
+  <div id="referenceLobbyHotspots" aria-label="Điều hướng sảnh game">
+    <button class="hit-back" onclick="backToWeb()" aria-label="Quay lại trang web"></button>
+    <img id="lobbyLiveAvatar" class="lobby-live-avatar" src="" alt="Avatar nhân vật" onclick="openAvatarModal()"><button class="hit-profile" onclick="openAvatarModal()" aria-label="Thông tin nhân vật"></button>
+    <button class="hit-cloud" onclick="typeof syncCloud==='function'?syncCloud():document.getElementById('cloudPill')?.click()" aria-label="Đồng bộ đám mây"></button>
+    <button class="hit-settings-top" onclick="openSettings()" aria-label="Cài đặt"></button>
+    <button class="hit-home" onclick="document.getElementById('referenceLobbyHotspots').focus()" aria-label="Sảnh"></button>
+    <button class="hit-bag" onclick="openInventory()" aria-label="Túi đồ"></button>
+    <button class="hit-quest" onclick="openQuest()" aria-label="Nhiệm vụ"></button>
+    <button class="hit-achieve" onclick="openCollection()" aria-label="Thành tựu"></button>
+    <button class="hit-settings-left" onclick="openSettings()" aria-label="Cài đặt"></button>
+    <button class="hit-explore" onclick="openExplore3D()" aria-label="Bắt đầu khám phá 3D"></button>
+    <button class="hit-boss" onclick="startBoss()" aria-label="Vào trận đánh boss"></button>
+    <button class="hit-daily" onclick="openQuest()" aria-label="Nhiệm vụ hằng ngày"></button>
+    <button class="hit-play" onclick="openGameModes()" aria-label="Chơi"></button>
+    <button class="hit-load" onclick="openUploadModal()" aria-label="Nạp 3D"></button>
+    <button class="hit-emote" type="button" aria-hidden="true" tabindex="-1" style="display:none"></button>
+    <button class="hit-magic" type="button" aria-hidden="true" tabindex="-1" style="display:none"></button>
+    <button class="hit-char-tab" onclick="openCharacterSelect()" aria-label="Nhân vật"></button>
+    <button class="hit-weapon-tab" onclick="openShop()" aria-label="Vũ khí"></button>
+    <button class="hit-pet-tab" onclick="openUploadModal()" aria-label="Thú cưng"></button>
+    <button class="hit-bag-tab" onclick="openInventory()" aria-label="Ba lô"></button>
+    <button class="hit-skill-tab" onclick="openQuest()" aria-label="Kỹ năng"></button>
+  </div>
   <div class="rpg-top">
     <button class="btn-back-web" onclick="backToWeb()" title="Quay lại">
       <i class="fas fa-arrow-left"></i>
@@ -2090,11 +2313,19 @@ console.log("[FB] FirebaseAPI ready");
       <button class="stage-tool" onclick="Model3D.faceCamera()" title="Nhìn thẳng"><i class="fas fa-camera"></i></button>
       <button class="stage-tool" onclick="openUploadModal()" title="Nạp 3D"><i class="fas fa-cube"></i></button>
     </div>
+    <div class="lobby-event-cards" aria-label="Sự kiện">
+      <button class="lobby-event explore-event" onclick="openExplore3D()" aria-label="Khám phá 3D">
+        <span>KHÁM PHÁ 3D</span><small>Thế giới đang chờ bạn</small>
+      </button>
+      <button class="lobby-event boss-event" onclick="startBoss()" aria-label="Đánh boss">
+        <span>ĐÁNH BOSS</span><small>Thử thách giới hạn</small>
+      </button>
+    </div>
 
-    <button class="emote-btn" id="emoteBtn" onclick="EmoteMenu.toggle()">
+    <button class="emote-btn" id="emoteBtn" onclick="EmoteMenu.toggle()" style="display:none" aria-hidden="true" tabindex="-1">
       <i class="fas fa-wand-magic-sparkles"></i>
     </button>
-    <div class="emote-panel" id="emotePanel">
+    <div class="emote-panel" id="emotePanel" style="display:none">
       <div class="emote-head">
         <i class="fas fa-wand-magic-sparkles"></i> Emote & VFX
         <button onclick="EmoteMenu.toggle()"><i class="fas fa-xmark"></i></button>
@@ -2110,9 +2341,10 @@ console.log("[FB] FirebaseAPI ready");
     <button class="hub-btn" onclick="openQuest()"><div class="ic"><i class="fas fa-scroll"></i></div><div class="tx">N.vụ</div></button>
     <button class="hub-btn boss" onclick="startBoss()"><div class="ic"><i class="fas fa-dragon"></i></div><div class="tx">Boss</div></button>
     <button class="hub-btn shop" onclick="openShop()"><div class="ic"><i class="fas fa-store"></i></div><div class="tx">Shop</div></button>
-    <button class="hub-btn anim" onclick="EmoteMenu.toggle()"><div class="ic"><i class="fas fa-wand-magic-sparkles"></i></div><div class="tx">Emote</div></button>
+
     <button class="hub-btn upload" onclick="openUploadModal()"><div class="ic"><i class="fas fa-cube"></i></div><div class="tx">Nạp 3D</div></button>
     <button class="hub-btn map" onclick="openMap()"><div class="ic"><i class="fas fa-map"></i></div><div class="tx">B.đồ</div></button>
+    <button class="hub-btn explore" onclick="openExplore3D()"><div class="ic"><i class="fas fa-mountain-sun"></i></div><div class="tx">Khám phá 3D</div></button>
     <button class="hub-btn ach" onclick="openCollection()"><div class="ic"><i class="fas fa-trophy"></i></div><div class="tx">S.tập</div></button>
     <button class="hub-btn set" onclick="openSettings()"><div class="ic"><i class="fas fa-gear"></i></div><div class="tx">C.đặt</div></button>
   </div>
@@ -2129,10 +2361,12 @@ console.log("[FB] FirebaseAPI ready");
       <div class="shop-tabs">
         <button class="shop-tab active" data-tab="chars" onclick="switchShopTab('chars')">Nhân vật</button>
         <button class="shop-tab" data-tab="pets" onclick="switchShopTab('pets')">Pet</button>
+        <button class="shop-tab" data-tab="inventory" onclick="switchShopTab('inventory')">Túi đồ</button>
         <button class="shop-tab" data-tab="code" onclick="switchShopTab('code')">Code</button>
       </div>
       <div id="shopTabChars"><div class="shop-grid" id="shopGridChars"></div></div>
       <div id="shopTabPets" style="display:none;"><div class="shop-grid" id="shopGridPets"></div></div>
+      <div id="shopTabInventory" style="display:none;"><div id="inventoryGrid" class="shop-grid"></div><div id="inventoryEmpty" class="code-hint" style="display:none">Túi đồ chưa có vật phẩm. Vật phẩm đã sở hữu sẽ xuất hiện tại đây.</div></div>
       <div id="shopTabCode" style="display:none;">
         <div class="code-input-wrap">
           <input type="text" id="codeInput" placeholder="Nhập code..." maxlength="30">
@@ -2197,6 +2431,38 @@ console.log("[FB] FirebaseAPI ready");
         <code style="color:#c4b5fd;">github.com/user/repo/blob/main/file.vrm</code><br>
         <code style="color:#c4b5fd;">github.com/user/repo/raw/main/file.vrm</code><br>
         <code style="color:#c4b5fd;">cdn.jsdelivr.net/gh/user/repo@main/file.vrm</code>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="overlay" id="characterSelectOverlay" aria-label="Kho nhân vật">
+  <div class="character-select-box">
+    <div class="character-select-head">
+      <div class="c-icon"><i class="fas fa-user-astronaut"></i></div>
+      <div><h3>Nhân vật</h3><p>Vuốt ngang để xem VRM và đổi nhân vật đang dùng</p></div>
+      <button class="close" onclick="closeCharacterSelect()" aria-label="Đóng"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="character-select-body">
+      <div id="characterPreviewStage">
+        <canvas id="characterPreviewCanvas"></canvas>
+        <div id="characterPreviewStatus">Đang chuẩn bị khung xem trước 3D…</div>
+        <div id="characterPreviewHint">Kéo trái/phải để đổi nhân vật · Kéo trên model để xoay</div>
+      </div>
+      <div class="character-select-meta">
+        <div><div class="character-select-name" id="characterSelectName">Nhân vật 1</div><div class="character-select-price" id="characterSelectPrice">Miễn phí</div></div>
+        <div class="character-select-state" id="characterSelectState">ĐANG TRANG BỊ</div>
+      </div>
+      <div class="character-select-arrows">
+        <button class="character-select-arrow" onclick="stepCharacter(-1)" aria-label="Nhân vật trước"><i class="fas fa-chevron-left"></i></button>
+        <div class="character-select-dots" id="characterSelectDots"></div>
+        <button class="character-select-arrow" onclick="stepCharacter(1)" aria-label="Nhân vật tiếp theo"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div class="character-select-strip" id="characterSelectStrip"></div>
+      <div class="character-select-actions">
+        <button class="character-select-action" id="characterBuyBtn" onclick="buySelectedCharacter()"><i class="fas fa-coins"></i> Mua</button>
+        <button class="character-select-action primary" id="characterEquipBtn" onclick="equipSelectedCharacter()"><i class="fas fa-check"></i> Trang bị</button>
       </div>
     </div>
   </div>
@@ -2301,6 +2567,29 @@ console.log("[FB] FirebaseAPI ready");
       <button class="close" onclick="closeOverlay('collectionOverlay')"><i class="fas fa-xmark"></i></button>
     </div>
     <div class="modal-body"><div class="ach-grid" id="achGrid"></div></div>
+  </div>
+</div>
+
+<div id="explore3D" aria-label="Khu vực khám phá 3D">
+  <div class="explore-top">
+    <button class="explore-back" onclick="closeExplore3D()" aria-label="Quay lại"><i class="fas fa-arrow-left"></i></button>
+    <div class="explore-title"><strong>THẾ GIỚI KHÁM PHÁ</strong><span id="exploreLocation">Thung lũng pha lê · Tự do khám phá</span></div>
+    <div class="explore-level"><i class="fas fa-compass"></i> 3D</div>
+  </div>
+  <div id="exploreViewport">
+    <div class="explore-scene-label"><span class="explore-live"></span> OPEN WORLD <small>DI CHUYỂN TỰ DO</small></div>
+    <div class="explore-tip" id="exploreTip">Kéo cần điều khiển để di chuyển · Kéo màn hình để xoay góc nhìn</div>
+    <div class="explore-controls">
+      <div class="explore-pad" id="explorePad" aria-label="Cần điều khiển">
+        <div class="explore-pad-ring"></div><div class="explore-pad-knob" id="explorePadKnob"><i class="fas fa-arrows-up-down-left-right"></i></div>
+      </div>
+      <div class="explore-actions">
+        <button onclick="exploreJump()" aria-label="Nhảy"><i class="fas fa-arrow-up"></i><span>NHẢY</span></button>
+        <button onclick="exploreRunToggle()" id="exploreRunBtn" aria-label="Chạy nhanh"><i class="fas fa-person-running"></i><span>CHẠY</span></button>
+        <button onclick="toggleExploreEmote()" id="exploreEmoteBtn" aria-label="Mở emote"><i class="fas fa-face-smile"></i><span>EMOTE</span></button>
+      </div>
+    </div>
+    <div class="explore-bottom"><span><i class="fas fa-location-dot"></i> <b id="exploreCoords">Khu vực 01</b></span><span><i class="fas fa-person-walking"></i> WASD / joystick</span></div>
   </div>
 </div>
 
@@ -3283,14 +3572,14 @@ function createModel3D(opts) {
       const dt = this.clock.getDelta();
       this.time += dt;
 
-      const hasModel = (this.isVRM && this.currentVRM) || (!this.isVRM && this.currentGLB);
+      const hasModel = !!(this.currentVRM || this.currentGLB);
 
       if (this.isPet) {
         if (Object.keys(this.restQuat).length > 0) {
           const fn = this.animLib[this.currentAnim] || this.animLib.idle;
           if (fn) fn(this.time);
         }
-        const root = this.isVRM ? (this.currentVRM && this.currentVRM.scene) : this.currentGLB;
+        const root = (this.currentVRM && this.currentVRM.scene) || this.currentGLB;
         if (root) {
           root.rotation.z = 0;
         }
@@ -3320,7 +3609,7 @@ function createModel3D(opts) {
         }
       }
       if (this.currentVRM && this.currentVRM.update) this.currentVRM.update(dt);
-      if (this.controls) this.controls.update();
+      if (this.controls && !(typeof window.explore3DIsActive === "function" && window.explore3DIsActive())) this.controls.update();
       if (this.renderer) this.renderer.render(this.scene, this.camera);
     },
 
@@ -3370,6 +3659,7 @@ function createModel3D(opts) {
 const Model3D = createModel3D({ canvasId: "stage3D", stageId: "stageArea", name: "char" });
 const Model3DBoss = createModel3D({ canvasId: "bossCanvas", stageId: "bossImgWrap", name: "boss" });
 const Model3DPet = createModel3D({ canvasId: "petCanvas", stageId: "stageArea", name: "pet", isPet: true });
+const CharacterPreview3D = createModel3D({ canvasId: "characterPreviewCanvas", stageId: "characterPreviewStage", name: "characterPreview" });
 
 const EMOTES = [
   { id:"idle",         type:"anim", icon:"fa-person",                    label:"Idle" },
@@ -3426,6 +3716,11 @@ const EmoteMenu = {
     document.getElementById("emoteBtn").classList.remove("active");
   },
   play(e) {
+    if (typeof window.explorePlayEmote === "function" && window.explore3DIsActive && window.explore3DIsActive()) {
+      window.explorePlayEmote(e);
+      setTimeout(() => this.close(), 350);
+      return;
+    }
     if (!requireModel()) { this.close(); return; }
     const M = Model3D;
     if (e.type === "anim") M.setAnimation(e.id);
@@ -3530,6 +3825,7 @@ const GameState = {
     if (!this.data.quests || Object.keys(this.data.quests).length === 0) this.rollQuests();
     this.updateUI();
     this.updateAvatar();
+    const lobbyAvatar=document.getElementById("lobbyLiveAvatar"); if(lobbyAvatar && this.data.avatarUrl) lobbyAvatar.src=this.data.avatarUrl;
   },
   save() { try { localStorage.setItem("rpg_state_v20", JSON.stringify(this.data)); } catch(e) {} },
   updateAvatarUrl() {
@@ -3540,7 +3836,8 @@ const GameState = {
   updateAvatar() {
     if (this.data.avatarUrl) {
       const img = document.getElementById("avatarImg");
-      img.src = this.data.avatarUrl;
+      if(img) img.src = this.data.avatarUrl;
+      const lobbyImg=document.getElementById("lobbyLiveAvatar"); if(lobbyImg) lobbyImg.src=this.data.avatarUrl;
       const prev = document.getElementById("avatarPreviewBig");
       if (prev) prev.src = this.data.avatarUrl;
     }
@@ -4045,6 +4342,22 @@ window.refreshEquippedModels = async function() {
 let currentShopTab = "chars";
 
 window.openShop = () => { renderShop(); document.getElementById("shopOverlay").classList.add("on"); };
+window.openInventory = () => { renderInventory(); switchShopTab('inventory'); document.getElementById("shopOverlay").classList.add("on"); };
+function renderInventory(){
+  const grid=document.getElementById('inventoryGrid'),empty=document.getElementById('inventoryEmpty');
+  if(!grid)return; grid.innerHTML='';
+  const d=GameState.data||{};
+  const entries=[];
+  (d.ownedChars||[]).forEach(id=>{const it=CHAR_SLOTS.find(x=>x.id===id);if(it)entries.push({name:it.name,type:'Nhân vật',icon:'fa-user-astronaut',equipped:d.equippedChar===id});});
+  (d.ownedPets||[]).forEach(id=>{const it=PET_SLOTS.find(x=>x.id===id);if(it)entries.push({name:it.name,type:'Pet',icon:'fa-paw',equipped:d.equippedPet===id});});
+  const weapons=d.ownedWeapons||d.weapons||d.inventory?.weapons||[];
+  (Array.isArray(weapons)?weapons:Object.values(weapons)).forEach(w=>{const item=typeof w==='string'?{name:w}:w||{};entries.push({name:item.name||item.label||item.id||'Vũ khí',type:'Vũ khí',icon:'fa-khanda',equipped:!!item.equipped});});
+  const other=d.inventory?.items||d.ownedItems||[];
+  (Array.isArray(other)?other:Object.values(other)).forEach(w=>{const item=typeof w==='string'?{name:w}:w||{};entries.push({name:item.name||item.label||item.id||'Vật phẩm',type:item.type||'Vật phẩm',icon:'fa-box-open',equipped:!!item.equipped});});
+  entries.forEach(it=>{const el=document.createElement('div');el.className='shop-item'+(it.equipped?' equipped':'');el.innerHTML=`<div class="swatch"><i class="fas ${it.icon}"></i></div><div class="nm"></div><div style="font-size:10px;color:var(--txt-3);margin-top:4px"></div>${it.equipped?'<div class="tag-equipped">ĐANG DÙNG</div>':''}`;el.querySelector('.nm').textContent=it.name;el.querySelector('div[style]').textContent=it.type;grid.appendChild(el);});
+  if(empty)empty.style.display=entries.length?'none':'block';
+}
+
 
 window.switchShopTab = (tab) => {
   currentShopTab = tab;
@@ -4052,7 +4365,8 @@ window.switchShopTab = (tab) => {
   document.getElementById("shopTabChars").style.display = tab === "chars" ? "block" : "none";
   document.getElementById("shopTabPets").style.display = tab === "pets" ? "block" : "none";
   document.getElementById("shopTabCode").style.display = tab === "code" ? "block" : "none";
-  renderShop();
+  const inv=document.getElementById("shopTabInventory"); if(inv)inv.style.display=tab === "inventory" ? "block" : "none";
+  if(tab === "inventory") renderInventory(); else renderShop();
 };
 
 function renderShop() {
@@ -4357,8 +4671,138 @@ window.deleteSlot = async (category, slotId) => {
   } catch(e) { toast("Lỗi: " + e.message, "gold"); }
 };
 
+
+let selectedCharacterIndex = 0;
+let characterPreviewToken = 0;
+let characterSwipeStartX = null;
+
+window.openCharacterSelect = async function() {
+  selectedCharacterIndex = Math.max(0, CHAR_SLOTS.findIndex(x => x.id === GameState.data.equippedChar));
+  document.getElementById("characterSelectOverlay").classList.add("on");
+  renderCharacterSelectStrip();
+  renderCharacterSelectDetails();
+  requestAnimationFrame(() => { CharacterPreview3D.init(); CharacterPreview3D.resize(); setTimeout(() => CharacterPreview3D.resize(), 80); });
+  await loadCharacterPreview(CHAR_SLOTS[selectedCharacterIndex]);
+};
+window.closeCharacterSelect = function() {
+  document.getElementById("characterSelectOverlay").classList.remove("on");
+  // Keep the preview cached in memory for quick reopen, but stop pointer controls from capturing touches.
+  Model3D.resize(); Model3DPet.resize();
+};
+window.stepCharacter = async function(delta) {
+  selectedCharacterIndex = (selectedCharacterIndex + delta + CHAR_SLOTS.length) % CHAR_SLOTS.length;
+  renderCharacterSelectStrip(); renderCharacterSelectDetails();
+  await loadCharacterPreview(CHAR_SLOTS[selectedCharacterIndex]);
+};
+function renderCharacterSelectStrip() {
+  const strip = document.getElementById("characterSelectStrip");
+  const dots = document.getElementById("characterSelectDots");
+  if (!strip || !dots) return;
+  strip.innerHTML = ""; dots.innerHTML = "";
+  CHAR_SLOTS.forEach((it, i) => {
+    const owned = (GameState.data.ownedChars || []).includes(it.id);
+    const equipped = GameState.data.equippedChar === it.id;
+    const configured = !!GameState.data.firebaseModels?.chars?.[it.id]?.url;
+    const card = document.createElement("button");
+    card.type = "button"; card.className = "character-select-card" + (i === selectedCharacterIndex ? " active" : "");
+    card.innerHTML = `<div class="slot-no">0${i+1}</div><div class="slot-title">${it.name}</div><div class="slot-status">${equipped ? "ĐANG DÙNG" : owned ? "ĐÃ SỞ HỮU" : it.price.toLocaleString()+" xu"}${configured ? " · 3D" : ""}</div>`;
+    card.onclick = async () => { selectedCharacterIndex = i; renderCharacterSelectStrip(); renderCharacterSelectDetails(); await loadCharacterPreview(it); };
+    strip.appendChild(card);
+    const dot = document.createElement("button"); dot.type = "button"; dot.className = "character-select-dot" + (i === selectedCharacterIndex ? " active" : ""); dot.setAttribute("aria-label",it.name); dot.onclick = () => { selectedCharacterIndex = i; renderCharacterSelectStrip(); renderCharacterSelectDetails(); loadCharacterPreview(it); }; dots.appendChild(dot);
+  });
+  const active = strip.children[selectedCharacterIndex];
+  if (active) active.scrollIntoView({block:"nearest",inline:"center",behavior:"smooth"});
+}
+function renderCharacterSelectDetails() {
+  const it = CHAR_SLOTS[selectedCharacterIndex]; if (!it) return;
+  const owned = (GameState.data.ownedChars || []).includes(it.id);
+  const equipped = GameState.data.equippedChar === it.id;
+  const entry = GameState.data.firebaseModels?.chars?.[it.id];
+  document.getElementById("characterSelectName").textContent = it.name;
+  document.getElementById("characterSelectPrice").textContent = it.price === 0 ? "Miễn phí" : `${it.price.toLocaleString()} xu`;
+  document.getElementById("characterSelectState").textContent = equipped ? "ĐANG TRANG BỊ" : owned ? "ĐÃ SỞ HỮU" : "CHƯA MUA";
+  const buy = document.getElementById("characterBuyBtn"), equip = document.getElementById("characterEquipBtn");
+  buy.style.display = owned ? "none" : "block"; buy.disabled = GameState.data.coin < it.price;
+  buy.innerHTML = it.price === 0 ? '<i class="fas fa-gift"></i> Nhận miễn phí' : `<i class="fas fa-coins"></i> Mua ${it.price.toLocaleString()}`;
+  equip.style.display = owned ? "block" : "none"; equip.disabled = equipped;
+  equip.innerHTML = equipped ? '<i class="fas fa-check-circle"></i> Đang trang bị' : '<i class="fas fa-check"></i> Trang bị';
+  const hint = document.getElementById("characterPreviewHint");
+  hint.textContent = entry?.url ? "Model VRM/GLB thật · Kéo để xoay · Vuốt ngang để đổi" : "Chưa gắn model cho ô này · Model đang trang bị vẫn được giữ ở sảnh";
+}
+async function loadCharacterPreview(it) {
+  if (!it) return;
+  const status = document.getElementById("characterPreviewStatus");
+  const token = ++characterPreviewToken;
+  const entry = GameState.data.firebaseModels?.chars?.[it.id];
+  const activeId = GameState.data.equippedChar;
+  status.style.display = "flex";
+  status.textContent = "Đang tìm model 3D…";
+  try {
+    CharacterPreview3D.init(); CharacterPreview3D.resize();
+    // Use the same IndexedDB model cache as the live lobby model first.
+    const cached = await ModelDB.get(`char_${it.id}`).catch(() => null);
+    if (token !== characterPreviewToken) return;
+    if (cached?.blob) {
+      const ok = await CharacterPreview3D.loadBlob(cached.blob, cached.name || it.id);
+      if (token !== characterPreviewToken) return;
+      if (ok) { CharacterPreview3D._loadedSlot = `char_${it.id}`; status.style.display = "none"; CharacterPreview3D.resize(); return; }
+    }
+    if (entry?.url) {
+      status.textContent = "Đang tải model VRM/GLB…";
+      let blob = null, lastError = null;
+      for (const url of getModelURLCandidates(entry.url)) {
+        try { const response = await fetch(url,{mode:"cors",credentials:"omit",cache:"no-cache"}); if (!response.ok) throw new Error("HTTP "+response.status); const b = await response.blob(); if (!b.size || b.type.includes("text/html")) throw new Error("File model không hợp lệ"); blob=b; break; }
+        catch(e) { lastError=e; }
+      }
+      if (token !== characterPreviewToken) return;
+      if (blob) {
+        const name = entry.name || it.id;
+        const ok = await CharacterPreview3D.loadBlob(blob,name);
+        if (token !== characterPreviewToken) return;
+        if (ok) {
+          CharacterPreview3D._loadedSlot = `char_${it.id}`;
+          await ModelDB.save(`char_${it.id}`,blob,name,entry.url).catch(()=>{});
+          status.style.display = "none"; CharacterPreview3D.resize(); return;
+        }
+      }
+      status.textContent = "Không tải được model. Kiểm tra link VRM/GLB trong mục Nạp 3D.";
+      return;
+    }
+    // If this is the currently equipped character and the live scene has the model, explain cache/source state rather than faking a preview.
+    status.textContent = (it.id === activeId && (Model3D.currentVRM || Model3D.currentGLB)) ? "Nhân vật đang hoạt động ở sảnh. Hãy lưu URL của slot trong Nạp 3D để bật xem trước riêng tại đây." : "Ô này chưa có model VRM/GLB. Vào Nạp 3D để gắn model cho ô này.";
+  } catch (e) {
+    if (token === characterPreviewToken) status.textContent = "Chưa thể mở xem trước 3D: " + (e?.message || "lỗi model");
+  }
+}
+window.buySelectedCharacter = function() {
+  const it = CHAR_SLOTS[selectedCharacterIndex]; if (!it) return;
+  buyItem(it.id,"chars"); renderCharacterSelectStrip(); renderCharacterSelectDetails();
+};
+window.equipSelectedCharacter = async function() {
+  const it = CHAR_SLOTS[selectedCharacterIndex]; if (!it) return;
+  if (!(GameState.data.ownedChars || []).includes(it.id)) { toast("Mua nhân vật trước nhé","gold"); return; }
+  if (GameState.data.equippedChar === it.id && (Model3D.currentVRM || Model3D.currentGLB)) { toast("Nhân vật này đang được trang bị rồi","gold"); closeCharacterSelect(); return; }
+  const configured = GameState.data.firebaseModels?.chars?.[it.id]?.url;
+  const cached = await ModelDB.get(`char_${it.id}`).catch(() => null);
+  if (!configured && !cached?.blob) {
+    toast("Ô này chưa có model VRM/GLB. Hãy gắn model cho đúng ô trong Nạp 3D trước khi trang bị.","gold");
+    return;
+  }
+  await equipItem(it.id,"chars");
+  renderCharacterSelectStrip(); renderCharacterSelectDetails();
+  if (GameState.data.equippedChar === it.id && (Model3D.currentVRM || Model3D.currentGLB)) closeCharacterSelect();
+};
+(function setupCharacterSwipe(){
+  const stage = document.getElementById("characterPreviewStage"); if (!stage) return;
+  stage.addEventListener("touchstart",e=>{characterSwipeStartX=e.touches?.[0]?.clientX ?? null;},{passive:true});
+  stage.addEventListener("touchend",e=>{if(characterSwipeStartX==null)return;const dx=(e.changedTouches?.[0]?.clientX ?? characterSwipeStartX)-characterSwipeStartX;characterSwipeStartX=null;if(Math.abs(dx)>55)stepCharacter(dx<0?1:-1);},{passive:true});
+  stage.addEventListener("pointerdown",e=>{if(e.pointerType==="mouse")characterSwipeStartX=e.clientX;});
+  stage.addEventListener("pointerup",e=>{if(e.pointerType!=="mouse"||characterSwipeStartX==null)return;const dx=e.clientX-characterSwipeStartX;characterSwipeStartX=null;if(Math.abs(dx)>70)stepCharacter(dx<0?1:-1);});
+})();
+
 window.openAvatarModal = () => {
-  document.getElementById("avatarPreviewBig").src = GameState.data.avatarUrl;
+  if(!GameState.data.avatarUrl && typeof GameState.updateAvatarUrl==='function') GameState.updateAvatarUrl();
+  document.getElementById("avatarPreviewBig").src = GameState.data.avatarUrl || '';
   renderAvatarGrid();
   document.getElementById("avatarOverlay").classList.add("on");
 };
@@ -4377,6 +4821,8 @@ function renderAvatarGrid() {
       GameState.data.avatarStyle = style;
       GameState.data.avatarUrl = url;
       document.getElementById("avatarPreviewBig").src = url;
+      GameState.data.avatarUrl=url;
+      GameState.updateAvatar();
     };
     grid.appendChild(div);
   });
@@ -4389,6 +4835,7 @@ window.randomizeAvatarSeed = () => {
   const url = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(GameState.data.avatarSeed)}&backgroundColor=7c3aed,ec4899&radius=20`;
   GameState.data.avatarUrl = url;
   document.getElementById("avatarPreviewBig").src = url;
+  GameState.updateAvatar();
 };
 
 window.confirmAvatar = () => {
@@ -4401,6 +4848,7 @@ document.getElementById("avatarFileInput").addEventListener("change", (e) => {
   const reader = new FileReader();
   reader.onload = (ev) => {
     GameState.data.avatarUrl = ev.target.result;
+    const preview=document.getElementById("avatarPreviewBig"); if(preview) preview.src=ev.target.result;
     GameState.save(); GameState.updateAvatar();
     closeOverlay("avatarOverlay"); toast("Đã đổi avatar!");
   };
@@ -4588,6 +5036,7 @@ window.startBoss = async () => {
   renderBossQuestion();
 
   const wrap = document.getElementById("bossImgWrap");
+  try { if (!Model3DBoss.ready && typeof Model3DBoss.init === 'function') Model3DBoss.init(); } catch(e) { Logger.push("warn", "[Boss] Init engine: " + e.message); }
   wrap.querySelectorAll(".boss-placeholder").forEach(e => e.remove());
   document.getElementById("bossFigure").classList.remove("dying", "shake-death", "finisher-ready", "finisher-hit", "counter-attack", "player-dead");
   Model3DBoss._bossExploded = false;
@@ -4595,18 +5044,23 @@ window.startBoss = async () => {
   setTimeout(() => Model3DBoss.resize(), 150);
   setTimeout(() => Model3DBoss.resize(), 500);
 
-  if (Model3DBoss._loadedSlot === "boss_boss_main" && (Model3DBoss.currentVRM || Model3DBoss.currentGLB)) {
+  if (Model3DBoss._loadedSlot === "boss_boss_main" && (Model3DBoss.currentVRM || Model3DBoss.currentGLB) && Model3DBoss.ready) {
     Logger.push("info", "[Boss] Đã load rồi, skip");
     return;
   }
 
   showBossLoader();
   try {
-    const bossEntry = GameState.data.firebaseModels.boss?.boss_main;
+    let bossEntry = GameState.data.firebaseModels.boss?.boss_main;
+    if (!bossEntry?.url && typeof pullFirebaseModels === 'function') {
+      await pullFirebaseModels().catch(e => Logger.push("warn", "[Boss] Firebase sync: " + e.message));
+      bossEntry = GameState.data.firebaseModels.boss?.boss_main;
+    }
     if (bossEntry?.url) {
       const ok = await loadModelFromURL(bossEntry.url, "boss", "boss_main");
       if (ok) wrap.querySelectorAll(".boss-placeholder").forEach(e => e.remove());
-    }
+      else Logger.push("warn", "[Boss] Không tải được boss từ URL đã lưu; hãy kiểm tra link GLB/VRM và Log.");
+    } else Logger.push("warn", "[Boss] Chưa có URL boss_main trong Firebase.");
   } catch(e) { Logger.push("warn", "[boss] Load lỗi: " + e.message); }
   finally { hideBossLoader(); }
 };
@@ -5528,6 +5982,242 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
   };
   // The old finisher wrapper already calls triggerBossVfx('crit') on success; this maps to an ultimate
   // when the finisher question is active, without duplicating game damage/scoring logic.
+})();
+</script>
+
+
+<script id="exploration-world-engine">
+(()=>{
+ const $=id=>document.getElementById(id);
+ const screen=$('explore3D'),viewport=$('exploreViewport'),pad=$('explorePad'),knob=$('explorePadKnob');
+ if(!screen||!viewport||!pad||!knob||typeof THREE==='undefined')return;
+ let active=false,runFast=false,jumpUntil=0,raf=0,group=null,oldStage=null,oldCanvasParent=null,oldCanvasNext=null,oldControlsEnabled=true,oldControlsDamping=true,oldControlsAutoRotate=false;
+ let petRootInMap=null,petOriginalScene=null,petOriginalPosition=null,petOriginalRotation=null,petOriginalScale=null,petFollowOffset=null,openingPromise=null;
+  const emotePanel=document.getElementById('emotePanel');let emoteOriginalParent=emotePanel?.parentNode,emoteOriginalNext=emotePanel?.nextSibling;
+ let moveX=0,moveY=0,draggingPad=false,viewDragging=false,lastX=0,lastY=0,yaw=0,pitch=-0.08,exploreEmoteId='idle',exploreFxTimer=null,exploreFxUntil=0;
+ let touchId=null,keys=new Set(),lastFrame=0,playerY=0,worldTime=0;
+ const worldData={};
+ // Model3D / Model3DPet are top-level lexical consts, not window properties.
+ // Always prefer the actual live VRM scene, then GLB, regardless of the isVRM flag.
+ function liveRoot(manager){
+   if(!manager)return null;
+   return (manager.currentVRM&&manager.currentVRM.scene)||manager.currentGLB||null;
+ }
+ function makeMat(color,emissive=0x000000,rough=.8){return new THREE.MeshStandardMaterial({color,emissive,emissiveIntensity:emissive?0.45:0,roughness:rough,metalness:.08});}
+ function addMesh(parent,geo,mat,x,y,z,sx=1,sy=1,sz=1){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=false;m.receiveShadow=true;parent.add(m);return m;}
+ function buildWorld(M){
+   group=new THREE.Group();group.name='Explore3DWorld';
+   const floor=makeMat(0x142b35);addMesh(group,new THREE.PlaneGeometry(180,180),floor,0,-.08,0,1,1,1).rotation.x=-Math.PI/2;
+   const gridMat=new THREE.MeshBasicMaterial({color:0x4fdcff,transparent:true,opacity:.12});
+   const grid=new THREE.GridHelper(180,90,0x49dfff,0x276579);grid.position.y=-.045;grid.material=gridMat;group.add(grid);
+   const pathMat=new THREE.MeshStandardMaterial({color:0x297c89,emissive:0x28c7df,emissiveIntensity:.48,roughness:.35});
+   const path=addMesh(group,new THREE.BoxGeometry(4,.025,130),pathMat,0,-.025,-28);path.rotation.y=.12;
+   const cross=addMesh(group,new THREE.BoxGeometry(75,.026,3),pathMat,0,-.02,-23);cross.rotation.y=-.05;
+   const rockMats=[makeMat(0x2b5362),makeMat(0x326b75),makeMat(0x1d3548),new THREE.MeshStandardMaterial({color:0x50cfe0,emissive:0x2bc9e5,emissiveIntensity:.65,roughness:.25,metalness:.2})];
+   for(let i=0;i<44;i++){
+     const side=Math.random()<.5?-1:1,x=side*(5+Math.random()*36),z=14-Math.random()*100;
+     const h=1.2+Math.random()*6,r=.45+Math.random()*1.8;
+     const rock=addMesh(group,new THREE.DodecahedronGeometry(r,0),rockMats[i%rockMats.length],x,h*.45,z,1,h/r,1);
+     rock.rotation.set(Math.random(),Math.random()*3,Math.random());
+     if(i%3===0){
+       const stem=addMesh(group,new THREE.CylinderGeometry(.12,.22,h*.45,6),makeMat(0x244f50),x,h*.22,z);
+       const crown=addMesh(group,new THREE.ConeGeometry(1.1+Math.random(),2.2+Math.random()*2,7),makeMat(i%2?0x1e7774:0x2c6868),x,h*.45+1.2,z);
+       crown.position.x=x;
+     }
+   }
+   for(let i=0;i<12;i++){
+     const x=(i%2?1:-1)*(3.8+(i%3)*.35),z=-8-i*7;
+     const ring=new THREE.Mesh(new THREE.TorusGeometry(.75,.035,8,32),new THREE.MeshBasicMaterial({color:i%2?0x72e9ff:0x9cf5d3,transparent:true,opacity:.75}));
+     ring.rotation.x=Math.PI/2;ring.position.set(x,.04,z);group.add(ring);
+     const crystal=addMesh(group,new THREE.OctahedronGeometry(.28,0),new THREE.MeshStandardMaterial({color:0x8df5ff,emissive:0x30bfe0,emissiveIntensity:1,roughness:.18}),x,.55,z,.8,1.8,.8);
+     crystal.rotation.y=i*.7;
+   }
+   const moon=new THREE.Mesh(new THREE.SphereGeometry(1.4,20,14),new THREE.MeshBasicMaterial({color:0x77e9ff,transparent:true,opacity:.12}));
+   moon.position.set(-24,14,-55);group.add(moon);
+   const starMat=new THREE.PointsMaterial({color:0x8deaff,size:.11,transparent:true,opacity:.7});
+   const pts=[];for(let i=0;i<550;i++)pts.push((Math.random()-.5)*140,5+Math.random()*45,-80+Math.random()*100);
+   const starGeo=new THREE.BufferGeometry();starGeo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));group.add(new THREE.Points(starGeo,starMat));
+   M.scene.add(group);M.scene.background=new THREE.Color(0x091923);M.scene.fog=new THREE.Fog(0x091923,38,105);
+   return group;
+ }
+ function refreshObserver(M,stageId){
+   if(M._ro){M._ro.disconnect();M._ro=null;}
+   M._stageId=stageId;
+   const st=$(stageId);
+   if(st&&'ResizeObserver'in window){M._ro=new ResizeObserver(()=>M.resize());M._ro.observe(st);}
+   M.resize();
+ }
+ async function open(){
+   if(active||openingPromise)return openingPromise;
+   openingPromise=(async()=>{
+     // Reuse the equipped character and pet from the lobby/cache. Never ask the player to upload them again.
+     try{
+       if(typeof bootRPGModels==='function'){
+         if(typeof _rpgModelsBooted!=='undefined'&&!_rpgModelsBooted) await bootRPGModels();
+       }
+       // The lobby's live manager is the source of truth; don't demand a second upload/load.
+       for(let i=0;i<80&&Model3D._loading;i++) await new Promise(r=>setTimeout(r,100));
+       if(!liveRoot(Model3D)&&typeof loadEquippedVisualModelsFromState==='function'){
+         await loadEquippedVisualModelsFromState('ExploreReuse');
+       }
+       // A model may already be live even when its URL metadata is unavailable.
+       for(let i=0;i<50&&!liveRoot(Model3D)&&Model3D._loading;i++) await new Promise(r=>setTimeout(r,100));
+     }catch(e){if(typeof Logger!=='undefined')Logger.push('warn','[Explore] Model reuse: '+e.message);}
+     const M=Model3D,canvas=$('stage3D');
+     const root=liveRoot(M);
+     if(!M||!root){
+       if(typeof toast==='function')toast('Chưa khôi phục được nhân vật đã trang bị. Quay lại sảnh, chờ model tải xong rồi thử lại.','gold');
+       return;
+     }
+     active=true;screen.classList.add('on');$('hub').classList.add('hidden');
+     if(emotePanel){emoteOriginalParent=emotePanel.parentNode;emoteOriginalNext=emotePanel.nextSibling;viewport.appendChild(emotePanel);emotePanel.style.display='none';emotePanel.classList.remove('on');}
+   oldStage=M._stageId;oldCanvasParent=canvas.parentNode;oldCanvasNext=canvas.nextSibling;
+   oldControlsEnabled=M.controls?M.controls.enabled:true;oldControlsDamping=M.controls?M.controls.enableDamping:true;oldControlsAutoRotate=M.controls?M.controls.autoRotate:false;
+   if(M.controls){M.controls.enabled=false;M.controls.enableDamping=false;M.controls.autoRotate=false;}
+   viewport.insertBefore(canvas,viewport.firstChild);
+   canvas.style.setProperty('position','absolute','important');canvas.style.setProperty('inset','0','important');canvas.style.setProperty('width','100%','important');canvas.style.setProperty('height','100%','important');
+   refreshObserver(M,'exploreViewport');
+     group=buildWorld(M);
+     root.position.set(0,0,-1);
+     // Attach the existing pet model to the exploration scene; do not create or load a replacement.
+     const PM=Model3DPet;
+     petRootInMap=liveRoot(PM);
+     if(petRootInMap&&PM.scene&&M.scene){
+       petOriginalScene=PM.scene;
+       petOriginalPosition=petRootInMap.position.clone();petOriginalRotation=petRootInMap.rotation.clone();petOriginalScale=petRootInMap.scale.clone();
+       PM.scene.remove(petRootInMap);M.scene.add(petRootInMap);
+       petRootInMap.position.set(root.position.x-0.85,0,root.position.z+0.65);
+       petRootInMap.scale.multiplyScalar(0.58);
+       petFollowOffset=new THREE.Vector3(-0.85,0,0.65);
+     }
+     root.rotation.y=(M.isVRM&&M.vrmIsV0?Math.PI:0);
+   root.rotation.z=0;
+   yaw=0;pitch=-.08;moveX=0;moveY=0;runFast=false;playerY=0;exploreEmoteId='idle';exploreFxUntil=0;clearTimeout(exploreFxTimer);
+   $('exploreRunBtn').classList.remove('active');
+   M.camera.fov=52;M.camera.position.set(root.position.x,root.position.y+2.25,root.position.z+4.8);M.camera.lookAt(root.position.x,root.position.y+1.05,root.position.z);M.camera.updateProjectionMatrix();
+   M.currentAnim='walk_inplace';M.currentFx='';M.time=0;
+   document.addEventListener('keydown',onKeyDown);document.addEventListener('keyup',onKeyUp);
+   if(typeof EmoteMenu!=='undefined')EmoteMenu.close();
+     lastFrame=performance.now();raf=requestAnimationFrame(tick);
+   })().finally(()=>{openingPromise=null;});
+   return openingPromise;
+ }
+ function close(){
+   if(!active)return;
+   active=false;screen.classList.remove('on');cancelAnimationFrame(raf);keys.clear();viewDragging=false;resetPad();clearTimeout(exploreFxTimer);
+   document.removeEventListener('keydown',onKeyDown);document.removeEventListener('keyup',onKeyUp);
+   const M=Model3D,canvas=$('stage3D'),root=liveRoot(M);
+   if(group&&M.scene){M.scene.remove(group);group.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});group=null;}
+   M.scene.background=null;M.scene.fog=null;
+   if(petRootInMap&&petOriginalScene){
+     M.scene.remove(petRootInMap);petOriginalScene.add(petRootInMap);
+     if(petOriginalPosition)petRootInMap.position.copy(petOriginalPosition);
+     if(petOriginalRotation)petRootInMap.rotation.copy(petOriginalRotation);
+     if(petOriginalScale)petRootInMap.scale.copy(petOriginalScale);
+   }
+   petRootInMap=null;petOriginalScene=null;petOriginalPosition=null;petOriginalRotation=null;petOriginalScale=null;petFollowOffset=null;
+   if(emotePanel){emotePanel.classList.remove('on');emotePanel.style.display='none';if(emoteOriginalParent){if(emoteOriginalNext&&emoteOriginalNext.parentNode===emoteOriginalParent)emoteOriginalParent.insertBefore(emotePanel,emoteOriginalNext);else emoteOriginalParent.appendChild(emotePanel);}}
+   if(oldCanvasParent){if(oldCanvasNext&&oldCanvasNext.parentNode===oldCanvasParent)oldCanvasParent.insertBefore(canvas,oldCanvasNext);else oldCanvasParent.appendChild(canvas);}
+   canvas.style.position='absolute';canvas.style.inset='0';canvas.style.width='100%';canvas.style.height='100%';
+   refreshObserver(M,oldStage||'stageArea');
+   if(M.controls){M.controls.enabled=oldControlsEnabled;M.controls.enableDamping=oldControlsDamping;M.controls.autoRotate=oldControlsAutoRotate;}
+   if(root){root.position.set(0,0,0);root.rotation.x=0;root.rotation.z=0;root.rotation.y=(M.isVRM&&M.vrmIsV0)?Math.PI:0;}
+   M.currentAnim='idle';M.currentFx='';M.time=0;
+   M.camera.fov=35;M.fitCamera(root);M.resize();
+   $('hub').classList.remove('hidden');
+   moveX=moveY=0;resetPad();
+ }
+ function onKeyDown(e){if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D',' '].includes(e.key)){if(active)e.preventDefault();keys.add(e.key.toLowerCase());if(e.key===' ')exploreJump();}}
+ function onKeyUp(e){keys.delete(e.key.toLowerCase());}
+ function resetPad(){draggingPad=false;moveX=moveY=0;knob.style.left='50%';knob.style.top='50%';knob.style.transform='translate(-50%,-50%)';}
+ function setPad(e){
+   const r=pad.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,dx=e.clientX-cx,dy=e.clientY-cy,limit=r.width*.34,len=Math.hypot(dx,dy)||1,k=Math.min(1,limit/len);
+   moveX=dx/limit*k;moveY=dy/limit*k;
+   knob.style.left=`${50+moveX*34}%`;knob.style.top=`${50+moveY*34}%`;knob.style.transform='translate(-50%,-50%)';
+ }
+ pad.addEventListener('pointerdown',e=>{draggingPad=true;touchId=e.pointerId;pad.setPointerCapture?.(e.pointerId);setPad(e);e.preventDefault();});
+ pad.addEventListener('pointermove',e=>{if(draggingPad&&e.pointerId===touchId){setPad(e);e.preventDefault();}});
+ const endPad=e=>{if(!draggingPad||e.pointerId===touchId)resetPad();};
+ pad.addEventListener('pointerup',endPad);pad.addEventListener('pointercancel',endPad);
+ viewport.addEventListener('pointerdown',e=>{
+   if(!active||e.isPrimary===false||e.button>0||pad.contains(e.target)||e.target.closest('.explore-actions')||e.target.closest('.explore-top')||e.target.closest('.emote-panel'))return;
+   viewDragging=true;lastX=e.clientX;lastY=e.clientY;
+   try{viewport.setPointerCapture?.(e.pointerId);}catch(_){}
+   e.preventDefault();
+ });
+ viewport.addEventListener('pointermove',e=>{if(!viewDragging||e.isPrimary===false)return;yaw+=(e.clientX-lastX)*.004;pitch=Math.max(-.22,Math.min(.10,pitch+(e.clientY-lastY)*.0018));lastX=e.clientX;lastY=e.clientY;});
+ const endView=()=>{viewDragging=false;};viewport.addEventListener('pointerup',endView);viewport.addEventListener('pointercancel',endView);
+ function tick(now){
+   if(!active)return;
+   raf=requestAnimationFrame(tick);
+   const M=Model3D,root=liveRoot(M);if(!root||!M.camera)return;
+   const dt=Math.min(.045,Math.max(.001,(now-lastFrame)/1000));lastFrame=now;worldTime+=dt;
+   let ix=moveX, iz=moveY;
+   if(keys.has('a')||keys.has('arrowleft'))ix-=1;if(keys.has('d')||keys.has('arrowright'))ix+=1;
+   if(keys.has('w')||keys.has('arrowup'))iz-=1;if(keys.has('s')||keys.has('arrowdown'))iz+=1;
+   const ilen=Math.hypot(ix,iz);if(ilen>1){ix/=ilen;iz/=ilen;}
+   const moving=Math.abs(ix)+Math.abs(iz)>.08,speed=(runFast?6.2:3.3)*dt;
+   const sy=Math.sin(yaw),cy=Math.cos(yaw);
+   if(moving){
+     // Convert joystick/WASD input into camera-relative world movement.
+     const forward=-iz,right=ix;
+     const worldX=right*cy+forward*sy;
+     const worldZ=-right*sy-forward*cy;
+     root.position.x+=worldX*speed;
+     root.position.z+=worldZ*speed;
+     root.position.x=Math.max(-42,Math.min(42,root.position.x));root.position.z=Math.max(-100,Math.min(20,root.position.z));
+     root.rotation.y=(M.isVRM&&M.vrmIsV0?Math.PI:0)+Math.atan2(worldX,-worldZ);
+     M.currentAnim='walk_inplace';M.currentFx='';
+     if(M.restQuat&&Object.keys(M.restQuat).length&&M.animLib.walk_inplace)M.animLib.walk_inplace(worldTime*(runFast?1.65:1));
+   }else{
+     // Keep FX intact until its timer ends; otherwise preserve the selected emote.
+     if(now>=exploreFxUntil){
+       if(!exploreEmoteId||exploreEmoteId==='walk_inplace'||exploreEmoteId==='none')M.currentAnim='idle';
+       else { M.currentAnim=exploreEmoteId; M.currentFx=''; }
+       // Pose updates are handled once by Model3D.loop().
+     }
+   }
+   if(now<jumpUntil){const t=(jumpUntil-now)/520;playerY=Math.sin((1-t)*Math.PI)*1.05;}else playerY=0;
+   root.position.y=playerY;
+   if(petRootInMap){
+     const petSide=new THREE.Vector3(-.82,0,.62).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);
+     petRootInMap.position.set(root.position.x+petSide.x,0,root.position.z+petSide.z);
+     const petBase=(Model3DPet.isVRM&&Model3DPet.vrmIsV0)?Math.PI:0;
+     petRootInMap.rotation.y=petBase+Math.sin(worldTime*.7)*.12;
+   }
+   const camDist=runFast?4.6:5.2;
+   // Stable third-person follow: camera stays behind the character and looks at chest height.
+   const tx=root.position.x-Math.sin(yaw)*camDist;
+   const tz=root.position.z+cy*camDist;
+   const targetCamera=new THREE.Vector3(tx,root.position.y+2.15+pitch*1.5,tz);
+   M.camera.position.copy(targetCamera);
+   M.camera.lookAt(root.position.x,root.position.y+1.25,root.position.z);
+   M.camera.updateProjectionMatrix();
+   $('exploreCoords').textContent=`X ${root.position.x.toFixed(0)} · Z ${root.position.z.toFixed(0)}`;
+   if(group){group.children.forEach(o=>{if(o.geometry&&o.geometry.type==='TorusGeometry')o.rotation.z+=dt*.18;});}
+ }
+  window.explore3DIsActive=()=>active;
+  window.explorePlayEmote=(e)=>{
+    if(!active||!e)return;
+    const M=Model3D;
+    if(e.type==='anim'){
+      exploreEmoteId=e.id==='none'?'idle':e.id;
+      M.setAnimation(exploreEmoteId);
+      if(e.id==='spin'){
+        const root=liveRoot(M);if(root)root.rotation.y+=Math.PI*2;
+      }
+    }else{
+      M.setFx(e.id);exploreFxUntil=performance.now()+2800;
+      clearTimeout(exploreFxTimer);
+      exploreFxTimer=setTimeout(()=>{if(active){M.currentFx='';M.currentAnim='idle';M.fxTime=0;M.time=0;if(M.resetPose)M.resetPose();exploreEmoteId='idle';exploreFxUntil=0;}},2800);
+    }
+    if(typeof EmoteMenu!=='undefined'){EmoteMenu.activeId=e.id;EmoteMenu.highlight(e.id);}
+  };
+  window.toggleExploreEmote=()=>{if(!active||!emotePanel)return;const on=!emotePanel.classList.contains('on');emotePanel.style.display=on?'flex':'none';emotePanel.classList.toggle('on',on);};
+  window.openExplore3D=open;window.closeExplore3D=close;
+ window.exploreJump=()=>{if(active)jumpUntil=performance.now()+520;};
+ window.exploreRunToggle=()=>{if(!active)return;runFast=!runFast;$('exploreRunBtn').classList.toggle('active',runFast);};
+ window.addEventListener('resize',()=>{if(active&&Model3D)Model3D.resize();});
 })();
 </script>
 
