@@ -1595,6 +1595,7 @@
 
 #statsBox{display:none}
 #statsBox.on{display:block}
+#statsBox.hidden{display:none !important}
 .st-wrap{display:flex;flex-direction:column;gap:14px}
 .st-tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;width:fit-content;box-shadow:var(--shadow-sm)}
 .st-tab{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;background:transparent;color:var(--txt-2);font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:.16s}
@@ -1854,13 +1855,6 @@
       <button class="side-btn" data-tab="CREATE" onclick="switchTab('CREATE')">
         <i class="fas fa-wand-magic-sparkles"></i> Tạo đề
       </button>
-      <button class="side-btn" data-tab="STATS" onclick="switchTab('STATS')">
-        <i class="fas fa-chart-pie"></i> Thống kê
-      </button>
-      <div class="side-group-label">Giải trí</div>
-      <button class="side-btn" onclick="openRPGGame()">
-        <i class="fas fa-gamepad"></i> Game RPG
-      </button>
     </aside>
 
     <main class="main">
@@ -1962,6 +1956,12 @@ B. Đúng"></textarea>
           </button>
           <button class="qbtn" onclick="changeSubject()">
             <i class="fas fa-book-open"></i> Đổi môn
+          </button>
+          <button class="qbtn" data-tab="STATS" onclick="switchTab('STATS')">
+            <i class="fas fa-chart-pie"></i> Thống kê
+          </button>
+          <button class="qbtn" onclick="openRPGGame()">
+            <i class="fas fa-gamepad"></i> Game RPG
           </button>
         </div>
       </div>
@@ -2644,22 +2644,29 @@ document.querySelectorAll(".chip").forEach(chip => {
 });
 
 function switchTab(type){
-    const previousTab=currentTab;
     currentTab=type;
     document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("activeTab",b.dataset.tab===type));
+
     document.getElementById("noteBox").classList.add("hidden");
     document.getElementById("createBox").classList.add("hidden");
     document.getElementById("examTop").classList.add("hidden");
+
     document.getElementById("infoStrip").classList.remove("hidden");
     document.getElementById("chipsRow").classList.remove("hidden");
-    document.getElementById("statsBox").classList.remove("hidden");
+    document.getElementById("statsBox").classList.add("hidden");
+    document.getElementById("statsBox").classList.remove("on");
+
+    ["quiz-container","quiz-container-TF","quiz-container-MC"].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.classList.add("hidden");
+    });
+
     resetChips();
 
     if(type==="NOTE"){
         document.getElementById("noteBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
-        document.getElementById("statsBox").classList.add("hidden");
         clearInterval(examInterval);
         loadNote();
         return;
@@ -2668,13 +2675,11 @@ function switchTab(type){
         document.getElementById("createBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
-        document.getElementById("statsBox").classList.add("hidden");
         clearInterval(examInterval);
         return;
     }
     if(type==="EXAM"){
         document.getElementById("examTop").classList.remove("hidden");
-        document.getElementById("statsBox").classList.add("hidden");
         createExam();
         startExam();
         buildQuizHTML();
@@ -2683,16 +2688,19 @@ function switchTab(type){
         return;
     }
     if(type==="STATS"){
-        document.getElementById("statsBox").classList.add("on");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
+        const sb = document.getElementById("statsBox");
+        sb.classList.remove("hidden");
+        sb.classList.add("on");
         clearInterval(examInterval);
         if(typeof window.renderStatsAll === "function") window.renderStatsAll();
+        if(typeof window.renderStatsBest === "function") window.renderStatsBest();
+        if(typeof window.renderStatsWrong === "function") window.renderStatsWrong();
+        window.scrollTo({top:0,behavior:"smooth"});
         return;
     }
-    document.getElementById("statsBox").classList.remove("on");
 
-    clearInterval(examInterval);
     const target=getActiveContainer();
     if(!target.children.length){
         buildQuizHTML();
@@ -3830,9 +3838,14 @@ window.renderStatsAll = function(){
     } else {
         if(prev){
             const lp = stPctOf(latest), pp = stPctOf(prev), d = lp-pp;
-            if(d>0) ins += '<div class="st-insight green"><div class="st-ih">'+SVGI.up+' So với lần trước</div><p>Tăng <b>'+d+'%</b> — từ '+pp+'% lên '+lp+'%</p></div>';
-            else if(d<0) ins += '<div class="st-insight red"><div class="st-ih">'+SVGI.down+' So với lần trước</div><p>Giảm <b>'+Math.abs(d)+'%</b> — từ '+pp+'% xuống '+lp+'%</p></div>';
-            else ins += '<div class="st-insight amber"><div class="st-ih">'+SVGI.flat+' So với lần trước</div><p>Không thay đổi — vẫn <b>'+lp+'%</b></p></div>';
+            const arrow = d > 0 ? '▲' : d < 0 ? '▼' : '●';
+            const color = d > 0 ? '#059669' : d < 0 ? '#b91c1c' : '#b45309';
+            ins += '<div class="st-insight" style="border-left-color:'+color+'">'+
+                '<div class="st-ih" style="color:'+color+'">'+arrow+' So sánh đợt trước ↔ đợt này</div>'+
+                '<p>Đợt trước: <b>'+prev.correct+'/'+stTotal(prev)+'</b> ('+pp+'%) '+
+                '→ Đợt này: <b>'+latest.correct+'/'+stTotal(latest)+'</b> ('+lp+'%)</p>'+
+                '<p class="tip">Chênh lệch: <b style="color:'+color+'">'+(d>=0?'+':'')+d+'%</b></p>'+
+                '</div>';
         } else {
             ins += '<div class="st-insight"><div class="st-ih">'+SVGI.spark+' Lần đầu tiên</div><p>Chưa có lần trước để so sánh.</p></div>';
         }
