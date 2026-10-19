@@ -500,8 +500,6 @@ console.log("[FB] FirebaseAPI ready");
   .hub-btn.set .ic{background:linear-gradient(135deg,#6b7280,#374151);}
   .hub-btn.shop .ic{background:linear-gradient(135deg,#ec4899,#9d174d);box-shadow:0 4px 12px -3px #ec4899;}
 
-
-/* Character wardrobe: real 3D preview inside the existing RPG, not a separate page */
 #characterSelectOverlay{z-index:190;padding:12px;background:rgba(5,3,15,.9)}
 #characterSelectOverlay .character-select-box{width:min(760px,100%);max-height:min(94dvh,900px);overflow:hidden;display:flex;flex-direction:column;border:1px solid rgba(167,139,250,.5);border-radius:22px;background:radial-gradient(ellipse at 50% 0%,rgba(91,33,182,.28),transparent 55%),linear-gradient(160deg,#100b24,#080713 72%);box-shadow:0 24px 90px rgba(0,0,0,.65),0 0 45px rgba(124,58,237,.18)}
 #characterSelectOverlay .character-select-head{display:flex;align-items:center;gap:12px;padding:15px 17px;border-bottom:1px solid rgba(167,139,250,.2)}
@@ -845,8 +843,6 @@ console.log("[FB] FirebaseAPI ready");
   .q-feedback .ft{flex:1;}
   .q-feedback .ft .t{font-size:13px;font-weight:800;color:#fff;}
   .q-feedback .ft .d{font-size:11px;opacity:.85;font-weight:600;margin-top:2px;}
-
-  /* ============ BOSS SCREEN - ANIME/MOBA VIBE ============ */
   #bossScreen{
     position:fixed;inset:0;z-index:120;
     display:none;flex-direction:column;color:#fff;overflow:hidden;
@@ -876,7 +872,6 @@ console.log("[FB] FirebaseAPI ready");
   }
   @keyframes gridPan{from{background-position:0 0,0 0;}to{background-position:38px 38px,38px 38px;}}
 
-  /* TOP BAR - kiểu HUD game */
   #bossScreen .boss-top{
     position:relative;z-index:10;flex:0 0 auto;
     display:flex;align-items:center;gap:10px;
@@ -923,7 +918,6 @@ console.log("[FB] FirebaseAPI ready");
     letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   }
 
-  /* ARENA */
   #bossScreen .boss-arena{
     position:relative;z-index:5;flex:1 1 auto;min-height:0;
     display:flex;flex-direction:column;gap:8px;
@@ -931,7 +925,6 @@ console.log("[FB] FirebaseAPI ready");
     overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
   }
 
-  /* VS HUD - kiểu MOBA */
   #bossScreen .vs-hud{
     display:grid;grid-template-columns:1fr auto 1fr;gap:6px;
     align-items:stretch;flex-shrink:0;
@@ -1063,7 +1056,6 @@ console.log("[FB] FirebaseAPI ready");
     text-transform:uppercase;
   }
 
-  /* PHASE TRACKER - kiểu rank */
   #bossScreen .phase-tracker{
     display:flex;align-items:center;gap:3px;
     padding:7px 8px;border-radius:10px;
@@ -1116,7 +1108,6 @@ console.log("[FB] FirebaseAPI ready");
     border-radius:2px;
   }
 
-  /* BOSS STAGE - anime arena */
   #bossScreen .boss-stage{
     position:relative;flex:0 0 auto;
     min-height:200px;height:32vh;max-height:290px;
@@ -1195,7 +1186,6 @@ console.log("[FB] FirebaseAPI ready");
     to{transform:translate(-50%,-50%) rotate(360deg);}
   }
 
-  /* Boss animations */
   #bossScreen .boss-figure.hit{animation:bossHitAnim .5s;}
   @keyframes bossHitAnim{
     0%,100%{transform:translateX(0) scale(1);}
@@ -1265,7 +1255,6 @@ console.log("[FB] FirebaseAPI ready");
     100%{transform:translateY(24px) rotate(-25deg) scale(.82);opacity:.6;}
   }
 
-  /* Boss loading */
   #bossScreen .boss-loading{
     position:absolute;inset:0;z-index:10;
     display:none;align-items:center;justify-content:center;
@@ -1285,10 +1274,8 @@ console.log("[FB] FirebaseAPI ready");
     letter-spacing:2px;text-transform:uppercase;
   }
 
-  /* BOSS LOG - ẩn hoàn toàn, chỉ dùng floating text */
   #bossScreen .boss-log{display:none!important;}
 
-  /* QUESTION PANEL - anime card */
   #bossScreen .boss-question{
     flex:0 0 auto;
     background:linear-gradient(135deg, rgba(15,23,42,.95), rgba(5,7,15,.95));
@@ -1373,7 +1360,6 @@ console.log("[FB] FirebaseAPI ready");
   #bossScreen .boss-question .q-opt.wrong::before{opacity:1;background:linear-gradient(180deg,#fb7185,#ef4444);}
   #bossScreen .boss-question .q-opt.locked{cursor:default;}
 
-  /* DAMAGE FLOAT - anime style */
   #bossScreen .dmg-float{
     position:absolute;font-family:'Orbitron',sans-serif;
     font-size:20px;font-weight:900;font-style:italic;
@@ -1413,7 +1399,6 @@ console.log("[FB] FirebaseAPI ready");
     box-shadow:0 0 30px rgba(244,63,94,.8), inset 0 0 15px rgba(244,63,94,.2);
   }
 
-  /* Floating battle text (PERFECT!, COMBO!, DAMAGE!) */
   .battle-text{
     position:absolute;left:50%;top:50%;
     transform:translate(-50%,-50%);
@@ -1430,28 +1415,12 @@ console.log("[FB] FirebaseAPI ready");
     40%{transform:translate(-50%,-70%) scale(1.1) rotate(2deg);}
     100%{opacity:0;transform:translate(-50%,-140%) scale(.9) rotate(0);}
   }
-  .battle-text.gold{
-    color:#fbbf24;font-size:32px;
-    text-shadow:0 0 20px #fbbf24, 0 0 40px rgba(251,191,36,.7), 0 3px 0 rgba(0,0,0,.7);
-  }
-  .battle-text.pink{
-    color:#f472b6;font-size:28px;
-    text-shadow:0 0 20px #ec4899, 0 0 40px rgba(236,72,153,.7), 0 3px 0 rgba(0,0,0,.7);
-  }
-  .battle-text.cyan{
-    color:#67e8f9;font-size:28px;
-    text-shadow:0 0 20px #06b6d4, 0 0 40px rgba(6,182,212,.7), 0 3px 0 rgba(0,0,0,.7);
-  }
-  .battle-text.red{
-    color:#fda4af;font-size:30px;
-    text-shadow:0 0 20px #f43f5e, 0 0 40px rgba(244,63,94,.7), 0 3px 0 rgba(0,0,0,.7);
-  }
-  .battle-text.green{
-    color:#6ee7b7;font-size:28px;
-    text-shadow:0 0 20px #10b981, 0 0 40px rgba(16,185,129,.7), 0 3px 0 rgba(0,0,0,.7);
-  }
+  .battle-text.gold{color:#fbbf24;font-size:32px;text-shadow:0 0 20px #fbbf24, 0 0 40px rgba(251,191,36,.7), 0 3px 0 rgba(0,0,0,.7);}
+  .battle-text.pink{color:#f472b6;font-size:28px;text-shadow:0 0 20px #ec4899, 0 0 40px rgba(236,72,153,.7), 0 3px 0 rgba(0,0,0,.7);}
+  .battle-text.cyan{color:#67e8f9;font-size:28px;text-shadow:0 0 20px #06b6d4, 0 0 40px rgba(6,182,212,.7), 0 3px 0 rgba(0,0,0,.7);}
+  .battle-text.red{color:#fda4af;font-size:30px;text-shadow:0 0 20px #f43f5e, 0 0 40px rgba(244,63,94,.7), 0 3px 0 rgba(0,0,0,.7);}
+  .battle-text.green{color:#6ee7b7;font-size:28px;text-shadow:0 0 20px #10b981, 0 0 40px rgba(16,185,129,.7), 0 3px 0 rgba(0,0,0,.7);}
 
-  /* Flash effects */
   #bossScreen.finisher-flash::after{
     content:"";position:absolute;inset:0;z-index:99;pointer-events:none;
     background:radial-gradient(circle at center, rgba(251,191,36,.95), rgba(251,191,36,0) 70%);
@@ -1468,24 +1437,13 @@ console.log("[FB] FirebaseAPI ready");
     animation:flashBurstAnim .6s ease-out;
   }
 
-  /* Screen shake */
   #bossScreen.battle-hit{animation:screenHit .24s ease-out;}
   #bossScreen.battle-crit{animation:screenCrit .48s ease-out;}
   #bossScreen.battle-counter{animation:screenCounter .34s ease-out;}
-  @keyframes screenHit{
-    25%{transform:translateX(-3px);}
-    60%{transform:translateX(3px);}
-  }
-  @keyframes screenCrit{
-    0%,100%{filter:none;}
-    35%{filter:brightness(1.8) saturate(1.5);}
-  }
-  @keyframes screenCounter{
-    25%{transform:translateX(5px);}
-    60%{transform:translateX(-5px);}
-  }
+  @keyframes screenHit{25%{transform:translateX(-3px);}60%{transform:translateX(3px);}}
+  @keyframes screenCrit{0%,100%{filter:none;}35%{filter:brightness(1.8) saturate(1.5);}}
+  @keyframes screenCounter{25%{transform:translateX(5px);}60%{transform:translateX(-5px);}}
 
-  /* WIN / LOSE MODALS - anime */
   .boss-win,.boss-lose{
     position:fixed;inset:0;z-index:200;
     backdrop-filter:blur(20px);
@@ -1509,10 +1467,7 @@ console.log("[FB] FirebaseAPI ready");
   }
   .boss-win-card{border:1.5px solid rgba(251,191,36,.5);color:#fbbf24;box-shadow:0 20px 60px rgba(0,0,0,.8), 0 0 100px rgba(251,191,36,.4);}
   .boss-lose-card{border:1.5px solid rgba(244,63,94,.5);color:#f43f5e;box-shadow:0 20px 60px rgba(0,0,0,.8), 0 0 100px rgba(244,63,94,.4);}
-  @keyframes winPopAnim{
-    0%{opacity:0;transform:scale(.7);}
-    100%{opacity:1;transform:scale(1);}
-  }
+  @keyframes winPopAnim{0%{opacity:0;transform:scale(.7);}100%{opacity:1;transform:scale(1);}}
   .boss-win-card .trophy,.boss-lose-card .skull{
     width:88px;height:88px;border-radius:50%;margin:0 auto 16px;
     display:flex;align-items:center;justify-content:center;
@@ -1527,10 +1482,7 @@ console.log("[FB] FirebaseAPI ready");
     background:linear-gradient(135deg, #f43f5e, #7f1d1d);
     box-shadow:0 0 40px rgba(244,63,94,.8);
   }
-  @keyframes trophyBounceAnim{
-    0%,100%{transform:translateY(0) scale(1);}
-    50%{transform:translateY(-6px) scale(1.05);}
-  }
+  @keyframes trophyBounceAnim{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-6px) scale(1.05);}}
   .boss-win-card h2,.boss-lose-card h2{
     font-family:'Orbitron',sans-serif;
     font-size:24px;font-weight:900;margin-bottom:6px;letter-spacing:2px;
@@ -1575,11 +1527,9 @@ console.log("[FB] FirebaseAPI ready");
   }
   .boss-win-card button:active,.boss-lose-card button:active{transform:translateY(2px);}
 
-  /* RESPONSIVE */
   @media (max-width:380px){
     #bossScreen .boss-top{padding:calc(8px + var(--safe-top)) 10px 8px;gap:8px;}
-    #bossScreen .boss-top .back,
-    #bossScreen .boss-menu-btn{width:34px;height:34px;font-size:12px;}
+    #bossScreen .boss-top .back,#bossScreen .boss-menu-btn{width:34px;height:34px;font-size:12px;}
     #bossScreen .boss-top .info .t{font-size:11px;letter-spacing:1px;}
     #bossScreen .boss-top .info .d{font-size:9px;}
     #bossScreen .boss-arena{padding:8px 8px calc(10px + var(--safe-bottom));gap:6px;}
@@ -1869,7 +1819,6 @@ console.log("[FB] FirebaseAPI ready");
 }
 @media(max-width:380px){#bossScreen .boss-arena{grid-template-rows:auto auto minmax(225px,30vh) minmax(0,1fr)}#bossScreen .boss-stage{min-height:225px!important;height:30vh!important}#bossScreen .boss-question .q-opt{min-height:40px;padding:8px 10px}}
 @media(max-height:700px) and (max-width:680px) and (orientation:portrait){#bossScreen .boss-arena{grid-template-rows:auto auto minmax(205px,29vh) minmax(0,1fr)}#bossScreen .boss-stage{min-height:205px!important;height:29vh!important}#bossScreen .boss-top{padding-top:calc(5px + var(--safe-top));padding-bottom:5px}}
-
 </style>
 
 <style id="vfx-styles">
@@ -1906,9 +1855,7 @@ console.log("[FB] FirebaseAPI ready");
 @media(prefers-reduced-motion:reduce){.vfx-aura,.vfx-particle,.vfx-ring,.vfx-title,.vfx-flash{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
 
-
 <style id="boss-raid-redesign-v2">
-/* Raid interface refresh: new tactical-console layout, gold/ember palette, responsive phone-first. */
 #bossScreen{--raid-bg:#080b0f;--raid-panel:rgba(17,22,27,.94);--raid-line:rgba(225,236,226,.13);--raid-gold:#f8b84e;--raid-hot:#ff4c45;--raid-mint:#8be2b5;background:var(--raid-bg);color:#f5f5ef;font-family:'Be Vietnam Pro',system-ui,sans-serif;}
 #bossScreen::before{background:radial-gradient(ellipse 65% 60% at 18% 20%,rgba(248,184,78,.11),transparent 65%),radial-gradient(ellipse 55% 60% at 86% 54%,rgba(255,76,69,.13),transparent 67%),linear-gradient(145deg,#090d11 0%,#11171b 47%,#080a0d 100%);}
 #bossScreen::after{opacity:.18;background-image:linear-gradient(rgba(207,222,210,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(207,222,210,.08) 1px,transparent 1px);background-size:26px 26px;mask-image:linear-gradient(135deg,#000 0%,transparent 80%);-webkit-mask-image:linear-gradient(135deg,#000 0%,transparent 80%);animation:none;}
@@ -2029,7 +1976,6 @@ console.log("[FB] FirebaseAPI ready");
 @media(prefers-reduced-motion:reduce){#bossScreen .boss-ring,#bossScreen .boss-figure::before{animation:none!important;}}
 </style>
 
-
 <style id="anime-skill-vfx-overhaul">
 #bossScreen .boss-stage{isolation:isolate;--impact-x:68%;--impact-y:49%;}
 #bossScreen .skill-vfx-layer{position:absolute;inset:0;z-index:12;overflow:hidden;pointer-events:none;isolation:isolate;contain:layout paint;}
@@ -2081,62 +2027,60 @@ console.log("[FB] FirebaseAPI ready");
 @keyframes skillTitle{0%{opacity:0;transform:translate(-50%,-18px) scale(.65) skewX(-12deg);filter:blur(5px)}18%{opacity:1;transform:translate(-50%,0) scale(1.08) skewX(-3deg);filter:blur(0)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-15px) scale(1.02);filter:blur(2px)}}
 @keyframes cutIn{0%{opacity:0;transform:translateX(-30%)}35%{opacity:.9}100%{opacity:0;transform:translateX(8%)}}
 @keyframes skillStageShake{0%,100%{transform:translate(0)}20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}60%{transform:translate(-3px,-1px)}80%{transform:translate(2px,2px)}}
-@keyframes skillStageShakeHeavy{0%,100%{transform:translate(0) scale(1)}12%{transform:translate(-7px,3px) scale(1.01)}24%{transform:translate(7px,-3px)}36%{transform:translate(-6px,-2px)}48%{transform:translate(5px,3px)}62%{transform:translate(-3px,1px)}78%{transform:translate(2px,-1px)} }
-@keyframes skillTargetHit{0%,100%{transform:translateX(0) scale(1);filter:brightness(1)}18%{transform:translateX(-7px) scale(.94);filter:brightness(3) saturate(0)}48%{transform:translateX(5px) scale(1.05);filter:brightness(1.9) saturate(1.5)}75%{transform:translateX(-2px) scale(.98)} }
-@keyframes skillTargetCrit{0%,100%{transform:translate(0) scale(1);filter:brightness(1)}15%{transform:translate(-10px,2px) scale(.9);filter:brightness(5) saturate(0)}35%{transform:translate(8px,-3px) scale(1.16);filter:brightness(2.5) saturate(2)}55%{transform:translate(-4px,1px) scale(1.04);filter:brightness(4) saturate(0)} }
+@keyframes skillStageShakeHeavy{0%,100%{transform:translate(0) scale(1)}12%{transform:translate(-7px,3px) scale(1.01)}24%{transform:translate(7px,-3px)}36%{transform:translate(-6px,-2px)}48%{transform:translate(5px,3px)}62%{transform:translate(-3px,1px)}78%{transform:translate(2px,-1px)}}
+@keyframes skillTargetHit{0%,100%{transform:translateX(0) scale(1);filter:brightness(1)}18%{transform:translateX(-7px) scale(.94);filter:brightness(3) saturate(0)}48%{transform:translateX(5px) scale(1.05);filter:brightness(1.9) saturate(1.5)}75%{transform:translateX(-2px) scale(.98)}}
+@keyframes skillTargetCrit{0%,100%{transform:translate(0) scale(1);filter:brightness(1)}15%{transform:translate(-10px,2px) scale(.9);filter:brightness(5) saturate(0)}35%{transform:translate(8px,-3px) scale(1.16);filter:brightness(2.5) saturate(2)}55%{transform:translate(-4px,1px) scale(1.04);filter:brightness(4) saturate(0)}}
 @keyframes skillTargetUltimate{0%{transform:scale(1);filter:brightness(1)}12%{transform:scale(.82);filter:brightness(0)}28%{transform:scale(1.28);filter:brightness(7) saturate(0)}43%{transform:scale(.92);filter:brightness(2) saturate(2)}58%{transform:scale(1.22);filter:brightness(5) saturate(0)}78%{transform:scale(1.06);filter:brightness(2)}100%{transform:scale(1);filter:brightness(1)}}
 @media(prefers-reduced-motion:reduce){.skill-flash,.skill-projectile,.skill-sigil,.skill-core,.skill-ring,.skill-slash,.skill-bolt,.skill-shard,.skill-particle,.skill-title,.skill-cutin,#bossScreen .boss-stage.skill-shake,#bossScreen .boss-stage.skill-shake-heavy,#bossScreen .boss-figure.skill-target-hit,#bossScreen .boss-figure.skill-target-critical,#bossScreen .boss-figure.skill-target-ultimate{animation-duration:.01ms!important;}}
 </style>
 
-
 <style id="lobby-image-integration-camera-fix">
-#stageArea {
+#stageArea{
   background:
     radial-gradient(ellipse 70% 50% at 50% 40%, rgba(124,58,237,.24) 0%, transparent 65%),
     linear-gradient(180deg, #0f0b1a 0%, #161225 50%, #0f0b1a 100%) !important;
 }
-#stageArea::before {
+#stageArea::before{
   content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
   background:linear-gradient(90deg,rgba(7,5,18,.16),transparent 25%,transparent 72%,rgba(7,5,18,.30)),
              linear-gradient(0deg,rgba(8,6,15,.36),transparent 35%,rgba(8,6,15,.12));
 }
-#stage3D {z-index:3!important;background:transparent!important}
-#petCanvas {z-index:4!important;background:transparent!important}
-#stageArea .floor-grid {opacity:.42}
-.lobby-event-cards {
+#stage3D{z-index:3!important;background:transparent!important}
+#petCanvas{z-index:4!important;background:transparent!important}
+#stageArea .floor-grid{opacity:.42}
+.lobby-event-cards{
   position:absolute;right:62px;top:16px;z-index:8;width:min(190px,27%);
   display:flex;flex-direction:column;gap:8px;pointer-events:auto;
 }
-.lobby-event {
+.lobby-event{
   min-height:68px;border:1px solid rgba(160,210,255,.65);border-radius:13px;
   overflow:hidden;position:relative;text-align:left;padding:9px 10px;
   color:#fff;font-family:var(--font);cursor:pointer;
   box-shadow:0 8px 24px rgba(0,0,0,.38),inset 0 0 18px rgba(255,255,255,.08);
   background-size:cover;background-position:center;
 }
-.lobby-event::before {content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,12,30,.86),rgba(6,12,30,.25));}
-.lobby-event span,.lobby-event small {position:relative;display:block;text-shadow:0 2px 8px #000;}
-.lobby-event span {font-size:11px;font-weight:900;letter-spacing:.4px;}
-.lobby-event small {font-size:8px;font-weight:700;margin-top:3px;opacity:.94;}
-.lobby-event.explore-event {background-image:url("assets/lobby-image-1.jpg");border-color:#66caff;}
-.lobby-event.boss-event {background-image:url("assets/lobby-image-2.jpg");border-color:#fb65bc;}
-.lobby-event:active {transform:scale(.97)}
-#exploreViewport {
-  background: radial-gradient(ellipse at 50% 20%, #244b61, #0b1c2a 52%, #071019) !important;
+.lobby-event::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,12,30,.86),rgba(6,12,30,.25));}
+.lobby-event span,.lobby-event small{position:relative;display:block;text-shadow:0 2px 8px #000;}
+.lobby-event span{font-size:11px;font-weight:900;letter-spacing:.4px;}
+.lobby-event small{font-size:8px;font-weight:700;margin-top:3px;opacity:.94;}
+.lobby-event.explore-event{background-image:url("assets/lobby-image-1.jpg");border-color:#66caff;}
+.lobby-event.boss-event{background-image:url("assets/lobby-image-2.jpg");border-color:#fb65bc;}
+.lobby-event:active{transform:scale(.97)}
+#exploreViewport{
+  background:radial-gradient(ellipse at 50% 20%, #244b61, #0b1c2a 52%, #071019) !important;
 }
-@media(max-width:700px) {
-  .lobby-event-cards {right:58px;top:10px;width:clamp(104px,31%,145px);gap:6px;}
-  .lobby-event {min-height:52px;padding:6px 7px;border-radius:10px;}
-  .lobby-event span {font-size:9px;}
-  .lobby-event small {font-size:7px;}
+@media(max-width:700px){
+  .lobby-event-cards{right:58px;top:10px;width:clamp(104px,31%,145px);gap:6px;}
+  .lobby-event{min-height:52px;padding:6px 7px;border-radius:10px;}
+  .lobby-event span{font-size:9px;}
+  .lobby-event small{font-size:7px;}
 }
-@media(max-width:390px) {
-  .lobby-event-cards {right:52px;width:106px;}
-  .lobby-event {min-height:45px;}
-  .lobby-event small {display:none;}
+@media(max-width:390px){
+  .lobby-event-cards{right:52px;width:106px;}
+  .lobby-event{min-height:45px;}
+  .lobby-event small{display:none;}
 }
 </style>
-
 
 <style id="reference-lobby-exact-style">
 #hub.reference-lobby{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:0!important;display:block!important;overflow:hidden!important;background:#09051b url("assets/lobby-image-3.jpg") center center/100% 100% no-repeat!important;}
@@ -2144,7 +2088,8 @@ console.log("[FB] FirebaseAPI ready");
 #hub.reference-lobby>.rpg-top,#hub.reference-lobby>.exp-strip,#hub.reference-lobby>.stage-area,#hub.reference-lobby>.hub-menu{display:none!important}
 #referenceLobbyHotspots{position:absolute;inset:0;z-index:20;pointer-events:none;}
 #referenceLobbyHotspots button{position:absolute;display:block;border:0;background:transparent;border-radius:12px;padding:0;margin:0;pointer-events:auto;cursor:pointer;touch-action:manipulation;outline:none;color:transparent;-webkit-tap-highlight-color:transparent}
-#referenceLobbyHotspots .lobby-live-avatar{position:absolute;left:10.2%;top:2.1%;width:6.4%;height:6.4%;min-width:28px;min-height:28px;max-width:64px;max-height:64px;object-fit:cover;border-radius:50%;border:2px solid #e9c8ff;box-shadow:0 0 0 2px #4b287d,0 0 16px #c084fc88;z-index:2;cursor:pointer;pointer-events:auto;background:#21123b}#referenceLobbyHotspots button:focus-visible{outline:2px solid #e9b8ff;background:#ffffff10}
+#referenceLobbyHotspots .lobby-live-avatar{position:absolute;left:10.2%;top:2.1%;width:6.4%;height:6.4%;min-width:28px;min-height:28px;max-width:64px;max-height:64px;object-fit:cover;border-radius:50%;border:2px solid #e9c8ff;box-shadow:0 0 0 2px #4b287d,0 0 16px #c084fc88;z-index:2;cursor:pointer;pointer-events:auto;background:#21123b}
+#referenceLobbyHotspots button:focus-visible{outline:2px solid #e9b8ff;background:#ffffff10}
 #referenceLobbyHotspots .hit-back{left:1.5%;top:1%;width:6.5%;height:9.5%}
 #referenceLobbyHotspots .hit-profile{left:9.4%;top:1%;width:16%;height:9.5%}
 #referenceLobbyHotspots .hit-emote,#referenceLobbyHotspots .hit-magic{display:none!important}
@@ -2192,7 +2137,6 @@ console.log("[FB] FirebaseAPI ready");
  #referenceLobbyHotspots .hit-skill-tab{left:91%;bottom:1%;width:8%;height:13%}
 }
 </style>
-
 
 <style id="keep-live-3d-models-fix">
 #stageArea{position:relative!important;overflow:hidden!important;background:radial-gradient(ellipse at 50% 28%,rgba(87,56,175,.35),transparent 58%),linear-gradient(180deg,#100d24,#21174a 58%,#080817)!important}
@@ -2435,7 +2379,6 @@ console.log("[FB] FirebaseAPI ready");
     </div>
   </div>
 </div>
-
 
 <div class="overlay" id="characterSelectOverlay" aria-label="Kho nhân vật">
   <div class="character-select-box">
@@ -2906,8 +2849,6 @@ function readModelRevision(response) {
   const etag = response.headers.get("etag") || "";
   const lastModified = response.headers.get("last-modified") || "";
   const size = response.headers.get("content-length") || "";
-  // An ETag or Last-Modified header lets us validate IndexedDB against the remote file
-  // without downloading the whole model again. Size alone is not a reliable revision.
   const signature = (etag || lastModified) ? `${etag}|${lastModified}|${size}` : "";
   return { etag, lastModified, size, signature };
 }
@@ -2916,24 +2857,16 @@ async function probeModelRevision(url) {
   const candidates = getModelURLCandidates(url);
   for (const candidate of candidates) {
     try {
-      const response = await fetch(candidate, {
-        method: "HEAD",
-        mode: "cors",
-        credentials: "omit",
-        cache: "no-cache"
-      });
+      const response = await fetch(candidate, { method: "HEAD", mode: "cors", credentials: "omit", cache: "no-cache" });
       if (!response.ok) continue;
       const revision = readModelRevision(response);
       if (revision.signature) return { ...revision, probeUrl: candidate };
-    } catch(e) {
-      // HEAD is not supported by every host; the loader will then fetch a fresh copy.
-    }
+    } catch(e) {}
   }
   return null;
 }
 const ModelDB = {
-  db: null,
-  opening: null,
+  db: null, opening: null,
   async open() {
     if (this.db) return this.db;
     if (this.opening) return this.opening;
@@ -3546,7 +3479,7 @@ function createModel3D(opts) {
       box.getSize(size); box.getCenter(center);
       if (size.y === 0 || !isFinite(size.y)) return;
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      
+
       if (this.isPet) {
         const dist = Math.max(size.y * 2.2, size.z * 2.5, maxDim * 2.0);
         this.camera.position.set(center.x, center.y + size.y * 0.1, center.z + dist);
@@ -3561,7 +3494,7 @@ function createModel3D(opts) {
           this.camera.lookAt(center.x, center.y, center.z);
         }
       }
-      
+
       this.camera.near = Math.max(0.01, maxDim * 0.001);
       this.camera.far = maxDim * 100;
       this.camera.updateProjectionMatrix();
@@ -4027,7 +3960,6 @@ async function loadModelFromURL(url, target, slotId, options = {}) {
 
   M._loading = true;
   try {
-    // Fast path: use the local blob first. Network revision checks happen after the model is visible.
     if (!forceRefresh) {
       try {
         const cached = await ModelDB.get(cacheKey);
@@ -4049,17 +3981,12 @@ async function loadModelFromURL(url, target, slotId, options = {}) {
       }
     }
 
-    // Cold start: do not spend an extra round trip on HEAD before the actual model download.
     Logger.push("info", `[${target}] Tải model ${slotId}`);
     const candidates = getModelURLCandidates(url);
     let blob = null, usedUrl = "", responseRevision = null;
     for (const candidate of candidates) {
       try {
-        const res = await fetch(candidate, {
-          mode: "cors",
-          credentials: "omit",
-          cache: forceRefresh ? "no-store" : "no-cache"
-        });
+        const res = await fetch(candidate, { mode: "cors", credentials: "omit", cache: forceRefresh ? "no-store" : "no-cache" });
         if (!res.ok) throw new Error("HTTP " + res.status);
         const b = await res.blob();
         if (!b.size) throw new Error("empty model");
@@ -4108,7 +4035,6 @@ async function refreshCachedModelInBackground(url, target, slotId) {
   try { cached = await ModelDB.get(cacheKey); } catch(e) { return; }
   if (!cached?.blob || cached.sourceUrl !== sourceUrl) return;
 
-  // A quick metadata-only request confirms whether the remote file changed. Do not block first paint.
   const remoteRevision = await probeModelRevision(url).catch(() => null);
   if (!remoteRevision?.signature) return;
   if (cached.revisionSignature && cached.revisionSignature === remoteRevision.signature) return;
@@ -4126,11 +4052,10 @@ async function refreshCachedModelInBackground(url, target, slotId) {
       const gotRevision = readModelRevision(res);
       if (gotRevision.signature) responseRevision = gotRevision;
       break;
-    } catch(e) { /* try next CDN/source */ }
+    } catch(e) {}
   }
   if (!blob) return;
 
-  // Do not overwrite a newer URL saved while this background request was running.
   const latest = await ModelDB.get(cacheKey).catch(() => null);
   if (latest?.sourceUrl !== sourceUrl) return;
   const name = decodeURIComponent(new URL(usedUrl).pathname.split("/").pop() || slotId);
@@ -4140,7 +4065,6 @@ async function refreshCachedModelInBackground(url, target, slotId) {
   await ModelDB.save(cacheKey, fileBlob, name, sourceUrl, responseRevision).catch(() => {});
   Logger.push("info", `[CacheRefresh] Đã cập nhật model ${target}/${slotId} ở nền`);
 
-  // Swap the live model only if that exact slot is still active; otherwise the fresh blob is used next time.
   if (M._loadedSlot === cacheKey && M._loadedSourceUrl === sourceUrl && !M._loading) {
     M._loading = true;
     try {
@@ -4193,7 +4117,6 @@ async function prefetchModelURL(url, target, slotId) {
 async function prefetchOtherModels() {
   const fb = GameState.data.firebaseModels || {};
   const activeKeys = new Set();
-  // Only skip a slot if it really finished loading; failed active models may retry in background.
   if ((Model3D.currentVRM || Model3D.currentGLB) && Model3D._loadedSlot) activeKeys.add(Model3D._loadedSlot);
   if ((Model3DPet.currentVRM || Model3DPet.currentGLB) && Model3DPet._loadedSlot) activeKeys.add(Model3DPet._loadedSlot);
   if ((Model3DBoss.currentVRM || Model3DBoss.currentGLB) && Model3DBoss._loadedSlot) activeKeys.add(Model3DBoss._loadedSlot);
@@ -4220,10 +4143,7 @@ async function prefetchOtherModels() {
   Logger.push("ok", "[Prefetch] Hoàn tất cache nền");
 }
 
-function scheduleModelPrefetch() {
-  // Deliberately do not download every unused character/pet/boss at startup.
-  // A slot is downloaded and cached when the player selects it; this preserves bandwidth and CPU on phones.
-}
+function scheduleModelPrefetch() {}
 
 function showPetLabel(name) {
   const l = document.getElementById("petLabel");
@@ -4280,7 +4200,6 @@ async function pullFirebaseModels() {
         const remoteEntry = merged[slot];
         const localTime = Number(localEntry?.updatedAt || 0);
         const remoteTime = Number(remoteEntry?.updatedAt || 0);
-        // A newer local update must not be replaced by an older/stale remote entry.
         if (localEntry?.url && (!remoteEntry?.url || localTime > remoteTime)) merged[slot] = localEntry;
       });
       return merged;
@@ -4294,7 +4213,6 @@ async function pullFirebaseModels() {
     Logger.push("ok", `[FB] Pull: ${Object.keys(chars||{}).length} chars, ${Object.keys(pets||{}).length} pets, ${Object.keys(boss||{}).length} boss`);
   } catch(e) { Logger.push("err", "[FB] pull error: " + e.message); }
 }
-
 
 window.refreshEquippedModels = async function() {
   if (window._refreshingEquippedModels) {
@@ -4357,7 +4275,6 @@ function renderInventory(){
   entries.forEach(it=>{const el=document.createElement('div');el.className='shop-item'+(it.equipped?' equipped':'');el.innerHTML=`<div class="swatch"><i class="fas ${it.icon}"></i></div><div class="nm"></div><div style="font-size:10px;color:var(--txt-3);margin-top:4px"></div>${it.equipped?'<div class="tag-equipped">ĐANG DÙNG</div>':''}`;el.querySelector('.nm').textContent=it.name;el.querySelector('div[style]').textContent=it.type;grid.appendChild(el);});
   if(empty)empty.style.display=entries.length?'none':'block';
 }
-
 
 window.switchShopTab = (tab) => {
   currentShopTab = tab;
@@ -4600,7 +4517,6 @@ async function autoSaveAndLoad(category, slotId, rawUrl) {
     input.classList.add("auto-filled");
   }
 
-  // Always persist locally first so the new URL survives when Firebase is offline/unconfigured.
   const name = decodeURIComponent(new URL(converted).pathname.split("/").pop() || slotId);
   if (!GameState.data.firebaseModels) GameState.data.firebaseModels = { chars: {}, pets: {}, boss: {} };
   if (!GameState.data.firebaseModels[category]) GameState.data.firebaseModels[category] = {};
@@ -4671,7 +4587,6 @@ window.deleteSlot = async (category, slotId) => {
   } catch(e) { toast("Lỗi: " + e.message, "gold"); }
 };
 
-
 let selectedCharacterIndex = 0;
 let characterPreviewToken = 0;
 let characterSwipeStartX = null;
@@ -4686,7 +4601,6 @@ window.openCharacterSelect = async function() {
 };
 window.closeCharacterSelect = function() {
   document.getElementById("characterSelectOverlay").classList.remove("on");
-  // Keep the preview cached in memory for quick reopen, but stop pointer controls from capturing touches.
   Model3D.resize(); Model3DPet.resize();
 };
 window.stepCharacter = async function(delta) {
@@ -4739,7 +4653,6 @@ async function loadCharacterPreview(it) {
   status.textContent = "Đang tìm model 3D…";
   try {
     CharacterPreview3D.init(); CharacterPreview3D.resize();
-    // Use the same IndexedDB model cache as the live lobby model first.
     const cached = await ModelDB.get(`char_${it.id}`).catch(() => null);
     if (token !== characterPreviewToken) return;
     if (cached?.blob) {
@@ -4768,7 +4681,6 @@ async function loadCharacterPreview(it) {
       status.textContent = "Không tải được model. Kiểm tra link VRM/GLB trong mục Nạp 3D.";
       return;
     }
-    // If this is the currently equipped character and the live scene has the model, explain cache/source state rather than faking a preview.
     status.textContent = (it.id === activeId && (Model3D.currentVRM || Model3D.currentGLB)) ? "Nhân vật đang hoạt động ở sảnh. Hãy lưu URL của slot trong Nạp 3D để bật xem trước riêng tại đây." : "Ô này chưa có model VRM/GLB. Vào Nạp 3D để gắn model cho ô này.";
   } catch (e) {
     if (token === characterPreviewToken) status.textContent = "Chưa thể mở xem trước 3D: " + (e?.message || "lỗi model");
@@ -5104,7 +5016,6 @@ function updateBossHp() {
   document.getElementById("bossHpPercent").textContent = Math.round(pct) + "%";
 }
 
-// Tạo floating battle text (thay thế log)
 function spawnBattleText(text, colorClass, targetEl) {
   const target = targetEl || document.getElementById("bossFigure") || document.querySelector(".boss-stage");
   if (!target) return;
@@ -5633,19 +5544,16 @@ async function bootRPGModels() {
     Model3DPet.init();
     Model3D.resize();
     Model3DPet.resize();
-    // Boss renderer/model is initialized lazily when the player enters the boss arena.
   } catch(e) { Logger.push("warn", "[Boot] Engine 3D: " + e.message); }
 
   bootSetStatus("Đang chuẩn bị nhân vật...", "Tải từ cache trước, cập nhật mới ở nền");
   const cloudSync = pullFirebaseModels().then(async () => {
-    // If the cloud has a newer URL, reconcile it without keeping the startup screen open.
     await loadEquippedVisualModelsFromState("CloudSync");
   }).catch(e => Logger.push("warn", "[Boot] Đồng bộ nền: " + e.message));
 
   let initialResults = await loadEquippedVisualModelsFromState("Boot");
   let loaded = initialResults.filter(r => r.status === "fulfilled" && r.value).length;
 
-  // If this device has no saved model URLs yet, briefly allow cloud metadata to arrive then try once more.
   if (!loaded) {
     await Promise.race([cloudSync, new Promise(r => setTimeout(r, 900))]);
     const retry = await loadEquippedVisualModelsFromState("BootRetry");
@@ -5659,7 +5567,6 @@ async function bootRPGModels() {
   await new Promise(r => setTimeout(r, 100));
   bootHide();
 
-  // No mass-prefetch at startup: unused model files load only when selected.
   scheduleModelPrefetch();
 }
 
@@ -5855,7 +5762,6 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
 })();
 </script>
 
-
 <script id="anime-skill-vfx-engine">
 (function(){
   'use strict';
@@ -5967,24 +5873,19 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
         const white=add(layer,'skill-flash ultimate',{'--sx':x+'%','--sy':y+'%','--skill-color':'#ffffff'});cleanup(white,800);
       }
     },ultimate?120:75);
-    // Clean all leftover one-shot elements and avoid the effect layer growing over long sessions.
     setTimeout(()=>{if(layer.childElementCount>0&&layer.isConnected){Array.from(layer.children).forEach(el=>{if(!el.classList.contains('skill-vfx-persistent'))el.remove();});}},ultimate?1800:1450);
     screen.classList.remove('battle-hit','battle-crit','battle-counter','battle-victory','battle-death');
     screen.classList.add(kind==='victory'?'battle-victory':kind==='death'?'battle-death':kind==='counter'?'battle-counter':heavy?'battle-crit':'battle-hit');
     setTimeout(()=>screen.classList.remove('battle-hit','battle-crit','battle-counter','battle-victory','battle-death'),750);
     lastFx=Date.now();
   }
-  // Override the old generic burst effect while preserving all existing game call sites.
   window.triggerBossVfx=function(kind){
     let mapped=kind||'hit';
     if(mapped==='crit'&&typeof isFinisherQuestion!=='undefined'&&isFinisherQuestion)mapped='ultimate';
     castSkill(mapped);
   };
-  // The old finisher wrapper already calls triggerBossVfx('crit') on success; this maps to an ultimate
-  // when the finisher question is active, without duplicating game damage/scoring logic.
 })();
 </script>
-
 
 <script id="exploration-world-engine">
 (()=>{
@@ -5993,12 +5894,9 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
  if(!screen||!viewport||!pad||!knob||typeof THREE==='undefined')return;
  let active=false,runFast=false,jumpUntil=0,raf=0,group=null,oldStage=null,oldCanvasParent=null,oldCanvasNext=null,oldControlsEnabled=true,oldControlsDamping=true,oldControlsAutoRotate=false;
  let petRootInMap=null,petOriginalScene=null,petOriginalPosition=null,petOriginalRotation=null,petOriginalScale=null,petFollowOffset=null,openingPromise=null;
-  const emotePanel=document.getElementById('emotePanel');let emoteOriginalParent=emotePanel?.parentNode,emoteOriginalNext=emotePanel?.nextSibling;
+ const emotePanel=document.getElementById('emotePanel');let emoteOriginalParent=emotePanel?.parentNode,emoteOriginalNext=emotePanel?.nextSibling;
  let moveX=0,moveY=0,draggingPad=false,viewDragging=false,lastX=0,lastY=0,yaw=0,pitch=-0.08,exploreEmoteId='idle',exploreFxTimer=null,exploreFxUntil=0;
  let touchId=null,keys=new Set(),lastFrame=0,playerY=0,worldTime=0;
- const worldData={};
- // Model3D / Model3DPet are top-level lexical consts, not window properties.
- // Always prefer the actual live VRM scene, then GLB, regardless of the isVRM flag.
  function liveRoot(manager){
    if(!manager)return null;
    return (manager.currentVRM&&manager.currentVRM.scene)||manager.currentGLB||null;
@@ -6050,17 +5948,14 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
  async function open(){
    if(active||openingPromise)return openingPromise;
    openingPromise=(async()=>{
-     // Reuse the equipped character and pet from the lobby/cache. Never ask the player to upload them again.
      try{
        if(typeof bootRPGModels==='function'){
          if(typeof _rpgModelsBooted!=='undefined'&&!_rpgModelsBooted) await bootRPGModels();
        }
-       // The lobby's live manager is the source of truth; don't demand a second upload/load.
        for(let i=0;i<80&&Model3D._loading;i++) await new Promise(r=>setTimeout(r,100));
        if(!liveRoot(Model3D)&&typeof loadEquippedVisualModelsFromState==='function'){
          await loadEquippedVisualModelsFromState('ExploreReuse');
        }
-       // A model may already be live even when its URL metadata is unavailable.
        for(let i=0;i<50&&!liveRoot(Model3D)&&Model3D._loading;i++) await new Promise(r=>setTimeout(r,100));
      }catch(e){if(typeof Logger!=='undefined')Logger.push('warn','[Explore] Model reuse: '+e.message);}
      const M=Model3D,canvas=$('stage3D');
@@ -6079,7 +5974,6 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
    refreshObserver(M,'exploreViewport');
      group=buildWorld(M);
      root.position.set(0,0,-1);
-     // Attach the existing pet model to the exploration scene; do not create or load a replacement.
      const PM=Model3DPet;
      petRootInMap=liveRoot(PM);
      if(petRootInMap&&PM.scene&&M.scene){
@@ -6159,24 +6053,19 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
    const moving=Math.abs(ix)+Math.abs(iz)>.08,speed=(runFast?6.2:3.3)*dt;
    const sy=Math.sin(yaw),cy=Math.cos(yaw);
    if(moving){
-     // Convert joystick/WASD input into camera-relative world movement.
      const forward=-iz,right=ix;
      const worldX=right*cy+forward*sy;
      const worldZ=-right*sy-forward*cy;
      root.position.x+=worldX*speed;
      root.position.z+=worldZ*speed;
      root.position.x=Math.max(-42,Math.min(42,root.position.x));root.position.z=Math.max(-100,Math.min(20,root.position.z));
-     // This model faces the opposite local axis; add PI so its front follows travel.
-     // Keep the angle tied to the actual world-space movement vector.
      root.rotation.y=Math.atan2(worldX,worldZ)+Math.PI;
      M.currentAnim='walk_inplace';M.currentFx='';
      if(M.restQuat&&Object.keys(M.restQuat).length&&M.animLib.walk_inplace)M.animLib.walk_inplace(worldTime*(runFast?1.65:1));
    }else{
-     // Keep FX intact until its timer ends; otherwise preserve the selected emote.
      if(now>=exploreFxUntil){
        if(!exploreEmoteId||exploreEmoteId==='walk_inplace'||exploreEmoteId==='none')M.currentAnim='idle';
        else { M.currentAnim=exploreEmoteId; M.currentFx=''; }
-       // Pose updates are handled once by Model3D.loop().
      }
    }
    if(now<jumpUntil){const t=(jumpUntil-now)/520;playerY=Math.sin((1-t)*Math.PI)*1.05;}else playerY=0;
@@ -6188,7 +6077,6 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
      petRootInMap.rotation.y=petBase+Math.sin(worldTime*.7)*.12;
    }
    const camDist=runFast?4.6:5.2;
-   // Stable third-person follow: camera stays behind the character and looks at chest height.
    const tx=root.position.x-Math.sin(yaw)*camDist;
    const tz=root.position.z+cy*camDist;
    const targetCamera=new THREE.Vector3(tx,root.position.y+2.15+pitch*1.5,tz);
@@ -6220,6 +6108,381 @@ Logger.push("ok", "RPG v26 ready · Cache-first loading + lazy boss");
  window.exploreJump=()=>{if(active)jumpUntil=performance.now()+520;};
  window.exploreRunToggle=()=>{if(!active)return;runFast=!runFast;$('exploreRunBtn').classList.toggle('active',runFast);};
  window.addEventListener('resize',()=>{if(active&&Model3D)Model3D.resize();});
+})();
+</script>
+
+<script id="integration-npc-vfx-maps">
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const toast2=(m,t)=>typeof window.toast==='function'?window.toast(m,t):console.log('[INT]',m);
+const CFG={mc:'Nhanvatminecrap.html',vfx:'vfx.html',panel:'vfxEmotePanel'};
+let npcGroup=null,npcList=[],currentWorld='crystal',mcReady=false,vfxReady=false,ambientVfx='smoke';
+let structuresGroup=null,lastTick=0;
+
+function hiddenFrame(id,src){
+  let f=$(id);
+  if(!f){f=document.createElement('iframe');f.id=id;f.src=src;
+    f.style.cssText='position:fixed;left:-99999px;top:-99999px;width:2px;height:2px;opacity:0;pointer-events:none;border:0';
+    document.body.appendChild(f);}
+  return f;
+}
+function circlePath(cx,cz,r,n){const a=[];for(let i=0;i<n;i++){const t=i/n*Math.PI*2;a.push({x:cx+Math.cos(t)*r,z:cz+Math.sin(t)*r});}return a;}
+function linePath(x1,z1,x2,z2,n){const a=[];for(let i=0;i<n;i++){const t=i/(n-1||1);a.push({x:x1+(x2-x1)*t,z:z1+(z2-z1)*t});}return a;}
+
+function loadMC(){
+  const fr=hiddenFrame(CFG.mc,CFG.mc);
+  fr.onload=()=>{
+    const w=fr.contentWindow;
+    const tryInit=()=>{
+      if(w&&w.THREE&&w.scene&&w.characterGroup&&typeof w.loadCharacterPreset==='function'){
+        mcReady=true;console.log('[MC] ready');spawnNPCs(w);return;
+      }
+      setTimeout(tryInit,400);
+    };
+    tryInit();
+  };
+}
+
+function cloneChar(src){
+  if(!src)return null;
+  const c=src.clone(true);
+  c.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+  return c;
+}
+
+function spawnNPCs(w){
+  if(!npcGroup)return;
+  const presets=[
+    {type:'enderman',path:circlePath(-6,-12,5,6),speed:1.2,tpEvery:3},
+    {type:'zombie',path:linePath(-3,8,3,8,3),speed:0.6},
+    {type:'cyber',path:circlePath(9,-8,4,5),speed:1.0},
+    {type:'ninja',path:linePath(6,4,10,4,4),speed:1.4},
+    {type:'mage',path:circlePath(0,6,3,5),speed:0.9},
+    {type:'spider',path:linePath(-9,3,-5,3,3),speed:0.7}
+  ];
+  presets.forEach(p=>{
+    try{w.loadCharacterPreset(p.type);}catch(e){console.warn(e);return;}
+    const c=cloneChar(w.characterGroup);
+    if(!c)return;
+    c.scale.setScalar(0.6);
+    c.position.set(p.path[0].x,0,p.path[0].z);
+    npcGroup.add(c);
+    npcList.push({obj:c,path:p.path,nextIdx:1,speed:p.speed,type:p.type,tpEvery:p.tpEvery||0,tpCount:0,pausedUntil:0,label:c.name});
+  });
+  toast2(`🤖 ${npcList.length} NPC vào map`,'success');
+}
+
+function buildNPCGroup(){
+  const M=window.Model3D;
+  if(!M||!M.scene){setTimeout(buildNPCGroup,400);return;}
+  if(npcGroup)return;
+  npcGroup=new THREE.Group();
+  npcGroup.name='NPCGroup';
+  M.scene.add(npcGroup);
+  requestAnimationFrame(npcLoop);
+}
+
+function npcLoop(now){
+  requestAnimationFrame(npcLoop);
+  if(!npcGroup||!npcList.length)return;
+  const dt=Math.min(0.05,(now-lastTick)/1000||0.016);
+  lastTick=now;
+  const t=now*0.001;
+  for(const n of npcList){
+    if(now<n.pausedUntil)continue;
+    const tg=n.path[n.nextIdx];
+    if(!tg)continue;
+    const dx=tg.x-n.obj.position.x,dz=tg.z-n.obj.position.z;
+    const dist=Math.hypot(dx,dz);
+    if(dist<0.15){
+      n.nextIdx=(n.nextIdx+1)%n.path.length;
+      if(n.type==='enderman'&&n.tpEvery){
+        n.tpCount++;
+        if(n.tpCount%n.tpEvery===0)teleportEnderman(n);
+      }
+      continue;
+    }
+    const vx=dx/dist*n.speed*dt,vz=dz/dist*n.speed*dt;
+    n.obj.position.x+=vx;n.obj.position.z+=vz;
+    n.obj.rotation.y=Math.atan2(vx,vz);
+    if(n.type==='spider')n.obj.position.y=0.05+Math.sin(t*4)*0.03;
+    else n.obj.position.y=Math.abs(Math.sin(t*3+n.speed))*0.04;
+  }
+}
+
+function teleportEnderman(n){
+  const old=n.obj.position.clone();
+  enderFx(old);
+  const jump=n.path[Math.floor(Math.random()*n.path.length)];
+  n.obj.position.x=jump.x;n.obj.position.z=jump.z;
+  n.nextIdx=(n.path.indexOf(jump)+1)%n.path.length;
+  n.pausedUntil=performance.now()+400;
+  enderFx(n.obj.position.clone());
+  n.obj.scale.setScalar(0.01);
+  let s=0.01;
+  const g=setInterval(()=>{s+=0.05;if(s>=0.6){s=0.6;clearInterval(g);}n.obj.scale.setScalar(s);},20);
+}
+
+function enderFx(pos){
+  if(!npcGroup)return;
+  const g=new THREE.Group();
+  const geo=new THREE.BoxGeometry(0.06,0.06,0.06);
+  const mat=new THREE.MeshBasicMaterial({color:0xd8b4fe,transparent:true,opacity:0.9});
+  for(let i=0;i<24;i++){
+    const p=new THREE.Mesh(geo,mat);
+    p.position.set(pos.x+(Math.random()-0.5)*1.2,pos.y+(Math.random()-0.5)*1.6,pos.z+(Math.random()-0.5)*1.2);
+    g.add(p);
+  }
+  npcGroup.add(g);
+  setTimeout(()=>{if(npcGroup)npcGroup.remove(g);},800);
+}
+
+function loadVFX(){
+  const fr=hiddenFrame(CFG.vfx,CFG.vfx);
+  fr.onload=()=>{setTimeout(()=>{vfxReady=true;console.log('[VFX] ready');},600);};
+}
+
+function vfxBtnMarkup(){
+  const list=[
+    {id:'smoke',icon:'fa-smog',lb:'Khói'},
+    {id:'frost',icon:'fa-snowflake',lb:'Băng'},
+    {id:'fire',icon:'fa-fire',lb:'Lửa'},
+    {id:'lightning',icon:'fa-bolt',lb:'Sét'},
+    {id:'aura',icon:'fa-sun',lb:'Quang'},
+    {id:'blackhole',icon:'fa-circle-notch',lb:'Hố đen'}
+  ];
+  return list.map(e=>`<button class="vfx-emote-item" data-fx="${e.id}" style="aspect-ratio:1;border-radius:10px;background:rgba(42,34,66,.75);border:1.5px solid rgba(139,92,246,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:#f5f3ff;font-family:inherit;padding:6px 3px;"><i class="fas ${e.icon}" style="font-size:14px;color:#a78bfa;"></i><span style="font-size:8.5px;font-weight:800;">${e.lb}</span></button>`).join('');
+}
+
+function makeVfxUI(){
+  const anchor=$('emoteBtn');
+  if(!anchor){setTimeout(makeVfxUI,500);return;}
+  if($('vfxEmoteBtn'))return;
+  const btn=document.createElement('button');
+  btn.id='vfxEmoteBtn';
+  btn.className='emote-btn';
+  btn.style.cssText='bottom:70px;right:14px;background:linear-gradient(135deg,#06b6d4,#7c3aed);';
+  btn.innerHTML='<i class="fas fa-wand-sparkles"></i>';
+  btn.title='VFX Emote';
+  btn.onclick=openVfxPanel;
+  anchor.parentNode.appendChild(btn);
+
+  const panel=document.createElement('div');
+  panel.id=CFG.panel;
+  panel.style.cssText='position:absolute;bottom:130px;right:14px;z-index:9;width:min(300px,calc(100vw - 28px));background:linear-gradient(135deg,rgba(22,18,37,.98),rgba(15,11,26,.98));backdrop-filter:blur(20px);border:1px solid rgba(139,92,246,.25);border-radius:20px;padding:12px;box-shadow:0 20px 50px rgba(0,0,0,.7);display:none;opacity:0;transform:translateY(10px);transition:.25s;';
+  panel.innerHTML=`<div style="display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#c4b5fd;padding:2px 4px 10px;margin-bottom:8px;border-bottom:1px solid rgba(139,92,246,.15);"><i class="fas fa-wand-magic-sparkles"></i> VFX Emote<button id="vfxCloseBtn" style="margin-left:auto;width:24px;height:24px;border-radius:7px;background:rgba(42,34,66,.75);border:1px solid rgba(139,92,246,.15);color:#8b83a8;cursor:pointer;font-size:11px;">✕</button></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">${vfxBtnMarkup()}</div>`;
+  anchor.parentNode.appendChild(panel);
+  $('vfxCloseBtn').onclick=closeVfxPanel;
+}
+
+function openVfxPanel(){
+  const p=$(CFG.panel);if(!p)return;
+  p.style.display='block';
+  requestAnimationFrame(()=>{p.style.opacity='1';p.style.transform='translateY(0)';});
+  p.querySelectorAll('.vfx-emote-item').forEach(b=>{b.onclick=()=>{playVfx(b.dataset.fx);closeVfxPanel();};});
+}
+function closeVfxPanel(){
+  const p=$(CFG.panel);if(!p)return;
+  p.style.opacity='0';p.style.transform='translateY(10px)';
+  setTimeout(()=>{p.style.display='none';},260);
+}
+
+function playVfx(id){
+  if(!vfxReady){toast2('⏳ VFX chưa sẵn sàng','gold');return;}
+  const w=$(CFG.vfx).contentWindow;
+  const b=w.document.querySelector(`.btn[data-fx="${id}"]`);
+  if(b)b.click();
+  const stage=$('stageArea')||document.querySelector('.stage-area');
+  if(!stage)return;
+  let ov=$('vfxEmoteOverlay');if(ov)ov.remove();
+  ov=document.createElement('canvas');
+  ov.id='vfxEmoteOverlay';
+  ov.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:12;pointer-events:none;mix-blend-mode:screen;';
+  stage.appendChild(ov);
+  const src=w.document.getElementById('fxCanvas');
+  const ctx=ov.getContext('2d');
+  ov.width=src.width;ov.height=src.height;
+  const start=performance.now();
+  const copy=()=>{
+    if(!ov.isConnected)return;
+    const el=performance.now()-start;
+    ov.style.opacity=el>1500?String(Math.max(0,1-(el-1500)/500)):'1';
+    try{ctx.drawImage(src,0,0);}catch(_){}
+    if(el<2000)requestAnimationFrame(copy);else ov.remove();
+  };
+  requestAnimationFrame(copy);
+  const M=window.Model3D;
+  if(M&&(M.currentVRM||M.currentGLB)){
+    const map={smoke:'wave',frost:'none',fire:'dance',lightning:'shock',aura:'dance',blackhole:'spin'};
+    M.setAnimation(map[id]||'wave');
+    setTimeout(()=>{if(M)M.setAnimation('idle');},2000);
+  }
+  toast2(`✨ VFX: ${id}`,'success');
+}
+
+function applyAmbient(id){
+  ambientVfx=id;
+  const vp=$('exploreViewport');if(!vp)return;
+  let ov=$('vfxAmbientOverlay');if(ov)ov.remove();
+  if(!vfxReady){setTimeout(()=>applyAmbient(id),800);return;}
+  const w=$(CFG.vfx).contentWindow;
+  const b=w.document.querySelector(`.btn[data-fx="${id}"]`);
+  if(b)b.click();
+  ov=document.createElement('canvas');
+  ov.id='vfxAmbientOverlay';
+  ov.style.cssText='position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.4;mix-blend-mode:screen;';
+  vp.appendChild(ov);
+  const src=w.document.getElementById('fxCanvas');
+  const ctx=ov.getContext('2d');
+  ov.width=src.width;ov.height=src.height;
+  const loop=()=>{if(!ov.isConnected)return;try{ctx.drawImage(src,0,0);}catch(_){}requestAnimationFrame(loop);};
+  requestAnimationFrame(loop);
+}
+
+function ambientSwitcher(){
+  const vp=$('exploreViewport');if(!vp||$('ambientSwitcher'))return;
+  const d=document.createElement('div');
+  d.id='ambientSwitcher';
+  d.style.cssText='position:absolute;top:70px;right:14px;z-index:8;display:flex;flex-direction:column;gap:5px;';
+  const list=[{id:'smoke',i:'fa-smog'},{id:'frost',i:'fa-snowflake'},{id:'fire',i:'fa-fire'},{id:'lightning',i:'fa-bolt'},{id:'aura',i:'fa-sun'},{id:'blackhole',i:'fa-circle-notch'}];
+  d.innerHTML=`<div style="font-size:8.5px;font-weight:900;letter-spacing:1px;color:#a5f3fc;text-align:center;margin-bottom:2px;text-shadow:0 1px 4px #000;">VFX</div>`+list.map(e=>`<button data-fx="${e.id}" class="amb-fx" style="width:34px;height:34px;border-radius:10px;background:#071722cc;border:1px solid #63eaff55;color:#a5f3fc;font-size:12px;cursor:pointer;backdrop-filter:blur(8px);"><i class="fas ${e.i}"></i></button>`).join('');
+  vp.appendChild(d);
+  d.querySelectorAll('.amb-fx').forEach(b=>{
+    b.onclick=()=>{
+      d.querySelectorAll('.amb-fx').forEach(x=>x.style.borderColor='#63eaff55');
+      b.style.borderColor='#fbbf24';
+      applyAmbient(b.dataset.fx);
+      toast2(`🌍 VFX môi trường: ${b.dataset.fx}`,'success');
+    };
+  });
+}
+
+function clearWorld(){
+  const M=window.Model3D;if(!M||!M.scene)return;
+  const names=['StructuresGroup','WorldDecoration'];
+  names.forEach(n=>{const o=M.scene.getObjectByName(n);if(o)M.scene.remove(o);});
+  structuresGroup=null;
+}
+
+function buildStructures(world){
+  const M=window.Model3D;
+  if(!M||!M.scene){setTimeout(()=>buildStructures(world),400);return;}
+  clearWorld();
+  const g=new THREE.Group();g.name='StructuresGroup';
+  const pal=world==='moon'
+    ? {cry:0xb4c5ff,glow:0x7c8eff,stone:0x2a3050,water:0x4a7dff,gold:0xffd77c,sky:0x0b0f24,fog:0x1a1d3a}
+    : {cry:0x8df5ff,glow:0x30bfe0,stone:0x2b5362,water:0x2a8aff,gold:0xfbbf24,sky:0x091923,fog:0x091923};
+  const mCry=new THREE.MeshStandardMaterial({color:pal.cry,emissive:pal.glow,emissiveIntensity:1.1,roughness:.15,metalness:.4,transparent:true,opacity:.85});
+  const mStone=new THREE.MeshStandardMaterial({color:pal.stone,roughness:.9});
+  const mGold=new THREE.MeshStandardMaterial({color:pal.gold,emissive:pal.gold,emissiveIntensity:.6,roughness:.3,metalness:.8});
+  const mWater=new THREE.MeshStandardMaterial({color:pal.water,emissive:pal.water,emissiveIntensity:.4,transparent:true,opacity:.55,roughness:.1});
+
+  const tb=new THREE.Mesh(new THREE.CylinderGeometry(3,4,1.5,8),mStone);tb.position.set(-16,.75,-30);g.add(tb);
+  const tbo=new THREE.Mesh(new THREE.CylinderGeometry(2,3,10,8),mCry);tbo.position.set(-16,6.5,-30);g.add(tbo);
+  const tt=new THREE.Mesh(new THREE.ConeGeometry(2.5,4,8),mGold);tt.position.set(-16,13.5,-30);g.add(tt);
+  for(let i=0;i<4;i++){
+    const r=new THREE.Mesh(new THREE.TorusGeometry(3.2-i*.2,.08,6,32),new THREE.MeshBasicMaterial({color:pal.glow,transparent:true,opacity:.6}));
+    r.rotation.x=Math.PI/2;r.position.set(-16,3+i*2.5,-30);r.name='towerRing';g.add(r);
+  }
+
+  const tbase=new THREE.Mesh(new THREE.BoxGeometry(10,1,10),mStone);tbase.position.set(15,.5,-32);g.add(tbase);
+  for(let i=0;i<4;i++){
+    const p=new THREE.Mesh(new THREE.CylinderGeometry(.5,.6,6,8),mStone);
+    const off=3.5;
+    p.position.set(15+(i%2?off:-off),3.5,-32+(i<2?-off:off));g.add(p);
+  }
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(7.5,3,4),mCry);roof.position.set(15,8,-32);roof.rotation.y=Math.PI/4;g.add(roof);
+  for(let i=0;i<3;i++){
+    const s=new THREE.Mesh(new THREE.BoxGeometry(4-i*.6,.3,1),mStone);
+    s.position.set(15,.15+i*.3,-26.5+i*.4);g.add(s);
+  }
+
+  const gL=new THREE.Mesh(new THREE.BoxGeometry(.6,5,.6),mGold);gL.position.set(-3,2.5,-18);g.add(gL);
+  const gR=new THREE.Mesh(new THREE.BoxGeometry(.6,5,.6),mGold);gR.position.set(3,2.5,-18);g.add(gR);
+  const gT=new THREE.Mesh(new THREE.BoxGeometry(6.6,.6,.6),mGold);gT.position.set(0,5.2,-18);g.add(gT);
+  const portal=new THREE.Mesh(new THREE.PlaneGeometry(5.4,4.5),new THREE.MeshBasicMaterial({color:pal.glow,transparent:true,opacity:.55,side:THREE.DoubleSide}));
+  portal.position.set(0,2.7,-18);portal.name='portalPlane';g.add(portal);
+
+  const fb=new THREE.Mesh(new THREE.CylinderGeometry(3,3.2,.5,16),mStone);fb.position.set(8,.25,6);g.add(fb);
+  const fw=new THREE.Mesh(new THREE.CylinderGeometry(2.7,2.7,.3,16),mWater);fw.position.set(8,.55,6);fw.name='fountainWater';g.add(fw);
+  const cc=new THREE.Mesh(new THREE.CylinderGeometry(.3,.4,2.5,8),mStone);cc.position.set(8,1.75,6);g.add(cc);
+  const orb=new THREE.Mesh(new THREE.SphereGeometry(.6,16,12),mCry);orb.position.set(8,3.4,6);orb.name='fountainOrb';g.add(orb);
+
+  for(let i=0;i<8;i++){
+    const a=i/8*Math.PI*2,r=10+Math.random()*6;
+    const lx=Math.cos(a)*r,lz=Math.sin(a)*r-12;
+    const l=new THREE.Mesh(new THREE.SphereGeometry(.25,8,6),mGold);
+    l.position.set(lx,2.5+Math.random()*2,lz);
+    l.name='lantern';l.userData.baseY=l.position.y;l.userData.phase=Math.random()*Math.PI*2;
+    g.add(l);
+  }
+
+  if(world==='moon'){
+    for(let i=0;i<8;i++){
+      const p=new THREE.Mesh(new THREE.BoxGeometry(3,.3,1.2),mStone);
+      p.position.set(0,.15,-40-i*1.3);g.add(p);
+    }
+    for(let i=0;i<14;i++){
+      const side=i%2?1:-1,cx=side*(12+Math.random()*15),cz=-20-Math.random()*30,h=2+Math.random()*4;
+      const sh=new THREE.Mesh(new THREE.ConeGeometry(.6+Math.random()*.4,h,5),mCry);
+      sh.position.set(cx,h/2,cz);sh.rotation.y=Math.random()*Math.PI;g.add(sh);
+    }
+  }
+
+  M.scene.add(g);structuresGroup=g;
+  M.scene.background=new THREE.Color(pal.sky);
+  if(M.scene.fog)M.scene.fog.color=new THREE.Color(pal.fog);
+  requestAnimationFrame(animStructures);
+  toast2(`🏛️ Map: ${world==='moon'?'Thánh địa Ánh Trăng':'Thung lũng Pha lê'}`,'gold');
+}
+
+function animStructures(){
+  const M=window.Model3D;if(!M||!M.scene||!structuresGroup)return;
+  requestAnimationFrame(animStructures);
+  const t=performance.now()*0.001;
+  structuresGroup.traverse(o=>{
+    if(o.name==='towerRing')o.rotation.z+=0.004;
+    if(o.name==='portalPlane'){o.material.opacity=.4+Math.sin(t*2)*.2;}
+    if(o.name==='fountainOrb'){o.position.y=3.4+Math.sin(t*1.5)*.15;o.rotation.y+=.01;}
+    if(o.name==='lantern'){o.position.y=o.userData.baseY+Math.sin(t+o.userData.phase)*.3;}
+    if(o.name==='fountainWater'){o.material.opacity=.5+Math.sin(t*3)*.1;}
+  });
+}
+
+function makeWorldSwitcher(){
+  const vp=$('exploreViewport');if(!vp||$('worldSwitcher'))return;
+  const b=document.createElement('button');
+  b.id='worldSwitcher';
+  b.style.cssText='position:absolute;top:14px;right:14px;z-index:9;padding:8px 12px;border-radius:10px;background:#071722cc;border:1px solid #63eaff55;color:#a5f3fc;font-size:10px;font-weight:800;cursor:pointer;backdrop-filter:blur(8px);letter-spacing:1px;';
+  b.innerHTML=`<i class="fas fa-globe"></i> ${currentWorld==='crystal'?'Ánh Trăng':'Pha lê'}`;
+  b.onclick=()=>{
+    currentWorld=currentWorld==='crystal'?'moon':'crystal';
+    buildStructures(currentWorld);
+    b.innerHTML=`<i class="fas fa-globe"></i> ${currentWorld==='crystal'?'Ánh Trăng':'Pha lê'}`;
+  };
+  vp.appendChild(b);
+}
+
+const _origOpen=window.openExplore3D;
+window.openExplore3D=function(){
+  if(typeof _origOpen==='function')_origOpen.apply(this,arguments);
+  setTimeout(()=>{
+    buildNPCGroup();
+    buildStructures(currentWorld);
+    ambientSwitcher();
+    makeWorldSwitcher();
+    setTimeout(()=>applyAmbient(ambientVfx),1200);
+  },600);
+};
+
+function boot(){
+  loadMC();loadVFX();makeVfxUI();
+  setTimeout(()=>{buildNPCGroup();},1500);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
+else boot();
+console.log('[INT] integration module loaded');
 })();
 </script>
 
