@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VFX Playground — Full</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        background: #06060a; min-height: 100vh;
+        display: flex; flex-direction: column; align-items: center;
+        font-family: 'Segoe UI', system-ui, sans-serif; color: #ccd;
+        overflow-x: hidden; user-select: none;
+    }
+    h1 {
+        margin: 18px 0 8px; font-size: 22px; letter-spacing: 6px;
+        text-transform: uppercase; font-weight: 300;
+        background: linear-gradient(90deg, #6cf, #f6c, #fc6, #6cf);
+        background-size: 300% 100%;
+        -webkit-background-clip: text; background-clip: text;
+        color: transparent;
+        animation: hue 8s linear infinite;
+    }
+    @keyframes hue { to { background-position: 300% 0; } }
+    .stage {
+        position: relative; width: min(94vw, 1000px); height: min(66vh, 620px);
+        border-radius: 16px; overflow: hidden;
+        background: #020204;
+        box-shadow: 0 0 0 1px rgba(120,160,255,0.12),
+                    0 0 80px rgba(80,120,255,0.06),
+                    inset 0 0 120px rgba(0,0,0,0.9);
+        transition: box-shadow 0.6s ease, background 0.6s ease;
+    }
+    .stage[data-fx="fire"] {
+        box-shadow: 0 0 0 1px rgba(255,120,60,0.2),
+                    0 0 100px rgba(255,80,20,0.15),
+                    inset 0 0 120px rgba(0,0,0,0.9);
+        background: radial-gradient(circle at 50% 80%, #1a0a05 0%, #030306 80%);
+    }
+    .stage[data-fx="frost"] {
+        box-shadow: 0 0 0 1px rgba(100,180,255,0.2),
+                    0 0 100px rgba(80,150,255,0.12),
+                    inset 0 0 120px rgba(0,0,0,0.9);
+        background: radial-gradient(circle at 50% 40%, #0a1220 0%, #020408 80%);
+    }
+    .stage[data-fx="lightning"] {
+        box-shadow: 0 0 0 1px rgba(180,120,255,0.2),
+                    0 0 100px rgba(160,80,255,0.12),
+                    inset 0 0 120px rgba(0,0,0,0.9);
+        background: radial-gradient(circle at 50% 40%, #100a1a 0%, #020204 80%);
+    }
+    .stage[data-fx="aura"] {
+        box-shadow: 0 0 0 1px rgba(100,255,180,0.2),
+                    0 0 100px rgba(80,255,150,0.12),
+                    inset 0 0 120px rgba(0,0,0,0.9);
+        background: radial-gradient(circle at 50% 50%, #0a1a10 0%, #020604 80%);
+    }
+    .stage[data-fx="blackhole"] {
+        box-shadow: 0 0 0 1px rgba(220,100,255,0.2),
+                    0 0 100px rgba(180,80,255,0.15),
+                    inset 0 0 120px rgba(0,0,0,0.95);
+        background: radial-gradient(circle at 50% 50%, #0e0518 0%, #010002 80%);
+    }
+    .stage[data-fx="smoke"] {
+        box-shadow: 0 0 0 1px rgba(140,160,200,0.12),
+                    0 0 60px rgba(80,100,160,0.06),
+                    inset 0 0 120px rgba(0,0,0,0.9);
+        background: radial-gradient(circle at 50% 50%, #0e0e14 0%, #020204 80%);
+    }
+    canvas { display: block; width: 100%; height: 100%; }
+
+    .controls {
+        display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+        margin: 22px 10px 10px; max-width: 1000px; padding: 0 10px;
+    }
+    .btn {
+        position: relative; padding: 12px 22px;
+        border: 1px solid rgba(255,255,255,0.12); border-radius: 40px;
+        background: rgba(20,24,40,0.6); backdrop-filter: blur(6px);
+        color: #aab; font-size: 13px; letter-spacing: 1.5px;
+        text-transform: uppercase; cursor: pointer;
+        transition: all .25s cubic-bezier(.2,.8,.3,1);
+        overflow: hidden; font-family: inherit;
+    }
+    .btn::before {
+        content: ''; position: absolute; inset: 0;
+        background: var(--glow, #6cf); opacity: 0;
+        filter: blur(12px); transition: opacity .3s; z-index: -1;
+    }
+    .btn:hover { color: #fff; border-color: var(--glow, #6cf); transform: translateY(-2px); }
+    .btn:hover::before { opacity: .35; }
+    .btn.active {
+        color: #fff; border-color: var(--glow, #6cf);
+        background: rgba(30,36,60,0.9);
+        box-shadow: 0 0 24px var(--glow, #6cf), inset 0 0 12px rgba(255,255,255,0.05);
+    }
+    .btn.active::before { opacity: .5; }
+    .btn[data-fx="smoke"]  { --glow: #8899aa; }
+    .btn[data-fx="frost"]  { --glow: #5cf; }
+    .btn[data-fx="fire"]   { --glow: #f63; }
+    .btn[data-fx="lightning"] { --glow: #b6f; }
+    .btn[data-fx="aura"]   { --glow: #6f9; }
+    .btn[data-fx="blackhole"] { --glow: #f5f; }
+    .hint {
+        font-size: 12px; color: rgba(160,180,220,0.35);
+        letter-spacing: 2px; margin-bottom: 22px;
+        transition: color 0.6s;
+    }
+</style>
+</head>
+<body>
+
+<h1>VFX Playground</h1>
+<div class="stage" id="stage" data-fx="smoke">
+    <canvas id="fxCanvas"></canvas>
+</div>
+
+<div class="controls" id="controls">
+    <button class="btn active" data-fx="smoke">☁ Khói Nhẹ</button>
+    <button class="btn" data-fx="frost">❄ Băng Giá</button>
+    <button class="btn" data-fx="fire">🔥 Hỏa Diệm</button>
+    <button class="btn" data-fx="lightning">⚡ Sấm Sét</button>
+    <button class="btn" data-fx="aura">✨ Hào Quang</button>
+    <button class="btn" data-fx="blackhole">🌀 Lỗ Đen</button>
+</div>
+<div class="hint" id="hint">Click để test từng hiệu ứng</div>
+
+<script>
+(function(){
+    const canvas = document.getElementById('fxCanvas');
+    const ctx = canvas.getContext('2d');
+    const stage = document.getElementById('stage');
+    const hint = document.getElementById('hint');
+    let W, H, CX, CY;
+    let currentFX = 'smoke';
+    let particles = [];
+    let t = 0;
+    let shake = 0;
+
+    function resize(){
+        const r = canvas.parentElement.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = r.width; H = r.height;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        CX = W / 2; CY = H / 2;
+    }
+
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const randInt = (a, b) => Math.floor(rand(a, b + 1));
+    const TAU = Math.PI * 2;
+
+    // ============================================================
+    //  PERLIN NOISE
+    // ============================================================
+    const PERM = new Uint8Array(512);
+    (function initPerm(){
+        const p = new Uint8Array(256);
+        for (let i = 0; i < 256; i++) p[i] = i;
+        for (let i = 255; i > 0; i--){
+            const j = Math.floor(Math.random() * (i + 1));
+            [p[i], p[j]] = [p[j], p[i]];
+        }
+        for (let i = 0; i < 512; i++) PERM[i] = p[i & 255];
+    })();
+    const fade = x => x*x*x*(x*(x*6-15)+10);
+    const lerp = (a, b, x) => a + (b - a) * x;
+    function grad2(hash, x, y){
+        const h = hash & 7;
+        const u = h < 4 ? x : y;
+        const v = h < 4 ? y : x;
+        return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
+    }
+    function perlin2(x, y){
+        const X = Math.floor(x) & 255;
+        const Y = Math.floor(y) & 255;
+        x -= Math.floor(x); y -= Math.floor(y);
+        const u = fade(x), v = fade(y);
+        const A = PERM[X] + Y, B = PERM[X+1] + Y;
+        return lerp(
+            lerp(grad2(PERM[A], x, y), grad2(PERM[B], x-1, y), u),
+            lerp(grad2(PERM[A+1], x, y-1), grad2(PERM[B+1], x-1, y-1), u),
+            v
+        );
+    }
+    function fbm(x, y, oct = 3){
+        let v = 0, amp = 1, freq = 1, total = 0;
+        for (let i = 0; i < oct; i++){
+            v += perlin2(x * freq, y * freq) * amp;
+            total += amp; amp *= 0.5; freq *= 2;
+        }
+        return v / total;
+    }
+    function turb(x, y, time){
+        return fbm(x * 0.008 + time * 0.15, y * 0.008 - time * 0.1, 2);
+    }
+
+    // ============================================================
+    //  FIRE BUFFER
+    // ============================================================
+    let fireCanvas = document.createElement('canvas');
+    let fireCtx = fireCanvas.getContext('2d');
+    let fireImg = null;
+    let FIRE_SCALE = 4;
+
+    function initFireBuffer(){
+        fireCanvas.width = Math.max(1, Math.ceil(W / FIRE_SCALE));
+        fireCanvas.height = Math.max(1, Math.ceil(H / FIRE_SCALE));
+        fireImg = fireCtx.createImageData(fireCanvas.width, fireCanvas.height);
+    }
+
+    const FIRE_COLORS = new Array(256);
+    for (let i = 0; i < 256; i++){
+        const tt = i / 255;
+        let r, g, b;
+        if (tt < 0.15){ r = 0; g = 0; b = 0; }
+        else if (tt < 0.35){
+            const u = (tt - 0.15) / 0.2;
+            r = 180 * u; g = 20 * u; b = 0;
+        } else if (tt < 0.6){
+            const u = (tt - 0.35) / 0.25;
+            r = 180 + 75 * u; g = 20 + 110 * u; b = 0;
+        } else if (tt < 0.85){
+            const u = (tt - 0.6) / 0.25;
+            r = 255; g = 130 + 125 * u; b = 20 + 60 * u;
+        } else {
+            const u = (tt - 0.85) / 0.15;
+            r = 255; g = 255; b = 80 + 175 * u;
+        }
+        FIRE_COLORS[i] = [r|0, g|0, b|0];
+    }
+
+    function renderFire(time){
+        const bw = fireCanvas.width;
+        const bh = fireCanvas.height;
+        const data = fireImg.data;
+        for (let i = 0; i < data.length; i += 4){
+            data[i] = 0; data[i+1] = 0; data[i+2] = 0; data[i+3] = 0;
+        }
+        const botY = bh;
+        const flames = [
+            { x: 0.15, w: 0.08, h: 0.45, ph: 0.3 },
+            { x: 0.30, w: 0.11, h: 0.65, ph: 1.8 },
+            { x: 0.50, w: 0.16, h: 0.92, ph: 3.2 },
+            { x: 0.70, w: 0.11, h: 0.68, ph: 4.7 },
+            { x: 0.85, w: 0.08, h: 0.48, ph: 6.1 }
+        ];
+        for (const f of flames){
+            const baseX = bw * f.x;
+            const baseW = bw * f.w;
+            const topY = bh * (1 - f.h);
+            const ph = f.ph;
+            for (let y = botY | 0; y >= topY; y--){
+                const ty = (botY - y) / (botY - topY);
+                const heightFade = Math.pow(1 - ty, 0.72);
+                const noiseVal = fbm(y * 0.09 - time * 3 + ph, time * 2 + ph, 3) * 0.5 + 0.5;
+                const sway = fbm(time * 1.1 + ph, y * 0.06, 2) * bw * 0.06 * ty;
+                const localW = baseW * (0.55 + heightFade * 0.85) * (0.8 + noiseVal * 0.5);
+                const leftX = baseX + sway - localW * 0.5;
+                const rightX = baseX + sway + localW * 0.5;
+                const heat = (1 - ty) * (0.6 + noiseVal * 0.6);
+                const startX = Math.max(0, Math.floor(leftX));
+                const endX = Math.min(bw - 1, Math.ceil(rightX));
+                for (let x = startX; x <= endX; x++){
+                    const dx = (x - baseX - sway) / localW;
+                    const centerDist = 1 - Math.abs(dx);
+                    if (centerDist <= 0) continue;
+                    const detail = fbm(x * 0.2 + time * 4 + ph, y * 0.2 - time * 5, 2);
+                    const tb = (detail * 0.5 + 0.5);
+                    let v = heat * centerDist * (0.55 + tb * 0.65);
+                    v *= Math.pow(centerDist, 0.55);
+                    if (v > 0.01){
+                        const idx = (y * bw + x) * 4;
+                        const ci = Math.min(255, Math.max(0, (v * 255) | 0));
+                        const col = FIRE_COLORS[ci];
+                        const prevA = data[idx+3];
+                        const newA = Math.min(255, (ci * 1.3) | 0);
+                        if (newA >= prevA){
+                            data[idx] = col[0]; data[idx+1] = col[1]; data[idx+2] = col[2];
+                        } else {
+                            data[idx] = Math.min(255, data[idx] + (col[0] * 0.5) | 0);
+                            data[idx+1] = Math.min(255, data[idx+1] + (col[1] * 0.5) | 0);
+                            data[idx+2] = Math.min(255, data[idx+2] + (col[2] * 0.5) | 0);
+                        }
+                        data[idx+3] = Math.max(prevA, newA);
+                    }
+                }
+            }
+        }
+        fireCtx.putImageData(fireImg, 0, 0);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.drawImage(fireCanvas, 0, 0, bw * FIRE_SCALE, bh * FIRE_SCALE);
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+    // Ember system
+    const embers = [];
+    function spawnEmber(){
+        embers.push({
+            x: rand(W*0.1, W*0.9),
+            y: H + 10,
+            vx: rand(-30, 30),
+            vy: rand(-130, -60),
+            size: rand(1, 3),
+            life: 1,
+            maxLife: rand(2, 4),
+            wob: rand(0, TAU),
+            wobS: rand(2, 5),
+            hue: rand(20, 45)
+        });
+    }
+    function updateEmbers(dt){
+        for (let i = embers.length - 1; i >= 0; i--){
+            const e = embers[i];
+            e.life -= dt / e.maxLife;
+            if (e.life <= 0){ embers.splice(i, 1); continue; }
+            e.wob += e.wobS * dt;
+            e.vy += -20 * dt;
+            e.x += (e.vx + Math.sin(e.wob) * 25) * dt;
+            e.y += e.vy * dt;
+        }
+        if (Math.random() < dt * 45) spawnEmber();
+    }
+    function drawEmbers(){
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (const e of embers){
+            const a = e.life;
+            ctx.shadowColor = `hsl(${e.hue}, 100%, 60%)`;
+            ctx.shadowBlur = 12;
+            ctx.fillStyle = `hsla(${e.hue}, 100%, ${65 + Math.sin(e.wob*3)*15}%, ${a})`;
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.size * (0.5 + a * 0.8), 0, TAU);
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+
+    // ============================================================
+    //  1. KHÓI NHẸ — ribbon
+    // ============================================================
+    class SmokeParticle {
+        constructor(seed){ this.reset(seed); }
+        reset(seed){
+            this.isRibbon = Math.random() < 0.78;
+            if (Math.random() < 0.55) this.x = CX + rand(-W*0.28, W*0.28);
+            else this.x = rand(0, W);
+            this.y = seed ? rand(0, H) : H + rand(20, 80);
+            this.vx = rand(-0.15, 0.15);
+            this.vy = rand(-0.7, -0.25);
+            this.life = seed ? rand(0, 400) : rand(300, 550);
+            this.maxLife = 450;
+            if (this.isRibbon){
+                this.length = rand(80, 220);
+                this.width = rand(4, 14);
+                this.segs = randInt(8, 14);
+                this.spine = [];
+                for (let i = 0; i <= this.segs; i++){
+                    this.spine.push({
+                        t: i / this.segs,
+                        phase: rand(0, TAU),
+                        ampX: rand(0.4, 1.2),
+                        ampY: rand(0.2, 0.6),
+                        speed: rand(0.4, 1.0)
+                    });
+                }
+                this.baseW = this.width;
+                this.wob = rand(0, TAU);
+            } else {
+                this.puffs = [];
+                const np = randInt(3, 6);
+                for (let i = 0; i < np; i++){
+                    this.puffs.push({
+                        ox: rand(-1, 1) * 25,
+                        oy: rand(-1, 1) * 25,
+                        r: rand(15, 35),
+                        phase: rand(0, TAU),
+                        speed: rand(0.02, 0.05)
+                    });
+                }
+                this.wob = rand(0, TAU);
+                this.wobS = rand(0.008, 0.02);
+            }
+        }
+        update(){
+            this.life -= 0.55;
+            if (this.life <= 0) { this.reset(false); return; }
+            const tb = turb(this.x, this.y, t);
+            this.x += this.vx + tb * 0.25;
+            this.y += this.vy;
+            this.wob += this.isRibbon ? 0.01 : this.wobS;
+            if (this.y < -250 || this.x < -250 || this.x > W + 250) this.reset(false);
+        }
+        draw(ctx){
+            const lr = this.life / this.maxLife;
+            let alpha;
+            if (lr > 0.92) alpha = (1 - lr) / 0.08;
+            else if (lr < 0.15) alpha = lr / 0.15;
+            else alpha = 1;
+            alpha *= 0.35;
+            if (alpha <= 0.005) return;
+            if (this.isRibbon) this.drawRibbon(ctx, alpha);
+            else this.drawPuff(ctx, alpha);
+        }
+        drawRibbon(ctx, alpha){
+            const pts = [];
+            const totalLen = this.length;
+            for (let i = 0; i <= this.segs; i++){
+                const sp = this.spine[i];
+                const tt = sp.t;
+                const waveX = Math.sin(this.wob * sp.speed + sp.phase) * totalLen * 0.12 * sp.ampX;
+                const waveY = Math.cos(this.wob * sp.speed * 0.8 + sp.phase * 1.3) * totalLen * 0.06 * sp.ampY;
+                const px = this.x + waveX + Math.sin(tt * Math.PI * 2 + this.wob) * totalLen * 0.08;
+                const py = this.y - tt * totalLen + waveY;
+                pts.push({ x: px, y: py, t: tt });
+            }
+            ctx.beginPath();
+            for (let i = 0; i < pts.length; i++){
+                const p = pts[i];
+                const taper = Math.sin(p.t * Math.PI);
+                const w = this.baseW * taper * (0.7 + 0.3 * Math.sin(this.wob * 2 + i));
+                let nx = 0, ny = 1;
+                if (i < pts.length - 1){
+                    const dx = pts[i+1].x - p.x, dy = pts[i+1].y - p.y;
+                    const len = Math.hypot(dx, dy) || 1;
+                    nx = -dy / len; ny = dx / len;
+                } else if (i > 0){
+                    const dx = p.x - pts[i-1].x, dy = p.y - pts[i-1].y;
+                    const len = Math.hypot(dx, dy) || 1;
+                    nx = -dy / len; ny = dx / len;
+                }
+                const px = p.x + nx * w * 0.5;
+                const py = p.y + ny * w * 0.5;
+                if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            for (let i = pts.length - 1; i >= 0; i--){
+                const p = pts[i];
+                const taper = Math.sin(p.t * Math.PI);
+                const w = this.baseW * taper * (0.7 + 0.3 * Math.sin(this.wob * 2 + i));
+                let nx = 0, ny = 1;
+                if (i < pts.length - 1){
+                    const dx = pts[i+1].x - p.x, dy = pts[i+1].y - p.y;
+                    const len = Math.hypot(dx, dy) || 1;
+                    nx = -dy / len; ny = dx / len;
+                } else if (i > 0){
+                    const dx = p.x - pts[i-1].x, dy = p.y - pts[i-1].y;
+                    const len = Math.hypot(dx, dy) || 1;
+                    nx = -dy / len; ny = dx / len;
+                }
+                const px = p.x - nx * w * 0.5;
+                const py = p.y - ny * w * 0.5;
+                ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            const g = ctx.createLinearGradient(this.x, this.y, this.x, this.y - totalLen);
+            const b = 90 + Math.sin(this.wob * 0.5) * 20;
+            g.addColorStop(0, `rgba(${b|0}, ${b|0}, ${b+10|0}, 0)`);
+            g.addColorStop(0.3, `rgba(${b|0}, ${b|0}, ${b+10|0}, ${alpha})`);
+            g.addColorStop(0.7, `rgba(${b|0}, ${b|0}, ${b+10|0}, ${alpha * 0.8})`);
+            g.addColorStop(1, `rgba(${b|0}, ${b|0}, ${b+10|0}, 0)`);
+            ctx.fillStyle = g;
+            ctx.fill();
+            ctx.strokeStyle = `rgba(${b+30|0}, ${b+30|0}, ${b+40|0}, ${alpha * 0.4})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+        }
+        drawPuff(ctx, alpha){
+            for (const p of this.puffs){
+                const wobX = Math.sin(this.wob * p.speed + p.phase) * 8;
+                const wobY = Math.cos(this.wob * p.speed * 0.8 + p.phase) * 8;
+                const px = this.x + p.ox + wobX;
+                const py = this.y + p.oy + wobY;
+                const b = 100 + Math.sin(this.wob + p.phase) * 15;
+                for (let k = 0; k < 3; k++){
+                    const rr = p.r * (1 - k * 0.25);
+                    ctx.fillStyle = `rgba(${b|0}, ${b|0}, ${b+12|0}, ${alpha * 0.18})`;
+                    ctx.beginPath();
+                    ctx.arc(px, py, rr, 0, TAU);
+                    ctx.fill();
+                }
+            }
+        }
+    }
+
+    // ============================================================
+    //  2. BĂNG GIÁ
+    // ============================================================
+    class FrostParticle {
+        constructor(seed){ this.reset(seed); }
+        reset(seed){
+            this.type = Math.random() < 0.55 ? 'crystal' : (Math.random() < 0.6 ? 'shard' : 'mist');
+            this.x = rand(0, W); this.y = rand(0, H);
+            this.life = seed ? rand(0, 160) : rand(80, 220);
+            this.maxLife = 200;
+            this.angle = rand(0, TAU);
+            this.spin = rand(-0.03, 0.03);
+            this.wob = rand(0, TAU); this.wobS = rand(0.008, 0.03);
+            if (this.type === 'crystal'){
+                this.size = rand(3, 9);
+                this.vx = rand(-0.8, 0.8); this.vy = rand(-1.0, 0.2);
+                this.numSides = 6;
+            } else if (this.type === 'shard'){
+                this.size = rand(6, 16);
+                this.vx = rand(-1.2, 1.2); this.vy = rand(-1.5, 0.3);
+                this.numSides = randInt(3, 4);
+                this.stretch = rand(1.8, 3);
+            } else {
+                this.size = rand(30, 70);
+                this.vx = rand(-0.3, 0.3); this.vy = rand(-0.4, 0.1);
+                this.mistLobes = [];
+                const n = randInt(4, 7);
+                for (let i = 0; i < n; i++){
+                    this.mistLobes.push({
+                        ang: rand(0, TAU), rad: rand(0.3, 0.95), size: rand(0.3, 0.7)
+                    });
+                }
+            }
+        }
+        update(){
+            this.life -= this.type === 'mist' ? 0.5 : 0.9;
+            if (this.life <= 0) { this.reset(false); return; }
+            this.wob += this.wobS; this.angle += this.spin;
+            this.x += this.vx + Math.sin(this.wob) * 0.4;
+            this.y += this.vy + Math.cos(this.wob * 1.2) * 0.2;
+            if (this.x < -60 || this.x > W+60 || this.y < -60 || this.y > H+60) this.reset(false);
+        }
+        drawShape(ctx, sides, radius, stretchX = 1, stretchY = 1){
+            ctx.beginPath();
+            for (let i = 0; i <= sides; i++){
+                const a = (i / sides) * TAU - Math.PI/2;
+                const px = Math.cos(a) * radius * stretchX;
+                const py = Math.sin(a) * radius * stretchY;
+                if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+        }
+        draw(ctx){
+            const lr = this.life / this.maxLife;
+            let alpha;
+            if (lr > 0.85) alpha = (1 - lr) / 0.15; else alpha = lr;
+            if (alpha <= 0.005) return;
+            if (this.type === 'crystal'){
+                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+                ctx.shadowColor = '#5cf'; ctx.shadowBlur = 20;
+                ctx.fillStyle = `rgba(180, 230, 255, ${alpha * 0.85})`;
+                this.drawShape(ctx, this.numSides, this.size); ctx.fill();
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
+                this.drawShape(ctx, this.numSides, this.size * 0.4); ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = `rgba(140, 220, 255, ${alpha})`; ctx.lineWidth = 0.8;
+                this.drawShape(ctx, this.numSides, this.size); ctx.stroke();
+                ctx.restore();
+            } else if (this.type === 'shard'){
+                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+                ctx.shadowColor = '#6cf'; ctx.shadowBlur = 18;
+                const grad = ctx.createLinearGradient(0, -this.size*this.stretch, 0, this.size*this.stretch);
+                grad.addColorStop(0, `rgba(255,255,255,${alpha})`);
+                grad.addColorStop(0.5, `rgba(160,220,255,${alpha*0.85})`);
+                grad.addColorStop(1, `rgba(80,160,240,${alpha*0.4})`);
+                ctx.fillStyle = grad;
+                this.drawShape(ctx, this.numSides, this.size, 0.5, this.stretch); ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = `rgba(255,255,255,${alpha*0.9})`; ctx.lineWidth = 0.8;
+                this.drawShape(ctx, this.numSides, this.size, 0.5, this.stretch); ctx.stroke();
+                ctx.restore();
+            } else {
+                ctx.save(); ctx.translate(this.x, this.y);
+                ctx.globalCompositeOperation = 'screen';
+                for (const ml of this.mistLobes){
+                    const mx = Math.cos(ml.ang) * this.size * ml.rad;
+                    const my = Math.sin(ml.ang) * this.size * ml.rad;
+                    const mr = this.size * ml.size;
+                    const g = ctx.createRadialGradient(mx, my, 0, mx, my, mr);
+                    g.addColorStop(0, `rgba(140,200,255,${alpha * 0.15})`);
+                    g.addColorStop(0.5, `rgba(80,150,255,${alpha * 0.07})`);
+                    g.addColorStop(1, `rgba(20,60,140,0)`);
+                    ctx.fillStyle = g;
+                    ctx.beginPath(); ctx.arc(mx, my, mr, 0, TAU); ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+    }
+
+    // ============================================================
+    //  3. SẤM SÉT
+    // ============================================================
+    let lightningBolts = [];
+    let lightningTimer = 0;
+    class LightningParticle {
+        constructor(seed){ this.reset(seed); }
+        reset(seed){
+            this.x = rand(0, W); this.y = rand(0, H);
+            this.r = rand(1, 3.5);
+            this.vx = rand(-4, 4); this.vy = rand(-4, 4);
+            this.life = seed ? rand(0, 40) : rand(20, 60);
+            this.maxLife = 50;
+            this.hue = rand(250, 290);
+        }
+        update(){
+            this.life -= 1.5;
+            if (this.life <= 0) { this.reset(false); return; }
+            this.x += this.vx; this.y += this.vy;
+            this.vx *= 0.96; this.vy *= 0.96;
+        }
+        draw(ctx){
+            const a = this.life / this.maxLife;
+            ctx.fillStyle = `hsla(${this.hue}, 100%, 75%, ${a})`;
+            ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
+            ctx.shadowBlur = 15;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, TAU); ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+    function spawnLightning(){
+        const startX = rand(W*0.1, W*0.9);
+        const startY = -20;
+        const endX = startX + rand(-W*0.4, W*0.4);
+        const endY = H + 20;
+        const segments = [];
+        let cx = startX, cy = startY;
+        let angle = Math.atan2(endY - startY, endX - startX);
+        let totalDist = Math.hypot(endX - startX, endY - startY);
+        const step = 18;
+        let dist = 0;
+        while (dist < totalDist) {
+            const nx = cx + Math.cos(angle) * step + rand(-18, 18);
+            const ny = cy + Math.sin(angle) * step + rand(-6, 6);
+            segments.push({x1: cx, y1: cy, x2: nx, y2: ny});
+            cx = nx; cy = ny; dist += step;
+            angle = Math.atan2(endY - cy, endX - cx) + rand(-0.15, 0.15);
+            if (dist > totalDist) break;
+        }
+        segments.push({x1: cx, y1: cy, x2: endX, y2: endY});
+        lightningBolts.push({segments, life: 12, maxLife: 12, hue: rand(240, 290)});
+        if (Math.random() < 0.7) {
+            const bs = segments[Math.floor(segments.length * 0.4)];
+            let bx = bs.x2, by = bs.y2, ba = angle + rand(-0.8, 0.8);
+            const branchSegs = [];
+            for (let i = 0; i < 5; i++) {
+                const nx = bx + Math.cos(ba) * 22 + rand(-10, 10);
+                const ny = by + Math.sin(ba) * 22 + rand(-10, 10);
+                branchSegs.push({x1: bx, y1: by, x2: nx, y2: ny});
+                bx = nx; by = ny; ba += rand(-0.3, 0.3);
+            }
+            lightningBolts.push({segments: branchSegs, life: 8, maxLife: 8, hue: rand(240, 290)});
+        }
+        shake = 6;
+    }
+
+    // ============================================================
+    //  4. HÀO QUANG
+    // ============================================================
+    class AuraParticle {
+        constructor(seed){ this.reset(seed); }
+        reset(seed){
+            this.angle = rand(0, TAU);
+            this.rad = rand(20, Math.min(W, H) * 0.45);
+            this.r = rand(2, 8);
+            this.speed = rand(0.005, 0.03) * (Math.random() < 0.5 ? 1 : -1);
+            this.life = seed ? rand(0, 100) : rand(60, 200);
+            this.maxLife = 160;
+            this.hue = rand(100, 180);
+            this.orbitR = rand(0.9, 1.3);
+            this.pulse = rand(0, TAU);
+        }
+        update(){
+            this.life -= 0.8;
+            if (this.life <= 0) { this.reset(false); return; }
+            this.angle += this.speed;
+            this.pulse += 0.05;
+            const lr = this.life / this.maxLife;
+            this.cr = this.rad * this.orbitR + Math.sin(this.pulse) * 8;
+            this.x = CX + Math.cos(this.angle) * this.cr;
+            this.y = CY + Math.sin(this.angle) * this.cr * 0.85;
+        }
+        draw(ctx){
+            const lr = this.life / this.maxLife;
+            const a = lr * 0.9;
+            const r = this.r * (0.5 + lr * 1.2);
+            ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${a})`;
+            ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
+            ctx.shadowBlur = 20;
+            ctx.beginPath(); ctx.arc(this.x, this.y, r, 0, TAU); ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    // ============================================================
+    //  5. LỖ ĐEN
+    // ============================================================
+    class BlackHoleParticle {
+        constructor(seed){ this.reset(seed, true); }
+        reset(seed, initial = false){
+            const sa = rand(0, TAU);
+            const sd = initial ? rand(40, Math.max(W, H) * 0.6) : rand(Math.max(W, H)*0.5, Math.max(W, H)*0.8);
+            this.x = CX + Math.cos(sa) * sd;
+            this.y = CY + Math.sin(sa) * sd * 0.8;
+            this.angle = Math.atan2(this.y - CY, this.x - CX);
+            this.dist = sd;
+            this.orbitSpeed = rand(0.02, 0.06);
+            this.inSpeed = rand(0.8, 2.2);
+            this.r = rand(1.5, 4.5);
+            this.life = seed ? rand(0, 200) : rand(100, 260);
+            this.maxLife = 220;
+            this.hue = rand(260, 320);
+        }
+        update(){
+            this.life -= 1;
+            if (this.life <= 0) { this.reset(false); return; }
+            this.angle += this.orbitSpeed;
+            this.dist -= this.inSpeed;
+            if (this.dist < 12) { this.reset(false); return; }
+            this.x = CX + Math.cos(this.angle) * this.dist;
+            this.y = CY + Math.sin(this.angle) * this.dist * 0.8;
+        }
+        draw(ctx){
+            const lr = this.life / this.maxLife;
+            const a = lr * 0.95;
+            const closeness = 1 - Math.min(1, this.dist / (Math.max(W,H)*0.5));
+            const bright = 40 + closeness * 60;
+            ctx.fillStyle = `hsla(${this.hue}, 100%, ${bright}%, ${a})`;
+            ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
+            ctx.shadowBlur = 14;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.r * (0.6 + closeness * 1.2), 0, TAU); ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+    }
+
+    // ============================================================
+    //  FX MANAGER
+    // ============================================================
+    const HINTS = {
+        smoke: 'Khói nhẹ — sợi ribbon trôi lững lờ',
+        frost: 'Băng giá — tinh thể lục giác + mảnh băng + sương',
+        fire: 'Hỏa diệm — 5 ngọn lửa noise field + tàn lửa',
+        lightning: 'Sấm sét — tia chớp giật + hạt điện + screen shake',
+        aura: 'Hào quang — hạt sáng quay quanh tâm',
+        blackhole: 'Lỗ đen — đĩa accretion + photon ring + hút hạt'
+    };
+
+    function resetFX(){
+        particles = [];
+        lightningBolts = [];
+        lightningTimer = 0;
+        shake = 0;
+        t = 0;
+        embers.length = 0;
+        switch(currentFX){
+            case 'smoke':
+                for (let i = 0; i < 65; i++) particles.push(new SmokeParticle(true));
+                break;
+            case 'frost':
+                for (let i = 0; i < 200; i++) particles.push(new FrostParticle(true));
+                break;
+            case 'fire':
+                initFireBuffer();
+                break;
+            case 'lightning':
+                for (let i = 0; i < 120; i++) particles.push(new LightningParticle(true));
+                break;
+            case 'aura':
+                for (let i = 0; i < 140; i++) particles.push(new AuraParticle(true));
+                break;
+            case 'blackhole':
+                for (let i = 0; i < 180; i++) particles.push(new BlackHoleParticle(true));
+                break;
+        }
+    }
+
+    // ============================================================
+    //  MAIN LOOP
+    // ============================================================
+    let lastTime = performance.now();
+
+    function loop(now){
+        const dtMs = now - lastTime;
+        lastTime = now;
+        const dt = Math.min(dtMs / 1000, 0.05);
+        const dtFrame = Math.min(dtMs / 16.67, 3);
+        t += dt;
+
+        // === Clear ===
+        if (currentFX === 'smoke') {
+            ctx.fillStyle = 'rgba(8,8,14,0.12)';
+        } else if (currentFX === 'blackhole') {
+            ctx.fillStyle = 'rgba(4,2,10,0.2)';
+        } else if (currentFX === 'lightning') {
+            ctx.fillStyle = 'rgba(6,4,14,0.35)';
+        } else if (currentFX === 'fire') {
+            ctx.fillStyle = 'rgba(5,2,2,0.45)';
+        } else if (currentFX === 'frost') {
+            ctx.fillStyle = 'rgba(4,8,16,0.28)';
+        } else {
+            ctx.fillStyle = 'rgba(4,8,6,0.2)';
+        }
+        ctx.fillRect(0, 0, W, H);
+
+        // === Screen shake ===
+        let sx = 0, sy = 0;
+        if (shake > 0) {
+            sx = rand(-shake, shake); sy = rand(-shake, shake);
+            shake *= 0.85;
+            if (shake < 0.3) shake = 0;
+        }
+        ctx.save();
+        ctx.translate(sx, sy);
+
+        // === FIRE (special pipeline) ===
+        if (currentFX === 'fire') {
+            const bgGrad = ctx.createLinearGradient(0, H, 0, H - 300);
+            bgGrad.addColorStop(0, `rgba(255, 80, 10, ${0.18 + Math.sin(t*2)*0.05})`);
+            bgGrad.addColorStop(0.4, `rgba(180, 40, 0, 0.08)`);
+            bgGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, H-300, W, 300);
+
+            renderFire(t);
+            updateEmbers(dt);
+            drawEmbers();
+        }
+
+        // === LIGHTNING ===
+        if (currentFX === 'lightning') {
+            lightningTimer -= dtFrame;
+            if (lightningTimer <= 0) {
+                spawnLightning();
+                lightningTimer = rand(18, 45);
+            }
+            for (let i = lightningBolts.length - 1; i >= 0; i--) {
+                const b = lightningBolts[i];
+                b.life -= dtFrame;
+                if (b.life <= 0) { lightningBolts.splice(i, 1); continue; }
+                const a = b.life / b.maxLife;
+                ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                ctx.shadowColor = `hsl(${b.hue}, 100%, 65%)`; ctx.shadowBlur = 30;
+                ctx.strokeStyle = `hsla(${b.hue}, 100%, 75%, ${a})`;
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                b.segments.forEach(s => { ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); });
+                ctx.stroke();
+                ctx.shadowBlur = 15;
+                ctx.strokeStyle = `rgba(255,255,255,${a})`; ctx.lineWidth = 1.4;
+                ctx.beginPath();
+                b.segments.forEach(s => { ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); });
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // === BLACKHOLE ===
+        if (currentFX === 'blackhole') {
+            const bhR = 28 + Math.sin(t*0.05) * 3;
+            const g = ctx.createRadialGradient(CX, CY, bhR*0.5, CX, CY, bhR*4);
+            g.addColorStop(0, 'rgba(120,60,255,0.18)');
+            g.addColorStop(0.5, 'rgba(80,20,180,0.07)');
+            g.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(CX, CY, bhR*4, 0, TAU); ctx.fill();
+            ctx.save();
+            ctx.translate(CX, CY); ctx.rotate(t * 0.02);
+            for (let ring = 0; ring < 3; ring++) {
+                const rr = bhR * (1.6 + ring*0.5);
+                const startA = t * (0.03 + ring*0.01);
+                const grad = ctx.createLinearGradient(-rr, 0, rr, 0);
+                grad.addColorStop(0, `hsla(${280+ring*20}, 100%, 65%, 0.0)`);
+                grad.addColorStop(0.5, `hsla(${280+ring*20}, 100%, 65%, ${0.7 - ring*0.15})`);
+                grad.addColorStop(1, `hsla(${280+ring*20}, 100%, 65%, 0.0)`);
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 3 - ring*0.6;
+                ctx.shadowColor = `hsl(${280+ring*20}, 100%, 60%)`; ctx.shadowBlur = 20;
+                ctx.beginPath(); ctx.ellipse(0, 0, rr, rr*0.35, startA, 0, TAU); ctx.stroke();
+            }
+            ctx.restore();
+            ctx.shadowBlur = 0;
+            const eh = ctx.createRadialGradient(CX, CY, 0, CX, CY, bhR*1.3);
+            eh.addColorStop(0, 'rgba(0,0,0,1)');
+            eh.addColorStop(0.7, 'rgba(0,0,0,0.95)');
+            eh.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = eh;
+            ctx.beginPath(); ctx.arc(CX, CY, bhR*1.3, 0, TAU); ctx.fill();
+            ctx.strokeStyle = `rgba(200,150,255,${0.8 + Math.sin(t*0.1)*0.2})`;
+            ctx.lineWidth = 1.5;
+            ctx.shadowColor = '#a6f'; ctx.shadowBlur = 30;
+            ctx.beginPath(); ctx.arc(CX, CY, bhR*1.25, 0, TAU); ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        // === Particles (all non-fire FX) ===
+        if (currentFX !== 'fire') {
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.update();
+                p.draw(ctx);
+            }
+        }
+
+        // === AURA center glow ===
+        if (currentFX === 'aura') {
+            const pulse = 0.6 + Math.sin(t*0.08)*0.4;
+            const g = ctx.createRadialGradient(CX, CY, 0, CX, CY, 140);
+            g.addColorStop(0, `rgba(180,255,200,${0.28*pulse})`);
+            g.addColorStop(0.4, `rgba(80,255,150,${0.1*pulse})`);
+            g.addColorStop(1, 'rgba(0,80,40,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(CX, CY, 140, 0, TAU); ctx.fill();
+        }
+
+        // === FROST ambient ===
+        if (currentFX === 'frost') {
+            const g = ctx.createLinearGradient(0, H, 0, H-180);
+            g.addColorStop(0, `rgba(140,200,255,${0.08 + Math.sin(t*0.05)*0.03})`);
+            g.addColorStop(1, 'rgba(140,200,255,0)');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, H-180, W, 180);
+            const g2 = ctx.createRadialGradient(CX, CY*1.2, 0, CX, CY, Math.max(W,H)*0.7);
+            g2.addColorStop(0, `rgba(120,180,255,${0.05 + Math.sin(t*0.03)*0.02})`);
+            g2.addColorStop(1, 'rgba(20,40,80,0)');
+            ctx.fillStyle = g2;
+            ctx.fillRect(0, 0, W, H);
+        }
+
+        // === Vignette ===
+        let vigAlpha = 0.4;
+        if (currentFX === 'fire') vigAlpha = 0.55;
+        else if (currentFX === 'blackhole') vigAlpha = 0.6;
+        else if (currentFX === 'smoke') vigAlpha = 0.4;
+        const vg = ctx.createRadialGradient(W/2, H*0.55, Math.min(W,H)*0.35, W/2, H*0.55, Math.max(W,H)*0.85);
+        vg.addColorStop(0, 'rgba(0,0,0,0)');
+        vg.addColorStop(1, `rgba(0,0,0,${vigAlpha})`);
+        ctx.fillStyle = vg;
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.restore();
+        requestAnimationFrame(loop);
+    }
+
+    // === Button handler ===
+    document.getElementById('controls').addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn');
+        if (!btn) return;
+        const fx = btn.dataset.fx;
+        if (fx === currentFX) return;
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFX = fx;
+        stage.dataset.fx = fx;
+        hint.textContent = HINTS[fx];
+        resize();
+        resetFX();
+    });
+
+    // === Init ===
+    resize();
+    resetFX();
+    requestAnimationFrame(loop);
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => { resize(); resetFX(); }, 150);
+    });
+})();
+</script>
+</body>
+</html>

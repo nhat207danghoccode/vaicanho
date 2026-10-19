@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Minecraft Character Studio Ultimate</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #080c14;
+            color: #f1f5f9;
+            overflow: hidden;
+        }
+        .font-pixel {
+            font-family: 'Press Start 2P', monospace;
+        }
+        .glass-panel {
+            background: rgba(13, 20, 36, 0.90);
+            backdrop-filter: blur(18px);
+            border: 2px solid rgba(59, 130, 246, 0.35);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+        .mc-btn {
+            border: 2px solid #3b82f6;
+            background: #1e293b;
+            transition: all 0.15s ease;
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.4), inset 2px 2px 0px rgba(255,255,255,0.1);
+        }
+        .mc-btn:hover {
+            background: #2563eb;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .mc-btn.active {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: white;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.6);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+        .tab-btn.active {
+            border-bottom: 2px solid #10b981;
+            color: #34d399;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen relative select-none">
+
+    <!-- WebGL Canvas Container -->
+    <div id="canvas-container" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+    <!-- UI Overlay Header -->
+    <header class="absolute top-0 left-0 w-full p-4 pointer-events-none flex justify-between items-center z-10">
+        <div class="flex items-center gap-3">
+            <div class="w-11 h-11 bg-emerald-600 rounded-lg flex items-center justify-center border-2 border-emerald-400 shadow-lg shadow-emerald-900/50">
+                <i class="fa-solid fa-cube text-white text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="font-pixel text-xs md:text-sm text-emerald-400 tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    MINECRAFT <span class="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 rounded">STUDIO 3.5</span>
+                </h1>
+                <p class="text-xs text-slate-400 mt-0.5">Tùy Chỉnh Nhân Vật 1 Lớp Nét Sắc & Trang Phục Đẹp Mắt</p>
+            </div>
+        </div>
+        
+        <div class="pointer-events-auto flex gap-2">
+            <button id="toggle-menu-btn" class="mc-btn text-emerald-400 p-2.5 rounded-lg transition-all flex items-center justify-center hover:text-white" title="Ẩn/Hiện Menu">
+                <i class="fa-solid fa-eye-slash"></i>
+            </button>
+            <button id="reset-cam-btn" class="mc-btn text-blue-400 p-2.5 rounded-lg transition-all flex items-center justify-center hover:text-white" title="Đặt lại Góc nhìn">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Control Panel Drawer with Tabs -->
+    <aside id="control-panel" class="absolute bottom-4 left-4 right-4 md:right-auto md:top-20 md:bottom-auto w-auto md:w-96 glass-panel rounded-xl p-4 z-10 transition-all duration-300 max-h-[85vh] flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-700/80 mb-3">
+            <h2 class="font-pixel text-xs text-emerald-400 flex items-center gap-2">
+                <i class="fa-solid fa-sliders"></i> TÙY CHỈNH STUDIO
+            </h2>
+            <span class="text-[10px] font-pixel text-slate-400 bg-slate-800 px-2 py-1 rounded border border-slate-700">HD ULTRA</span>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex border-b border-slate-700/80 mb-3 font-bold text-xs text-slate-400">
+            <button class="tab-btn active flex-1 py-2 text-center" data-tab="tab-characters">
+                <i class="fa-solid fa-users mr-1"></i> Nhân Vật
+            </button>
+            <button class="tab-btn flex-1 py-2 text-center" data-tab="tab-outfit">
+                <i class="fa-solid fa-shirt mr-1"></i> Quần Áo
+            </button>
+            <button class="tab-btn flex-1 py-2 text-center" data-tab="tab-gear">
+                <i class="fa-solid fa-shield-halved mr-1"></i> Trang Bị
+            </button>
+            <button class="tab-btn flex-1 py-2 text-center" data-tab="tab-anim">
+                <i class="fa-solid fa-person-running mr-1"></i> Dáng
+            </button>
+        </div>
+
+        <!-- Scrollable Tab Content Container -->
+        <div class="overflow-y-auto pr-1 space-y-4 text-xs flex-1">
+            
+            <!-- TAB 1: CHARACTERS -->
+            <div id="tab-characters" class="tab-content space-y-3">
+                <label class="text-slate-200 font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-user text-emerald-400"></i> Nhân Vật Con Người (Human)
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="char-steve" class="mc-btn char-btn active py-2.5 px-2 rounded-lg font-bold text-left flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-cyan-500 inline-block"></span> Steve Cổ Điển
+                    </button>
+                    <button id="char-alex" class="mc-btn char-btn py-2.5 px-2 rounded-lg font-bold text-left flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> Alex Mặc Định
+                    </button>
+                    <button id="char-cyber" class="mc-btn char-btn py-2.5 px-2 rounded-lg font-bold text-left flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-pink-500 inline-block"></span> Cyber Samurai
+                    </button>
+                    <button id="char-knight" class="mc-btn char-btn py-2.5 px-2 rounded-lg font-bold text-left flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-slate-400 inline-block"></span> Hiệp Sĩ Bạch Kim
+                    </button>
+                    <button id="char-ninja" class="mc-btn char-btn py-2.5 px-2 rounded-lg font-bold text-left flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span> Sát Thủ Bóng Đêm
+                    </button>
+                    <button id="char-mage" class="mc-btn char-btn py-2.5 px-2 rounded-lg font-bold text-left flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span> Ender Pháp Sư
+                    </button>
+                </div>
+
+                <!-- Mobs Section -->
+                <div class="pt-3 border-t border-slate-700/80">
+                    <label class="text-slate-200 font-bold mb-2 flex items-center gap-1.5 text-purple-400">
+                        <i class="fa-solid fa-skull"></i> Quái Vật Minecraft (Mobs)
+                    </label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="char-zombie" class="mc-btn char-btn py-2 px-1 rounded-lg font-bold text-center text-[11px]">
+                            🧟 Zombie
+                        </button>
+                        <button id="char-spider" class="mc-btn char-btn py-2 px-1 rounded-lg font-bold text-center text-[11px]">
+                            🕷️ Nhện Cổ Điển
+                        </button>
+                        <button id="char-enderman" class="mc-btn char-btn py-2 px-1 rounded-lg font-bold text-center text-[11px]">
+                            👾 Enderman Cao
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Skin Tone Customizer -->
+                <div id="skin-tone-container" class="pt-3 border-t border-slate-700/80">
+                    <label class="text-slate-200 font-bold mb-2 block">Tông Màu Da (Skin Tone)</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="skin-tone-btn mc-btn active py-2 rounded text-center text-[11px]" data-color="#c68b59">Steve</button>
+                        <button class="skin-tone-btn mc-btn py-2 rounded text-center text-[11px]" data-color="#e5a77d">Alex</button>
+                        <button class="skin-tone-btn mc-btn py-2 rounded text-center text-[11px]" data-color="#734226">Rắm Nắng</button>
+                        <button class="skin-tone-btn mc-btn py-2 rounded text-center text-[11px]" data-color="#3b4252">Cơ Khí</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: OUTFIT & STYLES -->
+            <div id="tab-outfit" class="tab-content space-y-3 hidden">
+                <!-- Head & Hair Style -->
+                <div>
+                    <label class="text-slate-200 font-bold mb-2 block text-emerald-400">
+                        <i class="fa-solid fa-graduation-cap"></i> Kiểu Tóc & Mặt (Head Design)
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="head-style-btn mc-btn active py-2 rounded font-bold" data-style="classic">Tóc Steve Nâu</button>
+                        <button class="head-style-btn mc-btn py-2 rounded font-bold" data-style="long">Tóc Alex Cam</button>
+                        <button class="head-style-btn mc-btn py-2 rounded font-bold" data-style="cyber">Tóc Neon Cyber</button>
+                        <button class="head-style-btn mc-btn py-2 rounded font-bold" data-style="helmet">Mũ Giáp Bạc</button>
+                        <button class="head-style-btn mc-btn py-2 rounded font-bold" data-style="ninja">Mặt Nạ Ninja</button>
+                        <button class="head-style-btn mc-btn py-2 rounded font-bold" data-style="ender">Mắt Ender Tím</button>
+                    </div>
+                </div>
+
+                <!-- Top & Jacket -->
+                <div>
+                    <label class="text-slate-200 font-bold mb-2 block text-blue-400">
+                        <i class="fa-solid fa-vest"></i> Thiết Kế Áo (Top Design)
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="top-style-btn mc-btn active py-2 rounded font-bold" data-style="teal">Áo Phông Cyan</button>
+                        <button class="top-style-btn mc-btn py-2 rounded font-bold" data-style="green">Áo Olive Alex</button>
+                        <button class="top-style-btn mc-btn py-2 rounded font-bold" data-style="cyberpunk">Áo Khoác Neon</button>
+                        <button class="top-style-btn mc-btn py-2 rounded font-bold" data-style="armor">Giáp Ngực Sắt</button>
+                        <button class="top-style-btn mc-btn py-2 rounded font-bold" data-style="ninja">Áo Kimono Đen</button>
+                        <button class="top-style-btn mc-btn py-2 rounded font-bold" data-style="ender">Áo Choàng Tím</button>
+                    </div>
+                </div>
+
+                <!-- Pants & Shoes -->
+                <div>
+                    <label class="text-slate-200 font-bold mb-2 block text-indigo-400">
+                        <i class="fa-solid fa-socks"></i> Quần & Giày (Bottom Design)
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="bottom-style-btn mc-btn active py-2 rounded font-bold" data-style="blue">Quần Xanh Steve</button>
+                        <button class="bottom-style-btn mc-btn py-2 rounded font-bold" data-style="brown">Quần Nâu Alex</button>
+                        <button class="bottom-style-btn mc-btn py-2 rounded font-bold" data-style="neon">Quần Cyber Striped</button>
+                        <button class="bottom-style-btn mc-btn py-2 rounded font-bold" data-style="iron">Giáp Chân Bạch Kim</button>
+                        <button class="bottom-style-btn mc-btn py-2 rounded font-bold" data-style="ninja">Quần Đen Thắt Lưng</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: GEAR & CAPE -->
+            <div id="tab-gear" class="tab-content space-y-3 hidden">
+                <!-- Weapon Selector -->
+                <div>
+                    <label class="text-slate-200 font-bold mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-hand-fist text-purple-400"></i> Vũ Khí Trang Bị
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="weapon-diamond" class="mc-btn weapon-btn active py-2 rounded-lg font-bold">Kiếm Diamond</button>
+                        <button id="weapon-netherite" class="mc-btn weapon-btn py-2 rounded-lg font-bold">Kiếm Netherite</button>
+                        <button id="weapon-gold" class="mc-btn weapon-btn py-2 rounded-lg font-bold">Kiếm Vàng</button>
+                        <button id="weapon-none" class="mc-btn weapon-btn py-2 rounded-lg font-bold">Tay Không</button>
+                    </div>
+                </div>
+
+                <!-- Cloak / Cape Options -->
+                <div>
+                    <label class="text-slate-200 font-bold mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-scroll text-amber-400"></i> Áo Choàng (Capes)
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="cape-btn mc-btn active py-2 rounded-lg font-bold" data-cape="none">Không Dùng</button>
+                        <button class="cape-btn mc-btn py-2 rounded-lg font-bold" data-cape="redstone">Cờ Redstone</button>
+                        <button class="cape-btn mc-btn py-2 rounded-lg font-bold" data-cape="elytra">Áo Elytra Cực Linh</button>
+                        <button class="cape-btn mc-btn py-2 rounded-lg font-bold" data-cape="cyber">Cape Cyber Neon</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: ANIMATIONS -->
+            <div id="tab-anim" class="tab-content space-y-3 hidden">
+                <label class="text-slate-200 font-bold mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-person-running text-amber-400"></i> Hành Động & Dáng
+                </label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="anim-idle" class="mc-btn anim-btn active py-2 rounded-lg font-bold">Thở Chờ (Idle)</button>
+                    <button id="anim-walk" class="mc-btn anim-btn py-2 rounded-lg font-bold">Đi Bộ (Walk)</button>
+                    <button id="anim-attack" class="mc-btn anim-btn py-2 rounded-lg font-bold">Vung Kiếm (Attack)</button>
+                    <button id="anim-dance" class="mc-btn anim-btn py-2 rounded-lg font-bold">Nhún Nhảy (Dance)</button>
+                </div>
+
+                <!-- Special Skill Button for Enderman / Special Effects -->
+                <div id="skill-box" class="pt-2">
+                    <button id="btn-teleport-skill" class="w-full py-2.5 bg-purple-950/80 border-2 border-purple-500 hover:bg-purple-800 text-purple-200 font-bold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-950/50">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i> Dịch Chuyển Tức Thời (Teleport)
+                    </button>
+                </div>
+
+                <!-- Speed Controls -->
+                <div class="pt-3 border-t border-slate-700/80">
+                    <label class="text-slate-300 font-semibold mb-1 flex justify-between">
+                        <span>Tốc Độ Cử Động</span>
+                        <span id="speed-val" class="text-emerald-400 font-pixel text-[10px]">1.0x</span>
+                    </label>
+                    <input type="range" id="speed-slider" min="0.3" max="2.5" step="0.1" value="1" class="w-full accent-emerald-500 cursor-pointer">
+                </div>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- Navigation Tip -->
+    <div class="absolute bottom-4 right-4 pointer-events-none hidden md:block z-10">
+        <div class="glass-panel px-4 py-2.5 rounded-xl text-xs text-slate-300 flex items-center gap-4">
+            <span><i class="fa-solid fa-mouse text-emerald-400 mr-1"></i> Xoay: Giữ Chuột Trái</span>
+            <span><i class="fa-solid fa-arrows-up-down text-emerald-400 mr-1"></i> Thu Phóng: Cuộn Chuột</span>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let scene, camera, renderer, characterGroup;
+        let headGroup, torsoGroup, leftArmGroup, rightArmGroup, leftLegGroup, rightLegGroup, capeGroup;
+        let swordDiamondGroup, swordNetheriteGroup, swordGoldGroup;
+        let spiderLegs = []; // Legs for spider mob
+        let enderParticlesGroup; // Teleport particle system
+        let currentCharacterType = 'steve'; // 'steve', 'alex', 'zombie', 'spider', 'enderman', etc.
+        let isTeleporting = false;
+        let teleportTimer = 0;
+        let clock = new THREE.Clock();
+        
+        let currentAnimation = 'idle';
+        let currentSkinTone = '#c68b59';
+        let currentHeadStyle = 'classic';
+        let currentTopStyle = 'teal';
+        let currentBottomStyle = 'blue';
+        let currentCapeStyle = 'none';
+        let animSpeed = 1.0;
+
+        // Mouse Controls
+        let isMouseDown = false;
+        let mouseX = 0, mouseY = 0;
+        let targetRotationY = 0.5, targetRotationX = 0.15;
+        let cameraDist = 7.5;
+
+        // Canvas Pixel Art Texture Generator
+        function createNoiseTexture(width, height, drawFunc) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            drawFunc(ctx, width, height);
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.magFilter = THREE.NearestFilter;
+            texture.minFilter = THREE.NearestFilter;
+            return texture;
+        }
+
+        // Texture Mobs: Zombie, Spider, Enderman
+        function generateZombieFace() {
+            return createNoiseTexture(16, 16, (ctx) => {
+                ctx.fillStyle = '#2d5a27'; ctx.fillRect(0, 0, 16, 16); // Skin xám xanh
+                ctx.fillStyle = '#1c3d19'; ctx.fillRect(0, 0, 16, 4); // Tóc rải rác
+                ctx.fillStyle = '#333333'; ctx.fillRect(2, 8, 4, 2); ctx.fillRect(10, 8, 4, 2); // Mắt Zombie hốc hác
+                ctx.fillStyle = '#122410'; ctx.fillRect(6, 11, 4, 2); // Mũi/miệng tối
+            });
+        }
+
+        function generateEndermanFace() {
+            return createNoiseTexture(16, 16, (ctx) => {
+                ctx.fillStyle = '#111111'; ctx.fillRect(0, 0, 16, 16); // Đen mun
+                ctx.fillStyle = '#cc00ff'; ctx.fillRect(1, 8, 5, 2); ctx.fillRect(10, 8, 5, 2); // Mắt Tím Hồng rực
+                ctx.fillStyle = '#ffffff'; ctx.fillRect(2, 8, 3, 1); ctx.fillRect(11, 8, 3, 1); // Tròng mắt nhấp nháy
+            });
+        }
+
+        function generateSpiderFace() {
+            return createNoiseTexture(16, 16, (ctx) => {
+                ctx.fillStyle = '#1f1917'; ctx.fillRect(0, 0, 16, 16);
+                ctx.fillStyle = '#cc0000'; // 8 mắt đỏ nhện
+                ctx.fillRect(3, 8, 3, 3); ctx.fillRect(10, 8, 3, 3);
+                ctx.fillRect(1, 10, 2, 2); ctx.fillRect(13, 10, 2, 2);
+                ctx.fillRect(4, 12, 2, 2); ctx.fillRect(10, 12, 2, 2);
+            });
+        }
+
+        // Texture Tạo Mặt Sắc Nét 1 Lớp Chuẩn Pixel
+        function generateFaceTexture(style, skinColor) {
+            if (currentCharacterType === 'zombie') return generateZombieFace();
+            if (currentCharacterType === 'enderman') return generateEndermanFace();
+            if (currentCharacterType === 'spider') return generateSpiderFace();
+
+            return createNoiseTexture(16, 16, (ctx) => {
+                ctx.fillStyle = skinColor; ctx.fillRect(0, 0, 16, 16);
+
+                if (style === 'cyber') {
+                    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 16, 5);
+                    ctx.fillStyle = '#ec4899'; ctx.fillRect(1, 6, 14, 4);
+                    ctx.fillStyle = '#06b6d4'; ctx.fillRect(3, 7, 10, 2);
+                    ctx.fillStyle = '#64748b'; ctx.fillRect(6, 12, 4, 1);
+                } else if (style === 'helmet') {
+                    ctx.fillStyle = '#94a3b8'; ctx.fillRect(0, 0, 16, 7);
+                    ctx.fillStyle = '#334155'; ctx.fillRect(1, 4, 14, 3);
+                    ctx.fillStyle = '#38bdf8'; ctx.fillRect(3, 5, 3, 1); ctx.fillRect(10, 5, 3, 1);
+                    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(7, 7, 2, 8);
+                } else if (style === 'long') {
+                    ctx.fillStyle = '#cb6d3a'; ctx.fillRect(0, 0, 16, 6);
+                    ctx.fillStyle = '#af5428'; ctx.fillRect(0, 0, 16, 2); ctx.fillRect(0, 0, 3, 7); ctx.fillRect(13, 0, 3, 7);
+                    ctx.fillStyle = '#fce2c7'; ctx.fillRect(3, 6, 10, 10);
+                    ctx.fillStyle = '#cb6d3a'; ctx.fillRect(1, 6, 2, 4); ctx.fillRect(13, 6, 2, 3);
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(2, 9, 4, 2); ctx.fillRect(10, 9, 4, 2);
+                    ctx.fillStyle = '#178a48'; ctx.fillRect(4, 9, 2, 2); ctx.fillRect(10, 9, 2, 2);
+                    ctx.fillStyle = '#e19f7e'; ctx.fillRect(7, 11, 2, 1);
+                    ctx.fillStyle = '#b36149'; ctx.fillRect(6, 12, 4, 1);
+                } else if (style === 'ninja') {
+                    ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = skinColor; ctx.fillRect(2, 7, 12, 4);
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(3, 8, 3, 2); ctx.fillRect(10, 8, 3, 2);
+                    ctx.fillStyle = '#ef4444'; ctx.fillRect(4, 8, 1, 2); ctx.fillRect(11, 8, 1, 2);
+                } else if (style === 'ender') {
+                    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#a855f7'; ctx.fillRect(2, 8, 4, 2); ctx.fillRect(10, 8, 4, 2);
+                    ctx.fillStyle = '#e9d5ff'; ctx.fillRect(3, 8, 2, 2); ctx.fillRect(11, 8, 2, 2);
+                } else {
+                    ctx.fillStyle = '#4a2f13'; ctx.fillRect(0, 0, 16, 4); ctx.fillRect(0, 4, 2, 2); ctx.fillRect(14, 4, 2, 2);
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(2, 8, 4, 2); ctx.fillRect(10, 8, 4, 2);
+                    ctx.fillStyle = '#2d2585'; ctx.fillRect(4, 8, 2, 2); ctx.fillRect(10, 8, 2, 2);
+                    ctx.fillStyle = '#9f6438'; ctx.fillRect(6, 10, 4, 1);
+                    ctx.fillStyle = '#5c3818'; ctx.fillRect(5, 11, 6, 2);
+                }
+            });
+        }
+
+        // Texture Áo
+        function generateShirtTexture(style) {
+            if (currentCharacterType === 'zombie') {
+                return createNoiseTexture(16, 16, (ctx) => {
+                    ctx.fillStyle = '#008080'; ctx.fillRect(0, 0, 16, 16); // Áo xanh rách Steve
+                    ctx.fillStyle = '#114a4a'; ctx.fillRect(2, 8, 3, 4); ctx.fillRect(10, 4, 4, 5);
+                });
+            }
+            if (currentCharacterType === 'enderman' || currentCharacterType === 'spider') {
+                return createNoiseTexture(16, 16, (ctx) => {
+                    ctx.fillStyle = currentCharacterType === 'spider' ? '#2d2421' : '#111111';
+                    ctx.fillRect(0, 0, 16, 16);
+                });
+            }
+
+            return createNoiseTexture(16, 16, (ctx) => {
+                if (style === 'green') {
+                    ctx.fillStyle = '#557a2b'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#3f5e1f'; ctx.fillRect(0, 12, 16, 4);
+                    ctx.fillStyle = '#78a83b'; ctx.fillRect(4, 2, 8, 2);
+                } else if (style === 'cyberpunk') {
+                    ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#ec4899'; ctx.fillRect(1, 0, 2, 16); ctx.fillRect(13, 0, 2, 16);
+                    ctx.fillStyle = '#06b6d4'; ctx.fillRect(7, 2, 2, 12);
+                    ctx.fillStyle = '#1e293b'; ctx.fillRect(3, 4, 3, 5); ctx.fillRect(10, 4, 3, 5);
+                } else if (style === 'armor') {
+                    ctx.fillStyle = '#475569'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(2, 2, 12, 12);
+                    ctx.fillStyle = '#38bdf8'; ctx.fillRect(7, 6, 2, 4);
+                    ctx.fillStyle = '#94a3b8'; ctx.fillRect(3, 3, 10, 2);
+                } else if (style === 'ninja') {
+                    ctx.fillStyle = '#18181b'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#dc2626'; ctx.fillRect(0, 10, 16, 3);
+                    ctx.fillStyle = '#27272a'; ctx.fillRect(5, 0, 6, 10);
+                } else if (style === 'ender') {
+                    ctx.fillStyle = '#3b0764'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#a855f7'; ctx.fillRect(7, 0, 2, 16); ctx.fillRect(2, 4, 12, 2);
+                    ctx.fillStyle = '#f0abfc'; ctx.fillRect(7, 4, 2, 2);
+                } else {
+                    ctx.fillStyle = '#00a8a8'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#008080'; ctx.fillRect(0, 13, 16, 3);
+                    ctx.fillStyle = currentSkinTone; ctx.fillRect(5, 0, 6, 4);
+                }
+            });
+        }
+
+        // Texture Quần Sắc Nét
+        function generatePantsTexture(style) {
+            if (currentCharacterType === 'zombie') {
+                return createNoiseTexture(16, 16, (ctx) => {
+                    ctx.fillStyle = '#2b328c'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#181b4d'; ctx.fillRect(3, 10, 4, 6);
+                });
+            }
+            if (currentCharacterType === 'enderman' || currentCharacterType === 'spider') {
+                return createNoiseTexture(16, 16, (ctx) => {
+                    ctx.fillStyle = currentCharacterType === 'spider' ? '#181311' : '#111111';
+                    ctx.fillRect(0, 0, 16, 16);
+                });
+            }
+
+            return createNoiseTexture(16, 16, (ctx) => {
+                if (style === 'brown') {
+                    ctx.fillStyle = '#473c33'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#2b241f'; ctx.fillRect(0, 12, 16, 4);
+                } else if (style === 'neon') {
+                    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#06b6d4'; ctx.fillRect(1, 0, 2, 12); ctx.fillRect(13, 0, 2, 12);
+                    ctx.fillStyle = '#ec4899'; ctx.fillRect(0, 12, 16, 4);
+                } else if (style === 'iron') {
+                    ctx.fillStyle = '#334155'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#cbd5e1'; ctx.fillRect(2, 2, 12, 8);
+                    ctx.fillStyle = '#475569'; ctx.fillRect(0, 11, 16, 5);
+                } else if (style === 'ninja') {
+                    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#71717a'; ctx.fillRect(2, 10, 12, 2);
+                    ctx.fillStyle = '#27272a'; ctx.fillRect(0, 12, 16, 4);
+                } else {
+                    ctx.fillStyle = '#2b328c'; ctx.fillRect(0, 0, 16, 16);
+                    ctx.fillStyle = '#1d2163'; ctx.fillRect(0, 12, 16, 4);
+                }
+            });
+        }
+
+        function generateHairTexture(style) {
+            if (currentCharacterType === 'zombie') return createNoiseTexture(16, 16, (ctx) => { ctx.fillStyle = '#1c3d19'; ctx.fillRect(0, 0, 16, 16); });
+            if (currentCharacterType === 'enderman') return createNoiseTexture(16, 16, (ctx) => { ctx.fillStyle = '#111111'; ctx.fillRect(0, 0, 16, 16); });
+            if (currentCharacterType === 'spider') return createNoiseTexture(16, 16, (ctx) => { ctx.fillStyle = '#1f1917'; ctx.fillRect(0, 0, 16, 16); });
+
+            return createNoiseTexture(16, 16, (ctx) => {
+                let color = '#4a2f13';
+                if (style === 'long') color = '#b25828';
+                else if (style === 'cyber') color = '#06b6d4';
+                else if (style === 'helmet') color = '#64748b';
+                else if (style === 'ninja') color = '#09090b';
+                else if (style === 'ender') color = '#2e1065';
+                ctx.fillStyle = color; ctx.fillRect(0, 0, 16, 16);
+            });
+        }
+
+        function generateCapeTexture(style) {
+            return createNoiseTexture(16, 32, (ctx) => {
+                if (style === 'redstone') {
+                    ctx.fillStyle = '#7f1d1d'; ctx.fillRect(0, 0, 16, 32);
+                    ctx.fillStyle = '#ef4444'; ctx.fillRect(4, 6, 8, 20); ctx.fillRect(6, 4, 4, 24);
+                } else if (style === 'elytra') {
+                    ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, 16, 32);
+                    ctx.fillStyle = '#38bdf8'; ctx.fillRect(2, 2, 12, 28);
+                } else if (style === 'cyber') {
+                    ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 32);
+                    ctx.fillStyle = '#ec4899'; ctx.fillRect(2, 4, 12, 2); ctx.fillRect(7, 4, 2, 24);
+                }
+            });
+        }
+
+        // Setup Ender Teleport Particles
+        function initEnderParticles() {
+            if (enderParticlesGroup) scene.remove(enderParticlesGroup);
+            enderParticlesGroup = new THREE.Group();
+            const pCount = 80;
+            const pGeo = new THREE.BoxGeometry(0.06, 0.06, 0.06);
+            const pMat = new THREE.MeshBasicMaterial({ color: 0xd8b4fe, transparent: true, opacity: 0.85 });
+
+            for(let i = 0; i < pCount; i++) {
+                const p = new THREE.Mesh(pGeo, pMat);
+                const hBound = currentCharacterType === 'enderman' ? 4.2 : 2.5;
+                p.position.set(
+                    (Math.random() - 0.5) * 2.2,
+                    (Math.random() - 0.5) * hBound,
+                    (Math.random() - 0.5) * 2.2
+                );
+                p.userData = {
+                    speedY: 0.015 + Math.random() * 0.025,
+                    rotSpeed: (Math.random() - 0.5) * 0.08
+                };
+                enderParticlesGroup.add(p);
+            }
+            scene.add(enderParticlesGroup);
+        }
+
+        function triggerTeleportSkill() {
+            if (isTeleporting) return;
+            isTeleporting = true;
+            teleportTimer = 0;
+
+            if (enderParticlesGroup) {
+                enderParticlesGroup.children.forEach(p => {
+                    const hBound = currentCharacterType === 'enderman' ? 4.5 : 2.5;
+                    p.position.set((Math.random() - 0.5) * 2.5, (Math.random() - 0.5) * hBound, (Math.random() - 0.5) * 2.5);
+                });
+            }
+        }
+
+        function buildMinecraftCharacter() {
+            if (characterGroup) scene.remove(characterGroup);
+
+            characterGroup = new THREE.Group();
+            scene.add(characterGroup);
+
+            spiderLegs = [];
+
+            if (currentCharacterType === 'spider') {
+                buildSpiderModel();
+                return;
+            }
+
+            // Tỷ lệ thân & Chi (Enderman chuẩn siêu cao gầy: Thân dài 2.0x, Chân dài 3.0x, Tay dài 3.0x, Thân hẹp 0.5x)
+            const isEnder = currentCharacterType === 'enderman';
+            let torsoHeight = isEnder ? 2.1 : 1.2;
+            let torsoWidth = isEnder ? 0.5 : 0.8;
+            let limbHeight = isEnder ? 3.0 : 1.2;
+            let limbWidth = isEnder ? 0.22 : 0.38;
+
+            // 1. TORSO
+            torsoGroup = new THREE.Group();
+            const torsoGeo = new THREE.BoxGeometry(torsoWidth, torsoHeight, isEnder ? 0.3 : 0.4);
+            const shirtMat = new THREE.MeshStandardMaterial({ map: generateShirtTexture(currentTopStyle), roughness: 0.8 });
+            const torsoMesh = new THREE.Mesh(torsoGeo, shirtMat);
+            torsoMesh.castShadow = true;
+            torsoMesh.receiveShadow = true;
+            torsoMesh.name = "torsoMesh";
+            torsoGroup.add(torsoMesh);
+            characterGroup.add(torsoGroup);
+
+            // 2. HEAD
+            headGroup = new THREE.Group();
+            headGroup.position.set(0, torsoHeight / 2, 0);
+
+            let skinHex = currentCharacterType === 'zombie' ? '#2d5a27' : (isEnder ? '#111111' : currentSkinTone);
+            const skinMat = new THREE.MeshStandardMaterial({ map: createNoiseTexture(16, 16, (ctx) => { ctx.fillStyle = skinHex; ctx.fillRect(0, 0, 16, 16); }), roughness: 0.8 });
+            const hairMat = new THREE.MeshStandardMaterial({ map: generateHairTexture(currentHeadStyle), roughness: 0.9 });
+            const faceMat = new THREE.MeshStandardMaterial({ map: generateFaceTexture(currentHeadStyle, skinHex), roughness: 0.8 });
+
+            const faceMaterials = [skinMat, skinMat, hairMat, skinMat, faceMat, hairMat];
+
+            const headGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+            const headMesh = new THREE.Mesh(headGeo, faceMaterials);
+            headMesh.position.y = 0.4;
+            headMesh.castShadow = true;
+            headMesh.name = "headMesh";
+            headGroup.add(headMesh);
+            torsoGroup.add(headGroup);
+
+            // 3. ARMS
+            const armGeo = new THREE.BoxGeometry(limbWidth, limbHeight, limbWidth);
+
+            leftArmGroup = new THREE.Group();
+            leftArmGroup.position.set(-(torsoWidth/2 + limbWidth/2), torsoHeight/2 - 0.1, 0);
+            const leftArmMesh = new THREE.Mesh(armGeo, [skinMat, skinMat, shirtMat, skinMat, skinMat, skinMat]);
+            leftArmMesh.position.y = -limbHeight / 2;
+            leftArmMesh.castShadow = true;
+            leftArmMesh.name = "leftArmMesh";
+            leftArmGroup.add(leftArmMesh);
+            torsoGroup.add(leftArmGroup);
+
+            rightArmGroup = new THREE.Group();
+            rightArmGroup.position.set((torsoWidth/2 + limbWidth/2), torsoHeight/2 - 0.1, 0);
+            const rightArmMesh = new THREE.Mesh(armGeo, [skinMat, skinMat, shirtMat, skinMat, skinMat, skinMat]);
+            rightArmMesh.position.y = -limbHeight / 2;
+            rightArmMesh.castShadow = true;
+            rightArmMesh.name = "rightArmMesh";
+            rightArmGroup.add(rightArmMesh);
+
+            // Weapons (Chỉ gắn khi không phải mob quái)
+            if (currentCharacterType !== 'zombie' && !isEnder) {
+                swordDiamondGroup = createMinecraftSword('#55ffff', '#33cccc');
+                swordDiamondGroup.position.set(0, -0.9, 0.25);
+                swordDiamondGroup.rotation.x = Math.PI / 3;
+                rightArmGroup.add(swordDiamondGroup);
+
+                swordNetheriteGroup = createMinecraftSword('#312e81', '#1e1b4b');
+                swordNetheriteGroup.position.set(0, -0.9, 0.25);
+                swordNetheriteGroup.rotation.x = Math.PI / 3;
+                swordNetheriteGroup.visible = false;
+                rightArmGroup.add(swordNetheriteGroup);
+
+                swordGoldGroup = createMinecraftSword('#fbbf24', '#d97706');
+                swordGoldGroup.position.set(0, -0.9, 0.25);
+                swordGoldGroup.rotation.x = Math.PI / 3;
+                swordGoldGroup.visible = false;
+                rightArmGroup.add(swordGoldGroup);
+            }
+
+            torsoGroup.add(rightArmGroup);
+
+            // 4. LEGS
+            const legGeo = new THREE.BoxGeometry(limbWidth, limbHeight, limbWidth);
+            const pantsMat = new THREE.MeshStandardMaterial({ map: generatePantsTexture(currentBottomStyle), roughness: 0.8 });
+
+            leftLegGroup = new THREE.Group();
+            leftLegGroup.position.set(-limbWidth/1.8, -torsoHeight/2, 0);
+            const leftLegMesh = new THREE.Mesh(legGeo, pantsMat);
+            leftLegMesh.position.y = -limbHeight / 2;
+            leftLegMesh.castShadow = true;
+            leftLegMesh.name = "leftLegMesh";
+            leftLegGroup.add(leftLegMesh);
+            characterGroup.add(leftLegGroup);
+
+            rightLegGroup = new THREE.Group();
+            rightLegGroup.position.set(limbWidth/1.8, -torsoHeight/2, 0);
+            const rightLegMesh = new THREE.Mesh(legGeo, pantsMat);
+            rightLegMesh.position.y = -limbHeight / 2;
+            rightLegMesh.castShadow = true;
+            rightLegMesh.name = "rightLegMesh";
+            rightLegGroup.add(rightLegMesh);
+            characterGroup.add(rightLegGroup);
+
+            // 5. CAPE
+            capeGroup = new THREE.Group();
+            capeGroup.position.set(0, torsoHeight/2 - 0.05, -0.21);
+            const capeGeo = new THREE.BoxGeometry(0.76, 1.2, 0.04);
+            const capeMat = new THREE.MeshStandardMaterial({ map: generateCapeTexture('redstone'), roughness: 0.8 });
+            const capeMesh = new THREE.Mesh(capeGeo, capeMat);
+            capeMesh.position.y = -0.6;
+            capeMesh.name = "capeMesh";
+            capeMesh.castShadow = true;
+            capeGroup.add(capeMesh);
+            capeGroup.visible = false;
+            torsoGroup.add(capeGroup);
+
+            // Đưa chân nâng cao lên tương ứng chiều dài chân Enderman
+            characterGroup.position.y = isEnder ? 1.8 : 0.2;
+        }
+
+        // Dựng mô hình Nhện (Spider chuẩn Minecraft 3D)
+        function buildSpiderModel() {
+            torsoGroup = new THREE.Group();
+            
+            const spiderTex = createNoiseTexture(16, 16, (ctx) => { ctx.fillStyle = '#1f1917'; ctx.fillRect(0, 0, 16, 16); });
+            const spiderMat = new THREE.MeshStandardMaterial({ map: spiderTex, roughness: 0.9 });
+            const faceMat = new THREE.MeshStandardMaterial({ map: generateSpiderFace(), roughness: 0.8 });
+
+            // 1. Thân Giữa (Thorax)
+            const thoraxGeo = new THREE.BoxGeometry(0.9, 0.7, 0.9);
+            const thoraxMesh = new THREE.Mesh(thoraxGeo, spiderMat);
+            thoraxMesh.position.set(0, 0, 0);
+            thoraxMesh.castShadow = true;
+            torsoGroup.add(thoraxMesh);
+
+            // 2. Thân Sau Phình Lớn (Abdomen - Bụng nhện lớn)
+            const abdomenGeo = new THREE.BoxGeometry(1.5, 1.1, 1.5);
+            const abdomenMesh = new THREE.Mesh(abdomenGeo, spiderMat);
+            abdomenMesh.position.set(0, 0.2, 1.2);
+            abdomenMesh.castShadow = true;
+            torsoGroup.add(abdomenMesh);
+
+            // 3. Đầu Nhện (Head với 8 mắt đỏ)
+            headGroup = new THREE.Group();
+            headGroup.position.set(0, 0, -0.45);
+            const headGeo = new THREE.BoxGeometry(0.85, 0.65, 0.65);
+            const headMesh = new THREE.Mesh(headGeo, [spiderMat, spiderMat, spiderMat, spiderMat, spiderMat, faceMat]);
+            headMesh.position.z = -0.32;
+            headMesh.castShadow = true;
+            headGroup.add(headMesh);
+            torsoGroup.add(headGroup);
+
+            // 4. 8 Chân Nhện Đốt Khớp Căng 2 Bên Chuẩn
+            for (let i = 0; i < 8; i++) {
+                const side = i < 4 ? -1 : 1; // Left or Right
+                const legIndex = i % 4; // 0..3 front to back
+
+                // Khớp gắn vào thân (Root Pivot)
+                const legPivot = new THREE.Group();
+                const zPos = -0.35 + legIndex * 0.28;
+                legPivot.position.set(side * 0.45, -0.1, zPos);
+
+                // Khớp Trên (Upper Leg segment)
+                const upperGeo = new THREE.BoxGeometry(0.8, 0.16, 0.16);
+                const upperMesh = new THREE.Mesh(upperGeo, spiderMat);
+                upperMesh.position.x = side * 0.4;
+                upperMesh.rotation.z = side * -0.45; // Vồng cao
+                upperMesh.castShadow = true;
+                legPivot.add(upperMesh);
+
+                // Khớp Dưới Đâm Xuống Đất (Lower Leg segment)
+                const lowerGeo = new THREE.BoxGeometry(0.7, 0.14, 0.14);
+                const lowerMesh = new THREE.Mesh(lowerGeo, spiderMat);
+                lowerMesh.position.set(side * 0.75, -0.22, 0);
+                lowerMesh.rotation.z = side * 0.65; // Đâm xuống đất
+                lowerMesh.castShadow = true;
+                legPivot.add(lowerMesh);
+
+                torsoGroup.add(legPivot);
+                spiderLegs.push({ pivot: legPivot, side: side, index: legIndex });
+            }
+
+            characterGroup.add(torsoGroup);
+            characterGroup.position.y = -0.4;
+
+            // Dummies cho các biến không lỗi
+            leftArmGroup = new THREE.Group();
+            rightArmGroup = new THREE.Group();
+            leftLegGroup = new THREE.Group();
+            rightLegGroup = new THREE.Group();
+            capeGroup = new THREE.Group();
+        }
+
+        function createMinecraftSword(bladePrimaryHex, bladeSecondaryHex) {
+            const group = new THREE.Group();
+
+            const darkBorderMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.8 });
+            const woodMat = new THREE.MeshStandardMaterial({ color: 0x5c3a21, roughness: 0.9 });
+            const bladeMat = new THREE.MeshStandardMaterial({ color: bladePrimaryHex, roughness: 0.3, metalness: 0.5 });
+            const bladeCoreMat = new THREE.MeshStandardMaterial({ color: bladeSecondaryHex, roughness: 0.2, metalness: 0.6 });
+
+            const handleGeo = new THREE.BoxGeometry(0.09, 0.35, 0.09);
+            const handle = new THREE.Mesh(handleGeo, woodMat);
+            handle.position.y = -0.1;
+            group.add(handle);
+
+            const pommelGeo = new THREE.BoxGeometry(0.14, 0.09, 0.14);
+            const pommel = new THREE.Mesh(pommelGeo, darkBorderMat);
+            pommel.position.y = -0.28;
+            group.add(pommel);
+
+            const guardMainGeo = new THREE.BoxGeometry(0.42, 0.1, 0.12);
+            const guardMain = new THREE.Mesh(guardMainGeo, bladeMat);
+            guardMain.position.y = 0.1;
+            group.add(guardMain);
+
+            const guardEdgeGeo = new THREE.BoxGeometry(0.46, 0.06, 0.14);
+            const guardEdge = new THREE.Mesh(guardEdgeGeo, darkBorderMat);
+            guardEdge.position.y = 0.1;
+            group.add(guardEdge);
+
+            const bladeOutlineGeo = new THREE.BoxGeometry(0.18, 1.25, 0.06);
+            const bladeOutline = new THREE.Mesh(bladeOutlineGeo, darkBorderMat);
+            bladeOutline.position.y = 0.72;
+            group.add(bladeOutline);
+
+            const bladeGeo = new THREE.BoxGeometry(0.14, 1.22, 0.08);
+            const blade = new THREE.Mesh(bladeGeo, bladeMat);
+            blade.position.y = 0.72;
+            group.add(blade);
+
+            const coreGeo = new THREE.BoxGeometry(0.06, 1.1, 0.1);
+            const core = new THREE.Mesh(coreGeo, bladeCoreMat);
+            core.position.y = 0.7;
+            group.add(core);
+
+            const tipGeo = new THREE.BoxGeometry(0.09, 0.12, 0.08);
+            const tip = new THREE.Mesh(tipGeo, bladeCoreMat);
+            tip.position.y = 1.36;
+            group.add(tip);
+
+            return group;
+        }
+
+        function setupEnvironment() {
+            const grassTopTex = createNoiseTexture(16, 16, (ctx) => {
+                ctx.fillStyle = '#5bbd38'; ctx.fillRect(0, 0, 16, 16);
+                ctx.fillStyle = '#49a029';
+                for(let i=0; i<30; i++) ctx.fillRect(Math.floor(Math.random()*16), Math.floor(Math.random()*16), 1, 1);
+            });
+
+            const dirtTex = createNoiseTexture(16, 16, (ctx) => {
+                ctx.fillStyle = '#866043'; ctx.fillRect(0, 0, 16, 16);
+            });
+
+            const grassTopMat = new THREE.MeshStandardMaterial({ map: grassTopTex, roughness: 0.9 });
+            const dirtMat = new THREE.MeshStandardMaterial({ map: dirtTex, roughness: 0.9 });
+
+            const islandGroup = new THREE.Group();
+            for(let x = -2; x <= 2; x++) {
+                for(let z = -2; z <= 2; z++) {
+                    const blockGeo = new THREE.BoxGeometry(1, 1, 1);
+                    const block = new THREE.Mesh(blockGeo, [dirtMat, dirtMat, grassTopMat, dirtMat, dirtMat, dirtMat]);
+                    block.position.set(x, -1.7, z);
+                    block.receiveShadow = true;
+                    islandGroup.add(block);
+                }
+            }
+            scene.add(islandGroup);
+        }
+
+        function updateCharacterAppearance() {
+            buildMinecraftCharacter();
+        }
+
+        function loadCharacterPreset(preset) {
+            currentCharacterType = preset;
+
+            if (preset === 'steve') {
+                currentSkinTone = '#c68b59'; currentHeadStyle = 'classic'; currentTopStyle = 'teal'; currentBottomStyle = 'blue'; currentCapeStyle = 'none';
+            } else if (preset === 'alex') {
+                currentSkinTone = '#e5a77d'; currentHeadStyle = 'long'; currentTopStyle = 'green'; currentBottomStyle = 'brown'; currentCapeStyle = 'none';
+            } else if (preset === 'cyber') {
+                currentSkinTone = '#3b4252'; currentHeadStyle = 'cyber'; currentTopStyle = 'cyberpunk'; currentBottomStyle = 'neon'; currentCapeStyle = 'cyber';
+            } else if (preset === 'knight') {
+                currentSkinTone = '#e5a77d'; currentHeadStyle = 'helmet'; currentTopStyle = 'armor'; currentBottomStyle = 'iron'; currentCapeStyle = 'redstone';
+            } else if (preset === 'ninja') {
+                currentSkinTone = '#734226'; currentHeadStyle = 'ninja'; currentTopStyle = 'ninja'; currentBottomStyle = 'ninja'; currentCapeStyle = 'elytra';
+            } else if (preset === 'mage') {
+                currentSkinTone = '#3b4252'; currentHeadStyle = 'ender'; currentTopStyle = 'ender'; currentBottomStyle = 'neon'; currentCapeStyle = 'redstone';
+            }
+
+            // Hide/Show options based on Mob or Human
+            const isMob = ['zombie', 'spider', 'enderman'].includes(preset);
+            document.getElementById('skin-tone-container').style.display = isMob ? 'none' : 'block';
+
+            updateCharacterAppearance();
+        }
+
+        function setupEventListeners() {
+            const container = document.getElementById('canvas-container');
+
+            container.addEventListener('mousedown', (e) => { isMouseDown = true; mouseX = e.clientX; mouseY = e.clientY; });
+            window.addEventListener('mouseup', () => { isMouseDown = false; });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isMouseDown) return;
+                targetRotationY += (e.clientX - mouseX) * 0.008;
+                targetRotationX += (e.clientY - mouseY) * 0.008;
+                targetRotationX = Math.max(-Math.PI / 4, Math.min(Math.PI / 3, targetRotationX));
+                mouseX = e.clientX; mouseY = e.clientY;
+            });
+
+            container.addEventListener('wheel', (e) => {
+                cameraDist += e.deltaY * 0.005;
+                cameraDist = Math.max(4.5, Math.min(11, cameraDist));
+            }, { passive: true });
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Toggle UI Menu Button
+            const toggleMenuBtn = document.getElementById('toggle-menu-btn');
+            const controlPanel = document.getElementById('control-panel');
+            let isMenuVisible = true;
+
+            toggleMenuBtn.addEventListener('click', () => {
+                isMenuVisible = !isMenuVisible;
+                if (isMenuVisible) {
+                    controlPanel.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+                    toggleMenuBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+                } else {
+                    controlPanel.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+                    toggleMenuBtn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+                }
+            });
+
+            document.getElementById('reset-cam-btn').addEventListener('click', () => {
+                targetRotationY = 0.5; targetRotationX = 0.15; cameraDist = 7.5;
+            });
+
+            // Tab Switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.tab).classList.remove('hidden');
+                });
+            });
+
+            // Character Preset Buttons
+            document.querySelectorAll('.char-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    loadCharacterPreset(btn.id.replace('char-', ''));
+                });
+            });
+
+            // Teleport Skill Button
+            document.getElementById('btn-teleport-skill').addEventListener('click', () => {
+                triggerTeleportSkill();
+            });
+
+            // Style Customizers
+            document.querySelectorAll('.head-style-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.head-style-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentHeadStyle = btn.dataset.style;
+                    updateCharacterAppearance();
+                });
+            });
+
+            document.querySelectorAll('.top-style-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.top-style-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTopStyle = btn.dataset.style;
+                    updateCharacterAppearance();
+                });
+            });
+
+            document.querySelectorAll('.bottom-style-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.bottom-style-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentBottomStyle = btn.dataset.style;
+                    updateCharacterAppearance();
+                });
+            });
+
+            document.querySelectorAll('.skin-tone-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.skin-tone-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSkinTone = btn.dataset.color;
+                    updateCharacterAppearance();
+                });
+            });
+
+            document.querySelectorAll('.cape-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.cape-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCapeStyle = btn.dataset.cape;
+                    updateCharacterAppearance();
+                });
+            });
+
+            // Weapons
+            document.querySelectorAll('.weapon-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.weapon-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    if (swordDiamondGroup) swordDiamondGroup.visible = (e.target.id === 'weapon-diamond');
+                    if (swordNetheriteGroup) swordNetheriteGroup.visible = (e.target.id === 'weapon-netherite');
+                    if (swordGoldGroup) swordGoldGroup.visible = (e.target.id === 'weapon-gold');
+                });
+            });
+
+            // Animations
+            document.querySelectorAll('.anim-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.anim-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentAnimation = e.target.id.replace('anim-', '');
+                });
+            });
+
+            document.getElementById('speed-slider').addEventListener('input', (e) => {
+                animSpeed = parseFloat(e.target.value);
+                document.getElementById('speed-val').textContent = `${animSpeed.toFixed(1)}x`;
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = clock.getElapsedTime() * 4 * animSpeed;
+
+            // Camera Motion
+            camera.position.x = Math.sin(targetRotationY) * cameraDist * Math.cos(targetRotationX);
+            camera.position.y = 1.2 + Math.sin(targetRotationX) * cameraDist;
+            camera.position.z = Math.cos(targetRotationY) * cameraDist * Math.cos(targetRotationX);
+            camera.lookAt(0, 0.2, 0);
+
+            // Ender Particles Animation
+            if (enderParticlesGroup) {
+                enderParticlesGroup.children.forEach(p => {
+                    p.position.y += p.userData.speedY;
+                    p.rotation.y += p.userData.rotSpeed;
+                    if (p.position.y > 2.5) p.position.y = -0.5;
+                });
+            }
+
+            // Teleport Skill Effect Logic
+            if (isTeleporting) {
+                teleportTimer += 0.05;
+                characterGroup.scale.setScalar(Math.max(0, 1 - Math.sin(teleportTimer * Math.PI) * 0.9));
+                if (teleportTimer >= 1.0) {
+                    isTeleporting = false;
+                    characterGroup.scale.setScalar(1);
+                    // Dịch chuyển ngẫu nhiên nhẹ vị trí Y/X
+                    characterGroup.position.x = (Math.random() - 0.5) * 0.6;
+                }
+            }
+
+            // Zombie Pose Modifier (Tay giơ thẳng về phía trước)
+            if (currentCharacterType === 'zombie') {
+                leftArmGroup.rotation.x = -Math.PI / 2;
+                rightArmGroup.rotation.x = -Math.PI / 2;
+            } else if (currentCharacterType === 'spider') {
+                // Spider Legs Realistic Walking Animation
+                spiderLegs.forEach((leg) => {
+                    const phase = (leg.index % 2 === 0 ? 0 : Math.PI) + (leg.side === 1 ? Math.PI : 0);
+                    leg.pivot.rotation.y = Math.sin(time * 1.8 + phase) * 0.25;
+                    leg.pivot.rotation.z = Math.cos(time * 1.8 + phase) * 0.12;
+                });
+            } else {
+                // Reset Joints cho con người & Enderman
+                headGroup.rotation.set(0, 0, 0);
+                torsoGroup.rotation.set(0, 0, 0);
+                leftArmGroup.rotation.set(0, 0, 0);
+                rightArmGroup.rotation.set(0, 0, 0);
+            }
+
+            // Cape Wave Physics
+            if(capeGroup && capeGroup.visible) {
+                capeGroup.rotation.x = 0.1 + Math.sin(time * 0.8) * 0.08;
+            }
+
+            // Animation Logic (Áp dụng khi không phải Nhện)
+            if (currentCharacterType !== 'spider') {
+                if (currentAnimation === 'idle') {
+                    let basePosY = currentCharacterType === 'enderman' ? 0.8 : 0.2;
+                    characterGroup.position.y = basePosY + Math.sin(time * 0.5) * 0.02;
+                    headGroup.rotation.y = Math.sin(time * 0.2) * 0.08;
+
+                    if (currentCharacterType !== 'zombie') {
+                        leftArmGroup.rotation.x = Math.sin(time * 0.5) * 0.05;
+                        rightArmGroup.rotation.x = -Math.sin(time * 0.5) * 0.05;
+                    }
+                    leftLegGroup.rotation.x = 0;
+                    rightLegGroup.rotation.x = 0;
+
+                } else if (currentAnimation === 'walk') {
+                    let basePosY = currentCharacterType === 'enderman' ? 0.8 : 0.2;
+                    characterGroup.position.y = basePosY + Math.abs(Math.sin(time)) * 0.06;
+                    headGroup.rotation.y = Math.sin(time * 0.5) * 0.05;
+
+                    if (currentCharacterType !== 'zombie') {
+                        leftArmGroup.rotation.x = Math.sin(time) * 0.6;
+                        rightArmGroup.rotation.x = -Math.sin(time) * 0.6;
+                    }
+
+                    leftLegGroup.rotation.x = -Math.sin(time) * 0.6;
+                    rightLegGroup.rotation.x = Math.sin(time) * 0.6;
+
+                    if(capeGroup && capeGroup.visible) capeGroup.rotation.x = 0.4 + Math.sin(time) * 0.2;
+
+                } else if (currentAnimation === 'attack') {
+                    rightArmGroup.rotation.x = -1.2 + Math.sin(time * 2) * 0.8;
+                    rightArmGroup.rotation.y = -0.2;
+
+                    if (currentCharacterType !== 'zombie') leftArmGroup.rotation.x = 0.2;
+                    leftLegGroup.rotation.x = 0.2;
+                    rightLegGroup.rotation.x = -0.2;
+
+                } else if (currentAnimation === 'dance') {
+                    let basePosY = currentCharacterType === 'enderman' ? 0.8 : 0.2;
+                    characterGroup.position.y = basePosY + Math.abs(Math.sin(time * 2)) * 0.15;
+                    torsoGroup.rotation.z = Math.sin(time * 2) * 0.1;
+                    headGroup.rotation.y = Math.sin(time * 3) * 0.25;
+
+                    if (currentCharacterType !== 'zombie') {
+                        leftArmGroup.rotation.z = 0.8 + Math.sin(time * 2) * 0.3;
+                        rightArmGroup.rotation.z = -0.8 - Math.sin(time * 2) * 0.3;
+                    }
+
+                    leftLegGroup.rotation.x = Math.sin(time * 2) * 0.3;
+                    rightLegGroup.rotation.x = -Math.sin(time * 2) * 0.3;
+
+                    if(capeGroup && capeGroup.visible) capeGroup.rotation.x = 0.6 + Math.sin(time * 2) * 0.3;
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function init() {
+            const container = document.getElementById('canvas-container');
+
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x080c14);
+            scene.fog = new THREE.FogExp2(0x080c14, 0.035);
+
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // Lighting setup
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            dirLight.position.set(5, 10, 7);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 1024;
+            dirLight.shadow.mapSize.height = 1024;
+            scene.add(dirLight);
+
+            const rimLight = new THREE.DirectionalLight(0x38bdf8, 0.8);
+            rimLight.position.set(-5, 5, -5);
+            scene.add(rimLight);
+
+            // Environment & Character Init
+            setupEnvironment();
+            initEnderParticles();
+            loadCharacterPreset('steve');
+            setupEventListeners();
+
+            // Start animation loop
+            animate();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
