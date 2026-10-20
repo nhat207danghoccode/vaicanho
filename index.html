@@ -1972,6 +1972,9 @@ B. Đúng"></textarea>
 
       <div class="panel hidden" id="statsBox">
         <div class="st-wrap">
+          <div class="st-head" style="margin-bottom:12px;justify-content:flex-end">
+            <button class="qbtn" type="button" onclick="clearStatsHistory()" style="border-color:#ef4444;color:#ef4444"><i class="fas fa-trash-can"></i> Xóa lịch sử thống kê</button>
+          </div>
           <div class="st-tabs">
             <button class="st-tab on" data-st="all">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -2514,6 +2517,7 @@ function chooseSubject(subject){
     loadQuestionFiles();
 }
 function changeSubject(){
+    window.lastStatsSnapshotKey = "";
     localStorage.removeItem("currentSubject");
     currentSubject="";
     window.currentSubject = "";
@@ -2647,21 +2651,31 @@ function switchTab(type, skipPartialPrompt){
     if(type==="STATS" && !skipPartialPrompt && currentTab && !["STATS","EXAM","NOTE","CREATE"].includes(currentTab) && cachedQuestionNodes.length){
         const total=cachedQuestionNodes.length;
         const answered=cachedQuestionNodes.filter(q=>q.classList.contains("answered")).length;
-        if(answered>0 && answered<total){
+        if(answered>0){
             const correct=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&!q.classList.contains("wrong-question")).length;
             const wrong=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&q.classList.contains("wrong-question")).length;
             const unanswered=total-answered;
-            showConfirm({
-                title:"Thống kê khi chưa hoàn thành?",
-                desc:"Bạn đã trả lời "+answered+"/"+total+" câu, còn "+unanswered+" câu chưa làm. Bạn có muốn lưu thống kê tiến độ hiện tại không? Các câu chưa làm sẽ không bị tính là câu sai.",
-                okText:"Thống kê tiến độ",
-                okIcon:"fas fa-chart-pie",
-                onConfirm:()=>{
-                    if(typeof window.recordStatsSession==="function") window.recordStatsSession(correct,wrong,{total:total,unanswered:unanswered,partial:true,subject:currentSubject});
-                    switchTab("STATS",true);
-                }
-            });
-            return;
+            const snapshot=[currentSubject,total,correct,wrong,unanswered].join("|");
+            if(answered<total){
+                showConfirm({
+                    title:"Thống kê khi chưa hoàn thành?",
+                    desc:"Bạn đã trả lời "+answered+"/"+total+" câu: đúng "+correct+", sai "+wrong+", còn "+unanswered+" câu chưa làm. Lưu tiến độ hiện tại? Câu bỏ trống không tính là câu sai.",
+                    okText:"Lưu thống kê tiến độ",
+                    okIcon:"fas fa-chart-pie",
+                    onConfirm:()=>{
+                        if(typeof window.recordStatsSession==="function" && window.lastStatsSnapshotKey!==snapshot){
+                            window.recordStatsSession(correct,wrong,{total:total,unanswered:unanswered,partial:true,subject:currentSubject});
+                            window.lastStatsSnapshotKey=snapshot;
+                        }
+                        switchTab("STATS",true);
+                    }
+                });
+                return;
+            }
+            if(window.lastStatsSnapshotKey!==snapshot && typeof window.recordStatsSession==="function"){
+                window.recordStatsSession(correct,wrong,{total:total,unanswered:0,submitted:true,subject:currentSubject});
+                window.lastStatsSnapshotKey=snapshot;
+            }
         }
     }
     currentTab=type;
@@ -2793,7 +2807,7 @@ async function finishExam(){
         if(q.classList.contains("wrong-question")){ wrong++; }else{ correct++; }
     });
     const score=(correct/(correct+wrong+todo||1)*10).toFixed(2);
-    if(typeof window.recordStatsSession === "function") window.recordStatsSession(correct, wrong);
+    if(typeof window.recordStatsSession === "function") window.recordStatsSession(correct, wrong, {total:cachedQuestionNodes.length, unanswered:todo, submitted:true, subject:currentSubject});
     await showPopup("Kết quả thi thử",
         `Điểm: ${score}/10\nĐúng: ${correct}\nSai: ${wrong}\nChưa làm: ${todo}`,
         '<i class="fas fa-trophy" style="color:#fbbf24;"></i>');
@@ -3294,6 +3308,7 @@ function buildQuizHTML(){
 }
 
 function confirmReload(){
+    window.lastStatsSnapshotKey = "";
     showConfirm({
         title: "Làm lại từ đầu?",
         desc: "Toàn bộ câu trả lời và tiến trình hiện tại sẽ bị <b>xóa sạch</b>. Hành động này không thể hoàn tác.",
@@ -3653,6 +3668,8 @@ function renderTestQuiz(){
 function checkTestAnswers(){
     const qs = document.querySelectorAll("#testQuizInner .q-item");
     let correct = 0;
+    let wrong = 0;
+    let answered = 0;
     let total = qs.length;
     qs.forEach((q, idx)=>{
         const selected = q.querySelector("input:checked");
@@ -3663,13 +3680,14 @@ function checkTestAnswers(){
             if(inp && correctAns.includes(inp.value)){ li.classList.add("correct"); }
         });
         if(selected){
+            answered++;
             if(correctAns.includes(selected.value)){ correct++; }
-            else { selected.closest(".opt").classList.add("wrong"); }
+            else { wrong++; selected.closest(".opt").classList.add("wrong"); }
         }
     });
     const score = total ? (correct/total*10).toFixed(2) : "0.00";
-    document.getElementById("testResultScore").innerHTML = `Kết quả: ${correct}/${total} đúng · Điểm: ${score}/10`;
-    if(typeof window.recordStatsSession === "function") window.recordStatsSession(correct, total - correct);
+    document.getElementById("testResultScore").innerHTML = `Kết quả: ${correct}/${total} đúng · Sai: ${wrong} · Chưa làm: ${total-answered} · Điểm: ${score}/10`;
+    if(typeof window.recordStatsSession === "function") window.recordStatsSession(correct, wrong, {total, unanswered:total-answered, submitted:true, subject:currentSubject});
 }
 
 function resetTestQuiz(){
@@ -3768,8 +3786,8 @@ function stLoad(){ try{ statsHistory = JSON.parse(localStorage.getItem(ST_KEY)||
 function stSave(){ localStorage.setItem(ST_KEY, JSON.stringify(statsHistory)); }
 const stPct = (c,t)=> t? Math.round(c/t*100):0;
 const stTotal = s => s.total || (s.correct + s.wrong);
-const stPctOf = s => stPct(s.correct, stTotal(s));
-const stIsDone = s => s.partial !== true && (s.unanswered || 0) === 0;
+const stPctOf = s => stPct(s.correct, s.partial === true ? (s.correct + s.wrong) : stTotal(s));
+const stIsDone = s => s.partial !== true;
 const stSum = arr => arr.reduce((a,s)=>({correct:a.correct+s.correct,wrong:a.wrong+s.wrong}),{correct:0,wrong:0});
 const stFmtDate = iso => { try{ return new Date(iso).toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'}); }catch(e){ return iso; } };
 
@@ -3777,11 +3795,32 @@ stLoad();
 
 window.recordStatsSession = function(correct, wrong, meta){
     meta = meta || {};
-    if(correct + wrong === 0 && !meta.partial) return;
-    statsHistory.unshift({correct:correct, wrong:wrong, total:meta.total || correct+wrong, unanswered:meta.unanswered || 0, partial:meta.partial === true, subject:meta.subject || currentSubject || "", timestamp:new Date().toISOString()});
+    correct = Math.max(0, Number(correct) || 0);
+    wrong = Math.max(0, Number(wrong) || 0);
+    const total = Math.max(correct + wrong, Number(meta.total) || correct + wrong);
+    const unanswered = Math.max(0, total - correct - wrong);
+    if(correct + wrong === 0 && !meta.partial && !meta.submitted) return;
+    statsHistory.unshift({correct, wrong, total, unanswered, partial:meta.partial === true, subject:meta.subject || currentSubject || "", timestamp:new Date().toISOString()});
     if(statsHistory.length > 100) statsHistory.pop();
     stSave();
-    if(currentTab === 'STATS') window.renderStatsAll();
+    if(currentTab === 'STATS') { window.renderStatsAll(); window.renderStatsBest(); window.renderStatsWrong(); }
+};
+
+window.clearStatsHistory = function(){
+    showConfirm({
+        title:"Xóa toàn bộ lịch sử thống kê?",
+        desc:"Toàn bộ kết quả các lần làm bài đã lưu trên thiết bị này sẽ bị xóa và không thể khôi phục. Dữ liệu câu hỏi/đáp án không bị ảnh hưởng.",
+        okText:"Xóa lịch sử",
+        okIcon:"fas fa-trash-can",
+        onConfirm:()=>{
+            statsHistory = [];
+            stSave();
+            window.renderStatsAll();
+            window.renderStatsBest();
+            window.renderStatsWrong();
+            showToast("Đã xóa lịch sử thống kê!");
+        }
+    });
 };
 
 function stStatCard(o){
@@ -3837,7 +3876,8 @@ function stDrawChart(canvasId, correct, wrong, label){
 window.renderStatsAll = function(){
     const totals = stSum(statsHistory);
     const tt = totals.correct + totals.wrong;
-    const p = stPct(totals.correct, tt);
+    const scoreDenominator = statsHistory.reduce((sum, s) => sum + (s.partial === true ? s.correct + s.wrong : stTotal(s)), 0);
+    const p = stPct(totals.correct, scoreDenominator);
     const doneCount = statsHistory.filter(stIsDone).length;
     const latest = statsHistory[0], prev = statsHistory[1];
     let trendHtml = '';
@@ -3888,7 +3928,7 @@ window.renderStatsAll = function(){
         listAll.innerHTML = statsHistory.map(s=>{
             const done = stIsDone(s); const pv = stPctOf(s);
             const cls = pv>=85?'hi':pv>=65?'mid':'lo';
-            return '<div class="st-row '+(done?'done':'pending')+'"><span class="st-row-status '+(done?'done':'pending')+'">'+(done?SVGI.checkCircle+' Hoàn thành':SVGI.minusCircle+' Có câu sai')+'</span><span class="st-row-score"><span class="dot g"></span>'+s.correct+'<span class="dot r"></span>'+s.wrong+'</span><span class="st-row-pct '+cls+'">'+pv+'%</span><span class="st-row-date">'+stFmtDate(s.timestamp)+'</span></div>';
+            return '<div class="st-row '+(done?'done':'pending')+'"><span class="st-row-status '+(done?'done':'pending')+'">'+(s.partial?SVGI.minusCircle+' Đang làm':SVGI.checkCircle+' Đã nộp')+'</span><span class="st-row-score"><span class="dot g"></span>'+s.correct+'<span class="dot r"></span>'+s.wrong+(s.unanswered?' <small>· '+s.unanswered+' bỏ trống</small>':'')+'</span><span class="st-row-pct '+cls+'">'+pv+'%</span><span class="st-row-date">'+(s.subject?String(s.subject)+' · ':'')+stFmtDate(s.timestamp)+'</span></div>';
         }).join('');
     }
 
@@ -3954,7 +3994,7 @@ window.renderStatsWrong = function(){
     else {
         list.innerHTML = wrongList.map(s=>{
             const pv = stPctOf(s); const cls = pv>=85?'hi':pv>=65?'mid':'lo';
-            return '<div class="st-row pending"><span class="st-row-status pending">'+SVGI.minusCircle+' Có câu sai</span><span class="st-row-score"><span class="dot g"></span>'+s.correct+'<span class="dot r"></span>'+s.wrong+'</span><span class="st-row-pct '+cls+'">'+pv+'%</span><span class="st-row-date">'+stFmtDate(s.timestamp)+'</span></div>';
+            return '<div class="st-row pending"><span class="st-row-status pending">'+SVGI.minusCircle+' Có câu sai</span><span class="st-row-score"><span class="dot g"></span>'+s.correct+'<span class="dot r"></span>'+s.wrong+'</span><span class="st-row-pct '+cls+'">'+pv+'%</span><span class="st-row-date">'+(s.subject?String(s.subject)+' · ':'')+stFmtDate(s.timestamp)+'</span></div>';
         }).join('');
     }
     document.getElementById('stBadgeWrong').textContent = wrongList.length;
