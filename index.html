@@ -2643,7 +2643,27 @@ document.querySelectorAll(".chip").forEach(chip => {
     });
 });
 
-function switchTab(type){
+function switchTab(type, skipPartialPrompt){
+    if(type==="STATS" && !skipPartialPrompt && currentTab && !["STATS","EXAM","NOTE","CREATE"].includes(currentTab) && cachedQuestionNodes.length){
+        const total=cachedQuestionNodes.length;
+        const answered=cachedQuestionNodes.filter(q=>q.classList.contains("answered")).length;
+        if(answered>0 && answered<total){
+            const correct=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&!q.classList.contains("wrong-question")).length;
+            const wrong=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&q.classList.contains("wrong-question")).length;
+            const unanswered=total-answered;
+            showConfirm({
+                title:"Thống kê khi chưa hoàn thành?",
+                desc:"Bạn đã trả lời "+answered+"/"+total+" câu, còn "+unanswered+" câu chưa làm. Bạn có muốn lưu thống kê tiến độ hiện tại không? Các câu chưa làm sẽ không bị tính là câu sai.",
+                okText:"Thống kê tiến độ",
+                okIcon:"fas fa-chart-pie",
+                onConfirm:()=>{
+                    if(typeof window.recordStatsSession==="function") window.recordStatsSession(correct,wrong,{total:total,unanswered:unanswered,partial:true,subject:currentSubject});
+                    switchTab("STATS",true);
+                }
+            });
+            return;
+        }
+    }
     currentTab=type;
     document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("activeTab",b.dataset.tab===type));
 
@@ -3747,17 +3767,18 @@ const stCharts = {all:null,best:null,wrong:null};
 function stLoad(){ try{ statsHistory = JSON.parse(localStorage.getItem(ST_KEY)||'[]'); }catch(e){ statsHistory=[]; } }
 function stSave(){ localStorage.setItem(ST_KEY, JSON.stringify(statsHistory)); }
 const stPct = (c,t)=> t? Math.round(c/t*100):0;
-const stTotal = s => s.correct + s.wrong;
+const stTotal = s => s.total || (s.correct + s.wrong);
 const stPctOf = s => stPct(s.correct, stTotal(s));
-const stIsDone = s => s.wrong === 0;
+const stIsDone = s => s.partial !== true && (s.unanswered || 0) === 0;
 const stSum = arr => arr.reduce((a,s)=>({correct:a.correct+s.correct,wrong:a.wrong+s.wrong}),{correct:0,wrong:0});
 const stFmtDate = iso => { try{ return new Date(iso).toLocaleString('vi-VN',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit',year:'numeric'}); }catch(e){ return iso; } };
 
 stLoad();
 
-window.recordStatsSession = function(correct, wrong){
-    if(correct + wrong === 0) return;
-    statsHistory.unshift({correct:correct, wrong:wrong, timestamp:new Date().toISOString()});
+window.recordStatsSession = function(correct, wrong, meta){
+    meta = meta || {};
+    if(correct + wrong === 0 && !meta.partial) return;
+    statsHistory.unshift({correct:correct, wrong:wrong, total:meta.total || correct+wrong, unanswered:meta.unanswered || 0, partial:meta.partial === true, subject:meta.subject || currentSubject || "", timestamp:new Date().toISOString()});
     if(statsHistory.length > 100) statsHistory.pop();
     stSave();
     if(currentTab === 'STATS') window.renderStatsAll();
@@ -3827,7 +3848,7 @@ window.renderStatsAll = function(){
         else trendHtml = '<span class="st-trend flat">'+SVGI.flat+'Không đổi</span>';
     }
     document.getElementById('stStatsAll').innerHTML =
-        stStatCard({icon:SVGI.layers,label:'Tổng số lần',value:statsHistory.length,detail:doneCount+' lần hoàn thành'})+
+        stStatCard({icon:SVGI.layers,label:'Tổng số lần',value:statsHistory.length,detail:doneCount+' hoàn thành · '+statsHistory.filter(st=>st.partial===true).length+' lần dở dang'})+
         stStatCard({cls:'green',icon:SVGI.check,label:'Tổng câu đúng',value:totals.correct,detail:'trên '+tt+' câu'})+
         stStatCard({cls:'red',icon:SVGI.x,label:'Tổng câu sai',value:totals.wrong,detail:'trên '+tt+' câu'})+
         stStatCard({cls:'purple',icon:SVGI.target,label:'Tỷ lệ đúng',value:p+'%',detail:'trên mọi lần',trend:trendHtml});
@@ -3853,6 +3874,10 @@ window.renderStatsAll = function(){
         if(best) ins += '<div class="st-insight"><div class="st-ih">'+SVGI.bulb+' Lần tốt nhất</div><p><b>'+best.correct+'/'+stTotal(best)+'</b> câu ('+stPctOf(best)+'%) — '+stFmtDate(best.timestamp)+'</p></div>';
         const worst = statsHistory.slice().sort((a,b)=>stPctOf(a)-stPctOf(b))[0];
         if(worst && worst.wrong > 0) ins += '<div class="st-insight red"><div class="st-ih">'+SVGI.search+' Lần cần cải thiện</div><p><b>'+worst.correct+'/'+stTotal(worst)+'</b> câu ('+stPctOf(worst)+'%) — '+stFmtDate(worst.timestamp)+'</p></div>';
+    }
+    const partialCount = statsHistory.filter(st=>st.partial===true).length;
+    if(partialCount){
+        ins += '<div class="st-insight"><div class="st-ih">'+SVGI.layers+' Thống kê tiến độ chưa hoàn thành</div><p>Có <b>'+partialCount+'</b> lần thống kê giữa chừng. Câu chưa làm được tách riêng, không tính là câu sai.</p></div>';
     }
     document.getElementById('stInsightAll').innerHTML = ins;
 
