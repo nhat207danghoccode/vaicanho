@@ -2551,13 +2551,25 @@ function clearAllContainers(){
     navBtnsCache = [];
 }
 
+window.addEventListener("pageshow", function(event){
+    if(event.persisted && currentSubject && SUBJECTS[currentSubject]){
+        subjectLoadToken++;
+        loadQuestionFiles();
+    }
+});
+
 async function loadQuestionFiles(){
     const loadToken=subjectLoadToken;
     const loadingSubject=currentSubject;
 
     try{
         const subject=SUBJECTS[loadingSubject];
-        const response=await fetch(subject.ds, {cache:"force-cache"});
+        const questionFileUrl = new URL(subject.ds, window.location.href);
+        questionFileUrl.searchParams.set("_question_refresh", String(Date.now()));
+        const response=await fetch(questionFileUrl.href, {
+            cache:"no-store",
+            headers:{"Cache-Control":"no-cache, no-store, must-revalidate","Pragma":"no-cache"}
+        });
         if(!response.ok) throw new Error("HTTP "+response.status);
         const text=await response.text();
         if(loadToken!==subjectLoadToken || currentSubject!==loadingSubject)return;
