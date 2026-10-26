@@ -3239,7 +3239,6 @@ function buildQuizHTML(){
             inp.addEventListener("change", ()=>{
                 if(!answersCache[currentTab]){ answersCache[currentTab] = {}; }
                 answersCache[currentTab][item.id] = [opt.text];
-                playAnswerFeedback(!!opt.isCorrect);
                 scheduleSave();
             });
 
@@ -3302,8 +3301,9 @@ function buildQuizHTML(){
         submitBtn.className = "act submit answer-submit";
         submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Trả lời</span>';
 
-        submitBtn.onclick = function(){
+        submitBtn.onclick = function(event){
             if(qBlock.classList.contains("answered")){ return; }
+            const userSubmitted = !!(event && event.isTrusted);
             qBlock.classList.add("answered");
 
             const allOpts = optionsList.querySelectorAll(".opt");
@@ -3329,6 +3329,8 @@ function buildQuizHTML(){
 
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Đã trả lời</span>';
+
+            if(userSubmitted){ playAnswerFeedback(allCorrect); }
 
             if(allCorrect){
                 correctCount++;
