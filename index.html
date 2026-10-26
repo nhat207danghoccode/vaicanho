@@ -2628,8 +2628,15 @@ function parseRawText(text){
 
 const answerSoundToggle = document.getElementById("soundToggle");
 let answerSoundsEnabled = localStorage.getItem("quizAnswerSoundsEnabled") !== "false";
-const answerSoundAudio = new Audio();
-answerSoundAudio.preload = "auto";
+const answerSoundAudios = {
+    correct: new Audio("1.mp3"),
+    wrong: new Audio("2.mp3")
+};
+Object.values(answerSoundAudios).forEach(audio => {
+    audio.preload = "auto";
+    audio.load();
+});
+let activeAnswerSound = null;
 function updateAnswerSoundToggle(){
     if(!answerSoundToggle) return;
     answerSoundToggle.classList.toggle("sound-on", answerSoundsEnabled);
@@ -2640,17 +2647,26 @@ function updateAnswerSoundToggle(){
     answerSoundToggle.dataset.tip = answerSoundsEnabled ? "Tắt âm thanh đúng sai" : "Bật âm thanh đúng sai";
     answerSoundToggle.setAttribute("aria-label", answerSoundsEnabled ? "Tắt âm thanh" : "Bật âm thanh");
 }
+function stopAnswerFeedback(){
+    Object.values(answerSoundAudios).forEach(audio => {
+        audio.pause();
+        try { audio.currentTime = 0; } catch(e) {}
+    });
+    activeAnswerSound = null;
+}
 function playAnswerFeedback(isCorrect){
+    stopAnswerFeedback();
     if(!answerSoundsEnabled) return;
-    answerSoundAudio.pause();
-    answerSoundAudio.currentTime = 0;
-    answerSoundAudio.src = isCorrect ? "1.mp3" : "2.mp3";
-    answerSoundAudio.play().catch(()=>{});
+    const audio = isCorrect ? answerSoundAudios.correct : answerSoundAudios.wrong;
+    activeAnswerSound = audio;
+    try { audio.currentTime = 0; } catch(e) {}
+    audio.play().catch(()=>{});
 }
 if(answerSoundToggle){
     answerSoundToggle.addEventListener("click",()=>{
         answerSoundsEnabled = !answerSoundsEnabled;
         localStorage.setItem("quizAnswerSoundsEnabled", String(answerSoundsEnabled));
+        if(!answerSoundsEnabled) stopAnswerFeedback();
         if(window.quizWebAudio) window.quizWebAudio.muted = !answerSoundsEnabled;
         updateAnswerSoundToggle();
     });
