@@ -1067,6 +1067,8 @@
     position: relative;
   }
   .dock-btn:hover{ transform: scale(1.08); color: var(--c1); border-color: var(--c1-line); }
+  #soundToggle.sound-off{background:var(--red-soft);color:var(--red);border-color:var(--red-line)}
+  #soundToggle.sound-on{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;border-color:transparent}
 
   .dock-btn.music{
     background: linear-gradient(135deg, var(--c1), var(--c2));
@@ -2097,6 +2099,7 @@ B. Đúng"></textarea>
 </div>
 
 <div class="dock">
+  <button class="dock-btn nav" id="soundToggle" data-tip="Bật/tắt âm thanh đúng sai" aria-label="Bật tắt âm thanh đúng sai"><i class="fas fa-volume-high"></i></button>
   <button class="dock-btn music" id="dockMusic" data-tip="Nhạc nền">
     <i class="fas fa-music"></i>
   </button>
@@ -2621,6 +2624,38 @@ function parseRawText(text){
     if(currentQ){ questions.push(currentQ); }
     return questions;
 }
+
+
+const answerSoundToggle = document.getElementById("soundToggle");
+let answerSoundsEnabled = localStorage.getItem("quizAnswerSoundsEnabled") !== "false";
+const answerSoundAudio = new Audio();
+answerSoundAudio.preload = "auto";
+function updateAnswerSoundToggle(){
+    if(!answerSoundToggle) return;
+    answerSoundToggle.classList.toggle("sound-on", answerSoundsEnabled);
+    answerSoundToggle.classList.toggle("sound-off", !answerSoundsEnabled);
+    answerSoundToggle.innerHTML = answerSoundsEnabled
+        ? '<i class="fas fa-volume-high"></i>'
+        : '<i class="fas fa-volume-xmark"></i>';
+    answerSoundToggle.dataset.tip = answerSoundsEnabled ? "Tắt âm thanh đúng sai" : "Bật âm thanh đúng sai";
+    answerSoundToggle.setAttribute("aria-label", answerSoundsEnabled ? "Tắt âm thanh" : "Bật âm thanh");
+}
+function playAnswerFeedback(isCorrect){
+    if(!answerSoundsEnabled) return;
+    answerSoundAudio.pause();
+    answerSoundAudio.currentTime = 0;
+    answerSoundAudio.src = isCorrect ? "1.mp3" : "2.mp3";
+    answerSoundAudio.play().catch(()=>{});
+}
+if(answerSoundToggle){
+    answerSoundToggle.addEventListener("click",()=>{
+        answerSoundsEnabled = !answerSoundsEnabled;
+        localStorage.setItem("quizAnswerSoundsEnabled", String(answerSoundsEnabled));
+        if(window.quizWebAudio) window.quizWebAudio.muted = !answerSoundsEnabled;
+        updateAnswerSoundToggle();
+    });
+}
+updateAnswerSoundToggle();
 
 function getCorrectAnswer(item){
     const correction=window.firebaseCorrections && window.firebaseCorrections[item.id];
@@ -3188,6 +3223,7 @@ function buildQuizHTML(){
             inp.addEventListener("change", ()=>{
                 if(!answersCache[currentTab]){ answersCache[currentTab] = {}; }
                 answersCache[currentTab][item.id] = [opt.text];
+                playAnswerFeedback(!!opt.isCorrect);
                 scheduleSave();
             });
 
@@ -4168,7 +4204,9 @@ if(savedTheme){
     if (played) return;
     played = true;
     const audio = new Audio(AUDIO_SRC);
+    window.quizWebAudio = audio;
     audio.volume = VOLUME;
+    audio.muted = localStorage.getItem("quizAnswerSoundsEnabled") === "false";
     audio.preload = "auto";
     const p = audio.play();
     if (p && p.catch) {
@@ -4179,7 +4217,9 @@ if(savedTheme){
           if (played) return;
           played = true;
           const a = new Audio(AUDIO_SRC);
+          window.quizWebAudio = a;
           a.volume = VOLUME;
+          a.muted = localStorage.getItem("quizAnswerSoundsEnabled") === "false";
           a.play().catch(() => {});
         };
         const removeUnlock = () => {
