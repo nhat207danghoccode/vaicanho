@@ -46,6 +46,29 @@
     --font: 'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
   }
 
+
+  #gateRoot{position:fixed;inset:0;z-index:9999999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;transition:opacity .5s ease,transform .5s ease}
+  #gateRoot::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 15% 15%,var(--c1-soft),transparent 65%),radial-gradient(ellipse 50% 45% at 90% 90%,var(--c2-soft),transparent 65%);pointer-events:none}
+  #gateRoot.gate-hidden{opacity:0;transform:scale(1.04);pointer-events:none}
+  .loader-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow-xl);padding:38px 32px 32px;text-align:center;position:relative;overflow:hidden}
+  .loader-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--c1),var(--c2),var(--c1));background-size:200% auto;animation:loaderShine 3s linear infinite}
+  @keyframes loaderShine{to{background-position:200% center}}
+  .pulse-wrap{width:130px;height:130px;margin:0 auto 24px;position:relative;display:flex;align-items:center;justify-content:center}
+  .pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--c1);opacity:0;animation:loaderPulse 2.4s ease-out infinite}
+  .pulse-ring:nth-child(2){animation-delay:.8s;border-color:var(--c2)}.pulse-ring:nth-child(3){animation-delay:1.6s}
+  @keyframes loaderPulse{0%{transform:scale(.6);opacity:.7}100%{transform:scale(1.4);opacity:0}}
+  .pulse-core{width:86px;height:86px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 12px 30px -8px var(--c1),0 0 0 8px var(--surface),0 0 0 9px var(--c1-soft);animation:loaderBeat 1.6s ease-in-out infinite;position:relative;z-index:2}
+  @keyframes loaderBeat{0%,100%{transform:scale(1)}15%{transform:scale(1.08)}30%{transform:scale(1)}45%{transform:scale(1.05)}60%{transform:scale(1)}}
+  .loader-name{font-size:22px;font-weight:900;letter-spacing:-.3px;margin-bottom:6px;background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .loader-sub{font-size:12.5px;color:var(--txt-dim);font-weight:500;margin-bottom:26px;display:flex;align-items:center;justify-content:center;gap:7px}.loader-sub i{font-size:8px;color:var(--green)}
+  .ecg{width:100%;height:44px;margin-bottom:20px}.ecg svg{width:100%;height:100%;overflow:visible}.ecg-path{fill:none;stroke:url(#ecgGrad);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px var(--c2));stroke-dasharray:600;stroke-dashoffset:600;animation:loaderEcg 2.4s linear infinite}
+  @keyframes loaderEcg{0%{stroke-dashoffset:600}100%{stroke-dashoffset:-600}}
+  .prog-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11.5px;font-weight:700}.prog-info .lbl{color:var(--txt-dim);text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:5px}.prog-info .lbl .dot{width:6px;height:6px;border-radius:50%;background:var(--c1);animation:loaderDot 1.4s infinite}.prog-info .lbl .dot:nth-child(2){animation-delay:.2s;background:var(--c2)}.prog-info .lbl .dot:nth-child(3){animation-delay:.4s}
+  @keyframes loaderDot{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+  .prog-info .pct{color:var(--c1);font-variant-numeric:tabular-nums;font-size:13px;font-weight:900}.prog-track{height:6px;border-radius:999px;background:var(--line-soft);overflow:hidden;position:relative}.prog-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--c1),var(--c2));transition:width .18s ease;position:relative;box-shadow:0 0 12px -2px var(--c2)}.prog-fill::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 8px var(--c2)}
+  .loader-foot{margin-top:22px;font-size:11px;color:var(--txt-dim);font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px}.loader-foot i{color:var(--c2);font-size:10px}
+  @media(max-width:600px){.loader-card{padding:30px 22px 26px}.loader-name{font-size:19px}}
+
   body{
     font-family: var(--font);
     background: var(--bg);
@@ -1707,101 +1730,17 @@
 <body>
 
 <div id="gateRoot">
-  <div class="screen" id="loadingScreen">
-    <div class="loader-card">
-      <div class="pulse-wrap">
-        <div class="pulse-ring"></div>
-        <div class="pulse-ring"></div>
-        <div class="pulse-ring"></div>
-        <div class="pulse-core"><i class="fas fa-heart-pulse"></i></div>
-      </div>
-      <div class="loader-name">Nguyễn Phi Nhật</div>
-      <div class="loader-sub">
-        <i class="fas fa-circle"></i> Đang kết nối hệ thống
-      </div>
-      <div class="ecg">
-        <svg viewBox="0 0 320 60" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="ecgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="var(--c1)" stop-opacity="0"/>
-              <stop offset="50%" stop-color="var(--c2)" stop-opacity="1"/>
-              <stop offset="100%" stop-color="var(--c1)" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path class="ecg-path" d="M0,30 L50,30 L60,30 L65,12 L70,48 L75,30 L90,30 L100,30 L105,22 L110,38 L115,30 L150,30 L160,30 L165,8 L170,52 L175,30 L195,30 L205,30 L210,18 L215,42 L220,30 L260,30 L270,30 L275,12 L280,48 L285,30 L320,30"/>
-        </svg>
-      </div>
-      <div class="prog-info">
-        <span class="lbl">
-          Đang tải
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </span>
-        <span class="pct" id="progressText">0%</span>
-      </div>
-      <div class="prog-track"><div class="prog-fill" id="progressFill"></div></div>
-      <div class="loader-foot">
-        <i class="fas fa-shield-halved"></i> Phiên bản 2.0 • Sẵn sàng
-      </div>
-    </div>
-  </div>
-
-  <div class="screen hidden" id="loginScreen">
-    <div class="login-card" id="loginCard">
-      <div class="login-logo"><i class="fas fa-heart-pulse"></i></div>
-      <div class="login-title">
-        <h2>Đăng nhập hệ thống</h2>
-        <p>Vui lòng nhập tài khoản để tiếp tục</p>
-      </div>
-      <div class="admin-chip">
-        <div class="av"><i class="fas fa-user-md"></i></div>
-        <div class="info">
-          <div class="lbl">Admin</div>
-          <div class="nm">Nguyễn Phi Nhật</div>
-        </div>
-      </div>
-      <form id="loginForm" onsubmit="event.preventDefault();">
-        <div class="form-group">
-          <label for="username">Tài khoản</label>
-          <div class="input-wrap">
-            <i class="fas fa-user fi"></i>
-            <input type="text" id="username" placeholder="Nhập tài khoản..." autocomplete="off">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="password">Mật khẩu</label>
-          <div class="input-wrap">
-            <i class="fas fa-lock fi"></i>
-            <input type="password" id="password" placeholder="••••••••">
-            <button type="button" class="toggle-pass" id="togglePass" onclick="togglePassword()">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
-        </div>
-        <div class="form-row">
-          <label class="remember">
-            <input type="checkbox" id="remember" checked>
-            <span class="box"></span>
-            <span>Ghi nhớ đăng nhập</span>
-          </label>
-        </div>
-        <button type="submit" class="btn-login">
-          <i class="fas fa-arrow-right-to-bracket"></i>
-          Đăng nhập
-        </button>
-        <div class="error-msg" id="errorMsg">
-          <i class="fas fa-circle-exclamation"></i>
-          <span>Sai tài khoản hoặc mật khẩu!</span>
-        </div>
-      </form>
-      <div class="login-foot">
-        <i class="fas fa-heart-pulse"></i>
-        Chúc bạn thi tốt • Stay healthy
-      </div>
-    </div>
+  <div class="loader-card">
+    <div class="pulse-wrap"><div class="pulse-ring"></div><div class="pulse-ring"></div><div class="pulse-ring"></div><div class="pulse-core"><i class="fas fa-heart-pulse"></i></div></div>
+    <div class="loader-name">Nguyễn Phi Nhật</div>
+    <div class="loader-sub"><i class="fas fa-circle"></i> Đang kết nối hệ thống</div>
+    <div class="ecg"><svg viewBox="0 0 320 60" preserveAspectRatio="none"><defs><linearGradient id="ecgGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--c1)" stop-opacity="0"/><stop offset="50%" stop-color="var(--c2)" stop-opacity="1"/><stop offset="100%" stop-color="var(--c1)" stop-opacity="0"/></linearGradient></defs><path class="ecg-path" d="M0,30 L50,30 L60,30 L65,12 L70,48 L75,30 L90,30 L100,30 L105,22 L110,38 L115,30 L150,30 L160,30 L165,8 L170,52 L175,30 L195,30 L205,30 L210,18 L215,42 L220,30 L260,30 L270,30 L275,12 L280,48 L285,30 L320,30"/></svg></div>
+    <div class="prog-info"><span class="lbl">Đang tải <span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="pct" id="progressText">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progressFill"></div></div>
+    <div class="loader-foot"><i class="fas fa-shield-halved"></i> Phiên bản 2.0 • Sẵn sàng</div>
   </div>
 </div>
+
 
 <div class="subject-screen" id="subjectSelect">
   <div class="subject-card">
@@ -1814,7 +1753,7 @@
   </div>
 </div>
 
-<div id="mainApp" style="display:none;">
+<div id="mainApp" style="display:block;">
 
   <div class="top-progress"><div class="top-progress-fill" id="topProgress"></div></div>
 
@@ -2227,146 +2166,38 @@ B. Đúng"></textarea>
 </div>
 
 <script>
-(function() {
-  const VALID_USER = "19D";
-  const VALID_PASS = "19D";
-  const STORAGE_KEY = "ykhoa_authenticated";
-
-  const gateRoot = document.getElementById('gateRoot');
-  const loadingScreen = document.getElementById('loadingScreen');
-  const loginScreen = document.getElementById('loginScreen');
-  const progressFill = document.getElementById('progressFill');
-  const progressText = document.getElementById('progressText');
-  const loginForm = document.getElementById('loginForm');
-  const usernameInput = document.getElementById('username');
-  const passwordInput = document.getElementById('password');
-  const errorMsg = document.getElementById('errorMsg');
-
-  window.togglePassword = function(){
-    const inp = passwordInput;
-    const btn = document.getElementById('togglePass');
-    const isPass = inp.type === 'password';
-    inp.type = isPass ? 'text' : 'password';
-    btn.innerHTML = isPass
-      ? '<i class="fas fa-eye-slash"></i>'
-      : '<i class="fas fa-eye"></i>';
-  };
-
+(function(){
   let progress = 0;
-  const loadingInterval = setInterval(() => {
-    progress += Math.random() * 12 + 4;
-    if (progress >= 100) {
-      progress = 100;
-      progressFill.style.width = '100%';
-      progressText.textContent = '100%';
-      clearInterval(loadingInterval);
-      setTimeout(() => {
-        if (localStorage.getItem(STORAGE_KEY) === 'true') {
-          switchToWelcome();
-        } else {
-          switchToLogin();
-        }
-      }, 500);
-    } else {
-      progressFill.style.width = progress + '%';
-      progressText.textContent = Math.floor(progress) + '%';
+  const fill = document.getElementById("progressFill");
+  const label = document.getElementById("progressText");
+  const gate = document.getElementById("gateRoot");
+  const timer = setInterval(() => {
+    progress = Math.min(95, progress + Math.max(1, Math.ceil((95 - progress) * 0.12)));
+    if (fill) fill.style.width = progress + "%";
+    if (label) label.textContent = progress + "%";
+  }, 90);
+  function closeLoader(){
+    clearInterval(timer);
+    if (fill) fill.style.width = "100%";
+    if (label) label.textContent = "100%";
+    setTimeout(() => {
+      gate.classList.add("gate-hidden");
+      setTimeout(() => { gate.style.display = "none"; }, 500);
+    }, 250);
+  }
+  setTimeout(() => {
+    if (typeof window.startClassSelection === "function") window.startClassSelection();
+    const saved = localStorage.getItem("currentSubject");
+    if (saved && typeof SUBJECTS !== "undefined" && SUBJECTS[saved]) {
+      currentSubject = saved;
+      window.currentSubject = saved;
+      if (typeof hideSubjectSelect === "function") hideSubjectSelect();
+      if (typeof loadQuestionFiles === "function") loadQuestionFiles();
+    } else if (typeof showSubjectSelect === "function") {
+      showSubjectSelect();
     }
-  }, 180);
-
-  function switchToLogin() {
-    loadingScreen.classList.add('fade-out');
-    setTimeout(() => {
-      loadingScreen.classList.add('hidden');
-      loadingScreen.classList.remove('fade-out');
-      loginScreen.classList.remove('hidden');
-      setTimeout(() => usernameInput.focus(), 300);
-    }, 500);
-  }
-
-  function switchToWelcome() {
-    loadingScreen.classList.add('fade-out');
-    setTimeout(() => {
-      loadingScreen.classList.add('hidden');
-      loadingScreen.classList.remove('fade-out');
-      loginScreen.classList.remove('hidden');
-      showWelcomeBack();
-    }, 500);
-  }
-
-  function showWelcomeBack() {
-    const card = document.getElementById('loginCard');
-    card.innerHTML = `
-      <div class="login-logo" style="background:linear-gradient(135deg,#10b981,#059669);">
-        <i class="fas fa-check"></i>
-      </div>
-      <div class="login-title">
-        <h2>Chào mừng trở lại!</h2>
-        <p>Bạn đã được xác thực • Truy cập mãi mãi</p>
-      </div>
-      <div class="admin-chip">
-        <div class="av"><i class="fas fa-user-md"></i></div>
-        <div class="info">
-          <div class="lbl">Admin</div>
-          <div class="nm">Nguyễn Phi Nhật</div>
-        </div>
-      </div>
-      <button class="btn-enter-system" id="enterSystemBtn">
-        <span>Vô Học Giả vờ siêng</span>
-        <i class="fas fa-arrow-right"></i>
-      </button>
-      <div class="login-foot">
-        <i class="fas fa-heart-pulse"></i> Sẵn sàng làm bài • Stay healthy
-      </div>
-    `;
-    const btn = document.getElementById('enterSystemBtn');
-    if(btn) btn.onclick = enterMainApp;
-  }
-
-  function enterMainApp() {
-    const mainApp = document.getElementById('mainApp');
-    mainApp.style.display = 'block';
-    gateRoot.classList.add('gate-hidden');
-    setTimeout(() => {
-      gateRoot.style.display = 'none';
-      if (typeof window.startClassSelection === 'function') window.startClassSelection();
-      const saved = localStorage.getItem("currentSubject");
-      if(saved && typeof SUBJECTS !== "undefined" && SUBJECTS[saved]){
-        currentSubject = saved;
-        window.currentSubject = saved;
-        if (typeof hideSubjectSelect === "function") hideSubjectSelect();
-        if (typeof loadQuestionFiles === "function") loadQuestionFiles();
-      } else if (typeof showSubjectSelect === "function") {
-        showSubjectSelect();
-      }
-    }, 600);
-  }
-
-  loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const user = usernameInput.value.trim();
-    const pass = passwordInput.value.trim();
-
-    if (user === VALID_USER && pass === VALID_PASS) {
-      localStorage.setItem(STORAGE_KEY, 'true');
-      errorMsg.classList.remove('show');
-      const card = document.getElementById('loginCard');
-      card.style.transition = 'all 0.5s ease';
-      card.style.opacity = '0';
-      card.style.transform = 'scale(0.94)';
-      setTimeout(() => {
-        showWelcomeBack();
-        card.style.opacity = '1';
-        card.style.transform = 'scale(1)';
-      }, 500);
-    } else {
-      errorMsg.classList.remove('show');
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => errorMsg.classList.add('show'));
-      });
-      passwordInput.value = '';
-      passwordInput.focus();
-    }
-  });
+    closeLoader();
+  }, 900);
 })();
 </script>
 
@@ -4263,7 +4094,9 @@ if(savedTheme){
 #classGate h2{font-size:20px;margin-bottom:5px;font-weight:900}#classGate p{font-size:12px;color:#77778d;margin-bottom:18px}
 #classGate .cg-classes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 #classGate .cg-class{border:1px solid #e4e4ef;border-radius:12px;background:#f8f8fc;padding:14px 4px;font-size:15px;font-weight:900;cursor:pointer;color:#4b3b83;transition:.16s}
-#classGate .cg-class:hover{background:#ede9fe;border-color:#a78bfa;transform:translateY(-2px)}
+#classGate .cg-class:hover:not(:disabled){background:#ede9fe;border-color:#a78bfa;transform:translateY(-2px)}
+#classGate .cg-class:disabled{opacity:.65;cursor:not-allowed;transform:none}
+#classGate .cg-class.selected{background:#ddd6fe;border-color:#7c3aed;color:#4c1d95;opacity:1}
 #classGate .cg-note{margin-top:15px;margin-bottom:0;font-size:11px;color:#999}
 #classGate .cg-auth{display:none;margin-top:16px;text-align:left}#classGate .cg-auth.on{display:block}
 #classGate .cg-auth label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}
@@ -4304,24 +4137,63 @@ if(savedTheme){
 <script>
 (function(){
  const CLASS_KEY='nhat_study_class_choice_v1';
- window.startClassSelection=function(){
-   if(localStorage.getItem(CLASS_KEY)) return;
-   document.getElementById('classGate').classList.add('on');
- };
- window.chooseStudyClass=function(cls){
-   if(localStorage.getItem(CLASS_KEY)) return;
-   localStorage.setItem(CLASS_KEY,cls);
+ function renderLockedClass(cls){
    document.querySelectorAll('.cg-class').forEach(button=>{
+     const isChosen=button.textContent.trim()===cls;
      button.disabled=true;
-     button.classList.toggle('selected',button.textContent.trim()===cls);
+     button.classList.toggle('selected',isChosen);
+     button.setAttribute('aria-pressed',isChosen?'true':'false');
    });
    document.getElementById('cgTitle').textContent='Đã khóa lớp '+cls;
    document.querySelector('#classGate .cg-card > p').textContent='Lớp đã được chốt trên trình duyệt này. Không thể đổi trong giao diện.';
    document.getElementById('cgAuth').classList.remove('on');
+ }
+ window.startClassSelection=function(){
+   const savedClass=localStorage.getItem(CLASS_KEY);
+   if(savedClass){renderLockedClass(savedClass);return;}
+   document.querySelectorAll('.cg-class').forEach(button=>{button.disabled=false;button.classList.remove('selected');button.removeAttribute('aria-pressed');});
+   document.getElementById('classGate').classList.add('on');
+ };
+ function finishClassChoice(cls){
+   if(localStorage.getItem(CLASS_KEY)) return;
+   localStorage.setItem(CLASS_KEY,cls);
+   renderLockedClass(cls);
    document.getElementById('classGate').classList.remove('on');
    if(typeof showToast==='function') showToast('Đã khóa lựa chọn lớp '+cls+'.');
+ }
+ window.chooseStudyClass=function(cls){
+   if(localStorage.getItem(CLASS_KEY) || window.pendingStudyClass) return;
+   if(cls==='19D'){
+     finishClassChoice(cls);
+     return;
+   }
+   window.pendingStudyClass=cls;
+   document.querySelectorAll('.cg-class').forEach(button=>{
+     button.disabled=true;
+     const isChosen=button.textContent.trim()===cls;
+     button.classList.toggle('selected',isChosen);
+     button.setAttribute('aria-pressed',isChosen?'true':'false');
+   });
+   document.getElementById('cgTitle').textContent='Xác minh lớp '+cls;
+   document.querySelector('#classGate .cg-card > p').textContent='Đã chọn lớp '+cls+'. Không thể chuyển sang lớp 19D; hãy xác minh để tiếp tục.';
+   document.getElementById('cgAuth').classList.add('on');
+   document.getElementById('cgError').classList.remove('on');
+   document.getElementById('cgPassword').value='';
+   document.getElementById('cgPassword').focus();
  };
- window.verifyStudyGate=function(){return;};
+ window.verifyStudyGate=function(){
+   const input=document.getElementById('cgPassword');
+   const error=document.getElementById('cgError');
+   if(input.value!=='19D'){
+     error.classList.add('on');
+     input.value='';
+     input.focus();
+     return;
+   }
+   error.classList.remove('on');
+   finishClassChoice(window.pendingStudyClass||'19D');
+   window.pendingStudyClass=null;
+ };
  document.getElementById('cgPassword').addEventListener('keydown',e=>{if(e.key==='Enter')window.verifyStudyGate();});
 
  function buildRPGQuestionSet(){
