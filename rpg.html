@@ -22,7 +22,7 @@
 
   /* ===== LOGIN ===== */
   #login { margin: auto; background: var(--panel); padding: 36px 32px; border-radius: 24px; width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(20,30,60,.12); }
-  #login .logo { font-size: 40px; margin-bottom: 8px; }
+  #login .logo { margin-bottom: 8px; }
   #login h1 { font-size: 22px; margin-bottom: 6px; font-weight: 700; }
   #login p { color: var(--muted); margin-bottom: 22px; font-size: 13px; }
   #login input[type=text] { width: 100%; padding: 13px 16px; background: var(--panel-2); border: 1.5px solid transparent; border-radius: 12px; margin-bottom: 16px; font-size: 15px; color: var(--text); outline: none; transition: .2s; font-family: inherit; }
@@ -141,7 +141,6 @@
   .bubble-wrap { display: flex; flex-direction: column; min-width: 0; }
   .msg-row.mine .bubble-wrap { align-items: flex-end; }
   .bubble-wrap .name { font-size: 11px; color: var(--muted); margin-bottom: 4px; padding: 0 6px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
-  .bubble-wrap .name .msg-admin-tag { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; font-size:8px; font-weight:800; padding:1px 5px; border-radius:6px; text-transform:uppercase; }
   .msg { padding: 11px 16px; border-radius: 18px; font-size: 14px; line-height: 1.45; word-wrap: break-word; }
   .msg.other { background: var(--panel); color: var(--text); border-bottom-left-radius: 5px; box-shadow: 0 2px 8px rgba(20,30,60,.06); }
   .msg.mine { background: var(--mine); color: #fff; border-bottom-right-radius: 5px; box-shadow: 0 4px 14px rgba(67,97,238,.3); }
@@ -154,23 +153,61 @@
   @keyframes mentionPulse { 0%,100% { outline-color: rgba(245,158,11,.3); } 50% { outline-color: rgba(245,158,11,1); } }
   .msg-row.pinned .msg { outline: 2px dashed var(--accent); outline-offset: 2px; }
 
-  /* Pin button on message */
-  .msg-row .pin-btn {
-    width: 26px; height: 26px; border-radius: 7px; border: none;
+  /* Quote trong bong bóng trả lời */
+  .msg .quote {
+    display: block; padding: 6px 10px; margin: -4px -6px 8px;
+    border-left: 3px solid rgba(255,255,255,.5);
+    background: rgba(255,255,255,.12);
+    border-radius: 8px; font-size: 12px; line-height: 1.4;
+    opacity: .9; cursor: pointer;
+  }
+  .msg.other .quote {
+    border-left-color: var(--accent);
+    background: rgba(67,97,238,.08);
+  }
+  .msg .quote b { font-weight: 700; }
+  .msg .quote .q-txt { display: block; opacity: .8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Nút ghim + reply LUÔN hiện (không cần hover) */
+  .msg-row .pin-btn, .msg-row .reply-btn {
+    width: 28px; height: 28px; border-radius: 8px; border: none;
     background: transparent; color: var(--muted); cursor: pointer;
-    opacity: 0; transition: .15s; padding: 0;
+    transition: .15s; padding: 0;
     display: flex; align-items: center; justify-content: center;
     align-self: center; flex-shrink: 0;
+    opacity: 1;
   }
-  .msg-row .pin-btn svg { width: 13px; height: 13px; }
-  .msg-row:hover .pin-btn { opacity: 1; }
+  .msg-row .pin-btn svg, .msg-row .reply-btn svg { width: 13px; height: 13px; }
+  .msg-row .reply-btn:hover { background: rgba(67,97,238,.12); color: var(--accent); transform: scale(1.1); }
   .msg-row .pin-btn:hover { background: var(--warn-soft); color: var(--warn); transform: scale(1.1); }
-  .msg-row .pin-btn.is-pinned { opacity: 1; color: var(--accent); background: rgba(67,97,238,.1); }
+  .msg-row .pin-btn.is-pinned { color: var(--accent); background: rgba(67,97,238,.1); }
   .pin-highlight { animation: pinFlash 1.4s ease; }
   @keyframes pinFlash { 0%,100% { background: transparent; } 30% { background: rgba(67,97,238,.15); } }
+  .msg-row.reply-flash .msg { animation: replyFlash 1.2s ease; }
+  @keyframes replyFlash { 0%,100% { outline: 0 solid transparent; } 30% { outline: 3px solid rgba(67,97,238,.4); outline-offset: 2px; } }
+
+  /* Thanh đang trả lời */
+  .reply-bar {
+    margin: 0 22px; padding: 8px 14px;
+    background: rgba(67,97,238,.06);
+    border: 1px solid #c7d2fe; border-left: 3px solid var(--accent);
+    border-radius: 10px; font-size: 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .reply-bar .rb-ico { color: var(--accent); flex-shrink: 0; display: flex; }
+  .reply-bar .rb-ico svg { width: 14px; height: 14px; }
+  .reply-bar .rb-txt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .reply-bar .rb-txt b { color: var(--accent); }
+  .reply-bar .rb-close {
+    width: 22px; height: 22px; border-radius: 6px; border: none;
+    background: transparent; color: var(--muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .reply-bar .rb-close:hover { background: rgba(239,68,68,.12); color: var(--danger); }
+  .reply-bar .rb-close svg { width: 12px; height: 12px; }
 
   .input-area { display: flex; gap: 10px; padding: 16px 22px; border-top: 1px solid var(--border); align-items: center; position: relative; background: var(--panel); }
-  .input-area input[type=text] { flex: 1; padding: 13px 20px; background: var(--panel-2); border: 1.5px solid transparent; border-radius: 24px; font-size: 14px; color: var(--text); outline: none; font-family: inherit; transition: .18s; }
+  .input-area input[type=text] { flex: 1; padding: 13px 20px; background: var(--panel-2); border: 1.5px solid transparent; border-radius: 24px; font-size: 14px; color: var(--text); outline: none; font-family: inherit; transition: .18s; min-width: 0; }
   .input-area input[type=text]:focus { background: #fff; border-color: var(--accent); }
   .input-area input[type=text]:disabled { opacity: .5; cursor: not-allowed; }
   .input-area button { padding: 12px 22px; border: none; border-radius: 24px; background: var(--mine); color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; font-family: inherit; box-shadow: 0 4px 14px rgba(67,97,238,.3); transition: .15s; display: flex; align-items: center; gap: 6px; }
@@ -321,11 +358,16 @@
     .sidebar-header .me-info, .sidebar-header .change-avatar, .section-title,
     .member .m-info, .member .dot, .member .member-actions { display: none; }
     .member { justify-content: center; }
-    .msg-row { max-width: 85%; }
+    .msg-row { max-width: 88%; gap: 6px; }
+    .msg-row .avatar { width: 28px; height: 28px; }
+    .msg-row .pin-btn, .msg-row .reply-btn { width: 26px; height: 26px; }
     .exit-btn span { display: none; }
     .exit-btn { padding: 8px 10px; margin-right: 2px; }
     .mention-suggest { left: 12px; right: 12px; min-width: auto; }
     .pin-banner { margin: 8px 12px 0; }
+    .reply-bar { margin: 0 12px; }
+    .messages { padding: 16px 14px; }
+    .chat-header { padding: 12px 14px; }
   }
 </style>
 </head>
@@ -410,6 +452,18 @@
     </div>
 
     <div class="messages" id="messages"></div>
+
+    <!-- REPLY BAR -->
+    <div class="reply-bar hidden" id="replyBar">
+      <span class="rb-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+      </span>
+      <span class="rb-txt" id="replyBarText"></span>
+      <button type="button" class="rb-close" onclick="cancelReply()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
     <div class="input-area">
       <button type="button" class="sticker-btn" id="stickerBtn" title="Sticker">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
@@ -482,6 +536,7 @@ let isAdmin = localStorage.getItem(ADMIN_STORE) === "1";
 let mentionState = { active: false, query: "", startIdx: -1, selectedIdx: 0, items: [] };
 let adminTarget = null;
 let pinnedId = null;
+let replyTo = null;
 
 /* ===== SVG ICONS ===== */
 const SVG = {
@@ -492,6 +547,7 @@ const SVG = {
   ban: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>',
   pin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3l5 5-2 2-1.5-1.5L11 15l-1 5-2-2 1-5 6.5-6.5L14 5l2-2z"/></svg>',
   pinOutline: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>',
+  reply: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
   alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
   logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
@@ -767,7 +823,7 @@ function renderMembers(){
   });
 }
 
-/* ============ PIN MESSAGE ============ */
+/* ============ PIN ============ */
 async function pinMessage(id){
   if(!isAdmin){ showToast("Chỉ admin mới được ghim tin nhắn!", true); return; }
   try {
@@ -801,6 +857,29 @@ function renderPinBanner(){
   txt.innerHTML = `<b>${escapeHtml(msg.from)}:</b> ${formatMessageText(preview)}${(msg.text||"").length > 80 ? "…" : ""}`;
   banner.classList.remove("hidden");
   document.getElementById("pinCloseBtn").style.display = isAdmin ? "flex" : "none";
+}
+
+/* ============ REPLY ============ */
+function startReply(msg){
+  if(!msg || !msg._id) return;
+  replyTo = { id: msg._id, from: msg.from, text: msg.text || "" };
+  const bar = document.getElementById("replyBar");
+  const preview = msg.type === "sticker" ? msg.text : (msg.text || "").slice(0, 60);
+  document.getElementById("replyBarText").innerHTML = `Đang trả lời <b>${escapeHtml(msg.from)}</b>: ${escapeHtml(preview)}${(msg.text||"").length>60?"…":""}`;
+  bar.classList.remove("hidden");
+  document.getElementById("msgInput").focus();
+}
+function cancelReply(){
+  replyTo = null;
+  document.getElementById("replyBar").classList.add("hidden");
+}
+function scrollToMsg(id){
+  const el = document.querySelector(`.msg-row[data-msg-id="${id}"]`);
+  if(el){
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+    el.classList.add("reply-flash");
+    setTimeout(()=>el.classList.remove("reply-flash"), 1300);
+  }
 }
 
 /* ============ MENTION ============ */
@@ -909,7 +988,7 @@ function pickMention(name){
   hideMentionSuggest();
 }
 
-/* ============ SEND MSG ============ */
+/* ============ SEND ============ */
 async function sendMsg(){
   const input = document.getElementById("msgInput");
   const text = input.value.trim();
@@ -942,8 +1021,12 @@ async function sendMsg(){
   }
 
   const msg = { type:"text", from:me, text, time:Date.now(), mentions };
+  if(replyTo){
+    msg.reply = { id: replyTo.id, from: replyTo.from, text: (replyTo.text || "").slice(0, 100) };
+  }
   pushMessage(msg);
   input.value = ""; input.focus();
+  cancelReply();
   hideMentionSuggest();
 }
 function sendSticker(s){
@@ -991,16 +1074,37 @@ function renderMessages(){
       bw.appendChild(n);
     }
     const bubble = document.createElement("div");
-    if(m.type === "sticker"){ bubble.className = "msg sticker"; bubble.textContent = m.text; }
-    else {
+    if(m.type === "sticker"){
+      bubble.className = "msg sticker";
+      bubble.textContent = m.text;
+    } else {
       bubble.className = "msg " + (isMine ? "mine" : "other");
-      bubble.innerHTML = formatMessageText(m.text);
+      let html = "";
+      if(m.reply){
+        html += `<span class="quote" onclick="scrollToMsg('${m.reply.id}')">
+          <b>↩ ${escapeHtml(m.reply.from)}</b>
+          <span class="q-txt">${escapeHtml((m.reply.text||"").slice(0,80))}</span>
+        </span>`;
+      }
+      html += formatMessageText(m.text);
+      bubble.innerHTML = html;
     }
     bw.appendChild(bubble);
 
     row.appendChild(avatarDiv);
     row.appendChild(bw);
 
+    // Nút trả lời — luôn hiện
+    if(m._id){
+      const replyBtn = document.createElement("button");
+      replyBtn.className = "reply-btn";
+      replyBtn.title = "Trả lời";
+      replyBtn.innerHTML = SVG.reply;
+      replyBtn.onclick = (e) => { e.stopPropagation(); startReply(m); };
+      row.appendChild(replyBtn);
+    }
+
+    // Nút ghim — luôn hiện nếu admin
     if(isAdmin && m._id){
       const pinBtn = document.createElement("button");
       pinBtn.className = "pin-btn" + (m._id === pinnedId ? " is-pinned" : "");
