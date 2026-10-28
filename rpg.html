@@ -680,16 +680,22 @@ function buildAvatarGrid(){
   else grid.firstChild?.click();
 }
 
-/* ============ EXIT ============ */
+/* ============ EXIT (ĐÃ FIX LỖI ĐEN MÀN HÌNH) ============ */
 function exitChat(){
   if(me) db.ref(`rooms/${ROOM}/members/${me}`).update({online:false,lastSeen:Date.now()}).catch(()=>{});
+  
   if(window.parent && window.parent !== window){
     try {
       window.parent.postMessage({type:"exit-chat"},"*");
       window.parent.postMessage({type:"RPG_CLOSE"},"*");
+      
       const pd = window.parent.document;
-      const shell = pd.getElementById("rpgGameShell"); if(shell) shell.classList.remove("on");
-      const frame = pd.getElementById("rpgGameFrame"); if(frame) frame.removeAttribute("src");
+      const shell = pd.getElementById("rpgGameShell"); 
+      if(shell) shell.classList.remove("on");
+      
+      // ĐÃ XÓA DÒNG XÓA SRC IFRAME ĐỂ TRÁNH LỖI ĐEN MÀN HÌNH
+      // if(frame) frame.removeAttribute("src"); 
+      
       try { window.parent.scrollTo({top:0,behavior:"smooth"}); } catch(e){}
     } catch(e){}
     return;
