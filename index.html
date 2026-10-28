@@ -4354,6 +4354,9 @@ if(savedTheme){
 @keyframes chatFloatPulse{0%,100%{box-shadow:0 8px 26px #4338ca55}50%{box-shadow:0 8px 28px #ec489988,0 0 0 7px #ec489922}}
 #chatFloatHint{position:fixed;z-index:10000019;right:90px;bottom:35px;max-width:210px;background:#fff;color:#202338;border:1px solid #e8e8f2;border-radius:14px;padding:9px 12px;box-shadow:0 8px 25px #1112;font:600 12px/1.4 Arial;display:none;pointer-events:none}
 #chatFloatHint.on{display:block}
+#chatBubbleRemoveZone{position:fixed;z-index:10000030;left:50%;bottom:22px;transform:translateX(-50%) scale(.8);width:58px;height:58px;border-radius:50%;background:#ef4444;color:#fff;border:3px solid #fff;box-shadow:0 8px 30px #ef444488;display:flex;align-items:center;justify-content:center;font:900 30px/1 Arial;opacity:0;pointer-events:none;transition:opacity .16s,transform .16s}
+#chatBubbleRemoveZone.on{opacity:1;transform:translateX(-50%) scale(1)}
+#chatBubbleRemoveZone.over{background:#b91c1c;box-shadow:0 0 0 10px #ef444433,0 8px 30px #ef444488;transform:translateX(-50%) scale(1.12)}
 @media(max-width:600px){#chatFloatBubble{width:40px;height:40px;right:14px;bottom:16px}#chatFloatHint{right:60px;bottom:25px}}
 </style>
 <button id="chatFloatBubble" type="button" aria-label="Mở chat nhóm" title="Kéo để di chuyển, chạm để mở chat">
@@ -4361,11 +4364,12 @@ if(savedTheme){
 <span class="chatFloatBadge" id="chatFloatBadge"></span>
 </button>
 <div id="chatFloatHint">Có tin nhắn mới</div>
+<div id="chatBubbleRemoveZone" aria-label="Thả tại đây để tắt bóng chat" title="Thả vào đây để tắt bóng chat">×</div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
 (function(){
- const bubble=document.getElementById('chatFloatBubble'),badge=document.getElementById('chatFloatBadge'),hint=document.getElementById('chatFloatHint');
+ const bubble=document.getElementById('chatFloatBubble'),badge=document.getElementById('chatFloatBadge'),hint=document.getElementById('chatFloatHint'),removeZone=document.getElementById('chatBubbleRemoveZone');
  const shell=document.getElementById('rpgGameShell');
  shell.addEventListener('click',e=>{if(e.target===shell)shell.classList.remove('on');});
  const config={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
@@ -4390,8 +4394,9 @@ if(savedTheme){
  }
  window.addEventListener('message',e=>{if(!e.data)return;if(e.data.type==='CHAT_BUBBLE_CHOICE'){if(e.data.enabled)showBubble(e.data.name);else bubble.classList.remove('on');}if(e.data.type==='RPG_CLOSE')shell.classList.remove('on');});
  bubble.addEventListener('pointerdown',e=>{dragging=true;moved=false;startX=e.clientX;startY=e.clientY;const r=bubble.getBoundingClientRect();originX=r.left;originY=r.top;bubble.style.left=originX+'px';bubble.style.top=originY+'px';bubble.style.right='auto';bubble.style.bottom='auto';bubble.setPointerCapture(e.pointerId);});
- bubble.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)>4||Math.abs(dy)>4)moved=true;if(moved){bubble.style.left=Math.max(0,Math.min(innerWidth-bubble.offsetWidth,originX+dx))+'px';bubble.style.top=Math.max(0,Math.min(innerHeight-bubble.offsetHeight,originY+dy))+'px';}});
- bubble.addEventListener('pointerup',()=>{dragging=false;if(moved){setTimeout(()=>moved=false,80);return;}unseen=0;badge.style.display='none';bubble.classList.remove('has-new');hint.classList.remove('on');shell.classList.add('on');});
+ bubble.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)>4||Math.abs(dy)>4)moved=true;if(moved){removeZone.classList.add('on');bubble.style.left=Math.max(0,Math.min(innerWidth-bubble.offsetWidth,originX+dx))+'px';bubble.style.top=Math.max(0,Math.min(innerHeight-bubble.offsetHeight,originY+dy))+'px';const r=removeZone.getBoundingClientRect(),b=bubble.getBoundingClientRect();const over=b.left+b.width/2>=r.left&&b.left+b.width/2<=r.right&&b.top+b.height/2>=r.top&&b.top+b.height/2<=r.bottom;removeZone.classList.toggle('over',over);}});
+ bubble.addEventListener('pointerup',()=>{dragging=false;const r=removeZone.getBoundingClientRect(),b=bubble.getBoundingClientRect();const over=removeZone.classList.contains('over')&&b.left+b.width/2>=r.left&&b.left+b.width/2<=r.right&&b.top+b.height/2>=r.top&&b.top+b.height/2<=r.bottom;removeZone.classList.remove('on','over');if(moved){if(over){bubble.classList.remove('on','has-new');hint.classList.remove('on');shell.classList.remove('on');badge.style.display='none';window.dispatchEvent(new MessageEvent('message',{data:{type:'CHAT_BUBBLE_CHOICE',enabled:false}}));}setTimeout(()=>moved=false,80);return;}if(shell.classList.contains('on'))shell.classList.remove('on');else{unseen=0;badge.style.display='none';bubble.classList.remove('has-new');hint.classList.remove('on');shell.classList.add('on');}});
+ bubble.addEventListener('pointercancel',()=>{dragging=false;removeZone.classList.remove('on','over');});
  addEventListener('resize',()=>{if(bubble.style.left){bubble.style.left=Math.max(0,Math.min(innerWidth-bubble.offsetWidth,parseFloat(bubble.style.left)||0))+'px';bubble.style.top=Math.max(0,Math.min(innerHeight-bubble.offsetHeight,parseFloat(bubble.style.top)||0))+'px';}});
 })();
 </script>

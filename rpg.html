@@ -706,6 +706,12 @@ function buildAvatarGrid(){
 function exitChat(){
   const inFrame = window.parent && window.parent !== window;
   if(inFrame){
+    try {
+      if(window.parent.document.getElementById("chatFloatBubble")?.classList.contains("on")) {
+        finishExitChoice(true);
+        return;
+      }
+    } catch(e) {}
     document.getElementById("bubbleConsentModal").classList.add("on");
     return;
   }
