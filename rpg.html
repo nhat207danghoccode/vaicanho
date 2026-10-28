@@ -72,6 +72,10 @@
   .status-dot.ok { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
   .status-dot.err { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
 
+  /* Nút thoát */
+  .exit-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--panel-2); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; transition: .15s; margin-right: 6px; }
+  .exit-btn:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+
   .messages { flex: 1; overflow-y: auto; padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; }
   .msg-row { display: flex; gap: 10px; align-items: flex-end; max-width: 72%; animation: fadeIn .2s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
@@ -106,6 +110,8 @@
     .sidebar-header .me-info, .sidebar-header .change-avatar, .section-title, .member .m-name, .member .dot { display: none; }
     .member { justify-content: center; }
     .msg-row { max-width: 85%; }
+    .exit-btn span { display: none; }
+    .exit-btn { padding: 8px 10px; margin-right: 2px; }
   }
 </style>
 </head>
@@ -149,6 +155,7 @@
 
   <div class="chat">
     <div class="chat-header">
+      <button type="button" class="exit-btn" id="exitBtn">← <span>Thoát</span></button>
       <span class="status-dot" id="statusDot"></span>
       <span id="chatHeader">Chat nhóm — đang kết nối...</span>
     </div>
@@ -227,7 +234,37 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") { e.preventDefault(); sendMsg(); }
   });
   document.getElementById("changeAvatarBtn").addEventListener("click", changeAvatar);
+
+  // ===== NÚT THOÁT =====
+  document.getElementById("exitBtn").addEventListener("click", exitChat);
 });
+
+function exitChat() {
+  // Đánh dấu offline trước khi rời
+  if (me) {
+    db.ref(`rooms/${ROOM}/members/${me}`).update({ online: false, lastSeen: Date.now() }).catch(() => {});
+  }
+  // Nếu đang trong iframe → báo cho trang cha để nó đóng/chuyển về
+  if (window.parent && window.parent !== window) {
+    try {
+      window.parent.postMessage({ type: "exit-chat" }, "*");
+      // Nếu trang cha không xử lý postMessage, thử quay lại lịch sử
+      setTimeout(() => {
+        if (window.history.length > 1) window.history.back();
+        else window.location.href = "about:blank";
+      }, 100);
+      return;
+    } catch(e) {}
+  }
+  // Mở trực tiếp → quay lại trang trước
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    // Không có lịch sử → đóng tab hoặc về trang trống
+    window.close();
+    window.location.href = "about:blank";
+  }
+}
 
 function buildAvatarGrid() {
   const grid = document.getElementById("avGrid");
