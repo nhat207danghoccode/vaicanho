@@ -239,28 +239,45 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("exitBtn").addEventListener("click", exitChat);
 });
 
+/* ============================================================
+   EXIT CHAT — SỬA TẠI ĐÂY
+   Ưu tiên đóng iframe #rpgGameShell trên trang cha (cùng origin),
+   xóa src iframe để lần mở sau nạp lại sạch, cuộn trang cha về đầu.
+   ============================================================ */
 function exitChat() {
-  // Đánh dấu offline trước khi rời
+  // 1) Đánh dấu offline trước khi rời
   if (me) {
     db.ref(`rooms/${ROOM}/members/${me}`).update({ online: false, lastSeen: Date.now() }).catch(() => {});
   }
-  // Nếu đang trong iframe → báo cho trang cha để nó đóng/chuyển về
+
+  // 2) Nếu đang nằm trong iframe
   if (window.parent && window.parent !== window) {
     try {
+      // Báo cho trang cha (nếu có listener thì tốt)
       window.parent.postMessage({ type: "exit-chat" }, "*");
-      // Nếu trang cha không xử lý postMessage, thử quay lại lịch sử
-      setTimeout(() => {
-        if (window.history.length > 1) window.history.back();
-        else window.location.href = "about:blank";
-      }, 100);
-      return;
-    } catch(e) {}
+      window.parent.postMessage({ type: "RPG_CLOSE" }, "*");
+
+      // Thao tác DOM trang cha (cùng origin)
+      const parentDoc = window.parent.document;
+      const shell = parentDoc.getElementById("rpgGameShell");
+      if (shell) shell.classList.remove("on");
+
+      const frame = parentDoc.getElementById("rpgGameFrame");
+      if (frame) frame.removeAttribute("src");
+
+      // Cuộn trang cha về đầu
+      try { window.parent.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) {}
+    } catch (e) {
+      // Khác origin (không xảy ra khi cùng server) — bỏ qua
+      console.warn("Không thể thao tác DOM trang cha:", e);
+    }
+    return;
   }
-  // Mở trực tiếp → quay lại trang trước
+
+  // 3) Mở trực tiếp (không trong iframe) → quay lại trang trước
   if (window.history.length > 1) {
     window.history.back();
   } else {
-    // Không có lịch sử → đóng tab hoặc về trang trống
     window.close();
     window.location.href = "about:blank";
   }
