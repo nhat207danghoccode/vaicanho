@@ -1727,7 +1727,7 @@
 @media(max-width:600px){.st-tabs{width:100%;flex-wrap:wrap}.st-tab{flex:1;justify-content:center;padding:7px 8px;font-size:11px}.st-row-date{margin-left:0}}
 
 #streakOverlay{position:fixed;inset:0;z-index:10000030;display:grid;place-items:center;pointer-events:none;opacity:0;visibility:hidden;background:transparent}
-#streakOverlay.show{visibility:visible}
+#streakOverlay.show{visibility:visible;opacity:1}
 #streakOverlay .streak-stage{position:relative;width:min(94vw,900px);height:min(62vh,420px);display:grid;place-items:center}
 #streakOverlay .streak-combo{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.5);will-change:opacity,transform}
 #streakOverlay.show .streak-combo{animation:streakComboAnim 2.15s ease-out forwards}
@@ -2994,7 +2994,7 @@ function showCorrectStreak(count){
     if(!overlay || !combo || !num || !gif) return;
     num.textContent = "×" + count;
     overlay.classList.remove("tier-3","tier-4","tier-5","tier-6","show");
-    overlay.classList.add(count === 3 ? "tier-3" : count === 4 ? "tier-4" : count === 5 ? "tier-5" : "tier-6");
+    overlay.classList.add(count === 3 ? "tier-3" : count === 4 ? "tier-4" : count === 5 ? "tier-5" : count >= 6 ? "tier-6" : "tier-3");
     gif.src = "1.gif?t=" + Date.now();
     void combo.offsetWidth;
     overlay.classList.add("show");
@@ -3215,11 +3215,13 @@ function buildQuizHTML(){
 
             if(allCorrect){
                 correctCount++;
-                correctStreakCount++;
-                showCorrectStreak(correctStreakCount);
+                if(userSubmitted){
+                    correctStreakCount++;
+                    if(correctStreakCount >= 3) showCorrectStreak(correctStreakCount);
+                }
                 document.getElementById("correctAnswer").innerText = correctCount;
             } else {
-                correctStreakCount = 0;
+                if(userSubmitted) correctStreakCount = 0;
                 const streakOverlay = document.getElementById("streakOverlay");
                 if(streakOverlay) streakOverlay.classList.remove("show");
             }
