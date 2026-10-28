@@ -344,6 +344,18 @@
   .admin-modal-foot button { flex: 1; padding: 12px; border-radius: 11px; border: 1.5px solid var(--border); background: var(--panel-2); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: .15s; color: var(--text); }
   .admin-modal-foot button:hover { background: #f2f3f8; }
 
+
+  .consent-card{max-width:390px;border:1px solid rgba(124,58,237,.18)}
+  .consent-head{background:linear-gradient(135deg,#f5f3ff,#fdf2f8)}
+  .consent-head .ic{background:linear-gradient(135deg,#6366f1,#c026d3);font-size:24px}
+  .consent-preview{display:flex;align-items:center;gap:13px;padding:15px;border-radius:16px;background:linear-gradient(135deg,#f8f7ff,#fff5fb);border:1px solid #eee7ff}
+  .consent-orb{width:48px;height:48px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;color:#fff;font-size:23px;background:linear-gradient(135deg,#6366f1,#c026d3);box-shadow:0 8px 20px #8b5cf633}
+  .consent-preview strong{font-size:13px}.consent-preview p{font-size:11.5px;line-height:1.55;color:var(--muted);margin-top:4px}
+  .consent-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+  .consent-actions button{border:0;border-radius:12px;padding:12px 8px;font:700 12px Arial,sans-serif;cursor:pointer}
+  #bubbleYesBtn{background:linear-gradient(135deg,#6366f1,#9333ea);color:#fff;box-shadow:0 6px 16px #7c3aed30}
+  #bubbleNoBtn{background:var(--panel-2);color:var(--text);border:1px solid var(--border)}
+
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px); background: linear-gradient(135deg, #22c55e, #059669); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; box-shadow: 0 15px 40px -8px rgba(16,185,129,.6); z-index: 999999; display: flex; align-items: center; gap: 10px; transition: transform .4s cubic-bezier(.16,1,.3,1); pointer-events: none; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.error { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 15px 40px -8px rgba(239,68,68,.6); }
@@ -476,6 +488,13 @@
         Gửi
       </button>
     </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="bubbleConsentModal" style="z-index:10001">
+  <div class="admin-modal consent-card">
+    <div class="admin-modal-head consent-head"><div class="ic">✦</div><div><h3>Chat nổi trên trang chủ</h3><p>Luôn cập nhật tin nhắn và lượt nhắc tên bạn</p></div></div>
+    <div class="admin-modal-body"><div class="consent-preview"><div class="consent-orb">💬</div><div><strong>Nhóm chat của bạn</strong><p>Bóng chat nhỏ gọn, kéo thả tự do. Có huy hiệu khi có tin mới hoặc @nhắc tên.</p></div></div><div class="consent-actions"><button type="button" id="bubbleYesBtn">Bật bóng chat</button><button type="button" id="bubbleNoBtn">Không, cảm ơn</button></div></div>
   </div>
 </div>
 
@@ -650,6 +669,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("changeAvatarBtn").addEventListener("click", changeAvatar);
   document.getElementById("exitBtn").addEventListener("click", exitChat);
   document.getElementById("adminCancelBtn").addEventListener("click", closeAdminModal);
+  document.getElementById("bubbleYesBtn").addEventListener("click", () => finishExitChoice(true));
+  document.getElementById("bubbleNoBtn").addEventListener("click", () => finishExitChoice(false));
+  document.getElementById("bubbleConsentModal").addEventListener("click", e => { if(e.target.id === "bubbleConsentModal") finishExitChoice(false); });
   document.getElementById("adminModal").addEventListener("click", e => { if(e.target.id==="adminModal") closeAdminModal(); });
 
   document.addEventListener("click", e => {
@@ -683,22 +705,24 @@ function buildAvatarGrid(){
 /* ============ EXIT ============ */
 function exitChat(){
   const inFrame = window.parent && window.parent !== window;
-  let enableBubble = false;
   if(inFrame){
-    enableBubble = window.confirm("Bạn có muốn hiển thị bóng chat nổi trên trang chủ để nhận thông báo tin nhắn và @nhắc tên không?");
+    document.getElementById("bubbleConsentModal").classList.add("on");
+    return;
   }
+  if(window.history.length > 1) window.history.back();
+  else { window.close(); window.location.href = "about:blank"; }
+}
+function finishExitChoice(enableBubble){
+  document.getElementById("bubbleConsentModal").classList.remove("on");
   if(me) db.ref(`rooms/${ROOM}/members/${me}`).update({online:false,lastSeen:Date.now()}).catch(()=>{});
-  if(inFrame){
+  if(window.parent && window.parent !== window){
     try {
       window.parent.postMessage({type:"CHAT_BUBBLE_CHOICE",enabled:enableBubble,name:me||""},"*");
       window.parent.postMessage({type:"exit-chat"},"*");
       window.parent.postMessage({type:"RPG_CLOSE"},"*");
       try { window.parent.scrollTo({top:0,behavior:"smooth"}); } catch(e){}
     } catch(e){}
-    return;
   }
-  if(window.history.length > 1) window.history.back();
-  else { window.close(); window.location.href = "about:blank"; }
 }
 
 /* ============ JOIN ============ */
@@ -730,7 +754,12 @@ async function join(){
   memberRef.onDisconnect().update({ online:false, lastSeen:Date.now() });
 
   db.ref(`rooms/${ROOM}/members`).on("value", s => { members = s.val() || {}; renderMembers(); renderMessages(); });
-  db.ref(`rooms/${ROOM}/moderations`).on("value", s => { moderations = s.val() || {}; applyModerationState(); renderMembers(); });
+  db.ref(`rooms/${ROOM}/moderations`).on("value", s => {
+    moderations = s.val() || {};
+    const forced = moderations[me] && moderations[me].forceName;
+    if(forced && forced !== me) applyForcedName(forced).catch(()=>{});
+    applyModerationState(); renderMembers();
+  });
   db.ref(`rooms/${ROOM}/pinned`).on("value", s => {
     const v = s.val();
     pinnedId = v ? v.id : null;
@@ -757,6 +786,19 @@ async function join(){
 
   buildStickerPicker();
   document.getElementById("msgInput").focus();
+}
+
+async function applyForcedName(newName){
+  if(!newName || newName===me || !me) return;
+  const oldName=me;
+  const oldData=members[oldName]||{avatar:myAvatar,online:true};
+  me=newName;
+  saveProfile();
+  document.getElementById("meLabel").innerHTML=escapeHtml(me)+(isAdmin?` <span class="admin-badge">${SVG.admin} ADMIN</span>`:'');
+  await db.ref(`rooms/${ROOM}/members/${newName}`).update({...oldData,avatar:myAvatar||oldData.avatar,online:true,lastSeen:Date.now()});
+  await db.ref(`rooms/${ROOM}/members/${oldName}`).remove();
+  await db.ref(`rooms/${ROOM}/moderations/${oldName}/forceName`).remove();
+  showToast("Quản trị viên đã đổi tên bạn thành "+newName);
 }
 
 function applyModerationState(){
@@ -1169,6 +1211,10 @@ function openAdminModal(name){
     <div class="a-icon">${SVG.ban}</div>
     <div class="a-text"><div class="t">Chặn hoàn toàn</div><div class="d">Chặn khỏi trang web, không truy cập được</div></div>
   </button>`;
+  html += `<button class="admin-action-btn" data-act="rename" onclick="adminDo('rename')">
+      <div class="a-icon" style="background:#ede9fe;color:#6d28d9">✎</div>
+      <div class="a-text"><div class="t">Cưỡng chế đổi tên</div><div class="d">Đổi tên thành viên và yêu cầu họ dùng tên mới</div></div>
+    </button>`;
   list.innerHTML = html;
   document.getElementById("adminModal").classList.add("on");
 }
@@ -1179,9 +1225,26 @@ function closeAdminModal(){
 async function adminDo(act){
   if(!isAdmin || !adminTarget) return;
   const name = adminTarget;
-  const reason = prompt(`Lý do ${act} ${name}? (có thể bỏ trống)`, "") ?? "";
+  const reason = act === "rename" ? "" : (prompt(`Lý do ${act} ${name}? (có thể bỏ trống)`, "") ?? "");
   try {
-    if(act === "mute"){
+    if(act === "rename"){
+      const newName = (prompt(`Nhập tên mới bắt buộc cho ${name}:`, name) || "").trim();
+      if(!newName || newName === name){ closeAdminModal(); return; }
+      if(newName.length > 24 || /[.#$\[\]\/]/.test(newName)){ showToast("Tên mới tối đa 24 ký tự và không chứa . # $ [ ] /", true); return; }
+      const exists = await db.ref(`rooms/${ROOM}/members/${newName}`).once("value");
+      if(exists.exists()){ showToast("Tên này đã được sử dụng!", true); return; }
+      const member = members[name] || {};
+      await db.ref(`rooms/${ROOM}/members/${newName}`).set({...member, renamedFrom:name, renamedAt:Date.now()});
+      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({forceName:newName, forceNameAt:Date.now(), by:me});
+      await db.ref(`rooms/${ROOM}/members/${name}`).remove();
+      const msgRef = db.ref(`rooms/${ROOM}/messages`);
+      const snap = await msgRef.once("value");
+      const updates = {};
+      snap.forEach(child => { const m=child.val()||{}; if(m.from===name || m.name===name || m.username===name){ if(m.from===name) updates[child.key+"/from"]=newName; if(m.name===name) updates[child.key+"/name"]=newName; if(m.username===name) updates[child.key+"/username"]=newName; } });
+      if(Object.keys(updates).length) await msgRef.update(updates);
+      showToast("Đã buộc đổi tên thành " + newName);
+      pushMessage({type:"system",text:`${name} đã được quản trị viên đổi tên thành ${newName}`,time:Date.now()});
+    } else if(act === "mute"){
       await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ mute:true, reason, time:Date.now(), by:me });
       showToast("Đã cấm chat " + name);
     } else if(act === "unmute"){
