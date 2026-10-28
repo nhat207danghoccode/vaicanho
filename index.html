@@ -2786,10 +2786,14 @@ function refreshCorrectnessInPlace(){
         const item = parsedQuestionsDS.find(x => x.id === qBlock.dataset.questionId);
         if(!item) return;
         const newCorrect = getCorrectAnswer(item);
+        const correctOption = item.arr.find(opt=>{
+            const match = opt.match(/^\*?([A-E])/);
+            return match && match[1] === newCorrect;
+        });
+        const correctText = correctOption ? correctOption.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"") : null;
         qBlock.querySelectorAll(".opt").forEach(li=>{
-            const inp = li.querySelector("input");
-            const lbl = inp.dataset.answerLabel;
-            const isNowCorrect = (lbl === newCorrect);
+            const optionText = li.querySelector(".txt")?.innerText || "";
+            const isNowCorrect = correctText !== null && optionText === correctText;
             li.dataset.isCorrect = isNowCorrect ? "1" : "0";
             if(!qBlock.classList.contains("answered")){
                 li.classList.remove("correct","wrong","revealed-correct");
@@ -2944,10 +2948,14 @@ async function submitEditAnswer(){
     lastCorrectionsJSON = JSON.stringify(window.firebaseCorrections);
 
     const qBlock = editTargetBlock;
+    const correctedOption = editTargetItem.arr.find(opt=>{
+        const match = opt.match(/^\*?([A-E])/);
+        return match && match[1] === editSelectedAnswer;
+    });
+    const correctedText = correctedOption ? correctedOption.replace(/^\*?[A-E]\s*[\.\:\s]\s*/,"") : null;
     qBlock.querySelectorAll(".opt").forEach(li=>{
-        const inp = li.querySelector("input");
-        const lbl = inp.dataset.answerLabel;
-        const isNowCorrect = (lbl === editSelectedAnswer);
+        const optionText = li.querySelector(".txt")?.innerText || "";
+        const isNowCorrect = correctedText !== null && optionText === correctedText;
         li.dataset.isCorrect = isNowCorrect ? "1" : "0";
         li.classList.remove("correct","wrong","revealed-correct");
         const oldBadge = li.querySelector(".reveal-badge");
@@ -3189,10 +3197,22 @@ function buildQuizHTML(){
 
             const allOpts = optionsList.querySelectorAll(".opt");
             let allCorrect = true;
+            const activeCorrectAnswer = getCorrectAnswer(item);
+            const activeCorrectOption = item.arr.find(opt=>{
+                const match = opt.match(/^\*?([A-E])/);
+                return match && match[1] === activeCorrectAnswer;
+            });
+            const activeCorrectText = activeCorrectOption
+                ? activeCorrectOption.replace(/^\*?[A-E]\s*[\.\:\s]\s*/, "").trim()
+                : null;
 
             allOpts.forEach(li=>{
                 const inp = li.querySelector("input");
-                const isCorrect = li.dataset.isCorrect === "1";
+                const optionText = (li.querySelector(".txt")?.innerText || "").trim();
+                const isCorrect = activeCorrectText !== null
+                    ? optionText === activeCorrectText
+                    : li.dataset.isCorrect === "1";
+                li.dataset.isCorrect = isCorrect ? "1" : "0";
                 li.style.pointerEvents = "none";
                 inp.disabled = true;
                 if(isCorrect){
