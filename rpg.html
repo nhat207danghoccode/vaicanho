@@ -20,7 +20,7 @@
   .hidden { display: none !important; }
   svg.ico { width: 14px; height: 14px; vertical-align: -2px; flex-shrink: 0; }
 
-  /* ===== LOGIN ===== */
+  
   #login { margin: auto; background: var(--panel); padding: 36px 32px; border-radius: 24px; width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(20,30,60,.12); }
   #login .logo { margin-bottom: 8px; }
   #login h1 { font-size: 22px; margin-bottom: 6px; font-weight: 700; }
@@ -42,7 +42,7 @@
   #joinBtn { width: 100%; padding: 14px; background: var(--mine); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: .15s; box-shadow: 0 6px 20px rgba(67,97,238,.3); display: flex; align-items: center; justify-content: center; gap: 8px; }
   #joinBtn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(67,97,238,.4); }
 
-  /* ===== APP ===== */
+  
   #app { display: flex; height: 100vh; }
   .sidebar { width: 290px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
   .sidebar-header { padding: 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
@@ -98,7 +98,7 @@
   .member .member-actions button[data-act="kick"]:hover { background: var(--danger-soft); color: var(--danger); }
   .member .member-actions button[data-act="ban"]:hover { background: #1a1d29; color: #fff; }
 
-  /* ===== CHAT ===== */
+  
   .chat { flex: 1; display: flex; flex-direction: column; background: var(--bg); min-width: 0; }
   .chat-header { padding: 14px 22px; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; align-items: center; gap: 10px; background: var(--panel); font-size: 15px; }
   .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); flex-shrink: 0; }
@@ -109,7 +109,7 @@
   .exit-btn:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
   .exit-btn svg { width: 14px; height: 14px; }
 
-  /* PIN BANNER */
+  
   .pin-banner {
     margin: 10px 22px 0; padding: 10px 14px;
     background: linear-gradient(135deg, rgba(67,97,238,.08), rgba(124,58,237,.08));
@@ -153,7 +153,7 @@
   @keyframes mentionPulse { 0%,100% { outline-color: rgba(245,158,11,.3); } 50% { outline-color: rgba(245,158,11,1); } }
   .msg-row.pinned .msg { outline: 2px dashed var(--accent); outline-offset: 2px; }
 
-  /* Quote trong bong bóng trả lời */
+  
   .msg .quote {
     display: block; padding: 6px 10px; margin: -4px -6px 8px;
     border-left: 3px solid rgba(255,255,255,.5);
@@ -168,7 +168,7 @@
   .msg .quote b { font-weight: 700; }
   .msg .quote .q-txt { display: block; opacity: .8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  /* Nút ghim + reply LUÔN hiện (không cần hover) */
+  
   .msg-row .pin-btn, .msg-row .reply-btn {
     width: 28px; height: 28px; border-radius: 8px; border: none;
     background: transparent; color: var(--muted); cursor: pointer;
@@ -186,7 +186,7 @@
   .msg-row.reply-flash .msg { animation: replyFlash 1.2s ease; }
   @keyframes replyFlash { 0%,100% { outline: 0 solid transparent; } 30% { outline: 3px solid rgba(67,97,238,.4); outline-offset: 2px; } }
 
-  /* Thanh đang trả lời */
+  
   .reply-bar {
     margin: 0 22px; padding: 8px 14px;
     background: rgba(67,97,238,.06);
@@ -220,7 +220,7 @@
   .sticker-picker span { font-size: 30px; cursor: pointer; padding: 4px; border-radius: 10px; transition: .12s; }
   .sticker-picker span:hover { background: var(--panel-2); transform: scale(1.15); }
 
-  /* ===== MENTION SUGGEST ===== */
+  
   .mention-suggest {
     position: absolute; bottom: 78px; left: 22px;
     background: var(--panel); border: 1px solid var(--border);
@@ -246,7 +246,7 @@
   }
   .mention-suggest .ms-empty { padding: 10px; text-align: center; font-size: 12px; color: var(--muted); }
 
-  /* ===== BANNED OVERLAY ===== */
+  
   .banned-overlay {
     position: fixed; inset: 0; z-index: 99999;
     background: linear-gradient(135deg, #0f0a1f, #1a0f2e);
@@ -305,7 +305,7 @@
   .mute-banner { margin: 0 22px 8px; padding: 10px 16px; background: var(--warn-soft); border: 1px solid #fde68a; border-radius: 12px; color: #92400e; font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
   .mute-banner svg { width: 14px; height: 14px; flex-shrink: 0; }
 
-  /* ===== ADMIN MODAL ===== */
+  
   .modal-backdrop {
     position: fixed; inset: 0; z-index: 9000;
     background: rgba(15,10,31,.6);
@@ -373,7 +373,7 @@
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
+
 <div id="login">
   <div class="logo">
     <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="url(#gradLogin)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -397,148 +397,7 @@
         Ảnh của tao
       </button>
     </div>
-    <input type="file" id="avatarFile" accept="image/*" class="hidden" />
-  </div>
-
-  <input id="nameInput" type="text" placeholder="Tên của mày..." maxlength="20" />
-  <button type="button" id="joinBtn">
-    Vào chat
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-  </button>
-</div>
-
-<!-- ===== APP ===== -->
-<div id="app" class="hidden">
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <div class="me-avatar" id="meAvatar"></div>
-      <div class="me-info">
-        <div class="me-name" id="meLabel"></div>
-        <div class="me-status">Online</div>
-      </div>
-      <button type="button" class="change-avatar" id="changeAvatarBtn" title="Đổi avatar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </button>
-    </div>
-
-    <div class="section-title">Thành viên</div>
-    <div class="member-list" id="memberList"></div>
-  </div>
-
-  <div class="chat">
-    <div class="chat-header">
-      <button type="button" class="exit-btn" id="exitBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        <span>Thoát</span>
-      </button>
-      <span class="status-dot" id="statusDot"></span>
-      <span id="chatHeader">Chat nhóm — đang kết nối...</span>
-    </div>
-
-    <!-- PIN BANNER -->
-    <div class="pin-banner hidden" id="pinBanner" onclick="scrollToPinned()">
-      <span class="pin-ico">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3l5 5-2 2-1.5-1.5L11 15l-1 5-2-2 1-5 6.5-6.5L14 5l2-2z"/></svg>
-      </span>
-      <span class="pin-txt" id="pinBannerText"></span>
-      <button type="button" class="pin-close" id="pinCloseBtn" title="Bỏ ghim" onclick="event.stopPropagation(); unpinMessage()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div class="mute-banner hidden" id="muteBanner">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-      Bạn đang bị cấm chat bởi quản trị viên.
-    </div>
-
-    <div class="messages" id="messages"></div>
-
-    <!-- REPLY BAR -->
-    <div class="reply-bar hidden" id="replyBar">
-      <span class="rb-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
-      </span>
-      <span class="rb-txt" id="replyBarText"></span>
-      <button type="button" class="rb-close" onclick="cancelReply()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    <div class="input-area">
-      <button type="button" class="sticker-btn" id="stickerBtn" title="Sticker">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-      </button>
-      <div class="sticker-picker hidden" id="stickerPicker"></div>
-      <div class="mention-suggest hidden" id="mentionSuggest"></div>
-      <input type="text" id="msgInput" placeholder="Nhập tin nhắn... (@ để mention, /adm <mã> để cấp quyền)" />
-      <button type="button" id="sendBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Gửi
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Admin modal -->
-<div class="modal-backdrop" id="adminModal">
-  <div class="admin-modal">
-    <div class="admin-modal-head">
-      <div class="ic">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-      <div>
-        <h3>Quản trị thành viên</h3>
-        <p id="adminTargetLabel">Chọn hành động</p>
-      </div>
-    </div>
-    <div class="admin-modal-body">
-      <div class="admin-user-preview" id="adminUserPreview"></div>
-      <div class="admin-actions-list" id="adminActionsList"></div>
-    </div>
-    <div class="admin-modal-foot">
-      <button type="button" id="adminCancelBtn">Đóng</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast -->
-<div class="toast" id="toast">
-  <span id="toastIcon"></span>
-  <span id="toastText">OK</span>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",
-  authDomain: "anime-f57e6.firebaseapp.com",
-  databaseURL: "https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "anime-f57e6",
-  storageBucket: "anime-f57e6.firebasestorage.app",
-  messagingSenderId: "546284227871",
-  appId: "1:546284227871:web:68e939a098af2211ad342a"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const ROOM = "nhom1";
-const ADMIN_CODE = "03102007";
-const ADMIN_STORE = "chat_is_admin";
-
-const STICKERS = ["😀","😂","😍","😎","🤔","👍","👏","🔥","💯","🎉","😢","😡","🙏","🤝","💪","✅","❌","⭐"];
-const AVATAR_STYLES = ["notionists", "adventurer", "fun-emoji", "bottts", "lorelei", "micah", "miniavs", "open-peeps"];
-const AVATAR_COLORS = ["b6e3f4","c0aede","d1d4f9","ffd5dc","ffdfbf","c1f0dc","ffe0b2"];
-
-let me = "", myAvatar = "", messages = [], members = {}, moderations = {};
-let currentStyle = AVATAR_STYLES[Math.floor(Math.random() * AVATAR_STYLES.length)];
-let isAdmin = localStorage.getItem(ADMIN_STORE) === "1";
-let mentionState = { active: false, query: "", startIdx: -1, selectedIdx: 0, items: [] };
-let adminTarget = null;
-let pinnedId = null;
-let replyTo = null;
-
-/* ===== SVG ICONS ===== */
+    <input type="file" id="avatarFile" accept="image
 const SVG = {
   admin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
   mute: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>',
@@ -573,7 +432,7 @@ function showToast(msg, isError=false){
   showToast._t = setTimeout(()=>t.classList.remove("show"), 2600);
 }
 
-/* ============ MODERATION HELPERS ============ */
+
 function getMod(name){ return moderations[name] || null; }
 function isMuted(name){ const m = getMod(name); return !!(m && m.mute); }
 function isBanned(name){ const m = getMod(name); return !!(m && m.ban); }
@@ -611,7 +470,7 @@ function showBannedOverlay(type, reason, time){
 }
 function hideBannedOverlay(){ const el = document.getElementById("bannedOverlay"); if(el) el.remove(); }
 
-/* ============ INIT ============ */
+
 document.addEventListener("DOMContentLoaded", () => {
   const saved = loadSavedProfile();
   if(saved.style) currentStyle = saved.style;
@@ -680,22 +539,14 @@ function buildAvatarGrid(){
   else grid.firstChild?.click();
 }
 
-/* ============ EXIT (ĐÃ FIX LỖI ĐEN MÀN HÌNH) ============ */
+
 function exitChat(){
+  const showBubble = window.confirm("Bạn có muốn hiển thị bóng chat nổi trên trang chủ để nhận thông báo tin nhắn và @nhắc tên không?");
   if(me) db.ref(`rooms/${ROOM}/members/${me}`).update({online:false,lastSeen:Date.now()}).catch(()=>{});
-  
   if(window.parent && window.parent !== window){
     try {
-      window.parent.postMessage({type:"exit-chat"},"*");
-      window.parent.postMessage({type:"RPG_CLOSE"},"*");
-      
-      const pd = window.parent.document;
-      const shell = pd.getElementById("rpgGameShell"); 
-      if(shell) shell.classList.remove("on");
-      
-      // ĐÃ XÓA DÒNG XÓA SRC IFRAME ĐỂ TRÁNH LỖI ĐEN MÀN HÌNH
-      // if(frame) frame.removeAttribute("src"); 
-      
+      window.parent.postMessage({type:"RPG_CLOSE"}, "*");
+      window.parent.postMessage({type:"CHAT_BUBBLE_CHOICE", enabled:showBubble, name:me || ""}, "*");
       try { window.parent.scrollTo({top:0,behavior:"smooth"}); } catch(e){}
     } catch(e){}
     return;
@@ -704,7 +555,7 @@ function exitChat(){
   else { window.close(); window.location.href = "about:blank"; }
 }
 
-/* ============ JOIN ============ */
+
 async function join(){
   const name = document.getElementById("nameInput").value.trim();
   if(!name) return alert("Nhập tên đi mày!");
@@ -800,7 +651,7 @@ async function changeAvatar(){
   await db.ref(`rooms/${ROOM}/members/${me}`).update({avatar:myAvatar});
 }
 
-/* ============ RENDER MEMBERS ============ */
+
 function renderMembers(){
   const box = document.getElementById("memberList");
   box.innerHTML = "";
@@ -829,7 +680,7 @@ function renderMembers(){
   });
 }
 
-/* ============ PIN ============ */
+
 async function pinMessage(id){
   if(!isAdmin){ showToast("Chỉ admin mới được ghim tin nhắn!", true); return; }
   try {
@@ -865,7 +716,7 @@ function renderPinBanner(){
   document.getElementById("pinCloseBtn").style.display = isAdmin ? "flex" : "none";
 }
 
-/* ============ REPLY ============ */
+
 function startReply(msg){
   if(!msg || !msg._id) return;
   replyTo = { id: msg._id, from: msg.from, text: msg.text || "" };
@@ -888,7 +739,7 @@ function scrollToMsg(id){
   }
 }
 
-/* ============ MENTION ============ */
+
 function onMsgInputChange(){
   const input = document.getElementById("msgInput");
   const val = input.value;
@@ -994,7 +845,7 @@ function pickMention(name){
   hideMentionSuggest();
 }
 
-/* ============ SEND ============ */
+
 async function sendMsg(){
   const input = document.getElementById("msgInput");
   const text = input.value.trim();
@@ -1042,7 +893,7 @@ function sendSticker(s){
 }
 function pushMessage(m){ db.ref(`rooms/${ROOM}/messages`).push(m); }
 
-/* ============ RENDER MESSAGES ============ */
+
 function renderMessages(){
   const box = document.getElementById("messages");
   box.innerHTML = "";
@@ -1100,7 +951,6 @@ function renderMessages(){
     row.appendChild(avatarDiv);
     row.appendChild(bw);
 
-    // Nút trả lời — luôn hiện
     if(m._id){
       const replyBtn = document.createElement("button");
       replyBtn.className = "reply-btn";
@@ -1110,7 +960,6 @@ function renderMessages(){
       row.appendChild(replyBtn);
     }
 
-    // Nút ghim — luôn hiện nếu admin
     if(isAdmin && m._id){
       const pinBtn = document.createElement("button");
       pinBtn.className = "pin-btn" + (m._id === pinnedId ? " is-pinned" : "");
@@ -1137,7 +986,7 @@ function formatMessageText(text){
   return safe;
 }
 
-/* ============ ADMIN MODAL ============ */
+
 function openAdminModal(name){
   if(!isAdmin || name === me) return;
   adminTarget = name;
@@ -1210,7 +1059,7 @@ async function adminDo(act){
   closeAdminModal();
 }
 
-/* ============ STICKERS ============ */
+
 function toggleStickers(){ document.getElementById("stickerPicker").classList.toggle("hidden"); }
 function buildStickerPicker(){
   const p = document.getElementById("stickerPicker");
