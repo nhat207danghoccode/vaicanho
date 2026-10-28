@@ -4,19 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chat Nhóm</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #f5f6fa;
-    --panel: #ffffff;
-    --panel-2: #f0f2f7;
-    --border: #e4e7ef;
-    --text: #1a1d29;
-    --muted: #7a8194;
-    --accent: #4361ee;
+    --bg: #f5f6fa; --panel: #ffffff; --panel-2: #f0f2f7;
+    --border: #e4e7ef; --text: #1a1d29; --muted: #7a8194;
+    --accent: #4361ee; --accent-2: #7c3aed;
     --mine: linear-gradient(135deg, #4361ee, #7c3aed);
-    --shadow: 0 2px 12px rgba(20, 30, 60, .06);
+    --danger: #ef4444; --danger-soft: #fee2e2;
+    --warn: #f59e0b; --warn-soft: #fef3c7;
+    --ok: #22c55e;
   }
   body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
   .hidden { display: none !important; }
@@ -47,32 +45,60 @@
   #app { display: flex; height: 100vh; }
   .sidebar { width: 290px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
   .sidebar-header { padding: 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
-  .me-avatar { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--panel-2); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .me-avatar { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--panel-2); box-shadow: 0 2px 8px rgba(0,0,0,.08); position: relative; }
   .me-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .me-info { flex: 1; min-width: 0; }
-  .me-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .me-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
   .me-status { font-size: 11px; color: #22c55e; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
   .me-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
   .change-avatar { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 4px; border-radius: 8px; transition: .15s; }
   .change-avatar:hover { background: var(--panel-2); }
 
-  .section-title { padding: 14px 18px 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 600; }
+  .admin-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff; font-size: 8.5px; font-weight: 800;
+    padding: 2px 7px; border-radius: 999px; letter-spacing: .4px;
+    text-transform: uppercase; box-shadow: 0 2px 6px rgba(239,68,68,.4);
+    animation: adminGlow 2s ease-in-out infinite;
+  }
+  @keyframes adminGlow { 0%,100% { box-shadow: 0 2px 6px rgba(239,68,68,.4); } 50% { box-shadow: 0 2px 14px rgba(239,68,68,.7); } }
+
+  .section-title { padding: 14px 18px 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
   .member-list { flex: 1; overflow-y: auto; padding: 4px 10px 14px; }
-  .member { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; transition: .15s; }
+  .member { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; transition: .15s; position: relative; }
   .member:hover { background: var(--panel-2); }
-  .member .m-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--panel-2); }
+  .member .m-avatar { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--panel-2); position: relative; }
   .member .m-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .member .m-name { font-size: 13px; font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .member .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 2px #fff; }
+  .member .m-info { flex: 1; min-width: 0; }
+  .member .m-name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .member .m-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .member .m-sub .at { color: var(--accent); font-weight: 700; }
+  .member .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 2px #fff; flex-shrink: 0; }
+  .member .dot.off { background: #cbd5e1; }
+  .member.muted .m-name::after { content: '🔇'; font-size: 10px; margin-left: 2px; }
+  .member.muted .m-avatar::after { content: ''; position: absolute; inset: 0; background: rgba(239,68,68,.25); border-radius: 50%; }
+  .member.me .m-name { font-weight: 700; color: var(--accent); }
+  .member .member-actions { display: none; gap: 3px; margin-left: auto; }
+  .member:hover .member-actions { display: flex; }
+  .member .member-actions button {
+    width: 24px; height: 24px; border-radius: 7px; border: none;
+    background: var(--panel-2); color: var(--muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; transition: .15s;
+  }
+  .member .member-actions button:hover { transform: scale(1.1); }
+  .member .member-actions button[data-act="mute"]:hover { background: var(--warn-soft); color: var(--warn); }
+  .member .member-actions button[data-act="kick"]:hover { background: var(--danger-soft); color: var(--danger); }
+  .member .member-actions button[data-act="ban"]:hover { background: #1a1d29; color: #fff; }
 
   /* ===== CHAT ===== */
   .chat { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
-  .chat-header { padding: 18px 26px; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; align-items: center; gap: 10px; background: var(--panel); font-size: 15px; }
+  .chat-header { padding: 14px 22px; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; align-items: center; gap: 10px; background: var(--panel); font-size: 15px; }
   .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
   .status-dot.ok { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
   .status-dot.err { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
 
-  /* Nút thoát */
   .exit-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--panel-2); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; transition: .15s; margin-right: 6px; }
   .exit-btn:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
 
@@ -84,22 +110,235 @@
   .msg-row .avatar img { width: 100%; height: 100%; object-fit: cover; }
   .bubble-wrap { display: flex; flex-direction: column; }
   .msg-row.mine .bubble-wrap { align-items: flex-end; }
-  .bubble-wrap .name { font-size: 11px; color: var(--muted); margin-bottom: 4px; padding: 0 6px; font-weight: 500; }
+  .bubble-wrap .name { font-size: 11px; color: var(--muted); margin-bottom: 4px; padding: 0 6px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .bubble-wrap .name .msg-admin-tag { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; font-size:8px; font-weight:800; padding:1px 5px; border-radius:6px; text-transform:uppercase; }
   .msg { padding: 11px 16px; border-radius: 18px; font-size: 14px; line-height: 1.45; word-wrap: break-word; }
   .msg.other { background: var(--panel); color: var(--text); border-bottom-left-radius: 5px; box-shadow: 0 2px 8px rgba(20,30,60,.06); }
   .msg.mine { background: var(--mine); color: #fff; border-bottom-right-radius: 5px; box-shadow: 0 4px 14px rgba(67,97,238,.3); }
   .msg.sticker { font-size: 46px; background: transparent !important; padding: 0; box-shadow: none !important; }
   .msg.system { align-self: center; background: rgba(67,97,238,.08); color: #4a5580; font-size: 12px; padding: 7px 16px; border-radius: 16px; font-weight: 500; }
+  .msg .mention { background: rgba(255,255,255,.25); color: inherit; padding: 1px 6px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(255,255,255,.35); }
+  .msg.other .mention { background: var(--accent); color: #fff; border-color: transparent; }
+  .msg-row.mentioned .msg { outline: 2px solid var(--warn); outline-offset: 2px; animation: mentionPulse 1.2s ease; }
+  @keyframes mentionPulse { 0%,100% { outline-color: rgba(245,158,11,.3); } 50% { outline-color: rgba(245,158,11,1); } }
 
   .input-area { display: flex; gap: 10px; padding: 16px 22px; border-top: 1px solid var(--border); align-items: center; position: relative; background: var(--panel); }
   .input-area input[type=text] { flex: 1; padding: 13px 20px; background: var(--panel-2); border: 1.5px solid transparent; border-radius: 24px; font-size: 14px; color: var(--text); outline: none; font-family: inherit; transition: .18s; }
   .input-area input[type=text]:focus { background: #fff; border-color: var(--accent); }
+  .input-area input[type=text]:disabled { opacity: .5; cursor: not-allowed; }
   .input-area button { padding: 12px 22px; border: none; border-radius: 24px; background: var(--mine); color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; font-family: inherit; box-shadow: 0 4px 14px rgba(67,97,238,.3); transition: .15s; }
-  .input-area button:hover { transform: translateY(-1px); }
+  .input-area button:hover:not(:disabled) { transform: translateY(-1px); }
+  .input-area button:disabled { opacity: .5; cursor: not-allowed; }
   .sticker-btn { background: var(--panel-2) !important; color: var(--text) !important; font-size: 20px !important; padding: 10px 15px !important; box-shadow: none !important; }
   .sticker-picker { position: absolute; bottom: 78px; right: 22px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; gap: 6px; flex-wrap: wrap; width: 280px; box-shadow: 0 12px 40px rgba(20,30,60,.18); z-index: 10; }
   .sticker-picker span { font-size: 30px; cursor: pointer; padding: 4px; border-radius: 10px; transition: .12s; }
   .sticker-picker span:hover { background: var(--panel-2); transform: scale(1.15); }
+
+  /* ===== MENTION SUGGEST ===== */
+  .mention-suggest {
+    position: absolute; bottom: 78px; left: 22px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 6px;
+    box-shadow: 0 12px 40px rgba(20,30,60,.18);
+    z-index: 15; min-width: 220px; max-height: 240px; overflow-y: auto;
+  }
+  .mention-suggest .ms-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 9px; cursor: pointer;
+    transition: .12s; user-select: none;
+  }
+  .mention-suggest .ms-item:hover, .mention-suggest .ms-item.active {
+    background: var(--accent); color: #fff;
+  }
+  .mention-suggest .ms-item img {
+    width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
+  }
+  .mention-suggest .ms-item .ms-name { font-size: 13px; font-weight: 600; flex: 1; }
+  .mention-suggest .ms-item .ms-tag { font-size: 10px; opacity: .6; }
+  .mention-suggest .ms-item.ms-all {
+    border-bottom: 1px solid var(--border); border-radius: 9px 9px 0 0;
+    margin-bottom: 4px; padding-bottom: 9px;
+  }
+  .mention-suggest .ms-item.ms-all .ms-ico {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 800; flex-shrink: 0;
+  }
+  .mention-suggest .ms-empty { padding: 10px; text-align: center; font-size: 12px; color: var(--muted); }
+
+  /* ===== BANNED OVERLAY ===== */
+  .banned-overlay {
+    position: fixed; inset: 0; z-index: 99999;
+    background: linear-gradient(135deg, #0f0a1f, #1a0f2e);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; animation: bannedFadeIn .5s ease;
+  }
+  @keyframes bannedFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .banned-overlay::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 30% 30%, rgba(239,68,68,.25), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 70% 70%, rgba(124,58,237,.25), transparent 70%);
+    pointer-events: none; animation: bannedPulse 4s ease-in-out infinite;
+  }
+  @keyframes bannedPulse { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+  .banned-card {
+    position: relative; z-index: 1;
+    max-width: 440px; width: 100%;
+    background: rgba(255,255,255,.06);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 24px; padding: 40px 32px 32px;
+    text-align: center; color: #fff;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.1);
+    animation: bannedCardIn .6s cubic-bezier(.16,1,.3,1);
+  }
+  @keyframes bannedCardIn { from { opacity: 0; transform: translateY(30px) scale(.94); } to { opacity: 1; transform: none; } }
+  .banned-icon-wrap {
+    width: 100px; height: 100px; margin: 0 auto 22px;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .banned-icon-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid rgba(239,68,68,.5);
+    animation: bannedRing 2.4s ease-out infinite;
+  }
+  .banned-icon-ring:nth-child(2) { animation-delay: .8s; border-color: rgba(239,68,68,.3); }
+  .banned-icon-ring:nth-child(3) { animation-delay: 1.6s; border-color: rgba(239,68,68,.15); }
+  @keyframes bannedRing { 0% { transform: scale(.7); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
+  .banned-icon-core {
+    width: 70px; height: 70px; border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; color: #fff;
+    box-shadow: 0 12px 30px -8px #ef4444, 0 0 0 6px rgba(239,68,68,.15);
+    animation: bannedBeat 1.6s ease-in-out infinite;
+    position: relative; z-index: 2;
+  }
+  @keyframes bannedBeat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.08); } 30% { transform: scale(1); } }
+  .banned-card h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; letter-spacing: -.5px; }
+  .banned-card .banned-type {
+    display: inline-block; font-size: 11px; font-weight: 800;
+    padding: 4px 12px; border-radius: 999px; margin-bottom: 16px;
+    text-transform: uppercase; letter-spacing: .8px;
+  }
+  .banned-type.kick { background: rgba(245,158,11,.2); color: #fbbf24; border: 1px solid rgba(245,158,11,.4); }
+  .banned-type.mute { background: rgba(245,158,11,.2); color: #fbbf24; border: 1px solid rgba(245,158,11,.4); }
+  .banned-type.ban { background: rgba(239,68,68,.2); color: #f87171; border: 1px solid rgba(239,68,68,.4); }
+  .banned-card p { font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,.65); margin-bottom: 8px; }
+  .banned-card .banned-reason {
+    background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px; padding: 12px 16px; margin: 16px 0;
+    font-size: 13px; color: rgba(255,255,255,.85); text-align: left;
+  }
+  .banned-card .banned-reason b { color: #fbbf24; }
+  .banned-card .banned-time { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 8px; font-variant-numeric: tabular-nums; }
+  .banned-card .banned-close {
+    margin-top: 22px; width: 100%; padding: 13px;
+    border: none; border-radius: 12px; cursor: pointer;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff; font-family: inherit; font-size: 14px; font-weight: 700;
+    transition: .2s; box-shadow: 0 8px 20px -6px #ef4444;
+  }
+  .banned-card .banned-close:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -6px #ef4444; }
+
+  .mute-banner {
+    margin: 0 22px 8px; padding: 10px 16px;
+    background: var(--warn-soft); border: 1px solid #fde68a;
+    border-radius: 12px; color: #92400e;
+    font-size: 12.5px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* ===== ADMIN MODAL ===== */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 9000;
+    background: rgba(15,10,31,.6);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-backdrop.on { display: flex; animation: fadeIn .2s ease; }
+  .admin-modal {
+    width: 100%; max-width: 420px;
+    background: var(--panel); border-radius: 20px;
+    box-shadow: 0 40px 80px -20px rgba(20,20,50,.5);
+    overflow: hidden; animation: modalIn .3s cubic-bezier(.16,1,.3,1);
+  }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(30px) scale(.94); } to { opacity: 1; transform: none; } }
+  .admin-modal-head {
+    padding: 20px 22px 14px;
+    background: linear-gradient(135deg, rgba(239,68,68,.08), rgba(245,158,11,.08));
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .admin-modal-head .ic {
+    width: 44px; height: 44px; border-radius: 13px;
+    background: linear-gradient(135deg, #ef4444, #f59e0b);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 19px; box-shadow: 0 8px 20px -6px rgba(239,68,68,.5);
+  }
+  .admin-modal-head h3 { font-size: 15px; font-weight: 800; }
+  .admin-modal-head p { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .admin-modal-body { padding: 20px 22px; }
+  .admin-user-preview {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border-radius: 12px;
+    background: var(--panel-2); margin-bottom: 16px;
+  }
+  .admin-user-preview img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+  .admin-user-preview .name { font-weight: 700; font-size: 14px; }
+  .admin-user-preview .sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .admin-actions-list { display: flex; flex-direction: column; gap: 8px; }
+  .admin-action-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 15px; border-radius: 12px;
+    border: 1.5px solid var(--border); background: var(--panel);
+    cursor: pointer; font-family: inherit; text-align: left;
+    transition: .18s; width: 100%;
+  }
+  .admin-action-btn:hover { transform: translateX(3px); }
+  .admin-action-btn .a-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .admin-action-btn .a-text { flex: 1; }
+  .admin-action-btn .a-text .t { font-size: 13.5px; font-weight: 700; }
+  .admin-action-btn .a-text .d { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .admin-action-btn[data-act="mute"]:hover { border-color: #fbbf24; background: var(--warn-soft); }
+  .admin-action-btn[data-act="mute"] .a-icon { background: var(--warn-soft); color: var(--warn); }
+  .admin-action-btn[data-act="kick"]:hover { border-color: #f87171; background: var(--danger-soft); }
+  .admin-action-btn[data-act="kick"] .a-icon { background: var(--danger-soft); color: var(--danger); }
+  .admin-action-btn[data-act="ban"]:hover { border-color: #1a1d29; background: #1a1d29; color: #fff; }
+  .admin-action-btn[data-act="ban"] .a-icon { background: #1a1d29; color: #fff; }
+  .admin-action-btn[data-act="unmute"] .a-icon { background: #d1fae5; color: #059669; }
+  .admin-modal-foot {
+    padding: 14px 22px 18px; border-top: 1px solid var(--border);
+    display: flex; gap: 10px;
+  }
+  .admin-modal-foot button {
+    flex: 1; padding: 12px; border-radius: 11px;
+    border: 1.5px solid var(--border); background: var(--panel-2);
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: .15s; color: var(--text);
+  }
+  .admin-modal-foot button:hover { background: #f2f3f8; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: linear-gradient(135deg, #22c55e, #059669);
+    color: #fff; padding: 12px 20px; border-radius: 12px;
+    font-size: 13px; font-weight: 700;
+    box-shadow: 0 15px 40px -8px rgba(16,185,129,.6);
+    z-index: 999999; display: flex; align-items: center; gap: 10px;
+    transition: transform .4s cubic-bezier(.16,1,.3,1);
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 15px 40px -8px rgba(239,68,68,.6); }
 
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-thumb { background: #d6dae6; border-radius: 4px; }
@@ -107,11 +346,13 @@
 
   @media (max-width: 720px) {
     .sidebar { width: 72px; }
-    .sidebar-header .me-info, .sidebar-header .change-avatar, .section-title, .member .m-name, .member .dot { display: none; }
+    .sidebar-header .me-info, .sidebar-header .change-avatar, .section-title,
+    .member .m-info, .member .dot, .member .member-actions { display: none; }
     .member { justify-content: center; }
     .msg-row { max-width: 85%; }
     .exit-btn span { display: none; }
     .exit-btn { padding: 8px 10px; margin-right: 2px; }
+    .mention-suggest { left: 12px; right: 12px; min-width: auto; }
   }
 </style>
 </head>
@@ -159,14 +400,41 @@
       <span class="status-dot" id="statusDot"></span>
       <span id="chatHeader">Chat nhóm — đang kết nối...</span>
     </div>
+    <div class="mute-banner hidden" id="muteBanner">🔇 Bạn đang bị cấm chat bởi quản trị viên.</div>
     <div class="messages" id="messages"></div>
     <div class="input-area">
       <button type="button" class="sticker-btn" id="stickerBtn">😊</button>
       <div class="sticker-picker hidden" id="stickerPicker"></div>
-      <input type="text" id="msgInput" placeholder="Nhập tin nhắn..." />
+      <div class="mention-suggest hidden" id="mentionSuggest"></div>
+      <input type="text" id="msgInput" placeholder="Nhập tin nhắn... (@ để mention, /adm <mã> để cấp quyền)" />
       <button type="button" id="sendBtn">Gửi</button>
     </div>
   </div>
+</div>
+
+<!-- Admin modal -->
+<div class="modal-backdrop" id="adminModal">
+  <div class="admin-modal">
+    <div class="admin-modal-head">
+      <div class="ic">⚡</div>
+      <div>
+        <h3>Quản trị thành viên</h3>
+        <p id="adminTargetLabel">Chọn hành động</p>
+      </div>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-user-preview" id="adminUserPreview"></div>
+      <div class="admin-actions-list" id="adminActionsList"></div>
+    </div>
+    <div class="admin-modal-foot">
+      <button type="button" id="adminCancelBtn">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastText">OK</span>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -185,152 +453,214 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const ROOM = "nhom1";
+const ADMIN_CODE = "03102007";
+const ADMIN_STORE = "chat_is_admin";
 
 const STICKERS = ["😀","😂","😍","😎","🤔","👍","👏","🔥","💯","🎉","😢","😡","🙏","🤝","💪","✅","❌","⭐"];
 const AVATAR_STYLES = ["notionists", "adventurer", "fun-emoji", "bottts", "lorelei", "micah", "miniavs", "open-peeps"];
 const AVATAR_COLORS = ["b6e3f4","c0aede","d1d4f9","ffd5dc","ffdfbf","c1f0dc","ffe0b2"];
 
-let me = "";
-let myAvatar = "";
-let messages = [];
-let members = {};
+let me = "", myAvatar = "", messages = [], members = {}, moderations = {};
 let currentStyle = AVATAR_STYLES[Math.floor(Math.random() * AVATAR_STYLES.length)];
+let isAdmin = localStorage.getItem(ADMIN_STORE) === "1";
+let mentionState = { active: false, query: "", startIdx: -1, selectedIdx: 0, items: [] };
+let adminTarget = null;
 
 function makeAvatarUrl(style, seed) {
   const color = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
   return `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=${color}`;
 }
+function saveLocalAvatar(n, d){ try{ localStorage.setItem("avatar_"+n,d); }catch(e){} }
+function saveProfile(){ try{ localStorage.setItem("chat_name",me||""); localStorage.setItem("chat_avatar",myAvatar||""); localStorage.setItem("chat_style",currentStyle||""); }catch(e){} }
+function loadSavedProfile(){ try{ return { name:localStorage.getItem("chat_name")||"", avatar:localStorage.getItem("chat_avatar")||"", style:localStorage.getItem("chat_style")||"" }; }catch(e){ return {name:"",avatar:"",style:""}; } }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function escapeReg(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
 
-function saveLocalAvatar(name, dataUrl) { try { localStorage.setItem("avatar_" + name, dataUrl); } catch(e) {} }
+function showToast(msg, isError=false){
+  const t = document.getElementById("toast");
+  document.getElementById("toastText").textContent = msg;
+  t.classList.toggle("error", isError);
+  t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove("show"), 2600);
+}
 
-// ===== INIT =====
+/* ============ MODERATION HELPERS ============ */
+function getMod(name){ return moderations[name] || null; }
+function isMuted(name){ const m = getMod(name); return !!(m && m.mute); }
+function isBanned(name){ const m = getMod(name); return !!(m && m.ban); }
+function isKicked(name){ const m = getMod(name); return !!(m && m.kick); }
+
+function showBannedOverlay(type, reason, time){
+  const old = document.getElementById("bannedOverlay");
+  if(old) old.remove();
+  const overlay = document.createElement("div");
+  overlay.id = "bannedOverlay";
+  overlay.className = "banned-overlay";
+  const typeMap = {
+    ban:  { label:"Đã bị chặn",   title:"Truy cập bị chặn",   icon:"🚫" },
+    kick: { label:"Đã bị xoá",    title:"Bạn đã bị xoá khỏi nhóm", icon:"👋" },
+    mute: { label:"Đã bị cấm chat", title:"Bạn đang bị cấm chat", icon:"🔇" }
+  };
+  const t = typeMap[type] || typeMap.ban;
+  overlay.innerHTML = `
+    <div class="banned-card">
+      <div class="banned-icon-wrap">
+        <div class="banned-icon-ring"></div>
+        <div class="banned-icon-ring"></div>
+        <div class="banned-icon-ring"></div>
+        <div class="banned-icon-core">${t.icon}</div>
+      </div>
+      <span class="banned-type ${type}">${t.label}</span>
+      <h1>${t.title}</h1>
+      <p>${type==='mute' ? 'Bạn vẫn xem được tin nhắn nhưng không thể gửi tin mới.' : 'Bạn không thể tiếp tục truy cập phòng chat này.'}</p>
+      ${reason ? `<div class="banned-reason"><b>Lý do:</b> ${escapeHtml(reason)}</div>` : ''}
+      ${time ? `<div class="banned-time">Thời gian: ${new Date(time).toLocaleString('vi-VN')}</div>` : ''}
+      <button class="banned-close" onclick="exitChat()">Thoát khỏi trang</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+function hideBannedOverlay(){ const el = document.getElementById("bannedOverlay"); if(el) el.remove(); }
+
+/* ============ INIT ============ */
 document.addEventListener("DOMContentLoaded", () => {
+  const saved = loadSavedProfile();
+  if(saved.style) currentStyle = saved.style;
   buildAvatarGrid();
+  if(saved.name) document.getElementById("nameInput").value = saved.name;
+  if(saved.avatar){
+    myAvatar = saved.avatar;
+    document.getElementById("avPreview").innerHTML = `<img src="${myAvatar}">`;
+    document.querySelectorAll(".av-grid img").forEach(i => i.classList.toggle("selected", i.dataset.url === myAvatar));
+  }
 
   document.getElementById("shuffleBtn").addEventListener("click", () => {
-    currentStyle = AVATAR_STYLES[Math.floor(Math.random() * AVATAR_STYLES.length)];
+    currentStyle = AVATAR_STYLES[Math.floor(Math.random()*AVATAR_STYLES.length)];
     buildAvatarGrid();
   });
   document.getElementById("uploadBtn").addEventListener("click", () => document.getElementById("avatarFile").click());
-  document.getElementById("avatarFile").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.size > 800000) alert("Ảnh hơi to, nên chọn ảnh < 800KB cho nhẹ nhé");
-    const reader = new FileReader();
-    reader.onload = (ev) => {
+  document.getElementById("avatarFile").addEventListener("change", e => {
+    const f = e.target.files[0]; if(!f) return;
+    if(f.size > 800000) alert("Ảnh hơi to, nên chọn ảnh < 800KB cho nhẹ nhé");
+    const r = new FileReader();
+    r.onload = ev => {
       myAvatar = ev.target.result;
       document.getElementById("avPreview").innerHTML = `<img src="${myAvatar}">`;
       document.querySelectorAll(".av-grid img").forEach(i => i.classList.remove("selected"));
+      try { localStorage.setItem("chat_avatar", myAvatar); localStorage.setItem("chat_style", currentStyle); } catch(e){}
     };
-    reader.readAsDataURL(file);
+    r.readAsDataURL(f);
   });
 
   document.getElementById("joinBtn").addEventListener("click", join);
-  document.getElementById("nameInput").addEventListener("keydown", (e) => { if (e.key === "Enter") join(); });
-
+  document.getElementById("nameInput").addEventListener("keydown", e => { if(e.key==="Enter") join(); });
   document.getElementById("sendBtn").addEventListener("click", sendMsg);
   document.getElementById("stickerBtn").addEventListener("click", toggleStickers);
-  document.getElementById("msgInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); sendMsg(); }
-  });
+  document.getElementById("msgInput").addEventListener("keydown", onMsgInputKeydown);
+  document.getElementById("msgInput").addEventListener("input", onMsgInputChange);
   document.getElementById("changeAvatarBtn").addEventListener("click", changeAvatar);
-
-  // ===== NÚT THOÁT =====
   document.getElementById("exitBtn").addEventListener("click", exitChat);
+  document.getElementById("adminCancelBtn").addEventListener("click", closeAdminModal);
+  document.getElementById("adminModal").addEventListener("click", e => { if(e.target.id==="adminModal") closeAdminModal(); });
+
+  document.addEventListener("click", e => {
+    if(!e.target.closest(".mention-suggest") && !e.target.closest("#msgInput")) hideMentionSuggest();
+    if(!e.target.closest(".sticker-picker") && !e.target.closest("#stickerBtn")) document.getElementById("stickerPicker").classList.add("hidden");
+  });
 });
 
-/* ============================================================
-   EXIT CHAT — SỬA TẠI ĐÂY
-   Ưu tiên đóng iframe #rpgGameShell trên trang cha (cùng origin),
-   xóa src iframe để lần mở sau nạp lại sạch, cuộn trang cha về đầu.
-   ============================================================ */
-function exitChat() {
-  // 1) Đánh dấu offline trước khi rời
-  if (me) {
-    db.ref(`rooms/${ROOM}/members/${me}`).update({ online: false, lastSeen: Date.now() }).catch(() => {});
-  }
-
-  // 2) Nếu đang nằm trong iframe
-  if (window.parent && window.parent !== window) {
-    try {
-      // Báo cho trang cha (nếu có listener thì tốt)
-      window.parent.postMessage({ type: "exit-chat" }, "*");
-      window.parent.postMessage({ type: "RPG_CLOSE" }, "*");
-
-      // Thao tác DOM trang cha (cùng origin)
-      const parentDoc = window.parent.document;
-      const shell = parentDoc.getElementById("rpgGameShell");
-      if (shell) shell.classList.remove("on");
-
-      const frame = parentDoc.getElementById("rpgGameFrame");
-      if (frame) frame.removeAttribute("src");
-
-      // Cuộn trang cha về đầu
-      try { window.parent.scrollTo({ top: 0, behavior: "smooth" }); } catch (e) {}
-    } catch (e) {
-      // Khác origin (không xảy ra khi cùng server) — bỏ qua
-      console.warn("Không thể thao tác DOM trang cha:", e);
-    }
-    return;
-  }
-
-  // 3) Mở trực tiếp (không trong iframe) → quay lại trang trước
-  if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    window.close();
-    window.location.href = "about:blank";
-  }
-}
-
-function buildAvatarGrid() {
+function buildAvatarGrid(){
   const grid = document.getElementById("avGrid");
   grid.innerHTML = "";
   const seeds = ["Minh","Lan","Huy","Trang","Duc","Linh","An","Tu","Mai","Khoa","Vy","Nam"];
   seeds.forEach(seed => {
     const url = makeAvatarUrl(currentStyle, seed + Math.random().toString(36).slice(2,5));
     const img = document.createElement("img");
-    img.src = url;
-    img.dataset.url = url;
+    img.src = url; img.dataset.url = url;
     img.addEventListener("click", () => {
       document.querySelectorAll(".av-grid img").forEach(i => i.classList.remove("selected"));
       img.classList.add("selected");
       myAvatar = url;
       document.getElementById("avPreview").innerHTML = `<img src="${url}">`;
+      try { localStorage.setItem("chat_avatar", url); localStorage.setItem("chat_style", currentStyle); } catch(e){}
     });
     grid.appendChild(img);
   });
-  grid.firstChild?.click();
+  const match = Array.from(grid.children).find(i => i.dataset.url === myAvatar);
+  if(match) match.classList.add("selected");
+  else grid.firstChild?.click();
 }
 
-// ===== JOIN =====
-async function join() {
-  const name = document.getElementById("nameInput").value.trim();
-  if (!name) return alert("Nhập tên đi mày!");
-  if (!myAvatar) myAvatar = makeAvatarUrl(currentStyle, name);
+/* ============ EXIT ============ */
+function exitChat(){
+  if(me) db.ref(`rooms/${ROOM}/members/${me}`).update({online:false,lastSeen:Date.now()}).catch(()=>{});
+  if(window.parent && window.parent !== window){
+    try {
+      window.parent.postMessage({type:"exit-chat"},"*");
+      window.parent.postMessage({type:"RPG_CLOSE"},"*");
+      const pd = window.parent.document;
+      const shell = pd.getElementById("rpgGameShell"); if(shell) shell.classList.remove("on");
+      const frame = pd.getElementById("rpgGameFrame"); if(frame) frame.removeAttribute("src");
+      try { window.parent.scrollTo({top:0,behavior:"smooth"}); } catch(e){}
+    } catch(e){}
+    return;
+  }
+  if(window.history.length > 1) window.history.back();
+  else { window.close(); window.location.href = "about:blank"; }
+}
 
+/* ============ JOIN ============ */
+async function join(){
+  const name = document.getElementById("nameInput").value.trim();
+  if(!name) return alert("Nhập tên đi mày!");
+  if(!myAvatar) myAvatar = makeAvatarUrl(currentStyle, name);
   me = name;
   saveLocalAvatar(me, myAvatar);
+  saveProfile();
+
+  // Kiểm tra ban/kick trước khi vào
+  try {
+    const modSnap = await db.ref(`rooms/${ROOM}/moderations/${me}`).once("value");
+    const mod = modSnap.val();
+    if(mod && (mod.ban || mod.kick)){
+      const type = mod.ban ? "ban" : "kick";
+      showBannedOverlay(type, mod.reason || "", mod.time);
+      return;
+    }
+    if(mod && mod.mute){
+      // vẫn cho vào nhưng sẽ hiện banner + disable input
+    }
+  } catch(e){}
 
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
-  document.getElementById("meLabel").textContent = me;
+  document.getElementById("meLabel").innerHTML = escapeHtml(me) + (isAdmin ? ' <span class="admin-badge">⚡ ADMIN</span>' : '');
   document.getElementById("meAvatar").innerHTML = `<img src="${myAvatar}">`;
 
   const memberRef = db.ref(`rooms/${ROOM}/members/${me}`);
   await memberRef.set({ avatar: myAvatar, online: true, lastSeen: Date.now() });
-  memberRef.onDisconnect().update({ online: false, lastSeen: Date.now() });
+  memberRef.onDisconnect().update({ online:false, lastSeen:Date.now() });
 
-  db.ref(`rooms/${ROOM}/members`).on('value', (s) => { members = s.val() || {}; renderMembers(); renderMessages(); });
-  db.ref(`rooms/${ROOM}/messages`).limitToLast(200).on('child_added', (s) => {
-    messages.push(s.val());
+  db.ref(`rooms/${ROOM}/members`).on("value", s => { members = s.val() || {}; renderMembers(); renderMessages(); });
+  db.ref(`rooms/${ROOM}/moderations`).on("value", s => { moderations = s.val() || {}; applyModerationState(); renderMembers(); });
+  db.ref(`rooms/${ROOM}/messages`).limitToLast(200).on("child_added", s => {
+    const m = s.val();
+    messages.push(m);
     renderMessages();
+    // Phát hiện mention mình
+    if(m && m.type === 'text' && m.from !== me){
+      const mentions = m.mentions || [];
+      if(mentions.includes("all") || mentions.includes(me)){
+        // Toast
+        showToast("📣 " + m.from + " đã nhắc đến bạn!");
+      }
+    }
   });
 
-  db.ref(".info/connected").on("value", (s) => {
+  db.ref(".info/connected").on("value", s => {
     const ok = s.val() === true;
-    const dot = document.getElementById("statusDot");
-    dot.className = "status-dot " + (ok ? "ok" : "err");
+    document.getElementById("statusDot").className = "status-dot " + (ok?"ok":"err");
     document.getElementById("chatHeader").textContent = ok ? "Chat nhóm — đã kết nối" : "Chat nhóm — mất kết nối";
   });
 
@@ -338,59 +668,249 @@ async function join() {
   document.getElementById("msgInput").focus();
 }
 
-async function changeAvatar() {
-  const url = prompt("Dán URL ảnh avatar mới (để trống = random đẹp):");
-  if (url === null) return;
-  myAvatar = url.trim() || makeAvatarUrl(AVATAR_STYLES[Math.floor(Math.random()*AVATAR_STYLES.length)], me + Date.now());
-  saveLocalAvatar(me, myAvatar);
-  document.getElementById("meAvatar").innerHTML = `<img src="${myAvatar}">`;
-  await db.ref(`rooms/${ROOM}/members/${me}`).update({ avatar: myAvatar });
+function applyModerationState(){
+  if(!me) return;
+  const m = getMod(me);
+  const input = document.getElementById("msgInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const banner = document.getElementById("muteBanner");
+  if(m && m.ban){
+    showBannedOverlay("ban", m.reason, m.time);
+    input.disabled = true; sendBtn.disabled = true;
+    return;
+  }
+  if(m && m.kick){
+    showBannedOverlay("kick", m.reason, m.time);
+    input.disabled = true; sendBtn.disabled = true;
+    return;
+  }
+  if(m && m.mute){
+    banner.classList.remove("hidden");
+    input.disabled = true; sendBtn.disabled = true;
+    input.placeholder = "Bạn đang bị cấm chat...";
+  } else {
+    banner.classList.add("hidden");
+    input.disabled = false; sendBtn.disabled = false;
+    input.placeholder = "Nhập tin nhắn... (@ để mention, /adm <mã> để cấp quyền)";
+    hideBannedOverlay();
+  }
 }
 
-// ===== RENDER MEMBERS =====
-function renderMembers() {
+async function changeAvatar(){
+  const url = prompt("Dán URL ảnh avatar mới (để trống = random đẹp):");
+  if(url === null) return;
+  myAvatar = url.trim() || makeAvatarUrl(AVATAR_STYLES[Math.floor(Math.random()*AVATAR_STYLES.length)], me + Date.now());
+  saveLocalAvatar(me, myAvatar);
+  saveProfile();
+  document.getElementById("meAvatar").innerHTML = `<img src="${myAvatar}">`;
+  await db.ref(`rooms/${ROOM}/members/${me}`).update({avatar:myAvatar});
+}
+
+/* ============ RENDER MEMBERS ============ */
+function renderMembers(){
   const box = document.getElementById("memberList");
   box.innerHTML = "";
-  Object.entries(members).forEach(([name, data]) => {
+  Object.entries(members).forEach(([name,data]) => {
+    const mod = getMod(name);
     const div = document.createElement("div");
-    div.className = "member";
+    div.className = "member" + (name === me ? " me" : "") + (mod && mod.mute ? " muted" : "");
+    let actions = "";
+    if(isAdmin && name !== me){
+      actions = `<div class="member-actions">
+        <button data-act="mute" title="Cấm chat" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">🔇</button>
+        <button data-act="kick" title="Xoá khỏi nhóm" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">👢</button>
+        <button data-act="ban" title="Chặn hoàn toàn" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">🚫</button>
+      </div>`;
+    }
     div.innerHTML = `
       <div class="m-avatar">${data.avatar ? `<img src="${data.avatar}">` : "🙂"}</div>
-      <span class="m-name">${escapeHtml(name)}${name === me ? " (mày)" : ""}</span>
-      ${data.online ? '<span class="dot"></span>' : ''}
+      <div class="m-info">
+        <div class="m-name">${escapeHtml(name)}${name===me?" (mày)":""}${mod&&mod.mute?' <span style="font-size:10px;">🔇</span>':''}</div>
+        <div class="m-sub">${data.online?'<span class="at">@</span> online':'offline'}</div>
+      </div>
+      <span class="dot ${data.online?'':'off'}"></span>
+      ${actions}
     `;
     box.appendChild(div);
   });
 }
 
-// ===== CHAT =====
-function sendMsg() {
+/* ============ MENTION ============ */
+function onMsgInputChange(){
+  const input = document.getElementById("msgInput");
+  const val = input.value;
+  const caret = input.selectionStart;
+  const before = val.slice(0, caret);
+  const match = before.match(/@([\w\u00C0-\u024F\u1E00-\u1EFF]*)$/);
+  if(match){
+    mentionState.active = true;
+    mentionState.query = match[1].toLowerCase();
+    mentionState.startIdx = match.index;
+    mentionState.selectedIdx = 0;
+    showMentionSuggest();
+  } else {
+    hideMentionSuggest();
+  }
+}
+function onMsgInputKeydown(e){
+  const sug = document.getElementById("mentionSuggest");
+  if(!sug.classList.contains("hidden")){
+    if(e.key === "ArrowDown"){
+      e.preventDefault();
+      mentionState.selectedIdx = (mentionState.selectedIdx + 1) % mentionState.items.length;
+      highlightMention();
+      return;
+    }
+    if(e.key === "ArrowUp"){
+      e.preventDefault();
+      mentionState.selectedIdx = (mentionState.selectedIdx - 1 + mentionState.items.length) % mentionState.items.length;
+      highlightMention();
+      return;
+    }
+    if(e.key === "Enter" || e.key === "Tab"){
+      if(mentionState.items.length){
+        e.preventDefault();
+        pickMention(mentionState.items[mentionState.selectedIdx].name);
+        return;
+      }
+    }
+    if(e.key === "Escape"){ hideMentionSuggest(); return; }
+  }
+  if(e.key === "Enter"){ e.preventDefault(); sendMsg(); }
+}
+function showMentionSuggest(){
+  const box = document.getElementById("mentionSuggest");
+  const q = mentionState.query;
+  const names = Object.keys(members).filter(n => n !== me && n.toLowerCase().includes(q));
+  const items = [];
+  // @all luôn đứng đầu
+  if("all".includes(q) || q === "") items.push({ name:"all", type:"all" });
+  names.slice(0, 12).forEach(n => items.push({ name:n, type:"user", avatar: members[n].avatar }));
+  mentionState.items = items;
+
+  if(!items.length){
+    box.innerHTML = `<div class="ms-empty">Không có ai khớp</div>`;
+    box.classList.remove("hidden");
+    return;
+  }
+  if(mentionState.selectedIdx >= items.length) mentionState.selectedIdx = 0;
+  box.innerHTML = items.map((it, i) => {
+    if(it.type === "all"){
+      return `<div class="ms-item ms-all ${i===mentionState.selectedIdx?'active':''}" data-idx="${i}">
+        <div class="ms-ico">@</div>
+        <span class="ms-name">all — Cả nhóm</span>
+        <span class="ms-tag">mọi người</span>
+      </div>`;
+    }
+    return `<div class="ms-item ${i===mentionState.selectedIdx?'active':''}" data-idx="${i}">
+      <img src="${it.avatar || makeAvatarUrl('notionists', it.name)}">
+      <span class="ms-name">${escapeHtml(it.name)}</span>
+    </div>`;
+  }).join("");
+  box.querySelectorAll(".ms-item").forEach(el => {
+    el.addEventListener("mousedown", e => {
+      e.preventDefault();
+      const idx = parseInt(el.dataset.idx);
+      pickMention(mentionState.items[idx].name);
+    });
+  });
+  box.classList.remove("hidden");
+}
+function highlightMention(){
+  const box = document.getElementById("mentionSuggest");
+  box.querySelectorAll(".ms-item").forEach((el, i) => el.classList.toggle("active", i === mentionState.selectedIdx));
+  const act = box.querySelector(".ms-item.active");
+  if(act) act.scrollIntoView({block:"nearest"});
+}
+function hideMentionSuggest(){
+  mentionState.active = false;
+  document.getElementById("mentionSuggest").classList.add("hidden");
+}
+function pickMention(name){
+  const input = document.getElementById("msgInput");
+  const val = input.value;
+  const caret = input.selectionStart;
+  const before = val.slice(0, caret);
+  const after = val.slice(caret);
+  const match = before.match(/@([\w\u00C0-\u024F\u1E00-\u1EFF]*)$/);
+  if(!match) return;
+  const newBefore = before.slice(0, match.index) + "@" + name + " ";
+  input.value = newBefore + after;
+  const pos = newBefore.length;
+  input.setSelectionRange(pos, pos);
+  input.focus();
+  hideMentionSuggest();
+}
+
+/* ============ SEND MSG ============ */
+async function sendMsg(){
   const input = document.getElementById("msgInput");
   const text = input.value.trim();
-  if (!text) return;
-  pushMessage({ type: 'text', from: me, text, time: Date.now() });
+  if(!text) return;
+
+  // Lệnh admin
+  if(text.startsWith("/adm ")){
+    const code = text.slice(5).trim();
+    if(code === ADMIN_CODE){
+      isAdmin = true;
+      localStorage.setItem(ADMIN_STORE, "1");
+      document.getElementById("meLabel").innerHTML = escapeHtml(me) + ' <span class="admin-badge">⚡ ADMIN</span>';
+      renderMembers();
+      showToast("Đã cấp quyền ADMIN cao nhất!");
+      input.value = "";
+    } else {
+      showToast("Mã admin không đúng!", true);
+    }
+    return;
+  }
+
+  if(isMuted(me)){ showToast("Bạn đang bị cấm chat!", true); return; }
+
+  // Xác định mention
+  const mentionRegex = /@([\w\u00C0-\u024F\u1E00-\u1EFF]+)/g;
+  const mentions = [];
+  let mm;
+  while((mm = mentionRegex.exec(text)) !== null){
+    const n = mm[1];
+    if(n.toLowerCase() === "all") mentions.push("all");
+    else if(members[n]) mentions.push(n);
+  }
+
+  const msg = { type:"text", from:me, text, time:Date.now(), mentions };
+  pushMessage(msg);
   input.value = ""; input.focus();
+  hideMentionSuggest();
 }
-function sendSticker(s) {
-  pushMessage({ type: 'sticker', from: me, text: s, time: Date.now() });
+function sendSticker(s){
+  if(isMuted(me)){ showToast("Bạn đang bị cấm chat!", true); return; }
+  pushMessage({type:"sticker", from:me, text:s, time:Date.now()});
   document.getElementById("stickerPicker").classList.add("hidden");
 }
-function pushMessage(msg) { db.ref(`rooms/${ROOM}/messages`).push(msg); }
+function pushMessage(m){ db.ref(`rooms/${ROOM}/messages`).push(m); }
 
-function renderMessages() {
+/* ============ RENDER MESSAGES ============ */
+function renderMessages(){
   const box = document.getElementById("messages");
   box.innerHTML = "";
   messages.forEach(m => {
-    if (m.type === 'system') {
+    if(m.type === "system"){
       const d = document.createElement("div");
       d.className = "msg system"; d.textContent = m.text;
       box.appendChild(d); return;
     }
     const isMine = m.from === me;
-    const av = members[m.from]?.avatar || makeAvatarUrl("notionists", m.from);
+    const av = (members[m.from] && members[m.from].avatar) || makeAvatarUrl("notionists", m.from);
+    const fromMod = getMod(m.from);
 
     const row = document.createElement("div");
     row.className = "msg-row" + (isMine ? " mine" : "");
+
+    // Highlight nếu mention mình
+    if(m.type === "text" && !isMine && m.mentions){
+      if(m.mentions.includes("all") || m.mentions.includes(me)){
+        row.classList.add("mentioned");
+      }
+    }
 
     const avatarDiv = document.createElement("div");
     avatarDiv.className = "avatar";
@@ -398,14 +918,20 @@ function renderMessages() {
 
     const bw = document.createElement("div");
     bw.className = "bubble-wrap";
-    if (!isMine) {
+    if(!isMine){
       const n = document.createElement("div");
-      n.className = "name"; n.textContent = m.from;
+      n.className = "name";
+      let nameHtml = escapeHtml(m.from);
+      // admin badge nếu ng gửi là admin? (không lưu, bỏ qua)
+      n.innerHTML = nameHtml;
       bw.appendChild(n);
     }
     const bubble = document.createElement("div");
-    if (m.type === 'sticker') { bubble.className = "msg sticker"; bubble.textContent = m.text; }
-    else { bubble.className = "msg " + (isMine ? "mine" : "other"); bubble.innerHTML = escapeHtml(m.text); }
+    if(m.type === "sticker"){ bubble.className = "msg sticker"; bubble.textContent = m.text; }
+    else {
+      bubble.className = "msg " + (isMine ? "mine" : "other");
+      bubble.innerHTML = formatMessageText(m.text);
+    }
     bw.appendChild(bubble);
 
     row.appendChild(avatarDiv); row.appendChild(bw);
@@ -413,12 +939,96 @@ function renderMessages() {
   });
   box.scrollTop = box.scrollHeight;
 }
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+function formatMessageText(text){
+  let safe = escapeHtml(text);
+  // highlight @mention
+  safe = safe.replace(/@([\w\u00C0-\u024F\u1E00-\u1EFF]+)/g, (full, name) => {
+    if(name.toLowerCase() === "all" || members[name] || true){
+      return `<span class="mention">@${name}</span>`;
+    }
+    return full;
+  });
+  return safe;
 }
-function toggleStickers() { document.getElementById("stickerPicker").classList.toggle("hidden"); }
-function buildStickerPicker() {
+
+/* ============ ADMIN MODAL ============ */
+function openAdminModal(name){
+  if(!isAdmin || name === me) return;
+  adminTarget = name;
+  const data = members[name] || {};
+  const mod = getMod(name) || {};
+  document.getElementById("adminTargetLabel").textContent = "Thao tác với: " + name;
+  document.getElementById("adminUserPreview").innerHTML = `
+    <img src="${data.avatar || makeAvatarUrl('notionists', name)}">
+    <div>
+      <div class="name">${escapeHtml(name)}</div>
+      <div class="sub">${data.online?'Đang online':'Offline'}${mod.mute?' • đang bị mute':''}${mod.kick?' • đã bị kick':''}${mod.ban?' • đã bị ban':''}</div>
+    </div>
+  `;
+  const list = document.getElementById("adminActionsList");
+  let html = "";
+  if(mod.mute){
+    html += `<button class="admin-action-btn" data-act="unmute" onclick="adminDo('unmute')">
+      <div class="a-icon">🔊</div>
+      <div class="a-text"><div class="t">Bỏ cấm chat</div><div class="d">Cho phép gửi tin nhắn trở lại</div></div>
+    </button>`;
+  } else {
+    html += `<button class="admin-action-btn" data-act="mute" onclick="adminDo('mute')">
+      <div class="a-icon">🔇</div>
+      <div class="a-text"><div class="t">Cấm chat</div><div class="d">Không thể gửi tin nhắn, vẫn xem được</div></div>
+    </button>`;
+  }
+  html += `<button class="admin-action-btn" data-act="kick" onclick="adminDo('kick')">
+    <div class="a-icon">👢</div>
+    <div class="a-text"><div class="t">Xoá khỏi nhóm</div><div class="d">Không cho vào lại phòng chat</div></div>
+  </button>`;
+  html += `<button class="admin-action-btn" data-act="ban" onclick="adminDo('ban')">
+    <div class="a-icon">🚫</div>
+    <div class="a-text"><div class="t">Chặn hoàn toàn</div><div class="d">Chặn khỏi trang web, không truy cập được</div></div>
+  </button>`;
+  list.innerHTML = html;
+  document.getElementById("adminModal").classList.add("on");
+}
+function closeAdminModal(){
+  document.getElementById("adminModal").classList.remove("on");
+  adminTarget = null;
+}
+async function adminDo(act){
+  if(!isAdmin || !adminTarget) return;
+  const name = adminTarget;
+  const reason = prompt(`Lý do ${act} ${name}? (có thể bỏ trống)`, "") ?? "";
+  try {
+    if(act === "mute"){
+      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ mute:true, reason, time:Date.now(), by:me });
+      showToast("Đã cấm chat " + name);
+    } else if(act === "unmute"){
+      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ mute:false });
+      showToast("Đã bỏ cấm chat " + name);
+    } else if(act === "kick"){
+      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ kick:true, mute:true, reason, time:Date.now(), by:me });
+      // Xoá member khỏi danh sách
+      await db.ref(`rooms/${ROOM}/members/${name}`).remove();
+      showToast("Đã xoá " + name + " khỏi nhóm");
+    } else if(act === "ban"){
+      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ ban:true, kick:true, mute:true, reason, time:Date.now(), by:me });
+      await db.ref(`rooms/${ROOM}/members/${name}`).remove();
+      showToast("Đã chặn " + name + " hoàn toàn");
+    }
+    // Gửi system message
+    const sysText = {
+      mute: `🔇 ${name} đã bị cấm chat`,
+      unmute: `🔊 ${name} đã được bỏ cấm chat`,
+      kick: `👢 ${name} đã bị xoá khỏi nhóm`,
+      ban: `🚫 ${name} đã bị chặn hoàn toàn`
+    }[act];
+    if(sysText) pushMessage({ type:"system", text:sysText, time:Date.now() });
+  } catch(e){ showToast("Lỗi: " + e.message, true); }
+  closeAdminModal();
+}
+
+/* ============ STICKERS ============ */
+function toggleStickers(){ document.getElementById("stickerPicker").classList.toggle("hidden"); }
+function buildStickerPicker(){
   const p = document.getElementById("stickerPicker");
   p.innerHTML = "";
   STICKERS.forEach(s => {
@@ -428,6 +1038,15 @@ function buildStickerPicker() {
     p.appendChild(span);
   });
 }
+
+/* ============ ESC ============ */
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape"){
+    hideMentionSuggest();
+    closeAdminModal();
+    document.getElementById("stickerPicker").classList.add("hidden");
+  }
+});
 </script>
 </body>
 </html>
