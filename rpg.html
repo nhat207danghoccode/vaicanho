@@ -18,6 +18,7 @@
   }
   body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
   .hidden { display: none !important; }
+  svg.ico { width: 14px; height: 14px; vertical-align: -2px; flex-shrink: 0; }
 
   /* ===== LOGIN ===== */
   #login { margin: auto; background: var(--panel); padding: 36px 32px; border-radius: 24px; width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(20,30,60,.12); }
@@ -35,10 +36,10 @@
   .av-grid img:hover { transform: scale(1.08); }
   .av-grid img.selected { border-color: var(--accent); }
   .av-actions { display: flex; gap: 8px; justify-content: center; }
-  .av-actions button { padding: 8px 14px; font-size: 12px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; color: var(--text); cursor: pointer; font-family: inherit; font-weight: 500; transition: .15s; }
+  .av-actions button { padding: 8px 14px; font-size: 12px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; color: var(--text); cursor: pointer; font-family: inherit; font-weight: 500; transition: .15s; display: inline-flex; align-items: center; gap: 6px; }
   .av-actions button:hover { border-color: var(--accent); color: var(--accent); }
 
-  #joinBtn { width: 100%; padding: 14px; background: var(--mine); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: .15s; box-shadow: 0 6px 20px rgba(67,97,238,.3); }
+  #joinBtn { width: 100%; padding: 14px; background: var(--mine); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: .15s; box-shadow: 0 6px 20px rgba(67,97,238,.3); display: flex; align-items: center; justify-content: center; gap: 8px; }
   #joinBtn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(67,97,238,.4); }
 
   /* ===== APP ===== */
@@ -51,8 +52,9 @@
   .me-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
   .me-status { font-size: 11px; color: #22c55e; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
   .me-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
-  .change-avatar { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 4px; border-radius: 8px; transition: .15s; }
-  .change-avatar:hover { background: var(--panel-2); }
+  .change-avatar { background: none; border: none; color: var(--muted); cursor: pointer; padding: 6px; border-radius: 8px; transition: .15s; display: flex; align-items: center; justify-content: center; }
+  .change-avatar:hover { background: var(--panel-2); color: var(--accent); }
+  .change-avatar svg { width: 16px; height: 16px; }
 
   .admin-badge {
     display: inline-flex; align-items: center; gap: 3px;
@@ -62,6 +64,7 @@
     text-transform: uppercase; box-shadow: 0 2px 6px rgba(239,68,68,.4);
     animation: adminGlow 2s ease-in-out infinite;
   }
+  .admin-badge svg { width: 9px; height: 9px; }
   @keyframes adminGlow { 0%,100% { box-shadow: 0 2px 6px rgba(239,68,68,.4); } 50% { box-shadow: 0 2px 14px rgba(239,68,68,.7); } }
 
   .section-title { padding: 14px 18px 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
@@ -72,43 +75,70 @@
   .member .m-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .member .m-info { flex: 1; min-width: 0; }
   .member .m-name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
-  .member .m-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .member .m-name .mute-ico { color: var(--danger); }
+  .member .m-name .mute-ico svg { width: 11px; height: 11px; }
+  .member .m-sub { font-size: 10px; color: var(--muted); margin-top: 1px; display: flex; align-items: center; gap: 3px; }
   .member .m-sub .at { color: var(--accent); font-weight: 700; }
+  .member .m-sub svg { width: 9px; height: 9px; }
   .member .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 2px #fff; flex-shrink: 0; }
   .member .dot.off { background: #cbd5e1; }
-  .member.muted .m-name::after { content: '🔇'; font-size: 10px; margin-left: 2px; }
   .member.muted .m-avatar::after { content: ''; position: absolute; inset: 0; background: rgba(239,68,68,.25); border-radius: 50%; }
   .member.me .m-name { font-weight: 700; color: var(--accent); }
   .member .member-actions { display: none; gap: 3px; margin-left: auto; }
   .member:hover .member-actions { display: flex; }
   .member .member-actions button {
-    width: 24px; height: 24px; border-radius: 7px; border: none;
+    width: 26px; height: 26px; border-radius: 7px; border: none;
     background: var(--panel-2); color: var(--muted); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-size: 11px; transition: .15s;
+    transition: .15s; padding: 0;
   }
+  .member .member-actions button svg { width: 12px; height: 12px; }
   .member .member-actions button:hover { transform: scale(1.1); }
   .member .member-actions button[data-act="mute"]:hover { background: var(--warn-soft); color: var(--warn); }
   .member .member-actions button[data-act="kick"]:hover { background: var(--danger-soft); color: var(--danger); }
   .member .member-actions button[data-act="ban"]:hover { background: #1a1d29; color: #fff; }
 
   /* ===== CHAT ===== */
-  .chat { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+  .chat { flex: 1; display: flex; flex-direction: column; background: var(--bg); min-width: 0; }
   .chat-header { padding: 14px 22px; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; align-items: center; gap: 10px; background: var(--panel); font-size: 15px; }
-  .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+  .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); flex-shrink: 0; }
   .status-dot.ok { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
   .status-dot.err { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
 
   .exit-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--panel-2); border: 1.5px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; transition: .15s; margin-right: 6px; }
   .exit-btn:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+  .exit-btn svg { width: 14px; height: 14px; }
+
+  /* PIN BANNER */
+  .pin-banner {
+    margin: 10px 22px 0; padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(67,97,238,.08), rgba(124,58,237,.08));
+    border: 1px solid #c7d2fe; border-left: 3px solid var(--accent);
+    border-radius: 12px; font-size: 12.5px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    transition: .15s;
+  }
+  .pin-banner:hover { background: linear-gradient(135deg, rgba(67,97,238,.14), rgba(124,58,237,.14)); }
+  .pin-banner .pin-ico { flex-shrink: 0; color: var(--accent); display: flex; }
+  .pin-banner .pin-ico svg { width: 15px; height: 15px; }
+  .pin-banner .pin-txt { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+  .pin-banner .pin-txt b { color: var(--accent); }
+  .pin-banner .pin-close {
+    width: 22px; height: 22px; border-radius: 6px; border: none;
+    background: transparent; color: var(--muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: .15s; flex-shrink: 0;
+  }
+  .pin-banner .pin-close:hover { background: rgba(239,68,68,.12); color: var(--danger); }
+  .pin-banner .pin-close svg { width: 12px; height: 12px; }
 
   .messages { flex: 1; overflow-y: auto; padding: 24px 26px; display: flex; flex-direction: column; gap: 14px; }
-  .msg-row { display: flex; gap: 10px; align-items: flex-end; max-width: 72%; animation: fadeIn .2s ease; }
+  .msg-row { display: flex; gap: 10px; align-items: flex-end; max-width: 72%; animation: fadeIn .2s ease; position: relative; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
   .msg-row.mine { align-self: flex-end; flex-direction: row-reverse; }
   .msg-row .avatar { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--panel-2); box-shadow: 0 2px 6px rgba(0,0,0,.08); }
   .msg-row .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .bubble-wrap { display: flex; flex-direction: column; }
+  .bubble-wrap { display: flex; flex-direction: column; min-width: 0; }
   .msg-row.mine .bubble-wrap { align-items: flex-end; }
   .bubble-wrap .name { font-size: 11px; color: var(--muted); margin-bottom: 4px; padding: 0 6px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
   .bubble-wrap .name .msg-admin-tag { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; font-size:8px; font-weight:800; padding:1px 5px; border-radius:6px; text-transform:uppercase; }
@@ -116,20 +146,39 @@
   .msg.other { background: var(--panel); color: var(--text); border-bottom-left-radius: 5px; box-shadow: 0 2px 8px rgba(20,30,60,.06); }
   .msg.mine { background: var(--mine); color: #fff; border-bottom-right-radius: 5px; box-shadow: 0 4px 14px rgba(67,97,238,.3); }
   .msg.sticker { font-size: 46px; background: transparent !important; padding: 0; box-shadow: none !important; }
-  .msg.system { align-self: center; background: rgba(67,97,238,.08); color: #4a5580; font-size: 12px; padding: 7px 16px; border-radius: 16px; font-weight: 500; }
+  .msg.system { align-self: center; background: rgba(67,97,238,.08); color: #4a5580; font-size: 12px; padding: 7px 16px; border-radius: 16px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .msg.system svg { width: 12px; height: 12px; }
   .msg .mention { background: rgba(255,255,255,.25); color: inherit; padding: 1px 6px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(255,255,255,.35); }
   .msg.other .mention { background: var(--accent); color: #fff; border-color: transparent; }
   .msg-row.mentioned .msg { outline: 2px solid var(--warn); outline-offset: 2px; animation: mentionPulse 1.2s ease; }
   @keyframes mentionPulse { 0%,100% { outline-color: rgba(245,158,11,.3); } 50% { outline-color: rgba(245,158,11,1); } }
+  .msg-row.pinned .msg { outline: 2px dashed var(--accent); outline-offset: 2px; }
+
+  /* Pin button on message */
+  .msg-row .pin-btn {
+    width: 26px; height: 26px; border-radius: 7px; border: none;
+    background: transparent; color: var(--muted); cursor: pointer;
+    opacity: 0; transition: .15s; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    align-self: center; flex-shrink: 0;
+  }
+  .msg-row .pin-btn svg { width: 13px; height: 13px; }
+  .msg-row:hover .pin-btn { opacity: 1; }
+  .msg-row .pin-btn:hover { background: var(--warn-soft); color: var(--warn); transform: scale(1.1); }
+  .msg-row .pin-btn.is-pinned { opacity: 1; color: var(--accent); background: rgba(67,97,238,.1); }
+  .pin-highlight { animation: pinFlash 1.4s ease; }
+  @keyframes pinFlash { 0%,100% { background: transparent; } 30% { background: rgba(67,97,238,.15); } }
 
   .input-area { display: flex; gap: 10px; padding: 16px 22px; border-top: 1px solid var(--border); align-items: center; position: relative; background: var(--panel); }
   .input-area input[type=text] { flex: 1; padding: 13px 20px; background: var(--panel-2); border: 1.5px solid transparent; border-radius: 24px; font-size: 14px; color: var(--text); outline: none; font-family: inherit; transition: .18s; }
   .input-area input[type=text]:focus { background: #fff; border-color: var(--accent); }
   .input-area input[type=text]:disabled { opacity: .5; cursor: not-allowed; }
-  .input-area button { padding: 12px 22px; border: none; border-radius: 24px; background: var(--mine); color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; font-family: inherit; box-shadow: 0 4px 14px rgba(67,97,238,.3); transition: .15s; }
+  .input-area button { padding: 12px 22px; border: none; border-radius: 24px; background: var(--mine); color: #fff; font-weight: 600; cursor: pointer; font-size: 14px; font-family: inherit; box-shadow: 0 4px 14px rgba(67,97,238,.3); transition: .15s; display: flex; align-items: center; gap: 6px; }
   .input-area button:hover:not(:disabled) { transform: translateY(-1px); }
   .input-area button:disabled { opacity: .5; cursor: not-allowed; }
-  .sticker-btn { background: var(--panel-2) !important; color: var(--text) !important; font-size: 20px !important; padding: 10px 15px !important; box-shadow: none !important; }
+  .input-area button svg { width: 14px; height: 14px; }
+  .sticker-btn { background: var(--panel-2) !important; color: var(--text) !important; padding: 10px 15px !important; box-shadow: none !important; }
+  .sticker-btn svg { width: 18px; height: 18px; }
   .sticker-picker { position: absolute; bottom: 78px; right: 22px; background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 12px; display: flex; gap: 6px; flex-wrap: wrap; width: 280px; box-shadow: 0 12px 40px rgba(20,30,60,.18); z-index: 10; }
   .sticker-picker span { font-size: 30px; cursor: pointer; padding: 4px; border-radius: 10px; transition: .12s; }
   .sticker-picker span:hover { background: var(--panel-2); transform: scale(1.15); }
@@ -147,18 +196,11 @@
     padding: 8px 10px; border-radius: 9px; cursor: pointer;
     transition: .12s; user-select: none;
   }
-  .mention-suggest .ms-item:hover, .mention-suggest .ms-item.active {
-    background: var(--accent); color: #fff;
-  }
-  .mention-suggest .ms-item img {
-    width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
-  }
+  .mention-suggest .ms-item:hover, .mention-suggest .ms-item.active { background: var(--accent); color: #fff; }
+  .mention-suggest .ms-item img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
   .mention-suggest .ms-item .ms-name { font-size: 13px; font-weight: 600; flex: 1; }
   .mention-suggest .ms-item .ms-tag { font-size: 10px; opacity: .6; }
-  .mention-suggest .ms-item.ms-all {
-    border-bottom: 1px solid var(--border); border-radius: 9px 9px 0 0;
-    margin-bottom: 4px; padding-bottom: 9px;
-  }
+  .mention-suggest .ms-item.ms-all { border-bottom: 1px solid var(--border); border-radius: 9px 9px 0 0; margin-bottom: 4px; padding-bottom: 9px; }
   .mention-suggest .ms-item.ms-all .ms-ico {
     width: 26px; height: 26px; border-radius: 50%;
     background: linear-gradient(135deg, #f59e0b, #ef4444);
@@ -195,15 +237,8 @@
     animation: bannedCardIn .6s cubic-bezier(.16,1,.3,1);
   }
   @keyframes bannedCardIn { from { opacity: 0; transform: translateY(30px) scale(.94); } to { opacity: 1; transform: none; } }
-  .banned-icon-wrap {
-    width: 100px; height: 100px; margin: 0 auto 22px;
-    position: relative; display: flex; align-items: center; justify-content: center;
-  }
-  .banned-icon-ring {
-    position: absolute; inset: 0; border-radius: 50%;
-    border: 2px solid rgba(239,68,68,.5);
-    animation: bannedRing 2.4s ease-out infinite;
-  }
+  .banned-icon-wrap { width: 100px; height: 100px; margin: 0 auto 22px; position: relative; display: flex; align-items: center; justify-content: center; }
+  .banned-icon-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(239,68,68,.5); animation: bannedRing 2.4s ease-out infinite; }
   .banned-icon-ring:nth-child(2) { animation-delay: .8s; border-color: rgba(239,68,68,.3); }
   .banned-icon-ring:nth-child(3) { animation-delay: 1.6s; border-color: rgba(239,68,68,.15); }
   @keyframes bannedRing { 0% { transform: scale(.7); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
@@ -211,45 +246,27 @@
     width: 70px; height: 70px; border-radius: 50%;
     background: linear-gradient(135deg, #ef4444, #b91c1c);
     display: flex; align-items: center; justify-content: center;
-    font-size: 30px; color: #fff;
-    box-shadow: 0 12px 30px -8px #ef4444, 0 0 0 6px rgba(239,68,68,.15);
+    color: #fff; box-shadow: 0 12px 30px -8px #ef4444, 0 0 0 6px rgba(239,68,68,.15);
     animation: bannedBeat 1.6s ease-in-out infinite;
     position: relative; z-index: 2;
   }
+  .banned-icon-core svg { width: 32px; height: 32px; }
   @keyframes bannedBeat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.08); } 30% { transform: scale(1); } }
   .banned-card h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; letter-spacing: -.5px; }
-  .banned-card .banned-type {
-    display: inline-block; font-size: 11px; font-weight: 800;
-    padding: 4px 12px; border-radius: 999px; margin-bottom: 16px;
-    text-transform: uppercase; letter-spacing: .8px;
-  }
+  .banned-card .banned-type { display: inline-block; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 999px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .8px; }
   .banned-type.kick { background: rgba(245,158,11,.2); color: #fbbf24; border: 1px solid rgba(245,158,11,.4); }
   .banned-type.mute { background: rgba(245,158,11,.2); color: #fbbf24; border: 1px solid rgba(245,158,11,.4); }
   .banned-type.ban { background: rgba(239,68,68,.2); color: #f87171; border: 1px solid rgba(239,68,68,.4); }
   .banned-card p { font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,.65); margin-bottom: 8px; }
-  .banned-card .banned-reason {
-    background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.08);
-    border-radius: 12px; padding: 12px 16px; margin: 16px 0;
-    font-size: 13px; color: rgba(255,255,255,.85); text-align: left;
-  }
+  .banned-card .banned-reason { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 12px 16px; margin: 16px 0; font-size: 13px; color: rgba(255,255,255,.85); text-align: left; }
   .banned-card .banned-reason b { color: #fbbf24; }
   .banned-card .banned-time { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 8px; font-variant-numeric: tabular-nums; }
-  .banned-card .banned-close {
-    margin-top: 22px; width: 100%; padding: 13px;
-    border: none; border-radius: 12px; cursor: pointer;
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
-    color: #fff; font-family: inherit; font-size: 14px; font-weight: 700;
-    transition: .2s; box-shadow: 0 8px 20px -6px #ef4444;
-  }
+  .banned-card .banned-close { margin-top: 22px; width: 100%; padding: 13px; border: none; border-radius: 12px; cursor: pointer; background: linear-gradient(135deg, #ef4444, #b91c1c); color: #fff; font-family: inherit; font-size: 14px; font-weight: 700; transition: .2s; box-shadow: 0 8px 20px -6px #ef4444; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .banned-card .banned-close:hover { transform: translateY(-2px); box-shadow: 0 12px 28px -6px #ef4444; }
+  .banned-card .banned-close svg { width: 15px; height: 15px; }
 
-  .mute-banner {
-    margin: 0 22px 8px; padding: 10px 16px;
-    background: var(--warn-soft); border: 1px solid #fde68a;
-    border-radius: 12px; color: #92400e;
-    font-size: 12.5px; font-weight: 600;
-    display: flex; align-items: center; gap: 8px;
-  }
+  .mute-banner { margin: 0 22px 8px; padding: 10px 16px; background: var(--warn-soft); border: 1px solid #fde68a; border-radius: 12px; color: #92400e; font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .mute-banner svg { width: 14px; height: 14px; flex-shrink: 0; }
 
   /* ===== ADMIN MODAL ===== */
   .modal-backdrop {
@@ -259,51 +276,24 @@
     display: none; align-items: center; justify-content: center; padding: 20px;
   }
   .modal-backdrop.on { display: flex; animation: fadeIn .2s ease; }
-  .admin-modal {
-    width: 100%; max-width: 420px;
-    background: var(--panel); border-radius: 20px;
-    box-shadow: 0 40px 80px -20px rgba(20,20,50,.5);
-    overflow: hidden; animation: modalIn .3s cubic-bezier(.16,1,.3,1);
-  }
+  .admin-modal { width: 100%; max-width: 420px; background: var(--panel); border-radius: 20px; box-shadow: 0 40px 80px -20px rgba(20,20,50,.5); overflow: hidden; animation: modalIn .3s cubic-bezier(.16,1,.3,1); }
   @keyframes modalIn { from { opacity: 0; transform: translateY(30px) scale(.94); } to { opacity: 1; transform: none; } }
-  .admin-modal-head {
-    padding: 20px 22px 14px;
-    background: linear-gradient(135deg, rgba(239,68,68,.08), rgba(245,158,11,.08));
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 12px;
-  }
-  .admin-modal-head .ic {
-    width: 44px; height: 44px; border-radius: 13px;
-    background: linear-gradient(135deg, #ef4444, #f59e0b);
-    color: #fff; display: flex; align-items: center; justify-content: center;
-    font-size: 19px; box-shadow: 0 8px 20px -6px rgba(239,68,68,.5);
-  }
+  .admin-modal-head { padding: 20px 22px 14px; background: linear-gradient(135deg, rgba(239,68,68,.08), rgba(245,158,11,.08)); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .admin-modal-head .ic { width: 44px; height: 44px; border-radius: 13px; background: linear-gradient(135deg, #ef4444, #f59e0b); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px -6px rgba(239,68,68,.5); flex-shrink: 0; }
+  .admin-modal-head .ic svg { width: 20px; height: 20px; }
   .admin-modal-head h3 { font-size: 15px; font-weight: 800; }
   .admin-modal-head p { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
   .admin-modal-body { padding: 20px 22px; }
-  .admin-user-preview {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px; border-radius: 12px;
-    background: var(--panel-2); margin-bottom: 16px;
-  }
+  .admin-user-preview { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: var(--panel-2); margin-bottom: 16px; }
   .admin-user-preview img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
   .admin-user-preview .name { font-weight: 700; font-size: 14px; }
   .admin-user-preview .sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
   .admin-actions-list { display: flex; flex-direction: column; gap: 8px; }
-  .admin-action-btn {
-    display: flex; align-items: center; gap: 12px;
-    padding: 13px 15px; border-radius: 12px;
-    border: 1.5px solid var(--border); background: var(--panel);
-    cursor: pointer; font-family: inherit; text-align: left;
-    transition: .18s; width: 100%;
-  }
+  .admin-action-btn { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--panel); cursor: pointer; font-family: inherit; text-align: left; transition: .18s; width: 100%; }
   .admin-action-btn:hover { transform: translateX(3px); }
-  .admin-action-btn .a-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; flex-shrink: 0;
-  }
-  .admin-action-btn .a-text { flex: 1; }
+  .admin-action-btn .a-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .admin-action-btn .a-icon svg { width: 17px; height: 17px; }
+  .admin-action-btn .a-text { flex: 1; min-width: 0; }
   .admin-action-btn .a-text .t { font-size: 13.5px; font-weight: 700; }
   .admin-action-btn .a-text .d { font-size: 11px; color: var(--muted); margin-top: 1px; }
   .admin-action-btn[data-act="mute"]:hover { border-color: #fbbf24; background: var(--warn-soft); }
@@ -313,32 +303,14 @@
   .admin-action-btn[data-act="ban"]:hover { border-color: #1a1d29; background: #1a1d29; color: #fff; }
   .admin-action-btn[data-act="ban"] .a-icon { background: #1a1d29; color: #fff; }
   .admin-action-btn[data-act="unmute"] .a-icon { background: #d1fae5; color: #059669; }
-  .admin-modal-foot {
-    padding: 14px 22px 18px; border-top: 1px solid var(--border);
-    display: flex; gap: 10px;
-  }
-  .admin-modal-foot button {
-    flex: 1; padding: 12px; border-radius: 11px;
-    border: 1.5px solid var(--border); background: var(--panel-2);
-    font-family: inherit; font-size: 13px; font-weight: 700;
-    cursor: pointer; transition: .15s; color: var(--text);
-  }
+  .admin-modal-foot { padding: 14px 22px 18px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+  .admin-modal-foot button { flex: 1; padding: 12px; border-radius: 11px; border: 1.5px solid var(--border); background: var(--panel-2); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: .15s; color: var(--text); }
   .admin-modal-foot button:hover { background: #f2f3f8; }
 
-  /* Toast */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(120px);
-    background: linear-gradient(135deg, #22c55e, #059669);
-    color: #fff; padding: 12px 20px; border-radius: 12px;
-    font-size: 13px; font-weight: 700;
-    box-shadow: 0 15px 40px -8px rgba(16,185,129,.6);
-    z-index: 999999; display: flex; align-items: center; gap: 10px;
-    transition: transform .4s cubic-bezier(.16,1,.3,1);
-    pointer-events: none;
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px); background: linear-gradient(135deg, #22c55e, #059669); color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; box-shadow: 0 15px 40px -8px rgba(16,185,129,.6); z-index: 999999; display: flex; align-items: center; gap: 10px; transition: transform .4s cubic-bezier(.16,1,.3,1); pointer-events: none; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.error { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 15px 40px -8px rgba(239,68,68,.6); }
+  .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
 
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-thumb { background: #d6dae6; border-radius: 4px; }
@@ -353,6 +325,7 @@
     .exit-btn span { display: none; }
     .exit-btn { padding: 8px 10px; margin-right: 2px; }
     .mention-suggest { left: 12px; right: 12px; min-width: auto; }
+    .pin-banner { margin: 8px 12px 0; }
   }
 </style>
 </head>
@@ -360,7 +333,12 @@
 
 <!-- ===== LOGIN ===== -->
 <div id="login">
-  <div class="logo">💬</div>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="url(#gradLogin)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <defs><linearGradient id="gradLogin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4361ee"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+  </div>
   <h1>Chat Nhóm</h1>
   <p>Chọn avatar và nhập tên để bắt đầu</p>
 
@@ -368,14 +346,23 @@
     <div class="av-preview" id="avPreview"><img src="" alt=""></div>
     <div class="av-grid" id="avGrid"></div>
     <div class="av-actions">
-      <button type="button" id="shuffleBtn">🎲 Đổi bộ khác</button>
-      <button type="button" id="uploadBtn">📷 Ảnh của tao</button>
+      <button type="button" id="shuffleBtn">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        Đổi bộ khác
+      </button>
+      <button type="button" id="uploadBtn">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Ảnh của tao
+      </button>
     </div>
     <input type="file" id="avatarFile" accept="image/*" class="hidden" />
   </div>
 
   <input id="nameInput" type="text" placeholder="Tên của mày..." maxlength="20" />
-  <button type="button" id="joinBtn">Vào chat →</button>
+  <button type="button" id="joinBtn">
+    Vào chat
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </button>
 </div>
 
 <!-- ===== APP ===== -->
@@ -387,7 +374,9 @@
         <div class="me-name" id="meLabel"></div>
         <div class="me-status">Online</div>
       </div>
-      <button type="button" class="change-avatar" id="changeAvatarBtn" title="Đổi avatar">⚙️</button>
+      <button type="button" class="change-avatar" id="changeAvatarBtn" title="Đổi avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </div>
 
     <div class="section-title">Thành viên</div>
@@ -396,18 +385,42 @@
 
   <div class="chat">
     <div class="chat-header">
-      <button type="button" class="exit-btn" id="exitBtn">← <span>Thoát</span></button>
+      <button type="button" class="exit-btn" id="exitBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Thoát</span>
+      </button>
       <span class="status-dot" id="statusDot"></span>
       <span id="chatHeader">Chat nhóm — đang kết nối...</span>
     </div>
-    <div class="mute-banner hidden" id="muteBanner">🔇 Bạn đang bị cấm chat bởi quản trị viên.</div>
+
+    <!-- PIN BANNER -->
+    <div class="pin-banner hidden" id="pinBanner" onclick="scrollToPinned()">
+      <span class="pin-ico">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3l5 5-2 2-1.5-1.5L11 15l-1 5-2-2 1-5 6.5-6.5L14 5l2-2z"/></svg>
+      </span>
+      <span class="pin-txt" id="pinBannerText"></span>
+      <button type="button" class="pin-close" id="pinCloseBtn" title="Bỏ ghim" onclick="event.stopPropagation(); unpinMessage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="mute-banner hidden" id="muteBanner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      Bạn đang bị cấm chat bởi quản trị viên.
+    </div>
+
     <div class="messages" id="messages"></div>
     <div class="input-area">
-      <button type="button" class="sticker-btn" id="stickerBtn">😊</button>
+      <button type="button" class="sticker-btn" id="stickerBtn" title="Sticker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      </button>
       <div class="sticker-picker hidden" id="stickerPicker"></div>
       <div class="mention-suggest hidden" id="mentionSuggest"></div>
       <input type="text" id="msgInput" placeholder="Nhập tin nhắn... (@ để mention, /adm <mã> để cấp quyền)" />
-      <button type="button" id="sendBtn">Gửi</button>
+      <button type="button" id="sendBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Gửi
+      </button>
     </div>
   </div>
 </div>
@@ -416,7 +429,9 @@
 <div class="modal-backdrop" id="adminModal">
   <div class="admin-modal">
     <div class="admin-modal-head">
-      <div class="ic">⚡</div>
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
       <div>
         <h3>Quản trị thành viên</h3>
         <p id="adminTargetLabel">Chọn hành động</p>
@@ -434,6 +449,7 @@
 
 <!-- Toast -->
 <div class="toast" id="toast">
+  <span id="toastIcon"></span>
   <span id="toastText">OK</span>
 </div>
 
@@ -465,6 +481,22 @@ let currentStyle = AVATAR_STYLES[Math.floor(Math.random() * AVATAR_STYLES.length
 let isAdmin = localStorage.getItem(ADMIN_STORE) === "1";
 let mentionState = { active: false, query: "", startIdx: -1, selectedIdx: 0, items: [] };
 let adminTarget = null;
+let pinnedId = null;
+
+/* ===== SVG ICONS ===== */
+const SVG = {
+  admin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  mute: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>',
+  unmute: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>',
+  kick: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>',
+  ban: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3l5 5-2 2-1.5-1.5L11 15l-1 5-2-2 1-5 6.5-6.5L14 5l2-2z"/></svg>',
+  pinOutline: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+  at: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg>'
+};
 
 function makeAvatarUrl(style, seed) {
   const color = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
@@ -474,11 +506,11 @@ function saveLocalAvatar(n, d){ try{ localStorage.setItem("avatar_"+n,d); }catch
 function saveProfile(){ try{ localStorage.setItem("chat_name",me||""); localStorage.setItem("chat_avatar",myAvatar||""); localStorage.setItem("chat_style",currentStyle||""); }catch(e){} }
 function loadSavedProfile(){ try{ return { name:localStorage.getItem("chat_name")||"", avatar:localStorage.getItem("chat_avatar")||"", style:localStorage.getItem("chat_style")||"" }; }catch(e){ return {name:"",avatar:"",style:""}; } }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function escapeReg(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"); }
 
 function showToast(msg, isError=false){
   const t = document.getElementById("toast");
   document.getElementById("toastText").textContent = msg;
+  document.getElementById("toastIcon").innerHTML = isError ? SVG.alert : SVG.check;
   t.classList.toggle("error", isError);
   t.classList.add("show");
   clearTimeout(showToast._t);
@@ -498,9 +530,9 @@ function showBannedOverlay(type, reason, time){
   overlay.id = "bannedOverlay";
   overlay.className = "banned-overlay";
   const typeMap = {
-    ban:  { label:"Đã bị chặn",   title:"Truy cập bị chặn",   icon:"🚫" },
-    kick: { label:"Đã bị xoá",    title:"Bạn đã bị xoá khỏi nhóm", icon:"👋" },
-    mute: { label:"Đã bị cấm chat", title:"Bạn đang bị cấm chat", icon:"🔇" }
+    ban:  { label:"Đã bị chặn",   title:"Truy cập bị chặn",   icon: SVG.ban },
+    kick: { label:"Đã bị xoá",    title:"Bạn đã bị xoá khỏi nhóm", icon: SVG.kick },
+    mute: { label:"Đã bị cấm chat", title:"Bạn đang bị cấm chat", icon: SVG.mute }
   };
   const t = typeMap[type] || typeMap.ban;
   overlay.innerHTML = `
@@ -516,7 +548,7 @@ function showBannedOverlay(type, reason, time){
       <p>${type==='mute' ? 'Bạn vẫn xem được tin nhắn nhưng không thể gửi tin mới.' : 'Bạn không thể tiếp tục truy cập phòng chat này.'}</p>
       ${reason ? `<div class="banned-reason"><b>Lý do:</b> ${escapeHtml(reason)}</div>` : ''}
       ${time ? `<div class="banned-time">Thời gian: ${new Date(time).toLocaleString('vi-VN')}</div>` : ''}
-      <button class="banned-close" onclick="exitChat()">Thoát khỏi trang</button>
+      <button class="banned-close" onclick="exitChat()">${SVG.logout} Thoát khỏi trang</button>
     </div>
   `;
   document.body.appendChild(overlay);
@@ -619,7 +651,6 @@ async function join(){
   saveLocalAvatar(me, myAvatar);
   saveProfile();
 
-  // Kiểm tra ban/kick trước khi vào
   try {
     const modSnap = await db.ref(`rooms/${ROOM}/moderations/${me}`).once("value");
     const mod = modSnap.val();
@@ -628,14 +659,11 @@ async function join(){
       showBannedOverlay(type, mod.reason || "", mod.time);
       return;
     }
-    if(mod && mod.mute){
-      // vẫn cho vào nhưng sẽ hiện banner + disable input
-    }
   } catch(e){}
 
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
-  document.getElementById("meLabel").innerHTML = escapeHtml(me) + (isAdmin ? ' <span class="admin-badge">⚡ ADMIN</span>' : '');
+  document.getElementById("meLabel").innerHTML = escapeHtml(me) + (isAdmin ? ` <span class="admin-badge">${SVG.admin} ADMIN</span>` : '');
   document.getElementById("meAvatar").innerHTML = `<img src="${myAvatar}">`;
 
   const memberRef = db.ref(`rooms/${ROOM}/members/${me}`);
@@ -644,15 +672,19 @@ async function join(){
 
   db.ref(`rooms/${ROOM}/members`).on("value", s => { members = s.val() || {}; renderMembers(); renderMessages(); });
   db.ref(`rooms/${ROOM}/moderations`).on("value", s => { moderations = s.val() || {}; applyModerationState(); renderMembers(); });
+  db.ref(`rooms/${ROOM}/pinned`).on("value", s => {
+    const v = s.val();
+    pinnedId = v ? v.id : null;
+    renderMessages();
+  });
   db.ref(`rooms/${ROOM}/messages`).limitToLast(200).on("child_added", s => {
-    const m = s.val();
+    const m = s.val() || {};
+    m._id = s.key;
     messages.push(m);
     renderMessages();
-    // Phát hiện mention mình
     if(m && m.type === 'text' && m.from !== me){
       const mentions = m.mentions || [];
       if(mentions.includes("all") || mentions.includes(me)){
-        // Toast
         showToast("📣 " + m.from + " đã nhắc đến bạn!");
       }
     }
@@ -717,22 +749,58 @@ function renderMembers(){
     let actions = "";
     if(isAdmin && name !== me){
       actions = `<div class="member-actions">
-        <button data-act="mute" title="Cấm chat" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">🔇</button>
-        <button data-act="kick" title="Xoá khỏi nhóm" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">👢</button>
-        <button data-act="ban" title="Chặn hoàn toàn" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">🚫</button>
+        <button data-act="mute" title="Quản trị" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">${SVG.mute}</button>
+        <button data-act="kick" title="Quản trị" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">${SVG.kick}</button>
+        <button data-act="ban" title="Quản trị" onclick="event.stopPropagation(); openAdminModal('${escapeHtml(name)}')">${SVG.ban}</button>
       </div>`;
     }
     div.innerHTML = `
-      <div class="m-avatar">${data.avatar ? `<img src="${data.avatar}">` : "🙂"}</div>
+      <div class="m-avatar">${data.avatar ? `<img src="${data.avatar}">` : ""}</div>
       <div class="m-info">
-        <div class="m-name">${escapeHtml(name)}${name===me?" (mày)":""}${mod&&mod.mute?' <span style="font-size:10px;">🔇</span>':''}</div>
-        <div class="m-sub">${data.online?'<span class="at">@</span> online':'offline'}</div>
+        <div class="m-name">${escapeHtml(name)}${name===me?" (mày)":""}${mod&&mod.mute?` <span class="mute-ico">${SVG.mute}</span>`:''}</div>
+        <div class="m-sub">${data.online?`<span class="at">${SVG.at}</span> online`:'offline'}</div>
       </div>
       <span class="dot ${data.online?'':'off'}"></span>
       ${actions}
     `;
     box.appendChild(div);
   });
+}
+
+/* ============ PIN MESSAGE ============ */
+async function pinMessage(id){
+  if(!isAdmin){ showToast("Chỉ admin mới được ghim tin nhắn!", true); return; }
+  try {
+    await db.ref(`rooms/${ROOM}/pinned`).set({ id, by: me, time: Date.now() });
+    showToast("Đã ghim tin nhắn");
+  } catch(e){ showToast("Lỗi ghim: " + e.message, true); }
+}
+async function unpinMessage(){
+  if(!isAdmin){ showToast("Chỉ admin mới được bỏ ghim!", true); return; }
+  try {
+    await db.ref(`rooms/${ROOM}/pinned`).remove();
+    showToast("Đã bỏ ghim");
+  } catch(e){ showToast("Lỗi: " + e.message, true); }
+}
+function scrollToPinned(){
+  if(!pinnedId) return;
+  const el = document.querySelector(`.msg-row[data-msg-id="${pinnedId}"]`);
+  if(el){
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+    el.classList.add("pin-highlight");
+    setTimeout(()=>el.classList.remove("pin-highlight"), 1500);
+  }
+}
+function renderPinBanner(){
+  const banner = document.getElementById("pinBanner");
+  const txt = document.getElementById("pinBannerText");
+  if(!pinnedId){ banner.classList.add("hidden"); return; }
+  const msg = messages.find(m => m._id === pinnedId);
+  if(!msg){ banner.classList.add("hidden"); return; }
+  const preview = msg.type === "sticker" ? msg.text : (msg.text || "").slice(0, 80);
+  txt.innerHTML = `<b>${escapeHtml(msg.from)}:</b> ${formatMessageText(preview)}${(msg.text||"").length > 80 ? "…" : ""}`;
+  banner.classList.remove("hidden");
+  document.getElementById("pinCloseBtn").style.display = isAdmin ? "flex" : "none";
 }
 
 /* ============ MENTION ============ */
@@ -783,7 +851,6 @@ function showMentionSuggest(){
   const q = mentionState.query;
   const names = Object.keys(members).filter(n => n !== me && n.toLowerCase().includes(q));
   const items = [];
-  // @all luôn đứng đầu
   if("all".includes(q) || q === "") items.push({ name:"all", type:"all" });
   names.slice(0, 12).forEach(n => items.push({ name:n, type:"user", avatar: members[n].avatar }));
   mentionState.items = items;
@@ -797,7 +864,7 @@ function showMentionSuggest(){
   box.innerHTML = items.map((it, i) => {
     if(it.type === "all"){
       return `<div class="ms-item ms-all ${i===mentionState.selectedIdx?'active':''}" data-idx="${i}">
-        <div class="ms-ico">@</div>
+        <div class="ms-ico">${SVG.at}</div>
         <span class="ms-name">all — Cả nhóm</span>
         <span class="ms-tag">mọi người</span>
       </div>`;
@@ -848,13 +915,12 @@ async function sendMsg(){
   const text = input.value.trim();
   if(!text) return;
 
-  // Lệnh admin
   if(text.startsWith("/adm ")){
     const code = text.slice(5).trim();
     if(code === ADMIN_CODE){
       isAdmin = true;
       localStorage.setItem(ADMIN_STORE, "1");
-      document.getElementById("meLabel").innerHTML = escapeHtml(me) + ' <span class="admin-badge">⚡ ADMIN</span>';
+      document.getElementById("meLabel").innerHTML = escapeHtml(me) + ` <span class="admin-badge">${SVG.admin} ADMIN</span>`;
       renderMembers();
       showToast("Đã cấp quyền ADMIN cao nhất!");
       input.value = "";
@@ -866,7 +932,6 @@ async function sendMsg(){
 
   if(isMuted(me)){ showToast("Bạn đang bị cấm chat!", true); return; }
 
-  // Xác định mention
   const mentionRegex = /@([\w\u00C0-\u024F\u1E00-\u1EFF]+)/g;
   const mentions = [];
   let mm;
@@ -895,17 +960,18 @@ function renderMessages(){
   messages.forEach(m => {
     if(m.type === "system"){
       const d = document.createElement("div");
-      d.className = "msg system"; d.textContent = m.text;
+      d.className = "msg system";
+      d.innerHTML = SVG.alert + " " + escapeHtml(m.text);
       box.appendChild(d); return;
     }
     const isMine = m.from === me;
     const av = (members[m.from] && members[m.from].avatar) || makeAvatarUrl("notionists", m.from);
-    const fromMod = getMod(m.from);
 
     const row = document.createElement("div");
     row.className = "msg-row" + (isMine ? " mine" : "");
+    if(m._id) row.dataset.msgId = m._id;
+    if(m._id && m._id === pinnedId) row.classList.add("pinned");
 
-    // Highlight nếu mention mình
     if(m.type === "text" && !isMine && m.mentions){
       if(m.mentions.includes("all") || m.mentions.includes(me)){
         row.classList.add("mentioned");
@@ -921,9 +987,7 @@ function renderMessages(){
     if(!isMine){
       const n = document.createElement("div");
       n.className = "name";
-      let nameHtml = escapeHtml(m.from);
-      // admin badge nếu ng gửi là admin? (không lưu, bỏ qua)
-      n.innerHTML = nameHtml;
+      n.innerHTML = escapeHtml(m.from);
       bw.appendChild(n);
     }
     const bubble = document.createElement("div");
@@ -934,19 +998,31 @@ function renderMessages(){
     }
     bw.appendChild(bubble);
 
-    row.appendChild(avatarDiv); row.appendChild(bw);
+    row.appendChild(avatarDiv);
+    row.appendChild(bw);
+
+    if(isAdmin && m._id){
+      const pinBtn = document.createElement("button");
+      pinBtn.className = "pin-btn" + (m._id === pinnedId ? " is-pinned" : "");
+      pinBtn.title = (m._id === pinnedId) ? "Bỏ ghim" : "Ghim tin nhắn";
+      pinBtn.innerHTML = (m._id === pinnedId) ? SVG.pin : SVG.pinOutline;
+      pinBtn.onclick = (e) => {
+        e.stopPropagation();
+        if(m._id === pinnedId) unpinMessage();
+        else pinMessage(m._id);
+      };
+      row.appendChild(pinBtn);
+    }
+
     box.appendChild(row);
   });
   box.scrollTop = box.scrollHeight;
+  renderPinBanner();
 }
 function formatMessageText(text){
   let safe = escapeHtml(text);
-  // highlight @mention
   safe = safe.replace(/@([\w\u00C0-\u024F\u1E00-\u1EFF]+)/g, (full, name) => {
-    if(name.toLowerCase() === "all" || members[name] || true){
-      return `<span class="mention">@${name}</span>`;
-    }
-    return full;
+    return `<span class="mention">@${name}</span>`;
   });
   return safe;
 }
@@ -969,21 +1045,21 @@ function openAdminModal(name){
   let html = "";
   if(mod.mute){
     html += `<button class="admin-action-btn" data-act="unmute" onclick="adminDo('unmute')">
-      <div class="a-icon">🔊</div>
+      <div class="a-icon">${SVG.unmute}</div>
       <div class="a-text"><div class="t">Bỏ cấm chat</div><div class="d">Cho phép gửi tin nhắn trở lại</div></div>
     </button>`;
   } else {
     html += `<button class="admin-action-btn" data-act="mute" onclick="adminDo('mute')">
-      <div class="a-icon">🔇</div>
+      <div class="a-icon">${SVG.mute}</div>
       <div class="a-text"><div class="t">Cấm chat</div><div class="d">Không thể gửi tin nhắn, vẫn xem được</div></div>
     </button>`;
   }
   html += `<button class="admin-action-btn" data-act="kick" onclick="adminDo('kick')">
-    <div class="a-icon">👢</div>
+    <div class="a-icon">${SVG.kick}</div>
     <div class="a-text"><div class="t">Xoá khỏi nhóm</div><div class="d">Không cho vào lại phòng chat</div></div>
   </button>`;
   html += `<button class="admin-action-btn" data-act="ban" onclick="adminDo('ban')">
-    <div class="a-icon">🚫</div>
+    <div class="a-icon">${SVG.ban}</div>
     <div class="a-text"><div class="t">Chặn hoàn toàn</div><div class="d">Chặn khỏi trang web, không truy cập được</div></div>
   </button>`;
   list.innerHTML = html;
@@ -1006,7 +1082,6 @@ async function adminDo(act){
       showToast("Đã bỏ cấm chat " + name);
     } else if(act === "kick"){
       await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ kick:true, mute:true, reason, time:Date.now(), by:me });
-      // Xoá member khỏi danh sách
       await db.ref(`rooms/${ROOM}/members/${name}`).remove();
       showToast("Đã xoá " + name + " khỏi nhóm");
     } else if(act === "ban"){
@@ -1014,12 +1089,11 @@ async function adminDo(act){
       await db.ref(`rooms/${ROOM}/members/${name}`).remove();
       showToast("Đã chặn " + name + " hoàn toàn");
     }
-    // Gửi system message
     const sysText = {
-      mute: `🔇 ${name} đã bị cấm chat`,
-      unmute: `🔊 ${name} đã được bỏ cấm chat`,
-      kick: `👢 ${name} đã bị xoá khỏi nhóm`,
-      ban: `🚫 ${name} đã bị chặn hoàn toàn`
+      mute: `${name} đã bị cấm chat`,
+      unmute: `${name} đã được bỏ cấm chat`,
+      kick: `${name} đã bị xoá khỏi nhóm`,
+      ban: `${name} đã bị chặn hoàn toàn`
     }[act];
     if(sysText) pushMessage({ type:"system", text:sysText, time:Date.now() });
   } catch(e){ showToast("Lỗi: " + e.message, true); }
@@ -1039,7 +1113,6 @@ function buildStickerPicker(){
   });
 }
 
-/* ============ ESC ============ */
 document.addEventListener("keydown", e => {
   if(e.key === "Escape"){
     hideMentionSuggest();
