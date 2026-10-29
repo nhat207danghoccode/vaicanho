@@ -1109,6 +1109,48 @@ async function sendMsg(){
     return;
   }
 
+  if(text.toLowerCase() === "/help"){
+    input.value = "";
+    if(!isAdmin){ showToast("Lệnh /help chỉ dành cho quản trị viên.", true); return; }
+    pushMessage({type:"system",text:"🤖 BOT QUẢN TRỊ — LỆNH ADMIN\n/help — Xem danh sách lệnh\n/kick @tên — Đá thành viên khỏi nhóm\n/ban @tên — Cấm thành viên\n/unban @tên — Gỡ cấm thành viên\n/mute @tên — Cấm chat\n/unmute @tên — Bỏ cấm chat\n/clear — Xóa toàn bộ tin nhắn nhóm",time:Date.now()});
+    return;
+  }
+
+  if(text.startsWith("/")){
+    if(!isAdmin){ input.value=""; showToast("Lệnh quản trị chỉ dành cho ADMIN!", true); return; }
+    const parts = text.trim().split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    const target = parts.slice(1).join(" ").replace(/^@/, "").trim();
+    const allowed = ["/kick","/ban","/unban","/mute","/unmute","/clear"];
+    if(allowed.includes(cmd)){
+      input.value = "";
+      if(cmd === "/clear"){
+        if(!confirm("Xóa toàn bộ tin nhắn trong nhóm?")) return;
+        db.ref(`rooms/${ROOM}/messages`).remove().then(()=>showToast("Đã dọn sạch cuộc trò chuyện!")).catch(e=>showToast("Không thể xóa: "+e.message,true));
+        return;
+      }
+      if(!target){ showToast("Nhập tên thành viên. Ví dụ: "+cmd+" @Tên",true); return; }
+      const exactName = Object.keys(members).find(n=>n.toLowerCase()===target.toLowerCase());
+      const name = exactName || target;
+      if(name === me){ showToast("Không thể tự áp dụng lệnh này cho chính mình!",true); return; }
+      const ref = db.ref(`rooms/${ROOM}/moderations/${name}`);
+      const now = Date.now();
+      let updates = {};
+      let reply = "";
+      if(cmd === "/mute"){ updates={mute:true,by:me,time:now}; reply=`🤖 Đã khóa mõn @${name}, tạm thời không chat được!`; }
+      if(cmd === "/unmute"){ updates={mute:false,by:me,time:now}; reply=`🤖 Đã mở khóa mõn @${name}, chat tiếp đi!`; }
+      if(cmd === "/kick"){ updates={kick:true,mute:true,by:me,time:now}; reply=`🤖 Đã đá bay @${name} khỏi nhóm!`; }
+      if(cmd === "/ban"){ updates={ban:true,kick:true,mute:true,by:me,time:now}; reply=`🤖 @${name} đã bị BAN khỏi nhóm!`; }
+      if(cmd === "/unban"){ updates={ban:false,kick:false,mute:false,by:me,time:now}; reply=`🤖 Đã gỡ BAN cho @${name}.`; }
+      ref.update(updates).then(async()=>{
+        if(cmd === "/kick" || cmd === "/ban") await db.ref(`rooms/${ROOM}/members/${name}`).remove();
+        pushMessage({type:"system",text:reply,time:Date.now()});
+      }).catch(e=>showToast("Lệnh thất bại: "+e.message,true));
+      return;
+    }
+    if(cmd !== "/adm"){ input.value=""; showToast("Không rõ lệnh. Admin dùng /help để xem danh sách.",true); return; }
+  }
+
   if(isMuted(me)){ showToast("Bạn đang bị cấm chat!", true); return; }
 
   const mentionRegex = /@([\w\u00C0-\u024F\u1E00-\u1EFF]+)/g;
