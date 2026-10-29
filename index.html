@@ -4401,5 +4401,27 @@ if(savedTheme){
 })();
 </script>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+(function(){
+  const userName=(localStorage.getItem("chat_name")||"").trim();
+  if(!userName) return;
+  const cfg={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
+  try{
+    let app;try{app=firebase.app("chatModerationCheck");}catch(e){app=firebase.initializeApp(cfg,"chatModerationCheck");}
+    app.database().ref("rooms/nhom1/moderations/"+userName).on("value",snap=>{
+      const m=snap.val()||{};
+      if(m.ban){
+        if(document.getElementById("chatSiteBanOverlay")) return;
+        const el=document.createElement("div");el.id="chatSiteBanOverlay";
+        el.style.cssText="position:fixed;inset:0;z-index:2147483647;background:#111827;color:white;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:600 18px system-ui";
+        el.innerHTML="<div><h2 style='margin-bottom:12px'>Truy cập đã bị quản trị viên chặn</h2><p style='font-size:14px;opacity:.8'>Tài khoản chat này không được phép truy cập trang Trắc Nghiệm.</p></div>";
+        document.body.appendChild(el);
+      }else{document.getElementById("chatSiteBanOverlay")?.remove();}
+    });
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
