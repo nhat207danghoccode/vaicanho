@@ -20,7 +20,7 @@
   .hidden { display: none !important; }
   svg.ico { width: 14px; height: 14px; vertical-align: -2px; flex-shrink: 0; }
 
-  
+  /* ===== LOGIN ===== */
   #login { margin: auto; background: var(--panel); padding: 36px 32px; border-radius: 24px; width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(20,30,60,.12); }
   #login .logo { margin-bottom: 8px; }
   #login h1 { font-size: 22px; margin-bottom: 6px; font-weight: 700; }
@@ -42,7 +42,7 @@
   #joinBtn { width: 100%; padding: 14px; background: var(--mine); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: .15s; box-shadow: 0 6px 20px rgba(67,97,238,.3); display: flex; align-items: center; justify-content: center; gap: 8px; }
   #joinBtn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(67,97,238,.4); }
 
-  
+  /* ===== APP ===== */
   #app { display: flex; height: 100vh; }
   .sidebar { width: 290px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
   .sidebar-header { padding: 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
@@ -115,7 +115,7 @@
   .member .member-actions button[data-act="kick"]:hover { background: var(--danger-soft); color: var(--danger); }
   .member .member-actions button[data-act="ban"]:hover { background: #1a1d29; color: #fff; }
 
-  
+  /* ===== CHAT ===== */
   .chat { flex: 1; display: flex; flex-direction: column; background: var(--bg); min-width: 0; }
   .chat-header { padding: 14px 22px; border-bottom: 1px solid var(--border); font-weight: 600; display: flex; align-items: center; gap: 10px; background: var(--panel); font-size: 15px; }
   .status-dot { width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.15); flex-shrink: 0; }
@@ -126,7 +126,7 @@
   .exit-btn:hover { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
   .exit-btn svg { width: 14px; height: 14px; }
 
-  
+  /* PIN BANNER */
   .pin-banner {
     margin: 10px 22px 0; padding: 10px 14px;
     background: linear-gradient(135deg, rgba(67,97,238,.08), rgba(124,58,237,.08));
@@ -170,7 +170,7 @@
   @keyframes mentionPulse { 0%,100% { outline-color: rgba(245,158,11,.3); } 50% { outline-color: rgba(245,158,11,1); } }
   .msg-row.pinned .msg { outline: 2px dashed var(--accent); outline-offset: 2px; }
 
-  
+  /* Quote trong bong bóng trả lời */
   .msg .quote {
     display: block; padding: 6px 10px; margin: -4px -6px 8px;
     border-left: 3px solid rgba(255,255,255,.5);
@@ -185,7 +185,7 @@
   .msg .quote b { font-weight: 700; }
   .msg .quote .q-txt { display: block; opacity: .8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  
+  /* Nút ghim + reply LUÔN hiện (không cần hover) */
   .msg-row .pin-btn, .msg-row .reply-btn {
     width: 28px; height: 28px; border-radius: 8px; border: none;
     background: transparent; color: var(--muted); cursor: pointer;
@@ -203,7 +203,7 @@
   .msg-row.reply-flash .msg { animation: replyFlash 1.2s ease; }
   @keyframes replyFlash { 0%,100% { outline: 0 solid transparent; } 30% { outline: 3px solid rgba(67,97,238,.4); outline-offset: 2px; } }
 
-  
+  /* Thanh đang trả lời */
   .reply-bar {
     margin: 0 22px; padding: 8px 14px;
     background: rgba(67,97,238,.06);
@@ -237,7 +237,7 @@
   .sticker-picker span { font-size: 30px; cursor: pointer; padding: 4px; border-radius: 10px; transition: .12s; }
   .sticker-picker span:hover { background: var(--panel-2); transform: scale(1.15); }
 
-  
+  /* ===== MENTION SUGGEST ===== */
   .mention-suggest {
     position: absolute; bottom: 78px; left: 22px;
     background: var(--panel); border: 1px solid var(--border);
@@ -263,7 +263,7 @@
   }
   .mention-suggest .ms-empty { padding: 10px; text-align: center; font-size: 12px; color: var(--muted); }
 
-  
+  /* ===== BANNED OVERLAY ===== */
   .banned-overlay {
     position: fixed; inset: 0; z-index: 99999;
     background: linear-gradient(135deg, #0f0a1f, #1a0f2e);
@@ -322,7 +322,7 @@
   .mute-banner { margin: 0 22px 8px; padding: 10px 16px; background: var(--warn-soft); border: 1px solid #fde68a; border-radius: 12px; color: #92400e; font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
   .mute-banner svg { width: 14px; height: 14px; flex-shrink: 0; }
 
-  
+  /* ===== ADMIN MODAL ===== */
   .modal-backdrop {
     position: fixed; inset: 0; z-index: 9000;
     background: rgba(15,10,31,.6);
@@ -402,7 +402,7 @@
 </head>
 <body>
 
-
+<!-- ===== LOGIN ===== -->
 <div id="login">
   <div class="logo">
     <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="url(#gradLogin)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -426,7 +426,164 @@
         Ảnh của tao
       </button>
     </div>
-    <input type="file" id="avatarFile" accept="image
+    <input type="file" id="avatarFile" accept="image/*" class="hidden" />
+  </div>
+
+  <input id="nameInput" type="text" placeholder="Tên của mày..." maxlength="20" />
+  <button type="button" id="joinBtn">
+    Vào chat
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </button>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" class="hidden">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="me-avatar" id="meAvatar"></div>
+      <div class="me-info">
+        <div class="me-name" id="meLabel"></div>
+        <div class="me-status">Online</div>
+      </div>
+      <button type="button" class="change-avatar" id="changeAvatarBtn" title="Đổi avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+
+    <div class="section-title">Thành viên</div>
+    <div class="member-list" id="memberList"></div>
+  </div>
+
+  <div class="chat">
+    <div class="chat-header">
+      <button type="button" class="exit-btn" id="exitBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Thoát</span>
+      </button>
+      <span class="status-dot" id="statusDot"></span>
+      <span id="chatHeader">Chat nhóm — đang kết nối...</span>
+    </div>
+
+    <!-- PIN BANNER -->
+    <div class="pin-banner hidden" id="pinBanner" onclick="scrollToPinned()">
+      <span class="pin-ico">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3l5 5-2 2-1.5-1.5L11 15l-1 5-2-2 1-5 6.5-6.5L14 5l2-2z"/></svg>
+      </span>
+      <span class="pin-txt" id="pinBannerText"></span>
+      <button type="button" class="pin-close" id="pinCloseBtn" title="Bỏ ghim" onclick="event.stopPropagation(); unpinMessage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="mute-banner hidden" id="muteBanner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      Bạn đang bị cấm chat bởi quản trị viên.
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <!-- REPLY BAR -->
+    <div class="reply-bar hidden" id="replyBar">
+      <span class="rb-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+      </span>
+      <span class="rb-txt" id="replyBarText"></span>
+      <button type="button" class="rb-close" onclick="cancelReply()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="input-area">
+      <button type="button" class="sticker-btn" id="stickerBtn" title="Sticker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      </button>
+      <div class="sticker-picker hidden" id="stickerPicker"></div>
+      <div class="mention-suggest hidden" id="mentionSuggest"></div>
+      <input type="text" id="msgInput" placeholder="Nhập tin nhắn... (@ để mention, /adm <mã> để cấp quyền)" />
+      <button type="button" id="sendBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Gửi
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="bubbleConsentModal" style="z-index:10001">
+  <div class="admin-modal consent-card">
+    <div class="admin-modal-head consent-head"><div class="ic">✦</div><div><h3>Chat nổi trên trang chủ</h3><p>Luôn cập nhật tin nhắn và lượt nhắc tên bạn</p></div></div>
+    <div class="admin-modal-body"><div class="consent-preview"><div class="consent-orb">💬</div><div><strong>Nhóm chat của bạn</strong><p>Bóng chat nhỏ gọn, kéo thả tự do. Có huy hiệu khi có tin mới hoặc @nhắc tên.</p></div></div><div class="consent-actions"><button type="button" id="bubbleYesBtn">Bật bóng chat</button><button type="button" id="bubbleNoBtn">Không, cảm ơn</button></div></div>
+  </div>
+</div>
+
+<!-- Admin modal -->
+<div class="modal-backdrop" id="adminModal">
+  <div class="admin-modal">
+    <div class="admin-modal-head">
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div>
+        <h3>Quản trị thành viên</h3>
+        <p id="adminTargetLabel">Chọn hành động</p>
+      </div>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-user-preview" id="adminUserPreview"></div>
+      <div class="admin-actions-list" id="adminActionsList"></div>
+    </div>
+    <div class="admin-modal-foot">
+      <button type="button" id="adminCancelBtn">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastText">OK</span>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",
+  authDomain: "anime-f57e6.firebaseapp.com",
+  databaseURL: "https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "anime-f57e6",
+  storageBucket: "anime-f57e6.firebasestorage.app",
+  messagingSenderId: "546284227871",
+  appId: "1:546284227871:web:68e939a098af2211ad342a"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const ROOM = "nhom1";
+const ADMIN_CODE = "03102007";
+const ADMIN_STORE = "chat_is_admin";
+const DEVICE_STORE = "chat_device_id";
+function getDeviceId(){
+  try {
+    let id = localStorage.getItem(DEVICE_STORE);
+    if(!id){ id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2)); localStorage.setItem(DEVICE_STORE,id); }
+    return id;
+  } catch(e){ return "session_"+Math.random().toString(36).slice(2)+Date.now().toString(36); }
+}
+const DEVICE_ID = getDeviceId();
+
+const STICKERS = ["😀","😂","😍","😎","🤔","👍","👏","🔥","💯","🎉","😢","😡","🙏","🤝","💪","✅","❌","⭐"];
+const AVATAR_STYLES = ["notionists", "adventurer", "fun-emoji", "bottts", "lorelei", "micah", "miniavs", "open-peeps"];
+const AVATAR_COLORS = ["b6e3f4","c0aede","d1d4f9","ffd5dc","ffdfbf","c1f0dc","ffe0b2"];
+
+let me = "", myAvatar = "", messages = [], members = {}, moderations = {};
+let currentStyle = AVATAR_STYLES[Math.floor(Math.random() * AVATAR_STYLES.length)];
+let isAdmin = localStorage.getItem(ADMIN_STORE) === "1";
+let mentionState = { active: false, query: "", startIdx: -1, selectedIdx: 0, items: [] };
+let adminTarget = null;
+let pinnedId = null;
+let replyTo = null;
+
+/* ===== SVG ICONS ===== */
 const SVG = {
   admin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
   mute: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>',
@@ -461,7 +618,7 @@ function showToast(msg, isError=false){
   showToast._t = setTimeout(()=>t.classList.remove("show"), 2600);
 }
 
-
+/* ============ MODERATION HELPERS ============ */
 function isAdminIdentity(name){
   const member = members[name] || {};
   return !!member.isAdmin || !!member.admin || String(name || '').trim().toLowerCase() === 'adm nhật';
@@ -503,7 +660,7 @@ function showBannedOverlay(type, reason, time){
 }
 function hideBannedOverlay(){ const el = document.getElementById("bannedOverlay"); if(el) el.remove(); }
 
-
+/* ============ INIT ============ */
 document.addEventListener("DOMContentLoaded", () => {
   const saved = loadSavedProfile();
   if(saved.style) currentStyle = saved.style;
@@ -575,7 +732,7 @@ function buildAvatarGrid(){
   else grid.firstChild?.click();
 }
 
-
+/* ============ EXIT ============ */
 function exitChat(){
   const inFrame = window.parent && window.parent !== window;
   if(inFrame){
@@ -604,36 +761,42 @@ function finishExitChoice(enableBubble){
   }
 }
 
-
+/* ============ JOIN ============ */
 async function join(){
   const name = document.getElementById("nameInput").value.trim();
   if(!name) return alert("Nhập tên đi mày!");
   if(!myAvatar) myAvatar = makeAvatarUrl(currentStyle, name);
-  if(name.length > 24 || /[.#$\[\]\/]/.test(name)) return alert("Tên tối đa 24 ký tự và không chứa . # $ [ ] /");
-  me = name;
+  const accountKey = encodeURIComponent(name.toLowerCase()).replace(/\./g, "%2E").replace(/\#/g, "%23").replace(/\$/g, "%24").replace(/\[/g, "%5B").replace(/\]/g, "%5D");
   try {
-    const deviceModSnap = await db.ref(`rooms/${ROOM}/deviceModerations/${deviceIdentity}`).once("value");
-    const deviceMod = deviceModSnap.val();
-    if(deviceMod && (deviceMod.ban || deviceMod.kick)){
-      me = "";
-      showBannedOverlay(deviceMod.ban ? "ban" : "kick", deviceMod.reason || "Thiết bị này đã bị quản trị viên chặn.", deviceMod.time);
-      return;
+    const deviceRef = db.ref(`rooms/${ROOM}/deviceAccounts/${DEVICE_ID}`);
+    const accountRef = db.ref(`rooms/${ROOM}/accountDevices/${accountKey}`);
+    const [deviceSnap, accountSnap] = await Promise.all([deviceRef.once("value"), accountRef.once("value")]);
+    const deviceAccount = deviceSnap.val();
+    const accountDevice = accountSnap.val();
+    if(deviceAccount && String(deviceAccount.name || "").toLowerCase() !== name.toLowerCase()) {
+      return alert("Thiết bị này đã liên kết với tài khoản '" + deviceAccount.name + "'. Không thể đổi tên để vào tài khoản khác.");
     }
-    const accountRef = db.ref(`rooms/${ROOM}/accounts/${name}`);
-    const accountSnap = await accountRef.once("value");
-    const account = accountSnap.val();
-    if(account && account.identity !== deviceIdentity){ me = ""; return alert("Tên này đã được đăng ký trên tài khoản khác. Hãy dùng tên riêng của bạn."); }
-    if(!account) await accountRef.set({identity:deviceIdentity, createdAt:Date.now()});
-    const modSnap = await db.ref(`rooms/${ROOM}/moderations/${name}`).once("value");
+    if(accountDevice && accountDevice.deviceId && accountDevice.deviceId !== DEVICE_ID) {
+      return alert("Tên này đã được liên kết với thiết bị khác. Không thể chỉ nhập tên để vào tài khoản đó.");
+    }
+    if(!deviceAccount) await deviceRef.set({name, createdAt:Date.now()});
+    if(!accountDevice) await accountRef.set({name, deviceId:DEVICE_ID, createdAt:Date.now()});
+  } catch(e) {
+    return alert("Không xác minh được tài khoản với máy chủ. Kiểm tra kết nối Firebase rồi thử lại.");
+  }
+  me = name;
+  saveLocalAvatar(me, myAvatar);
+  saveProfile();
+
+  try {
+    const modSnap = await db.ref(`rooms/${ROOM}/moderations/${me}`).once("value");
     const mod = modSnap.val();
     if(mod && (mod.ban || mod.kick)){
       const type = mod.ban ? "ban" : "kick";
       showBannedOverlay(type, mod.reason || "", mod.time);
       return;
     }
-  } catch(e){ me = ""; return alert("Không thể xác minh tài khoản. Thử lại khi kết nối mạng ổn định."); }
-  saveLocalAvatar(me, myAvatar);
-  saveProfile();
+  } catch(e){}
 
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
@@ -730,7 +893,7 @@ async function changeAvatar(){
   await db.ref(`rooms/${ROOM}/members/${me}`).update({avatar:myAvatar});
 }
 
-
+/* ============ RENDER MEMBERS ============ */
 function renderMembers(){
   const box = document.getElementById("memberList");
   box.innerHTML = "";
@@ -759,7 +922,7 @@ function renderMembers(){
   });
 }
 
-
+/* ============ PIN ============ */
 async function pinMessage(id){
   if(!isAdmin){ showToast("Chỉ admin mới được ghim tin nhắn!", true); return; }
   try {
@@ -795,7 +958,7 @@ function renderPinBanner(){
   document.getElementById("pinCloseBtn").style.display = isAdmin ? "flex" : "none";
 }
 
-
+/* ============ REPLY ============ */
 function startReply(msg){
   if(!msg || !msg._id) return;
   replyTo = { id: msg._id, from: msg.from, text: msg.text || "" };
@@ -818,7 +981,7 @@ function scrollToMsg(id){
   }
 }
 
-
+/* ============ MENTION ============ */
 function onMsgInputChange(){
   const input = document.getElementById("msgInput");
   const val = input.value;
@@ -924,7 +1087,7 @@ function pickMention(name){
   hideMentionSuggest();
 }
 
-
+/* ============ SEND ============ */
 async function sendMsg(){
   const input = document.getElementById("msgInput");
   const text = input.value.trim();
@@ -944,50 +1107,6 @@ async function sendMsg(){
       showToast("Mã admin không đúng!", true);
     }
     return;
-  }
-
-  if(text.startsWith("/")){
-    if(!isAdmin){ showToast("Lệnh quản trị chỉ dành cho ADMIN.", true); return; }
-    const parts = text.trim().split(/\\s+/);
-    const cmd = parts[0].toLowerCase();
-    const target = parts[1] ? parts[1].replace(/^@/,"") : "";
-    const say = t => pushMessage({type:"system",text:t,time:Date.now()});
-    if(cmd === "/help"){
-      showToast("LỆNH ADMIN: /kick @tên • /ban @tên • /mute @tên • /unmute @tên • /unban @tên • /blocked • /help");
-      input.value = ""; return;
-    }
-    if(cmd === "/blocked"){
-      const snap = await db.ref(`rooms/${ROOM}/moderations`).once("value");
-      const all = snap.val() || {};
-      const list = Object.entries(all).filter(([n,m])=>m && (m.ban||m.kick)).map(([n,m])=>n+(m.ban?" (ban)": " (kick)"));
-      say(list.length ? "TÀI KHOẢN BỊ CHẶN: "+list.join(", ") : "Hiện không có tài khoản bị chặn.");
-      input.value = ""; return;
-    }
-    if(["/kick","/ban","/mute","/unmute","/unban"].includes(cmd)){
-      if(!target){ showToast("Dùng lệnh kèm @tên thành viên.",true); return; }
-      const snap = await db.ref(`rooms/${ROOM}/moderations/${target}`).once("value");
-      const old = snap.val() || {};
-      if(cmd==="/kick" || cmd==="/ban"){
-        const targetAccountSnap = await db.ref(`rooms/${ROOM}/accounts/${target}`).once("value");
-        const targetAccount = targetAccountSnap.val() || {};
-        const moderationData = {kick:true,ban:cmd==="/ban"||!!old.ban,reason:"Lệnh quản trị",time:Date.now(),by:me};
-        await db.ref(`rooms/${ROOM}/moderations/${target}`).update(moderationData);
-        if(targetAccount.identity) await db.ref(`rooms/${ROOM}/deviceModerations/${targetAccount.identity}`).update(moderationData);
-        await db.ref(`rooms/${ROOM}/members/${target}`).remove();
-        say(cmd==="/ban" ? `Đã chặn @${target} khỏi nhóm.` : `Đã đá bay @${target} khỏi nhóm.`);
-      } else if(cmd==="/mute"){
-        await db.ref(`rooms/${ROOM}/moderations/${target}`).update({mute:true,reason:"Lệnh quản trị",time:Date.now(),by:me});
-        say(`Đã khóa mõn @${target}.`);
-      } else if(cmd==="/unmute"){
-        await db.ref(`rooms/${ROOM}/moderations/${target}`).update({mute:false});
-        say(`Đã mở khóa mõn @${target}.`);
-      } else {
-        await db.ref(`rooms/${ROOM}/moderations/${target}`).update({ban:false,kick:false,mute:false});
-        say(`Đã mở chặn cho @${target}.`);
-      }
-      input.value = ""; return;
-    }
-    showToast("Không có lệnh này. Gõ /help để xem lệnh.",true); return;
   }
 
   if(isMuted(me)){ showToast("Bạn đang bị cấm chat!", true); return; }
@@ -1017,7 +1136,7 @@ function sendSticker(s){
 }
 function pushMessage(m){ db.ref(`rooms/${ROOM}/messages`).push(m); }
 
-
+/* ============ RENDER MESSAGES ============ */
 function renderMessages(){
   const box = document.getElementById("messages");
   box.innerHTML = "";
@@ -1075,6 +1194,7 @@ function renderMessages(){
     row.appendChild(avatarDiv);
     row.appendChild(bw);
 
+    // Nút trả lời — luôn hiện
     if(m._id){
       const replyBtn = document.createElement("button");
       replyBtn.className = "reply-btn";
@@ -1084,6 +1204,7 @@ function renderMessages(){
       row.appendChild(replyBtn);
     }
 
+    // Admin có thể xoá tin nhắn trên tất cả thiết bị
     if(isAdmin && m._id){
       const delBtn = document.createElement("button");
       delBtn.className = "delete-msg-btn";
@@ -1098,6 +1219,7 @@ function renderMessages(){
       row.appendChild(delBtn);
     }
 
+    // Nút ghim — luôn hiện nếu admin
     if(isAdmin && m._id){
       const pinBtn = document.createElement("button");
       pinBtn.className = "pin-btn" + (m._id === pinnedId ? " is-pinned" : "");
@@ -1124,7 +1246,7 @@ function formatMessageText(text){
   return safe;
 }
 
-
+/* ============ ADMIN MODAL ============ */
 function openAdminModal(name){
   if(!isAdmin || name === me) return;
   adminTarget = name;
@@ -1155,9 +1277,6 @@ function openAdminModal(name){
     <div class="a-icon">${SVG.kick}</div>
     <div class="a-text"><div class="t">Xoá khỏi nhóm</div><div class="d">Không cho vào lại phòng chat</div></div>
   </button>`;
-  if(mod.ban || mod.kick){
-    html += `<button class="admin-action-btn" data-act="unban" onclick="adminDo('unban')"><div class="a-icon">${SVG.unmute}</div><div class="a-text"><div class="t">Mở chặn tài khoản</div><div class="d">Cho phép tên này vào nhóm lại</div></div></button>`;
-  }
   html += `<button class="admin-action-btn" data-act="ban" onclick="adminDo('ban')">
     <div class="a-icon">${SVG.ban}</div>
     <div class="a-text"><div class="t">Chặn hoàn toàn</div><div class="d">Chặn khỏi trang web, không truy cập được</div></div>
@@ -1202,27 +1321,13 @@ async function adminDo(act){
       await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ mute:false });
       showToast("Đã bỏ cấm chat " + name);
     } else if(act === "kick"){
-      const targetAccountSnap = await db.ref(`rooms/${ROOM}/accounts/${name}`).once("value");
-      const targetAccount = targetAccountSnap.val() || {};
-      const moderationData = { kick:true, mute:true, reason, time:Date.now(), by:me };
-      await db.ref(`rooms/${ROOM}/moderations/${name}`).update(moderationData);
-      if(targetAccount.identity) await db.ref(`rooms/${ROOM}/deviceModerations/${targetAccount.identity}`).update(moderationData);
+      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ kick:true, mute:true, reason, time:Date.now(), by:me });
       await db.ref(`rooms/${ROOM}/members/${name}`).remove();
       showToast("Đã xoá " + name + " khỏi nhóm");
     } else if(act === "ban"){
-      const targetAccountSnap = await db.ref(`rooms/${ROOM}/accounts/${name}`).once("value");
-      const targetAccount = targetAccountSnap.val() || {};
-      const moderationData = { ban:true, kick:true, mute:true, reason, time:Date.now(), by:me };
-      await db.ref(`rooms/${ROOM}/moderations/${name}`).update(moderationData);
-      if(targetAccount.identity) await db.ref(`rooms/${ROOM}/deviceModerations/${targetAccount.identity}`).update(moderationData);
+      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ ban:true, kick:true, mute:true, reason, time:Date.now(), by:me });
       await db.ref(`rooms/${ROOM}/members/${name}`).remove();
       showToast("Đã chặn " + name + " hoàn toàn");
-    } else if(act === "unban"){
-      const targetAccountSnap = await db.ref(`rooms/${ROOM}/accounts/${name}`).once("value");
-      const targetAccount = targetAccountSnap.val() || {};
-      await db.ref(`rooms/${ROOM}/moderations/${name}`).update({ban:false,kick:false,mute:false});
-      if(targetAccount.identity) await db.ref(`rooms/${ROOM}/deviceModerations/${targetAccount.identity}`).update({ban:false,kick:false,mute:false});
-      showToast("Đã mở chặn " + name);
     }
     const sysText = {
       mute: `${name} đã bị cấm chat`,
@@ -1235,7 +1340,7 @@ async function adminDo(act){
   closeAdminModal();
 }
 
-
+/* ============ STICKERS ============ */
 function toggleStickers(){ document.getElementById("stickerPicker").classList.toggle("hidden"); }
 function buildStickerPicker(){
   const p = document.getElementById("stickerPicker");
