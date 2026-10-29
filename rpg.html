@@ -56,6 +56,23 @@
   .change-avatar:hover { background: var(--panel-2); color: var(--accent); }
   .change-avatar svg { width: 16px; height: 16px; }
 
+  .admin-name-vfx {
+    color: #e11d48 !important;
+    font-weight: 800 !important;
+    background: linear-gradient(90deg,#f59e0b,#ef4444,#a855f7,#f59e0b);
+    background-size: 240% auto;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: adminNameFlow 3s linear infinite;
+    filter: drop-shadow(0 0 5px rgba(239,68,68,.24));
+  }
+  .admin-avatar-vfx { box-shadow: 0 0 0 2px #f59e0b, 0 0 12px rgba(239,68,68,.8) !important; animation: adminAvatarPulse 1.8s ease-in-out infinite; }
+  .admin-badge { position: relative; overflow: visible; }
+  .admin-badge::after { content: '✦'; position: absolute; right: -5px; top: -7px; color: #f59e0b; font-size: 11px; animation: adminSpark 1.4s ease-in-out infinite; }
+  @keyframes adminNameFlow { to { background-position: 240% center; } }
+  @keyframes adminAvatarPulse { 0%,100% { box-shadow: 0 0 0 2px #f59e0b,0 0 7px rgba(239,68,68,.5); } 50% { box-shadow: 0 0 0 3px #ef4444,0 0 16px rgba(168,85,247,.8); } }
+  @keyframes adminSpark { 0%,100% { transform: scale(.7) rotate(0); opacity:.55; } 50% { transform: scale(1.25) rotate(25deg); opacity:1; } }
+  .delete-msg-btn { border:0; border-radius:7px; padding:5px 7px; margin-left:4px; cursor:pointer; color:#dc2626; background:#fee2e2; font-size:11px; align-self:center; }
+  .delete-msg-btn:hover { background:#fecaca; }
   .admin-badge {
     display: inline-flex; align-items: center; gap: 3px;
     background: linear-gradient(135deg, #f59e0b, #ef4444);
@@ -593,6 +610,10 @@ function showToast(msg, isError=false){
 }
 
 /* ============ MODERATION HELPERS ============ */
+function isAdminIdentity(name){
+  const member = members[name] || {};
+  return !!member.isAdmin || !!member.admin || String(name || '').trim().toLowerCase() === 'adm nhật';
+}
 function getMod(name){ return moderations[name] || null; }
 function isMuted(name){ const m = getMod(name); return !!(m && m.mute); }
 function isBanned(name){ const m = getMod(name); return !!(m && m.ban); }
@@ -1050,6 +1071,7 @@ async function sendMsg(){
     if(code === ADMIN_CODE){
       isAdmin = true;
       localStorage.setItem(ADMIN_STORE, "1");
+      db.ref(`rooms/${ROOM}/members/${me}/isAdmin`).set(true).catch(()=>{});
       document.getElementById("meLabel").innerHTML = escapeHtml(me) + ` <span class="admin-badge">${SVG.admin} ADMIN</span>`;
       renderMembers();
       showToast("Đã cấp quyền ADMIN cao nhất!");
@@ -1113,15 +1135,15 @@ function renderMessages(){
     }
 
     const avatarDiv = document.createElement("div");
-    avatarDiv.className = "avatar";
+    avatarDiv.className = "avatar" + (isAdminIdentity(m.from) ? " admin-avatar-vfx" : "");
     avatarDiv.innerHTML = `<img src="${av}">`;
 
     const bw = document.createElement("div");
     bw.className = "bubble-wrap";
-    if(!isMine){
+    {
       const n = document.createElement("div");
-      n.className = "name";
-      n.innerHTML = escapeHtml(m.from);
+      n.className = "name" + (isAdminIdentity(m.from) ? " admin-name-vfx" : "");
+      n.innerHTML = escapeHtml(m.from) + (isAdminIdentity(m.from) ? ` <span class="admin-badge">✦ ADMIN</span>` : "");
       bw.appendChild(n);
     }
     const bubble = document.createElement("div");
@@ -1153,6 +1175,21 @@ function renderMessages(){
       replyBtn.innerHTML = SVG.reply;
       replyBtn.onclick = (e) => { e.stopPropagation(); startReply(m); };
       row.appendChild(replyBtn);
+    }
+
+    // Admin có thể xoá tin nhắn trên tất cả thiết bị
+    if(isAdmin && m._id){
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-msg-btn";
+      delBtn.title = "Xoá tin nhắn";
+      delBtn.textContent = "Xoá";
+      delBtn.onclick = async (e) => {
+        e.stopPropagation();
+        if(!isAdmin || !confirm("Xoá tin nhắn này khỏi nhóm?")) return;
+        try { await db.ref(`rooms/${ROOM}/messages/${m._id}`).remove(); showToast("Đã xoá tin nhắn"); }
+        catch(err) { showToast("Không xoá được: " + err.message, true); }
+      };
+      row.appendChild(delBtn);
     }
 
     // Nút ghim — luôn hiện nếu admin
