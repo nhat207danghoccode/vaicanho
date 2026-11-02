@@ -1772,7 +1772,24 @@
 @media(max-width:520px){#streakOverlay .streak-stage{height:340px}#streakOverlay .streak-label{letter-spacing:4px}}
 </style>
 
-<style id="custom-button-colors">
+
+
+<style id="subject-switch-visibility-fix">
+.quick-actions .qbtn.subject-switch{
+  background:linear-gradient(135deg,#7c3aed 0%,#a855f7 48%,#ec4899 100%) !important;
+  color:#fff !important; border:1px solid rgba(255,255,255,.38) !important;
+  font-weight:850 !important; letter-spacing:.15px;
+  box-shadow:0 5px 16px rgba(124,58,237,.42),inset 0 1px 0 rgba(255,255,255,.28);
+  text-shadow:0 1px 3px rgba(35,0,70,.25);
+}
+.quick-actions .qbtn.subject-switch i{color:#fff !important}
+.quick-actions .qbtn.subject-switch:hover{
+  background:linear-gradient(135deg,#6d28d9 0%,#9333ea 48%,#db2777 100%) !important;
+  transform:translateY(-2px); box-shadow:0 9px 22px rgba(124,58,237,.52);
+}
+.quick-actions .qbtn.subject-switch:focus-visible{outline:3px solid #f0abfc;outline-offset:3px}
+</style>
+ <style id="custom-button-colors">
 /* Nút "Xáo Full" */
 #shuffleBtn {
   background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%) !important;
@@ -1852,22 +1869,6 @@
   color: #ffffff !important;
 }
 .qbtn[onclick="showTomorrowSchedule()"] svg { stroke: #ffffff !important; }
-</style>
-
-<style id="subject-switch-visibility-fix">
-.quick-actions .qbtn.subject-switch{
-  background:linear-gradient(135deg,#7c3aed 0%,#a855f7 48%,#ec4899 100%) !important;
-  color:#fff !important; border:1px solid rgba(255,255,255,.38) !important;
-  font-weight:850 !important; letter-spacing:.15px;
-  box-shadow:0 5px 16px rgba(124,58,237,.42),inset 0 1px 0 rgba(255,255,255,.28);
-  text-shadow:0 1px 3px rgba(35,0,70,.25);
-}
-.quick-actions .qbtn.subject-switch i{color:#fff !important}
-.quick-actions .qbtn.subject-switch:hover{
-  background:linear-gradient(135deg,#6d28d9 0%,#9333ea 48%,#db2777 100%) !important;
-  transform:translateY(-2px); box-shadow:0 9px 22px rgba(124,58,237,.52);
-}
-.quick-actions .qbtn.subject-switch:focus-visible{outline:3px solid #f0abfc;outline-offset:3px}
 </style>
 </head>
 <body>
