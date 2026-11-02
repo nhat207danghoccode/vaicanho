@@ -663,6 +663,31 @@
   }
   .side-btn.activeTab .count{ background: var(--c1-soft); color: var(--c1); }
 
+  .tomorrow-modal{display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:18px}
+  .tomorrow-modal.open{display:flex}
+  .tomorrow-backdrop{position:absolute;inset:0;background:rgba(8,12,25,.62);backdrop-filter:blur(5px)}
+  .tomorrow-card{position:relative;width:min(560px,100%);max-height:min(82vh,760px);overflow:auto;background:var(--surface);color:var(--txt);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.3);padding:22px}
+  .tomorrow-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px}
+  .tomorrow-kicker{font-size:10px;font-weight:900;letter-spacing:.13em;color:var(--c1)}
+  .tomorrow-head h3{margin:5px 0 3px;font-size:23px;font-weight:850}
+  .tomorrow-date{font-size:12px;color:var(--txt-dim)}
+  .tomorrow-close{width:34px;height:34px;border:1px solid var(--line);border-radius:10px;background:var(--line-soft);color:var(--txt);font-size:24px;line-height:1;cursor:pointer}
+  .tomorrow-content{display:grid;gap:10px}
+  .tomorrow-loading,.tomorrow-empty{padding:22px 14px;text-align:center;border:1px dashed var(--line);border-radius:14px;color:var(--txt-dim);font-size:13px}
+  .tomorrow-class{display:grid;grid-template-columns:76px 1fr;gap:12px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2,var(--line-soft))}
+  .tomorrow-session{font-size:12px;font-weight:800;color:var(--c1);padding-top:2px}
+  .tomorrow-subject{font-size:14px;font-weight:800;line-height:1.45}
+  .tomorrow-meta{font-size:12px;color:var(--txt-dim);margin-top:5px;line-height:1.5}
+  .tomorrow-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+  .tomorrow-footer>span{font-size:11px;color:var(--txt-dim)}
+  @media(max-width:500px){.tomorrow-card{padding:16px}.tomorrow-head h3{font-size:20px}.tomorrow-class{grid-template-columns:64px 1fr;padding:12px}}
+  #tkbBox{display:none;width:100%;height:calc(100vh - 125px);min-height:520px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+  #tkbBox.on{display:block}
+  #tkbFrame{display:block;width:100%;height:100%;min-height:520px;border:0;background:#fff}
+  .side-btn .tkb-svg{width:30px;height:30px;flex-shrink:0;padding:7px;border-radius:8px;background:var(--line-soft);color:var(--txt-dim);transition:.16s}
+  .side-btn:hover .tkb-svg{background:var(--c1-soft);color:var(--c1)}
+  .side-btn.activeTab .tkb-svg{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;box-shadow:0 4px 10px -3px var(--c1)}
+  @media(max-width:700px){#tkbBox,#tkbFrame{height:calc(100vh - 150px);min-height:420px}}
   .main{ min-width: 0; display: flex; flex-direction: column; gap: 14px; }
 
   .chips{
@@ -1829,6 +1854,9 @@
     </aside>
 
     <main class="main">
+      <section id="tkbBox" aria-label="Thời khóa biểu">
+        <iframe id="tkbFrame" src="https://nhat207danghoccode.github.io/tkbtest/" title="Thời khóa biểu" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </section>
 
       <div class="panel hidden" id="noteBox">
         <div class="panel-head">
@@ -1937,7 +1965,25 @@ B. Đúng"></textarea>
   </svg>
   Chat Nhóm
 </button>
+<button class="qbtn" type="button" onclick="showTomorrowSchedule()">
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;">
+    <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h7"/>
+  </svg>
+  Ngày mai học gì?
+</button>
         </div>
+      </div>
+
+      <div id="tomorrowScheduleModal" class="tomorrow-modal" aria-hidden="true">
+        <div class="tomorrow-backdrop" onclick="closeTomorrowSchedule()"></div>
+        <section class="tomorrow-card" role="dialog" aria-modal="true" aria-labelledby="tomorrowTitle">
+          <div class="tomorrow-head">
+            <div><span class="tomorrow-kicker">THỜI KHÓA BIỂU LỚP 19D</span><h3 id="tomorrowTitle">Ngày mai học gì?</h3><div id="tomorrowDate" class="tomorrow-date"></div></div>
+            <button type="button" class="tomorrow-close" onclick="closeTomorrowSchedule()" aria-label="Đóng">×</button>
+          </div>
+          <div id="tomorrowScheduleContent" class="tomorrow-content"><div class="tomorrow-loading">Đang tải lịch học…</div></div>
+          <div class="tomorrow-footer"><span>Thông tin lấy trực tiếp từ thời khóa biểu.</span><button type="button" class="qbtn primary" onclick="closeTomorrowSchedule();switchTab('TKB')">Mở thời khóa biểu</button></div>
+        </section>
       </div>
 
       <div id="quiz-container"></div>
@@ -2574,6 +2620,64 @@ document.querySelectorAll(".chip").forEach(chip => {
     });
 });
 
+function closeTomorrowSchedule(){
+    const modal=document.getElementById("tomorrowScheduleModal");
+    if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true");}
+}
+
+async function showTomorrowSchedule(){
+    const modal=document.getElementById("tomorrowScheduleModal");
+    const content=document.getElementById("tomorrowScheduleContent");
+    const dateEl=document.getElementById("tomorrowDate");
+    if(!modal||!content||!dateEl)return;
+    const now=new Date();
+    const tomorrow=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,12);
+    const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const tomorrowStr=iso(tomorrow);
+    const monday=new Date(tomorrow);
+    monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
+    const weekStart=iso(monday);
+    dateEl.textContent=tomorrow.toLocaleDateString("vi-VN",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"});
+    content.innerHTML='<div class="tomorrow-loading">Đang tải lịch học lớp 19D…</div>';
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden","false");
+    try{
+        const url=`https://nhat207danghoccode.github.io/tkbtest/data/week-${weekStart}.json?v=${Date.now()}`;
+        const response=await fetch(url,{cache:"no-store"});
+        if(!response.ok)throw new Error("Không tìm thấy dữ liệu lịch của tuần này.");
+        const snapshot=await response.json();
+        if(!snapshot||snapshot.ok!==true)throw new Error(snapshot?.error||"Dữ liệu thời khóa biểu chưa sẵn sàng.");
+        const findRows=data=>{
+            if(Array.isArray(data)){
+                if(data.some(x=>x&&typeof x==="object"&&(Object.prototype.hasOwnProperty.call(x,"subjectName")||Object.prototype.hasOwnProperty.call(x,"className")||Object.prototype.hasOwnProperty.call(x,"startPeriod"))))return data;
+                for(const item of data){const found=findRows(item);if(found.length)return found;}
+            }else if(data&&typeof data==="object"){
+                for(const key of ["items","data","results","schedules","generalSchedules","records","value"]){if(key in data){const found=findRows(data[key]);if(found.length)return found;}}
+                for(const value of Object.values(data)){if(value&&typeof value==="object"){const found=findRows(value);if(found.length)return found;}}
+            }
+            return [];
+        };
+        const clean=v=>(v??"").toString().replace(/\s+/g," ").trim();
+        const norm=v=>clean(v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").toLowerCase();
+        const rows=findRows(snapshot).filter(r=>r&&typeof r==="object"&&!r.isPlannedOnly&&clean(r.date).slice(0,10)===tomorrowStr&&/\b19d\b/i.test(clean(r.className)));
+        rows.sort((a,b)=>{
+            const session=r=>{const n=norm(r.sessionName);return n.includes("sang")?0:n.includes("chieu")?1:n.includes("toi")?2:Number(r.session)||0;};
+            return session(a)-session(b)||(Number(a.startPeriod)||0)-(Number(b.startPeriod)||0);
+        });
+        if(!rows.length){content.innerHTML='<div class="tomorrow-empty">Chưa có lịch học lớp 19D được ghi nhận cho ngày mai. Không tự đoán môn học — bấm “Mở thời khóa biểu” để xem lịch đầy đủ.</div>';return;}
+        content.innerHTML=rows.map(r=>{
+            const sess=clean(r.sessionName)||({0:"Sáng",1:"Chiều",2:"Tối"}[Number(r.session)]||"Ca học");
+            const start=Number(r.startPeriod),end=Number(r.endPeriod);
+            const periods=start>0&&end>=start?`Tiết ${start}${end!==start?` – ${end}`:""}`:`${Math.max(1,Number(r.periodCount)||1)} tiết`;
+            const name=clean(r.subjectName)?(r.isExamSchedule?`Thi ${clean(r.subjectName)}`:r.isActivitySchedule?clean(r.subjectName):`${clean(r.subjectName)} (${clean(r.classTypeName)||(Number(r.lessonType)===1?"TH":"LT")})`):clean(r.title)||(r.isActivitySchedule?"Hoạt động sinh hoạt":"Chưa có tên môn");
+            const meta=[periods,clean(r.room)?`Phòng ${clean(r.room)}`:"",clean(r.teacherName)].filter(Boolean).join(" · ");
+            return `<article class="tomorrow-class"><div class="tomorrow-session">${sess}</div><div><div class="tomorrow-subject">${name}</div><div class="tomorrow-meta">${meta||"Chưa có thông tin chi tiết"}</div></div></article>`;
+        }).join("")+`<div class="tomorrow-meta">Có ${rows.length} lịch học được tìm thấy cho ngày mai.</div>`;
+    }catch(error){
+        content.innerHTML=`<div class="tomorrow-empty">Không tải được dữ liệu thời khóa biểu: ${String(error.message||error).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}<br>Kiểm tra kết nối hoặc bấm “Mở thời khóa biểu” để xem lịch đầy đủ.</div>`;
+    }
+}
+
 function switchTab(type, skipPartialPrompt){
     if(type==="STATS" && !skipPartialPrompt && currentTab && !["STATS","EXAM","NOTE","CREATE"].includes(currentTab) && cachedQuestionNodes.length){
         const total=cachedQuestionNodes.length;
@@ -2607,13 +2711,15 @@ function switchTab(type, skipPartialPrompt){
     }
     currentTab=type;
     document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("activeTab",b.dataset.tab===type));
+    const tkbBox=document.getElementById("tkbBox");
+    if(tkbBox) tkbBox.classList.toggle("on",type==="TKB");
 
     document.getElementById("noteBox").classList.add("hidden");
     document.getElementById("createBox").classList.add("hidden");
     document.getElementById("examTop").classList.add("hidden");
 
-    document.getElementById("infoStrip").classList.remove("hidden");
-    document.getElementById("chipsRow").classList.remove("hidden");
+    document.getElementById("infoStrip").classList.toggle("hidden",type==="TKB");
+    document.getElementById("chipsRow").classList.toggle("hidden",type==="TKB");
     document.getElementById("statsBox").classList.add("hidden");
     document.getElementById("statsBox").classList.remove("on");
 
@@ -2624,6 +2730,11 @@ function switchTab(type, skipPartialPrompt){
 
     resetChips();
 
+    if(type==="TKB"){
+        clearInterval(examInterval);
+        window.scrollTo({top:0,behavior:"smooth"});
+        return;
+    }
     if(type==="NOTE"){
         document.getElementById("noteBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
