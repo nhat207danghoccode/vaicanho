@@ -2464,6 +2464,10 @@ let editTargetItem = null;
 let editTargetBlock = null;
 let editSelectedAnswer = null;
 
+function getSubjectTabKey(tab=currentTab, subject=currentSubject){
+    return String(subject || "NO_SUBJECT") + "::" + String(tab || "DEFAULT");
+}
+
 let saveTimer = null;
 function scheduleSave() {
     clearTimeout(saveTimer);
@@ -3251,7 +3255,7 @@ function buildQuizHTML(){
 
     document.getElementById("totalQuestion").innerText=questions.length;
 
-    const savedForTab = answersCache[currentTab] || {};
+    const savedForTab = answersCache[getSubjectTabKey()] || {};
     const fragment = document.createDocumentFragment();
 
     questions.forEach((item,qIndex)=>{
@@ -3339,8 +3343,8 @@ function buildQuizHTML(){
             if(savedForQuestion.includes(opt.text)){ inp.checked = true; }
 
             inp.addEventListener("change", ()=>{
-                if(!answersCache[currentTab]){ answersCache[currentTab] = {}; }
-                answersCache[currentTab][item.id] = [opt.text];
+                if(!answersCache[getSubjectTabKey()]){ answersCache[getSubjectTabKey()] = {}; }
+                answersCache[getSubjectTabKey()][item.id] = [opt.text];
                 scheduleSave();
             });
 
@@ -3466,8 +3470,8 @@ function buildQuizHTML(){
                 : '<i class="fas fa-xmark"></i> Sai';
             qTags.appendChild(statusPill);
 
-            if(!progressData[currentTab]){ progressData[currentTab] = {}; }
-            progressData[currentTab][item.id] = true;
+            if(!progressData[getSubjectTabKey()]){ progressData[getSubjectTabKey()] = {}; }
+            progressData[getSubjectTabKey()][item.id] = true;
             scheduleSave();
 
             if(!allCorrect){ qBlock.classList.add("wrong-question"); }
@@ -3484,7 +3488,7 @@ function buildQuizHTML(){
         qBlock.appendChild(qBody);
         fragment.appendChild(qBlock);
 
-        if(progressData[currentTab] && progressData[currentTab][item.id]){
+        if(progressData[getSubjectTabKey()] && progressData[getSubjectTabKey()][item.id]){
             submitBtn.click();
         }
     });
