@@ -2063,6 +2063,10 @@ B. Đúng"></textarea>
   </svg>
   Chat Nhóm
 </button>
+<button class="qbtn" type="button" onclick="openClassroom3D()" style="background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border-color:transparent;font-weight:800">
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 9h.01M15 9h.01"/></svg>
+  Phòng học
+</button>
 <button class="qbtn" type="button" onclick="showTomorrowSchedule()">
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;">
     <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h7"/>
@@ -4728,5 +4732,38 @@ html.bg-white body{background:#fff!important;color:#202338!important}
 })();
 </script>
 
+
+<style>
+#classroom3DShell{display:none;position:fixed;inset:0;z-index:2147483000;background:#080b16}
+#classroom3DShell.on{display:block}
+#classroom3DFrame{width:100%;height:100%;border:0;display:block;background:#080b16}
+#classroom3DClose{position:absolute;right:16px;top:14px;z-index:2;width:42px;height:42px;border:1px solid #ffffff55;border-radius:50%;background:#111827dd;color:#fff;font-size:25px;cursor:pointer}
+</style>
+<div id="classroom3DShell" aria-hidden="true"><button id="classroom3DClose" type="button" onclick="closeClassroom3D()">×</button><iframe id="classroom3DFrame" title="Phòng học 3D" allow="autoplay; fullscreen; gamepad; gyroscope; accelerometer"></iframe></div>
+<script>
+function openClassroom3D(){
+ const shell=document.getElementById('classroom3DShell');
+ const frame=document.getElementById('classroom3DFrame');
+ shell.classList.add('on');shell.setAttribute('aria-hidden','false');
+ if(!frame.dataset.loaded){frame.src='1.html';frame.dataset.loaded='1';}
+}
+function closeClassroom3D(){const shell=document.getElementById('classroom3DShell');shell.classList.remove('on');shell.setAttribute('aria-hidden','true');}
+(function(){
+ function askDeviceName(){
+  let saved=(localStorage.getItem('chat_name')||'').trim();
+  if(saved)return;
+  const ua=navigator.userAgent||'';
+  let suggested='Thiết bị';
+  if(/Windows/i.test(ua))suggested='Máy tính Windows';
+  else if(/Macintosh|Mac OS/i.test(ua))suggested='Máy Mac';
+  else if(/Android/i.test(ua))suggested='Điện thoại Android';
+  else if(/iPhone|iPad/i.test(ua))suggested='Thiết bị Apple';
+  const entered=window.prompt('Đặt tên thiết bị để hiển thị trong phòng học:',suggested);
+  if(entered!==null&&entered.trim()){localStorage.setItem('chat_name',entered.trim().slice(0,32));}
+  else if(entered!==null){localStorage.setItem('chat_name',suggested);}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',askDeviceName,{once:true});else setTimeout(askDeviceName,0);
+})();
+</script>
 </body>
 </html>
