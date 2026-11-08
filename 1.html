@@ -119,7 +119,7 @@
 #adminPanel{position:fixed;inset:0;z-index:70;background:rgba(8,11,20,.75);backdrop-filter:blur(10px);
   display:none;align-items:center;justify-content:center;padding:16px}
 #adminPanel.on{display:flex}
-.admin-card{position:relative;width:min(540px,100%);max-height:86vh;overflow:auto;background:#0f1523;color:#fff;
+.admin-card{position:relative;width:min(600px,100%);max-height:86vh;overflow:auto;background:#0f1523;color:#fff;
   border:1px solid #ffffff1f;border-radius:20px;padding:22px;box-shadow:0 30px 80px #000a}
 .admin-card h3{margin:0 0 4px;font-size:18px;background:linear-gradient(90deg,#f59e0b,#ef4444);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
@@ -142,6 +142,7 @@
 .admin-empty{color:#8da0b7;text-align:center;padding:18px;font-size:12.5px}
 .admin-close{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:50%;
   border:1px solid #ffffff22;background:#131a2b;color:#fff;font-size:18px;cursor:pointer;line-height:1}
+.admin-uid{font-size:9.5px;color:#5b6b82;font-family:monospace;margin-top:2px}
 
   .banned-overlay{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f0a1f,#1a0f2e);
     display:flex;align-items:center;justify-content:center;padding:20px}
@@ -227,7 +228,7 @@
   <div class="admin-card">
     <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('on')">×</button>
     <h3>Quản trị phòng học</h3>
-    <div class="sub">Kick/ẩn NPC · Ban/Unban · Danh sách bị chặn</div>
+    <div class="sub">Danh sách theo từng máy (uid) — kick/ẩn/ban đúng máy, kể cả trùng tên</div>
     <div class="admin-tabs">
       <button id="tabMembers" class="on" onclick="adminSwitchTab('members')">👥 Thành viên</button>
       <button id="tabBanned" onclick="adminSwitchTab('banned')">🚫 Bị chặn</button>
@@ -1215,17 +1216,17 @@ const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
 scene.add(dust);
 
 // ==== QUẢN LÝ ĐỒNG BỘ ẨN / BAN / SKIN QUA FIREBASE ====
-let hiddenUids = {};   // uid -> true
-let skinByUid = {};    // uid -> presetKey
+// hidden: uid -> true (chỉ uid, không dùng name)
+// moderations: uid -> {ban, reason, ...}
+let hiddenUids = {};
+let skinByUid = {};
 
 window.syncClassroomUsers = function(users){
   const selfUid = localStorage.getItem('classroom_uid');
 
-  // chống trùng uid
   const uniq = new Map();
   users.forEach(u => { if(u && u.uid && !uniq.has(u.uid)) uniq.set(u.uid, u); });
 
-  // 1) Slot "you": cập nhật nếu có presence của mình, nếu không thì offline
   const youSlot = students.find(s => s.isYou);
   if(youSlot){
     youSlot.uid = selfUid;
@@ -1234,14 +1235,13 @@ window.syncClassroomUsers = function(users){
       youSlot.name = String(me.name || youSlot.name || 'Bạn').slice(0,20);
       youSlot.isOnline = !!me.online;
       youSlot.active = true;
-      uniq.delete(selfUid);   // QUAN TRỌNG: xóa khỏi danh sách để không bị gán vào slot khác
+      uniq.delete(selfUid);
     } else {
       youSlot.isOnline = false;
       youSlot.active = true;
     }
   }
 
-  // 2) Dọn slot không phải "you" mà user đã mất
   students.forEach(st => {
     if(st.isYou) return;
     if(st.uid && !uniq.has(st.uid)){
@@ -1251,7 +1251,6 @@ window.syncClassroomUsers = function(users){
     }
   });
 
-  // 3) Gán user còn lại vào slot trống
   const freeSlots = students.filter(st => !st.isYou && !st.active);
   uniq.forEach(u => {
     let st = students.find(s => !s.isYou && s.uid === u.uid);
@@ -1287,7 +1286,6 @@ window.syncClassroomUsers = function(users){
     }
   });
 
-  // 4) Cập nhật lại tên/sprite cho slot "you" sau cùng
   if(youSlot){
     const old = youSlot.npc.userData.nameSprite;
     if(old) youSlot.npc.remove(old);
@@ -1396,10 +1394,10 @@ async function checkAdmin(){
 
 async function checkBanned(){
   if(!adminDB) return false;
-  const name = myName();
-  if(!name) return false;
+  const uid = myDevice();
+  if(!uid) return false;
   try {
-    const snap = await adminDB.ref('rooms/nhom1/moderations/'+name).once('value');
+    const snap = await adminDB.ref('rooms/nhom1/moderations/'+uid).once('value');
     const mod = snap.val();
     if(mod && mod.ban){
       const ov = document.getElementById('banOverlay');
@@ -1414,40 +1412,63 @@ async function checkBanned(){
   return false;
 }
 
+// ==== ADMIN PANEL: mỗi presence (uid) 1 dòng riêng ====
+function getPresenceList(){
+  const selfUid = localStorage.getItem('classroom_uid');
+  const selfName = myName();
+  const map = new Map();
+  // presence chính
+  Object.values(allPresence).forEach(p => {
+    if(!p || !p.uid) return;
+    if(p.uid === selfUid) return; // bỏ chính admin khỏi danh sách thao tác
+    map.set(p.uid, {
+      uid: p.uid,
+      name: String(p.name || 'Người dùng'),
+      online: !!p.online,
+      device: String(p.device || ''),
+      lastSeen: p.lastSeen || 0
+    });
+  });
+  // members (dự phòng nếu presence chưa có)
+  Object.entries(allMembers).forEach(([n, m]) => {
+    if(!m) return;
+    if(n === selfName) return;
+    if(m.uid && map.has(m.uid)) return;
+    if(m.uid){
+      map.set(m.uid, {
+        uid: m.uid, name: n, online: !!m.online,
+        device: String(m.device || ''), lastSeen: m.lastSeen || 0
+      });
+    }
+  });
+  return Array.from(map.values()).sort((a,b) => {
+    if(a.online !== b.online) return a.online ? -1 : 1;
+    return a.name.localeCompare(b.name,'vi');
+  });
+}
+
 function renderAdminMembers(){
   if(!isAdmin) return;
   const box = document.getElementById('adminMembers');
   if(!box) return;
-  const myNameNow = myName();
-  const namesSet = new Set();
-  Object.keys(allMembers).forEach(n => { if(n !== myNameNow) namesSet.add(n); });
-  Object.keys(allPresence).forEach(n => { if(n !== myNameNow) namesSet.add(n); });
-  const names = Array.from(namesSet).sort((a,b) => {
-    const aOn = !!(allMembers[a] && allMembers[a].online) || !!(allPresence[a] && allPresence[a].online);
-    const bOn = !!(allMembers[b] && allMembers[b].online) || !!(allPresence[b] && allPresence[b].online);
-    if(aOn !== bOn) return aOn ? -1 : 1;
-    return a.localeCompare(b,'vi');
-  });
-  if(!names.length){ box.innerHTML = '<div class="admin-empty">Không có thành viên khác</div>'; return; }
-  box.innerHTML = names.map(n => {
-    const m = allMembers[n] || {};
-    const p = allPresence[n] || {};
-    const online = !!(m.online || p.online);
-    const mod = allMods[n] || {};
-    const stu = students.find(s=>s.name===n);
-    const uid = stu ? stu.uid : (p.uid || null);
-    const isHidden = uid && !!hiddenUids[uid];
+  const list = getPresenceList();
+  if(!list.length){ box.innerHTML = '<div class="admin-empty">Không có thành viên khác</div>'; return; }
+  box.innerHTML = list.map(p => {
+    const mod = allMods[p.uid] || {};
+    const isHidden = !!hiddenUids[p.uid];
     const banned = !!mod.ban;
-    const kicked = !!mod.kick;
+    const shortUid = p.uid.length > 12 ? p.uid.slice(0,6)+'…'+p.uid.slice(-4) : p.uid;
+    const deviceShort = p.device ? p.device.replace(/^Mozilla\/5\.0 \(([^)]+)\).*/, '$1').slice(0,28) : '—';
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
-        <div class="an">${n}${online?'':' 💤'}</div>
-        <div class="as">${online?'Đang học':'Đang ngủ'}${banned?' · đã chặn':''}${kicked&&!banned?' · đã kick':''}${isHidden?' · NPC ẩn':''}</div>
+        <div class="an">${p.name}${p.online ? '' : ' 💤'}</div>
+        <div class="as">${p.online ? 'Đang học' : 'Đang ngủ'}${banned ? ' · đã ban' : ''}${isHidden ? ' · NPC ẩn' : ''}</div>
+        <div class="admin-uid">uid: ${shortUid} · ${deviceShort}</div>
       </div>
-      ${uid ? `<button class="${isHidden?'show':'hide'}" onclick="adminToggleNpc('${uid}')">${isHidden?'Hiện NPC':'Ẩn NPC'}</button>` : ''}
+      <button class="${isHidden?'show':'hide'}" onclick="adminToggleNpc('${p.uid}')">${isHidden?'Hiện':'Ẩn'}</button>
       ${banned
-        ? `<button class="unban" onclick="adminUnban('${n}')">Mở chặn</button>`
-        : `<button class="ban" onclick="adminBan('${n}')">Chặn</button>`}
+        ? `<button class="unban" onclick="adminUnban('${p.uid}')">Mở ban</button>`
+        : `<button class="ban" onclick="adminBan('${p.uid}','${p.name.replace(/'/g,"\\'")}')">Ban</button>`}
     </div>`;
   }).join('');
 }
@@ -1456,16 +1477,20 @@ function renderAdminBanned(){
   if(!isAdmin) return;
   const box = document.getElementById('adminBanned');
   if(!box) return;
-  const banned = Object.keys(allMods).filter(n => allMods[n] && allMods[n].ban);
-  if(!banned.length){ box.innerHTML = '<div class="admin-empty">Chưa có ai bị chặn</div>'; return; }
-  box.innerHTML = banned.map(n => {
-    const mod = allMods[n]||{};
+  const banned = Object.keys(allMods).filter(uid => allMods[uid] && allMods[uid].ban);
+  if(!banned.length){ box.innerHTML = '<div class="admin-empty">Chưa có ai bị ban</div>'; return; }
+  box.innerHTML = banned.map(uid => {
+    const mod = allMods[uid] || {};
+    const p = allPresence[uid] || {};
+    const name = p.name || mod.name || 'Ẩn danh';
+    const shortUid = uid.length > 12 ? uid.slice(0,6)+'…'+uid.slice(-4) : uid;
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
-        <div class="an">${n}</div>
+        <div class="an">${name}</div>
         <div class="as">${mod.reason ? 'Lý do: '+mod.reason : 'Không có lý do'}</div>
+        <div class="admin-uid">uid: ${shortUid}</div>
       </div>
-      <button class="unban" onclick="adminUnban('${n}')">Mở chặn</button>
+      <button class="unban" onclick="adminUnban('${uid}')">Mở ban</button>
     </div>`;
   }).join('');
 }
@@ -1478,43 +1503,43 @@ window.adminSwitchTab = function(tab){
 };
 
 window.adminToggleNpc = async function(uid){
-  if(!isAdmin || !adminDB) return;
-  const ref = adminDB.ref('rooms/nhom1/hidden/'+uid);
-  const snap = await ref.once('value');
-  if(snap.exists()) await ref.remove();
-  else await ref.set(true);
-};
-
-window.adminBan = async function(name){
-  if(!isAdmin || !adminDB) return;
-  const reason = prompt('Lý do chặn '+name+'? (có thể bỏ trống)','') || '';
+  if(!isAdmin || !adminDB || !uid) return;
   try {
-    await adminDB.ref('rooms/nhom1/moderations/'+name).update({
-      ban:true, kick:true, mute:true, reason, time:Date.now(), by:myName()
-    });
-    const presenceSnap = await adminDB.ref('rooms/nhom1/presence').orderByChild('name').equalTo(name).once('value');
-    const removals = [];
-    presenceSnap.forEach(c => {
-      const u = c.val();
-      removals.push(c.ref.remove());
-      if(u && u.uid) removals.push(adminDB.ref('rooms/nhom1/hidden/'+u.uid).set(true));
-    });
-    await Promise.all(removals);
+    const ref = adminDB.ref('rooms/nhom1/hidden/'+uid);
+    const snap = await ref.once('value');
+    if(snap.exists()) await ref.remove();
+    else await ref.set(true);
   } catch(e){ alert('Lỗi: '+e.message); }
 };
 
-window.adminUnban = async function(name){
-  if(!isAdmin || !adminDB) return;
+window.adminBan = async function(uid, name){
+  if(!isAdmin || !adminDB || !uid) return;
+  const reason = prompt('Lý do ban '+(name||uid)+'? (có thể bỏ trống)','') || '';
   try {
-    await adminDB.ref('rooms/nhom1/moderations/'+name).update({
+    await adminDB.ref('rooms/nhom1/moderations/'+uid).update({
+      ban:true, kick:true, mute:true, reason, name: name||'', time:Date.now(), by:myName()
+    });
+    await adminDB.ref('rooms/nhom1/hidden/'+uid).set(true);
+    await adminDB.ref('rooms/nhom1/presence/'+uid).remove().catch(()=>{});
+  } catch(e){ alert('Lỗi: '+e.message); }
+};
+
+window.adminUnban = async function(uid){
+  if(!isAdmin || !adminDB || !uid) return;
+  try {
+    await adminDB.ref('rooms/nhom1/moderations/'+uid).update({
       ban:false, kick:false, mute:false, reason:'', time:Date.now(), by:myName()
     });
+    const hid = await adminDB.ref('rooms/nhom1/hidden/'+uid).once('value');
+    if(hid.exists() && allMods[uid] && allMods[uid].ban !== true){
+      // không tự động bỏ ẩn, để admin tự bấm Hiện
+    }
   } catch(e){ alert('Lỗi: '+e.message); }
 };
 
 window.syncAdminPresence = function(users){
   allPresence = {};
-  users.forEach(u => { allPresence[u.name] = u; });
+  users.forEach(u => { if(u && u.uid) allPresence[u.uid] = u; });
   if(isAdmin) renderAdminMembers();
 };
 
@@ -1523,7 +1548,7 @@ if(adminDB){
   adminDB.ref('rooms/nhom1/moderations').on('value', s => {
     allMods = s.val()||{};
     renderAdminMembers(); renderAdminBanned();
-    const me = myName();
+    const me = myDevice();
     if(me && allMods[me] && allMods[me].ban){ checkBanned(); }
   });
   adminDB.ref('rooms/nhom1/hidden').on('value', s => {
@@ -1684,7 +1709,7 @@ document.getElementById('focusClose').addEventListener('click', exitFocus);
 const nameModal = document.getElementById('nameModal');
 const nameInput = document.getElementById('nameInput');
 const nameBtn = document.getElementById('nameBtn');
-let playerName = 'Bạn';
+let playerName = '';
 
 function detectDeviceName(){
   const ua = navigator.userAgent || '';
@@ -1697,9 +1722,17 @@ function detectDeviceName(){
   return '';
 }
 
+function getSavedName(){ return (localStorage.getItem('chat_name') || '').trim(); }
+
 async function handleNameSubmit(){
   const val = nameInput.value.trim();
-  if (!val || val.length > 20) {
+  if (!val) {
+    nameInput.classList.add('invalid');
+    setTimeout(() => nameInput.classList.remove('invalid'), 500);
+    nameInput.focus();
+    return;
+  }
+  if (val.length > 20) {
     nameInput.classList.add('invalid');
     setTimeout(() => nameInput.classList.remove('invalid'), 500);
     nameInput.focus();
@@ -1724,6 +1757,7 @@ async function handleNameSubmit(){
       if(!bound || bound.device === myDevice()){
         await adminDB.ref('rooms/nhom1/adminDevice').set({ device: myDevice(), time: Date.now() });
         await adminDB.ref('rooms/nhom1/members/'+val+'/isAdmin').set(true).catch(()=>{});
+        await adminDB.ref('rooms/nhom1/members/'+val+'/uid').set(myDevice()).catch(()=>{});
         isAdmin = true;
         document.getElementById('adminFab').classList.add('on');
         updateHud();
@@ -1740,11 +1774,11 @@ nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleNameSu
 function applyPlayerName() {
   const youStudent = students.find(s => s.isYou);
   if (!youStudent) return;
-  youStudent.name = playerName;
+  youStudent.name = playerName || 'Bạn';
   const npc = youStudent.npc;
   const oldSprite = npc.userData.nameSprite;
   if (oldSprite) npc.remove(oldSprite);
-  const newSprite = makeNameSprite(playerName, true, isAdminIdentity(playerName));
+  const newSprite = makeNameSprite(youStudent.name, true, isAdminIdentity(youStudent.name));
   newSprite.position.set(0, 2.6, 0);
   npc.add(newSprite);
   npc.userData.nameSprite = newSprite;
@@ -1791,23 +1825,27 @@ async function pickSkin(key){
 
 buildSkinGrid();
 
+function updateNameInputPlaceholder(){
+  const dev = detectDeviceName();
+  nameInput.placeholder = dev ? `Tên của bạn... (gợi ý: ${dev})` : 'Tên của bạn...';
+}
+
 (async function boot(){
-  let savedName = (localStorage.getItem('chat_name') || '').trim();
-  if(!savedName){
-    savedName = detectDeviceName();
-    // KHÔNG tự đặt tên sai: nếu không nhận ra thiết bị thì để trống để user tự nhập
-  }
-  playerName = savedName;
-  nameInput.value = savedName;
-  const banned = await checkBanned();
-  if(banned){
-    nameModal.classList.add('hide');
-    return;
-  }
+  const savedName = getSavedName();
   if(savedName){
+    playerName = savedName;
+    nameInput.value = savedName;
+    const banned = await checkBanned();
+    if(banned){
+      nameModal.classList.add('hide');
+      return;
+    }
     applyPlayerName();
     nameModal.classList.add('hide');
     window.startClassroomPresence?.();
+  } else {
+    updateNameInputPlaceholder();
+    nameInput.value = '';
   }
   const ok = await checkAdmin();
   if(ok){ document.getElementById('adminFab').classList.add('on'); }
@@ -1828,7 +1866,7 @@ buildSkinGrid();
 })();
 
 const clock = new THREE.Clock();
-let frameCount = 0, listRefreshTimer = 0;
+let frameCount = 0, listRefreshTimer = 0, hiddenFallbackTimer = 0;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -1838,6 +1876,9 @@ function animate() {
 
   listRefreshTimer += dt;
   if (listRefreshTimer > 2) { listRefreshTimer = 0; renderStudentList(); updateHud(); }
+
+  hiddenFallbackTimer += dt;
+  if (hiddenFallbackTimer > 0.5) { hiddenFallbackTimer = 0; applyHiddenNpcs(); }
 
   const activeStudents = students.filter(s => s.active);
   const nOn = activeStudents.filter(s => s.isOnline).length;
