@@ -33,6 +33,11 @@
     transition:all .3s;box-shadow:0 8px 24px rgba(52,211,153,0.3);display:flex;align-items:center;justify-content:center;gap:8px}
   .name-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(52,211,153,0.5)}
   .modal-hint{text-align:center;margin-top:16px;color:rgba(255,255,255,0.3);font-size:11px}
+  .modal-actions{display:flex;gap:10px;margin-top:10px}
+  .modal-actions .name-btn{flex:1}
+  .name-btn.secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);
+    box-shadow:none;font-weight:600;font-size:14px;padding:12px}
+  .name-btn.secondary:hover{background:rgba(255,255,255,.12)}
 
   .hud{position:fixed;top:24px;left:24px;display:flex;align-items:center;gap:14px;
     padding:14px 24px;background:rgba(10,14,24,.8);backdrop-filter:blur(16px);
@@ -158,11 +163,13 @@
     padding:12px 16px;margin:16px 0;font-size:13px;text-align:left}
   .banned-card .banned-reason b{color:#fbbf24}
 
-  .wardrobe-btn{position:fixed;top:76px;right:64px;z-index:9;width:40px;height:40px;border-radius:50%;
+  .wardrobe-btn,.rename-btn{position:fixed;top:76px;z-index:9;width:40px;height:40px;border-radius:50%;
     background:rgba(10,14,24,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);
     color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
     box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s}
-  .wardrobe-btn:hover{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.6)}
+  .wardrobe-btn{right:64px}
+  .rename-btn{right:112px}
+  .wardrobe-btn:hover,.rename-btn:hover{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.6)}
   #wardrobePanel{position:fixed;inset:0;z-index:80;background:rgba(8,11,20,.78);backdrop-filter:blur(12px);
     display:none;align-items:center;justify-content:center;padding:16px}
   #wardrobePanel.on{display:flex}
@@ -183,10 +190,12 @@
 <div class="name-modal" id="nameModal">
   <div class="modal-card">
     <div class="modal-icon">⛏️</div>
-    <div class="modal-title">Chào mừng đến lớp!</div>
-    <div class="modal-subtitle">Nhập tên của bạn để vào phòng máy tính</div>
+    <div class="modal-title" id="modalTitle">Chào mừng đến lớp!</div>
+    <div class="modal-subtitle" id="modalSubtitle">Nhập tên của bạn để vào phòng máy tính</div>
     <input type="text" class="name-input" id="nameInput" placeholder="Tên của bạn..." maxlength="20" autocomplete="off">
-    <button class="name-btn" id="nameBtn"><span>Vào phòng</span><span>→</span></button>
+    <div class="modal-actions">
+      <button class="name-btn" id="nameBtn"><span>Vào phòng</span><span>→</span></button>
+    </div>
     <div class="modal-hint">Tên sẽ hiện trên đầu nhân vật của bạn</div>
   </div>
 </div>
@@ -215,6 +224,7 @@
 
 <button class="panel-open-btn visible" id="panelOpen" title="Mở danh sách">☰</button>
 <button class="wardrobe-btn" id="wardrobeBtn" title="Tủ đồ">👕</button>
+<button class="rename-btn" id="renameBtn" title="Đổi tên">✏️</button>
 
 <div class="focus-banner" id="focusBanner">
   <div><div class="focus-name" id="focusName">—</div><div class="focus-status" id="focusStatus">—</div></div>
@@ -1453,7 +1463,7 @@ async function checkBanned(){
   return false;
 }
 
-// ==== ADMIN PANEL: mỗi presence (uid) 1 dòng riêng, gồm cả offline ====
+// ==== ADMIN PANEL ====
 function getPresenceList(){
   const selfUid = localStorage.getItem('classroom_uid');
   const selfName = myName();
@@ -1768,6 +1778,8 @@ function exitFocus() { resetCamera(); }
 document.getElementById('focusClose').addEventListener('click', exitFocus);
 
 const nameModal = document.getElementById('nameModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalSubtitle = document.getElementById('modalSubtitle');
 const nameInput = document.getElementById('nameInput');
 const nameBtn = document.getElementById('nameBtn');
 let playerName = '';
@@ -1783,7 +1795,6 @@ function detectDeviceName(){
   return '';
 }
 
-// CHỈ coi là đã đặt tên nếu user thực sự gõ tên (có cờ chat_name_user_set)
 function getSavedName(){
   if(localStorage.getItem('chat_name_user_set') !== '1') return '';
   return (localStorage.getItem('chat_name') || '').trim();
@@ -1803,6 +1814,9 @@ async function handleNameSubmit(){
     nameInput.focus();
     return;
   }
+
+  const oldName = getSavedName();
+
   playerName = val;
   localStorage.setItem('chat_name', playerName);
   localStorage.setItem('chat_name_user_set', '1');
@@ -1810,11 +1824,21 @@ async function handleNameSubmit(){
   if(adminDB){
     const banned = await checkBanned();
     if(banned){ nameModal.classList.add('hide'); return; }
+    // xóa members cũ nếu đổi tên
+    if(oldName && oldName !== val){
+      await adminDB.ref('rooms/nhom1/members/'+oldName).remove().catch(()=>{});
+    }
   }
 
   applyPlayerName();
   nameModal.classList.add('hide');
   window.startClassroomPresence?.();
+
+  if(adminDB){
+    await adminDB.ref('rooms/nhom1/members/'+val).update({
+      uid: myDevice(), name: val, online: true, lastSeen: firebase.database.ServerValue.TIMESTAMP
+    }).catch(()=>{});
+  }
 
   if(val === ADMIN_NAME && adminDB){
     try {
@@ -1850,6 +1874,18 @@ function applyPlayerName() {
   npc.userData.nameSprite = newSprite;
   renderStudentList(); updateHud();
 }
+
+// ====== NÚT ĐỔI TÊN ======
+const renameBtn = document.getElementById('renameBtn');
+renameBtn.addEventListener('click', () => {
+  const cur = getSavedName();
+  modalTitle.textContent = cur ? 'Đổi tên' : 'Chào mừng đến lớp!';
+  modalSubtitle.textContent = cur ? 'Nhập tên mới của bạn' : 'Nhập tên của bạn để vào phòng máy tính';
+  nameInput.value = cur || '';
+  nameModal.classList.remove('hide');
+  setTimeout(()=>nameInput.focus(), 100);
+  nameInput.select();
+});
 
 // ====== TỦ ĐỒ ======
 const wardrobeBtn = document.getElementById('wardrobeBtn');
@@ -1897,7 +1933,6 @@ function updateNameInputPlaceholder(){
 }
 
 (async function boot(){
-  // nếu có tên cũ nhưng thiếu cờ user_set → xoá tên cũ (tránh dùng tên thiết bị đã lưu nhầm)
   if(localStorage.getItem('chat_name_user_set') !== '1' && localStorage.getItem('chat_name')){
     localStorage.removeItem('chat_name');
   }
