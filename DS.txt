@@ -85,7 +85,7 @@ A.Đúng
 *B.Sai
 
 Câu hỏi nhiều lựa chọn
-28.Khi nghiên cứu về nguồn gốc nhà nước theo quan điểm Mác thì khăn: định nào sau đây là sai?
+28.Khi nghiên cứu về nguồn gốc nhà nước theo quan điểm Mác thì khăng định nào sau đây là sai?
 A.Nhà nước ra đời, tồn tại trong xã hội có giai cấp
 B.Thời kỳ xã hội loài người có giai cấp thì nhà nước chưa xuất hiện
 *C.Nhà nước ra đời tồn tại cùng với lịch sử xã hội loài người
@@ -126,7 +126,7 @@ A.Quyền ban hành pháp luật
 C.Tính dân tộc
 D.Chia dân cư theo đơn vị hành chính
 36.Nhà nước ra đời xuất phát từ nhu cầu:
-*A Quản lý các công việc chung của xã hội
+*A.Quản lý các công việc chung của xã hội
 B.Bảo vệ lợi ích chung của giai cấp thống trị và bị trị
 C.Bảo vệ lợi ích chung của xã hội
 D.Thể hiện ý chí chung của các giai cấp trong xã hội
@@ -139,7 +139,7 @@ D.Xuất hiện giai cấp bóc lột và bị bóc lột
 A.Ý chí của giai cấp thống trị
 B.Lợi ích của giai cấp thống trị
 C.Ý chí và lợi ích của giai cấp thống trị và bị trị
-*D Sự bảo vệ lợi ích trước hết của giai cấp thống trị
+*D.Sự bảo vệ lợi ích trước hết của giai cấp thống trị
 39.
 A.Bảo đảm lợi ích vật chất của giai cấp bóc lột
 B.Đảm bảo sự công bằng trong xã hội
@@ -206,7 +206,7 @@ B.Chúa trời
 C.Nhà nước
 *D.Mâu thuẫn giai cấp
 52.Pháp luật được ban hành với mục đích điều chỉnh các quan hệ xã hội theo một trật tự phù hợp với ý chí và lợi ích của giai cấp nắm quyền lực nhà nước. Mục đích này thể hiện bản chất gì của pháp luật?
-*A Giai cấp
+*A.Giai cấp
 B.Xã hội
 C.Tính dân tộc
 D.Tính mở
@@ -261,7 +261,7 @@ A.Đúng
 4.Nhà nước XHCN do giai cấp công nhân lãnh đạo.
 *A.Đúng
 B.Sai
-5.Bộ máy nhà nước CHXHCN Việt Nam được cấu tạo bởi các cơ quan xuyên lực, hành chính và tư pháp. @ Dùng
+5.Bộ máy nhà nước CHXHCN Việt Nam được cấu tạo bởi các cơ quan xuyên lực, hành chính và tư pháp. 
 *A.Đúng
 B.Sai
 6.Quốc hội vừa là cơ quan đại biểu cao nhất của nhân dân vừa là cơ quan quyền lực nhà nước cao nhất.
@@ -298,10 +298,10 @@ A.Đúng
 A.Đúng
 *B.Sai
 17.Viện kiểm sát nhân dân kiểm sát hoạt động tư pháp.
-*A Đúng
+*A.Đúng
 B.Sai
 18.Nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam là thiết chế trung tâm trung hệ thống chính trị nước ta.
-*A Đúng
+*A.Đúng
 B.Sai
 19.Quy phạm pháp luật tồn tại với tư cách như bộ phận độc lập trong hệ thống pháp luật.
 *A.Đúng
@@ -333,7 +333,7 @@ D.Chỉ là tổ chức thực hiện cam kết quốc tế
 B.Cơ quan hành pháp
 C.Cơ quan tư pháp
 D.Tất cả đều sai
-27.Cơ quan nào đóng vai trò quan trọng nhất trong việc bảo vệ pháp lưu
+27.Cơ quan nào đóng vai trò quan trọng nhất trong việc bảo vệ pháp luật
 A.Quốc hội
 B.Chính phủ
 *C.Tòa án
@@ -398,12 +398,11 @@ D.Tất cả đều đúng
 B.Pháp luật được đảm bảo thực hiện bằng các biện pháp cưỡng chế có nhà nước
 C.Pháp luật phải điều chỉnh bao quát mọi mặt của đời sống
 D.Tất cả đều sai
-#40) {dungnhat/chuong1/diem:1/tru:0/KO}
-Văn bản quy phạm pháp luật là là văn bản dọc
+40.Văn bản quy phạm pháp luật là là văn bản dọc
 A.Cơ quan nhà nước ban hành
 B.Nhà nước ban hành
 C.Tổ chức ban hành
-*A.Do cơ quan nhà nước có thẩm quyền ban hành theo thủ tục trình tự tiết định tự luật
+*D.Do cơ quan nhà nước có thẩm quyền ban hành theo thủ tục trình tự tiết định tự luật
 41.Văn bản nào có hiệu lực cao nhất trong các văn bản sau của hệ thống văn bản quy phạm pháp luật Việt Nam?
 *A.Luật
 B.Pháp lệnh
@@ -439,7 +438,7 @@ A.Ngành luật
 *B.Quy phạm pháp luật
 C.Chế định
 D.Tất cả đều đúng.
-48.* Tổng hợp các chế định pháp luật điều chỉnh các nhóm quan hệ xã hội ông tính chất là:
+48.Tổng hợp các chế định pháp luật điều chỉnh các nhóm quan hệ xã hội ông tính chất là:
 A.Giả định
 B.Quy định
 C.Chế tài
@@ -475,7 +474,7 @@ B.Sai
 B.Sai
 6.Hiến pháp đầu tiên của nước Cộng hòa xã hội chủ nghĩa Việt Nam ra đời trước cách mạng tháng 8/1945.
 A.Đúng
-*B Sai
+*B.Sai
 7.Theo qui định của Hiến pháp Việt Nam, quyền công dân và nghĩa vụ công dân tồn tại tách rời, không có mối liên hệ với nhau.
 A.Đúng
 *B.Sai
@@ -665,7 +664,7 @@ A.Đúng
 8.Luật Dạy nghề góp phần đảm bảo công bằng xã hội trong dạy nghề và học nghề.
 *A.Đúng
 B.Sai
-9.Luật Dạy nghề quy định có 2 cấp trình độ dạy nghề: trung cấp nghề và to đẳng nghề.
+9.Luật Dạy nghề quy định có 2 cấp trình độ dạy nghề: trung cấp nghề và cao đẳng nghề.
 A.Đúng
 *B.Sai
 10.Người học nghề được trả tiền thù lao nếu trực tiếp hoặc tham gia sản thẩm hàng hóa, dịch vụ khi thực tập nghề trong quá trình học nghề.
@@ -677,7 +676,7 @@ A.Đúng
 12.Người học nghề có quyền bảo lưu kết quả học tập.
 *A Đúng
 B.Sai
-13.Người học nghề không được học rút ngắn thời gian thực hiện chương nh
+13.Người học nghề không được học rút ngắn thời gian thực hiện chương trình
 A.Đúng
 *B.Sai
 14.Tổ chức thanh tra, kiểm tra trong trường theo quy định là nhiệm vụ của người học nghề
@@ -887,7 +886,7 @@ A.Hợp đồng xác định thời hạn
 B.Hợp đồng bằng văn bản
 C.Hợp đồng miệng
 *D Hợp đồng miệng và bằng văn bản
-41.Trong quá trình thực hiện hợp đồng lao động, nếu một bên có yêu cầu thay đổi nội dung hợp đồng thì phải báo cho bên kia biết trước ( nhất mấy ngày?
+41.Trong quá trình thực hiện hợp đồng lao động, nếu một bên có yêu cầu thay đổi nội dung hợp đồng thì phải báo cho bên kia biết trước ( ít nhất mấy ngày?
 A.1
 B.2
 *C.3
@@ -1433,7 +1432,7 @@ B.Sai
 12.Chủ thể vi phạm hành chính có thể là người nước ngoài.
 *A.Đúng
 B.Sai
-113.Vi phạm hành chính là tội phạm và theo quy định của pháp luật phải bị xử phạt vi phạm hành chính,
+13.Vi phạm hành chính là tội phạm và theo quy định của pháp luật phải bị xử phạt vi phạm hành chính,
 A.Đúng
 *A.Sai
 14.Khi vi phạm pháp luật hành chính, chỉ có công dân Việt Nam mới bàn dụng trách nhiệm hành chính.
@@ -1530,9 +1529,9 @@ B.Sai
 Câu hỏi đúng nhất
 44.Nguyên tắc xử phạt đối với mỗi hành vi vi phạm hành chính:
 A.Chỉ bị xử phạt một lần, bằng nhiều hình thức xử phạt chính
-*B.Chỉ bị xử phạt nhiều lần, bằng một hình thức xử phạt chính
+B.Chỉ bị xử phạt nhiều lần, bằng một hình thức xử phạt chính
 C.Chỉ bị xử phạt nhiều lần, bằng một trong các hình thức xử phạt chính có thể kèm theo hình phạt bổ sung
-D.Chỉ bị xử phạt một lần, bằng một trong các hình thức xử phạt chính có thể kèm theo hình phạt bổ sung
+*D.Chỉ bị xử phạt một lần, bằng một trong các hình thức xử phạt chính có thể kèm theo hình phạt bổ sung
 45.Tước quyền sử dụng giấy phép, chứng chỉ hành nghề là
 A.Hình phạt chính
 *B.Hình phạt bổ sung
@@ -1687,7 +1686,7 @@ C.2 Thẩm phán và 2 Hội thẩm
 75.Thời hạn kháng cáo bản án, quyết định sơ thẩm là bao nhiêu ngày?
 A.5 ngày
 B.10 ngày
-*C.5 ngày
+*C.15 ngày
 D.20 ngày.
 76.Thi hành án là một giai đoạn của tố tụng hình sự nhằm:
 A.Xác định sự việc xảy ra có hay không có các dấu hiệu của tội phạm để quyết định khởi tố hay không khởi tố vụ án hình sự.
