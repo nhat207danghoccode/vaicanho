@@ -172,18 +172,8 @@
 .chat-compose{display:flex;gap:8px;padding:14px;border-top:1px solid #ffffff18}
 .chat-compose input{min-width:0;flex:1;border:1px solid #ffffff20;border-radius:12px;background:#08101d;color:white;padding:13px;font:14px system-ui;outline:none}
 .chat-compose button{border:0;border-radius:12px;padding:0 18px;background:#059669;color:white;font-weight:800}
-.room-actions{position:fixed;z-index:31;top:24px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:7px;border:1px solid #ffffff25;border-radius:16px;background:#09111ddd;backdrop-filter:blur(18px);box-shadow:0 12px 36px #0008}
-.room-actions button{border:0;border-radius:11px;padding:10px 16px;color:#e2e8f0;background:#1e293b;font:700 12.5px system-ui;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.18s}
-.room-actions button:hover{background:#334155;transform:translateY(-1px)}
-.room-actions button.back{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;box-shadow:0 6px 18px #7c3aed55}
-.room-actions button.exit{background:linear-gradient(135deg,#dc2626,#f97316);color:#fff;box-shadow:0 6px 18px #dc262655}
-@media(max-width:500px){.classroom-nav{bottom:10px;width:calc(100% - 20px)}.classroom-nav button{flex:1;padding:11px 6px;font-size:12px}#classChat{padding:65px 8px 70px}.room-actions{top:80px;width:calc(100% - 24px)}.room-actions button{flex:1;justify-content:center}}
+@media(max-width:500px){.classroom-nav{bottom:10px;width:calc(100% - 20px)}.classroom-nav button{flex:1;padding:11px 6px;font-size:12px}#classChat{padding:65px 8px 70px}}
 </style>
-
-<div class="room-actions">
-  <button type="button" class="back" onclick="backToIndex()">↩ Trở về Index</button>
-  <button type="button" class="exit" onclick="exitClassroom()">✕ Thoát phòng học</button>
-</div>
 
 <div class="classroom-nav">
 <button id="checkRoomTab" class="active">◉ Check phòng học</button>
@@ -197,28 +187,6 @@
 <form class="chat-compose" id="classChatForm"><input id="classChatInput" maxlength="500" placeholder="Nhập tin nhắn..." autocomplete="off"><button type="submit">Gửi</button></form>
 </div>
 </section>
-
-<script>
-function backToIndex(){
-  try{
-    if(window.parent && window.parent !== window){
-      window.parent.postMessage({type:'RPG_CLOSE'}, '*');
-      window.parent.postMessage({type:'CLASSROOM_CLOSE'}, '*');
-    }
-  }catch(e){}
-  window.location.href = 'index (3).html';
-}
-function exitClassroom(){
-  try{
-    if(window.parent && window.parent !== window){
-      window.parent.postMessage({type:'RPG_CLOSE'}, '*');
-      window.parent.postMessage({type:'CLASSROOM_CLOSE'}, '*');
-    }
-  }catch(e){}
-  if(window.history.length > 1){ window.history.back(); }
-  else { window.location.href = 'index (3).html'; }
-}
-</script>
 
 <script>
 (function(){
