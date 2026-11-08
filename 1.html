@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Phòng Máy Tính 3D — Minecraft Studio NPCs</title>
+<title>Phòng Học — Minecraft Studio NPCs</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{overflow:hidden;background:#080b14;font-family:system-ui,sans-serif}
@@ -153,137 +153,47 @@
 
 <div class="hint">Click vào nhân vật để xem cận cảnh · Kéo chuột để xoay · Lăn chuột để zoom · ESC để thoát</div>
 
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<style>
-.classroom-nav{position:fixed;z-index:30;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:7px;border:1px solid #ffffff25;border-radius:18px;background:#09111ddd;backdrop-filter:blur(18px);box-shadow:0 12px 36px #0008}
-.classroom-nav button{border:0;border-radius:12px;padding:11px 17px;color:#aab7c9;background:transparent;font:700 13px system-ui;cursor:pointer}
-.classroom-nav button.active{color:#fff;background:linear-gradient(135deg,#059669,#34d399);box-shadow:0 5px 18px #34d39944}
-#classChat{display:none;position:fixed;inset:0;z-index:25;background:radial-gradient(ellipse at top,#17283b,#080b14 70%);padding:80px 16px 85px;color:white}
-#classChat.on{display:flex;flex-direction:column}
-.chat-card{width:min(760px,100%);height:100%;margin:auto;border:1px solid #ffffff20;border-radius:22px;background:#0c1422dd;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 80px #0009}
-.chat-head{padding:17px 20px;border-bottom:1px solid #ffffff18;font-weight:800;display:flex;justify-content:space-between}
-.chat-head small{display:block;color:#8da0b7;font-weight:500;margin-top:4px}
-#classChatMessages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
-.chat-msg{max-width:85%;padding:10px 13px;border-radius:14px;background:#1b2940;align-self:flex-start;overflow-wrap:anywhere}
-.chat-msg.mine{align-self:flex-end;background:#075b49}
-.chat-msg b{display:block;font-size:11px;color:#7ee7bf;margin-bottom:4px}
-.chat-compose{display:flex;gap:8px;padding:14px;border-top:1px solid #ffffff18}
-.chat-compose input{min-width:0;flex:1;border:1px solid #ffffff20;border-radius:12px;background:#08101d;color:white;padding:13px;font:14px system-ui;outline:none}
-.chat-compose button{border:0;border-radius:12px;padding:0 18px;background:#059669;color:white;font-weight:800}
-@media(max-width:500px){.classroom-nav{bottom:10px;width:calc(100% - 20px)}.classroom-nav button{flex:1;padding:11px 6px;font-size:12px}#classChat{padding:65px 8px 70px}}
-</style>
-
-<div class="classroom-nav">
-<button id="checkRoomTab" class="active">◉ Check phòng học</button>
-<button id="chatRoomTab">▤ Chat phòng học</button>
-</div>
-
-<section id="classChat">
-<div class="chat-card">
-<div class="chat-head"><div>Chat phòng học<small id="chatRoomStatus">Đang kết nối...</small></div><span>●</span></div>
-<div id="classChatMessages"></div>
-<form class="chat-compose" id="classChatForm"><input id="classChatInput" maxlength="500" placeholder="Nhập tin nhắn..." autocomplete="off"><button type="submit">Gửi</button></form>
-</div>
-</section>
 
 <script>
 (function(){
-const cfg={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
-let db=null;
-const uid=localStorage.getItem('classroom_uid')||('u_'+Math.random().toString(36).slice(2)+Date.now().toString(36));
-if(!localStorage.getItem('classroom_uid'))localStorage.setItem('classroom_uid',uid);
-try{
-  let app;
-  try{ app=firebase.app('classroomPresence'); }catch(e){ app=firebase.initializeApp(cfg,'classroomPresence'); }
-  db=app.database();
-}catch(e){
-  const s=document.getElementById('chatRoomStatus');
-  if(s) s.textContent='Không thể kết nối Firebase';
-}
-const root='rooms/nhom1';
-const presenceRef=db?db.ref(root+'/presence/'+uid):null;
+  const cfg={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
+  let db=null;
+  const uid=localStorage.getItem('classroom_uid')||('u_'+Math.random().toString(36).slice(2)+Date.now().toString(36));
+  if(!localStorage.getItem('classroom_uid'))localStorage.setItem('classroom_uid',uid);
+  try{
+    let app;
+    try{ app=firebase.app('classroomPresence'); }catch(e){ app=firebase.initializeApp(cfg,'classroomPresence'); }
+    db=app.database();
+  }catch(e){}
+  const root='rooms/nhom1';
+  const presenceRef=db?db.ref(root+'/presence/'+uid):null;
 
-function getDeviceName(){
-  const saved=(localStorage.getItem('chat_name')||'').trim();
-  if(saved) return saved;
-  const ua=navigator.userAgent||'';
-  let suggested='Thiết bị';
-  if(/Windows/i.test(ua)) suggested='Máy tính Windows';
-  else if(/Macintosh|Mac OS/i.test(ua)) suggested='Máy Mac';
-  else if(/Android/i.test(ua)) suggested='Điện thoại Android';
-  else if(/iPhone|iPad/i.test(ua)) suggested='Thiết bị Apple';
-  else if(/Linux/i.test(ua)) suggested='Máy Linux';
-  return suggested;
-}
-
-window.startClassroomPresence=function(){
-  const name=(localStorage.getItem('chat_name')||'').trim();
-  if(!name||!presenceRef) return;
-  const record={
-    name,
-    uid,
-    online:true,
-    lastSeen:firebase.database.ServerValue.TIMESTAMP,
-    device:navigator.userAgent.slice(0,100)
+  window.startClassroomPresence=function(){
+    const name=(localStorage.getItem('chat_name')||'').trim();
+    if(!name||!presenceRef) return;
+    const record={name,uid,online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP,device:navigator.userAgent.slice(0,100)};
+    presenceRef.onDisconnect().set({name,uid,online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+    presenceRef.set(record);
   };
-  presenceRef.onDisconnect().set({name,uid,online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
-  presenceRef.set(record);
-};
 
-window.addEventListener('beforeunload',()=>{
-  if(presenceRef){
-    presenceRef.set({
-      name:localStorage.getItem('chat_name')||getDeviceName(),
-      uid,
-      online:false,
-      lastSeen:firebase.database.ServerValue.TIMESTAMP
+  window.addEventListener('beforeunload',()=>{
+    if(presenceRef){
+      const name=(localStorage.getItem('chat_name')||'').trim()||'Người dùng';
+      presenceRef.set({name,uid,online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+    }
+  });
+
+  if(presenceRef && (localStorage.getItem('chat_name')||'').trim()) window.startClassroomPresence();
+
+  if(db){
+    db.ref(root+'/presence').on('value',snap=>{
+      const data=snap.val()||{};
+      const users=Object.entries(data).map(([id,u])=>({...u,uid:id})).filter(u=>u.name);
+      window.syncClassroomUsers && window.syncClassroomUsers(users);
     });
   }
-});
-
-if(presenceRef && localStorage.getItem('chat_name')) window.startClassroomPresence();
-
-if(db){
-  db.ref(root+'/presence').on('value',snap=>{
-    const data=snap.val()||{};
-    const users=Object.entries(data).map(([id,u])=>({...u,uid:id})).filter(u=>u.name);
-    const s=document.getElementById('chatRoomStatus');
-    if(s) s.textContent=users.filter(u=>u.online).length+' người đang học · '+users.filter(u=>!u.online).length+' đang ngủ';
-    window.syncClassroomUsers && window.syncClassroomUsers(users);
-  });
-
-  db.ref(root+'/messages').limitToLast(100).on('child_added',snap=>{
-    const m=snap.val()||{};
-    const wrap=document.createElement('div');
-    wrap.className='chat-msg'+(m.uid===uid?' mine':'');
-    const who=document.createElement('b');
-    who.textContent=m.name||'Người dùng';
-    const body=document.createElement('span');
-    body.textContent=m.text||'';
-    wrap.append(who,body);
-    const box=document.getElementById('classChatMessages');
-    box.appendChild(wrap);
-    box.scrollTop=box.scrollHeight;
-  });
-}
-
-document.getElementById('classChatForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const input=document.getElementById('classChatInput');
-  const text=input.value.trim();
-  const name=(localStorage.getItem('chat_name')||'').trim();
-  if(!text||!name||!db) return;
-  db.ref(root+'/messages').push({uid,name,text,createdAt:firebase.database.ServerValue.TIMESTAMP});
-  input.value='';
-});
-
-const check=document.getElementById('checkRoomTab');
-const chat=document.getElementById('chatRoomTab');
-const panel=document.getElementById('classChat');
-check.onclick=()=>{check.classList.add('active');chat.classList.remove('active');panel.classList.remove('on');};
-chat.onclick=()=>{chat.classList.add('active');check.classList.remove('active');panel.classList.add('on');};
 })();
 </script>
 
@@ -1132,21 +1042,15 @@ for (let row = 0; row < ROWS; row++) {
 
     const initialOnline = isYou;
 
-    const baseHeadRotX = 0;
-    const baseTorsoRotX = 0;
-
     npc.userData = {
       ...built,
       characterGroup: built.group,
       nameSprite, seatLabel, isYou, youRing, zzzSprites,
       presetKey, presetName: CHARACTER_PRESETS[presetKey].name,
-      baseHeadRotX,
-      baseTorsoRotX,
       target: { headRotX: 0, zzzVisible: !initialOnline },
       current: { headRotX: 0 },
       phase: Math.random() * 10,
       tapSpeed: 6 + Math.random() * 3,
-      nextChange: isYou ? 999999 : (3 + Math.random() * 10),
     };
 
     if (!initialOnline) {
