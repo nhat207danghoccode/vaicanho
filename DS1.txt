@@ -239,305 +239,305 @@ C. Bôi trơn phần đã chạm trước khi đặt.
 B. Ép chặt mặt nạ lớn bằng dây cố định căng hơn.
 C. Giữ mặt nạ đang có và tăng lượng thuốc trong bầu.
 D. Giữ mặt nạ đang có nhưng tăng thời gian khí dung.
-Dưới đây là toàn bộ nội dung câu hỏi và đáp án trong các hình ảnh, đã được loại bỏ chữ "Câu" ở đầu mỗi câu theo yêu cầu của bạn. Đáp án đúng được đánh dấu bằng dấu *.
+Dưới đây là toàn bộ 60 câu hỏi kèm đáp án đúng (được đánh dấu `*` ở đầu phương án đúng) theo đúng format gốc, không kèm bất kỳ lời dẫn hay ghi chú rà soát nào:
 
 1. Người bệnh đang mang băng cẳng chân báo tê đầu ngón mới xuất hiện. Điều dưỡng cần làm gì trước tiên?
-   A. Chờ mốc kiểm tra thường quy rồi tháo băng nếu còn tê.
-   *B. Chờ đi vào bước đỡ để thử mức tê rồi mới kiểm tra.
-   C. Quấn thêm đè chi ít đi cử động hơn trước đánh giá.
-   D. Kiểm tra đầu chi và giải phóng phần băng gây chèn ép.
+A. Chờ mốc kiểm tra thường quy rồi tháo băng nếu còn tê.
+B. Chờ đi vào bước đỡ để thử mức tê rồi mới kiểm tra.
+C. Quấn thêm đè chi ít đi cử động hơn trước đánh giá.
+*D. Kiểm tra đầu chi và giải phóng phần băng gây chèn ép.
 2. Người phụ nữ 80 tuổi tiểu không tự chủ, vùng mông bẩn và ga ướt. Khi chuẩn bị chăm sóc, thứ tự công việc nào giải quyết đầy đủ vấn đề?
-   A. Vệ sinh vùng bẩn, thấm khô, thay vải trải và kiểm tra da.
-   *B. Che vùng mông bằng gạc khô rồi giữ nguyên ga.
-   C. Thay vải trải trước rồi bỏ qua da vì ga mới đã sạch.
-   D. Chỉ đổi tư thế sang bên khô và chờ xử lý cuối ca.
+*A. Vệ sinh vùng bẩn, thấm khô, thay vải trải và kiểm tra da.
+B. Che vùng mông bằng gạc khô rồi giữ nguyên ga.
+C. Thay vải trải trước rồi bỏ qua da vì ga mới đã sạch.
+D. Chỉ đổi tư thế sang bên khô và chờ xử lý cuối ca.
 3. Người bệnh 67 tuổi ngã, nghi gãy đùi, mạch 126 lần/phút, huyết áp 90/58, da lạnh. Không thấy máu ngoài. Ưu tiên?
-   A. Hoàn tất đỏ chiếu đài hai chân trước báo.
-   *B. Huy động cấp cứu, đánh giá toàn trạng và sốc, nâng đỡ chỉ khi chuẩn bị chuyển.
-   C. Cho thử đứng để phân biệt gãy cổ đùi.
-   D. Chỉ theo dõi đau tại ổ gãy.
+A. Hoàn tất đo chiều dài hai chân trước báo.
+*B. Huy động cấp cứu, đánh giá toàn trạng và sốc, nâng đỡ chỉ khi chuẩn bị chuyển.
+C. Cho thử đứng để phân biệt gãy cổ đùi.
+D. Chỉ theo dõi đau tại ổ gãy.
 4. Người bệnh tỉnh, tự thở, không nghi tổn thương cột sống và đã được đánh giá có thể nằm sấp theo kế hoạch. Cách bố trí đầu nào phù hợp?
-   A. Úp mặt xuống đệm mềm để đầu ít cử động.
-   *B. Gấp cổ tối đa để giữ đầu không xoay.
-   C. Đầu nghiêng bên, đỡ phù hợp và bảo đảm đường thở thông.
-   D. Phủ quanh mặt rồi đánh giá thở sau khi đặt xong.
+A. Úp mặt xuống đệm mềm để đầu ít cử động.
+B. Gấp cổ tối đa để giữ đầu không xoay.
+*C. Đầu nghiêng bên, đỡ phù hợp và bảo đảm đường thở thông.
+D. Phủ quanh mặt rồi đánh giá thở sau khi đặt xong.
 5. Trong cấp cứu ngừng tuần hoàn cho nạn nhân là người lớn, khi ép tim người cấp cứu cần thực hiện với tần số bao nhiêu?
-   A. 80–90 lần/phút.
-   *B. 100–120 lần/phút.
-   C. 140–160 lần/phút.
-   D. 60–80 lần/phút.
-6. Người phụ nữ 35 tuổi bong gân cổ chân đã được bác sĩ đánh giá, cần băng ép nâng đỡ vớ vải liệu co giãn. Sinh viên đề nghị dùng băng vải thường và siết chặt hơn để đạt hiệu quả tương tự. Lựa chọn phù hợp nhất là gì?
-   A. Chọn băng vải thường, tăng lực kéo để bù thiếu tính co giãn.
-   *B. Chọn băng thun, kiểm soát độ chặt và theo dõi phần chi dưới băng.
-   C. Chọn băng đính, kéo căng quanh khớp thay toàn bộ băng ép.
-   D. Chọn băng cao su, giữ lực siết đến khi chi được bất động.
-7. Vết thương của người bệnh làu lành, có mủ, bác sĩ chỉ định lấy bệnh phẩm xét nghiệm. Cách chuẩn bị và xử lý mẫu nào phù hợp nhất?
-   A. Lấy tại vết thương bằng dụng cụ phù hợp, ghi nhận đúng người và chỉ định.
-   *B. Lấy dịch từ băng cũ vì đã thấm đủ bệnh phẩm.
-   C. Lấy từ khay thu dọn để tránh tác động thêm vết thương.
-   D. Lấy mẫu xong, dán nhãn dồng loạt theo thứ tự cuối buổi.
+A. 80–90 lần/phút.
+*B. 100–120 lần/phút.
+C. 140–160 lần/phút.
+D. 60–80 lần/phút.
+6. Người phụ nữ 35 tuổi bong gân cổ chân đã được bác sĩ đánh giá, cần băng ép nâng đỡ với vải liệu co giãn. Sinh viên đề nghị dùng băng vải thường và siết chặt hơn để đạt hiệu quả tương tự. Lựa chọn phù hợp nhất là gì?
+A. Chọn băng vải thường, tăng lực kéo để bù thiếu tính co giãn.
+*B. Chọn băng thun, kiểm soát độ chặt và theo dõi phần chi dưới băng.
+C. Chọn băng đính, kéo căng quanh khớp thay toàn bộ băng ép.
+D. Chọn băng cao su, giữ lực siết đến khi chi được bất động.
+7. Vết thương của người bệnh lâu lành, có mủ, bác sĩ chỉ định lấy bệnh phẩm xét nghiệm. Cách chuẩn bị và xử lý mẫu nào phù hợp nhất?
+*A. Lấy tại vết thương bằng dụng cụ phù hợp, ghi nhận đúng người và chỉ định.
+B. Lấy dịch từ băng cũ vì đã thấm đủ bệnh phẩm.
+C. Lấy từ khay thu dọn để tránh tác động thêm vết thương.
+D. Lấy mẫu xong, dán nhãn đồng loạt theo thứ tự cuối buổi.
 8. Người bệnh có gạc ở vùng đầu gối dễ xê dịch khi cử động nhẹ. Điều dưỡng cần chọn kiểu băng cơ bản thích hợp để giữ gạc qua khớp. Nên chọn kiểu nào?
-   A. Băng số 8.
-   *B. Băng vòng tại một điểm.
-   C. Băng hồi quy đầu chi.
-   D. Băng rắn quấn.
+*A. Băng số 8.
+B. Băng vòng tại một điểm.
+C. Băng hồi quy đầu chi.
+D. Băng rắn quấn.
 9. Người bệnh tỉnh khó thở khi nằm phẳng, đã được bác sĩ đánh giá và chỉ định Fowler. Cách thực hiện nào phù hợp nhất?
-   A. Nâng phía chân giường để cho đầu thấp.
-   *B. Chuyển nằm sấp để thay tư thế đã chỉ định.
-   C. Chỉ kê cảm cao trong khi thân vẫn nằm phẳng.
-   D. Nâng đầu giường, kê đỡ và đánh giá đáp ứng.
+A. Nâng phía chân giường để cho đầu thấp.
+B. Chuyển nằm sấp để thay tư thế đã chỉ định.
+C. Chỉ kê gối cao trong khi thân vẫn nằm phẳng.
+*D. Nâng đầu giường, kê đỡ và đánh giá đáp ứng.
 10. Người vừa tháo dây thắt cổ còn khàn tiếng, đau cổ và thở khó. Nhận định nào phù hợp?
-    A. Quy triệu chứng cho tâm lý vì dây đã tháo.
-    *B. Đánh giá tiếp đường thở và tổn thương vùng cổ.
-    C. Chỉ chăm sóc vết hằn vì người bệnh còn nói được.
-    D. Cho uống nước để thử ngay khả năng nuốt.
+A. Quy triệu chứng cho tâm lý vì dây đã tháo.
+*B. Đánh giá tiếp đường thở và tổn thương vùng cổ.
+C. Chỉ chăm sóc vết hằn vì người bệnh còn nói được.
+D. Cho uống nước để thử ngay khả năng nuốt.
 11. AED đã khuyến cáo sơ cứu cho người lớn ngừng tuần hoàn. Một nhân viên vẫn đang chạm ngực người bệnh. Đánh giá nào đúng về thời điểm nhấn nút sốc?
-    A. Có thể sốc nếu người chạm đang trên nền khô.
-    *B. Có thể sốc nếu nhân viên đang mang găng.
-    C. Nên bỏ sốc và chỉ tiếp tục ép tim đang có người chạm.
-    D. Chưa an toàn; phải xác nhận mọi người rời tiếp xúc rồi mới sốc theo hướng dẫn.
+A. Có thể sốc nếu người chạm đang trên nền khô.
+B. Có thể sốc nếu nhân viên đang mang găng.
+C. Nên bỏ sốc và chỉ tiếp tục ép tim đang có người chạm.
+*D. Chưa an toàn; phải xác nhận mọi người rời tiếp xúc rồi mới sốc theo hướng dẫn.
 12. Nạn nhân đuối nước thở lại rồi khó thở tăng, ho bọt hồng. Dự kiến này gợi điều gì?
-    A. Có điển biến hô hấp xấu cần cấp cứu và theo dõi tại viện.
-    *B. Cần đọc nước để xử lý phần dịch còn lại.
-    C. Có thể về vì đã tự thở và đang đẩy dịch ra.
-    D. Chỉ cần giữ ấm trước khi xem lại hô hấp.
+*A. Có diễn biến hô hấp xấu cần cấp cứu và theo dõi tại viện.
+B. Cần móc nước để xử lý phần dịch còn lại.
+C. Có thể về vì đã tự thở và đang đẩy dịch ra.
+D. Chỉ cần giữ ấm trước khi xem lại hô hấp.
 13. Người đàn ông 48 tuổi vào cấp cứu vì đau ngực. Khi điều dưỡng hỏi bệnh, người nhà liên tục trả lời thay và cho rằng người bệnh chỉ đau nhẹ; người bệnh lại mô tả đau tăng nhanh. Cách giao tiếp nào giúp phân loại chính xác hơn?
-    A. Hỏi trực tiếp người bệnh về mức độ và diễn biến, đối chiếu dấu hiệu sống.
-    *B. Lấy mức đau thấp hơn để tránh tăng mức ưu tiên không cần thiết.
-    C. Ngừng khai thác triệu chứng vì các thông tin chưa thống nhất.
-    D. Chỉ dùng thông tin người nhà vì người bệnh đang lo lắng.
+*A. Hỏi trực tiếp người bệnh về mức độ và diễn biến, đối chiếu dấu hiệu sống.
+B. Lấy mức đau thấp hơn để tránh tăng mức ưu tiên không cần thiết.
+C. Ngừng khai thác triệu chứng vì các thông tin chưa thống nhất.
+D. Chỉ dùng thông tin người nhà vì người bệnh đang lo lắng.
 14. Người bệnh tỉnh từ chối tư thế được đề xuất vì đau vai mới xuất hiện. Điều dưỡng định giữ nguyên kế hoạch mà chưa hỏi thêm. Cách giải quyết nào phù hợp nhất?
-    A. Đánh giá đau, trao đổi và điều chỉnh kế hoạch phù hợp.
-    *B. Bỏ toàn bộ chăm sóc tư thế sau một lần từ chối.
-    C. Nhờ người nhà giữ vai thay việc đánh giá đau.
-    D. Giữ nguyên vì kế hoạch đã ghi trong hồ sơ.
+*A. Đánh giá đau, trao đổi và điều chỉnh kế hoạch phù hợp.
+B. Bỏ toàn bộ chăm sóc tư thế sau một lần từ chối.
+C. Nhờ người nhà giữ vai thay việc đánh giá đau.
+D. Giữ nguyên vì kế hoạch đã ghi trong hồ sơ.
 15. Sau xoay nghiêng, người bệnh đau tại vị trí dẫn lưu, dây bị kéo căng và băng cố định bị xê dịch. Nhận định nào hợp lý nhất?
-    A. Có nguy cơ kéo tuột, cần kiểm tra dây và chỉnh tư thế.
-    *B. Băng xê dịch cho thấy dẫn lưu đã hoạt động tốt.
-    C. Đau tại dẫn lưu là đáp ứng mong đợi khi nằm nghiêng.
-    D. Có thể chờ ca sau vì tư thế đã được chỉ định.
-16. Người bệnh sau mổ 6 y lệnh nghĩa là gì? (Câu hỏi bị mờ một phần)
-    A. 60 mL/h.
-    *B. 15 mL/h.
-    C. 1 mL/h.
-    D. 2 mL/h.
+*A. Có nguy cơ kéo tuột, cần kiểm tra dây và chỉnh tư thế.
+B. Băng xê dịch cho thấy dẫn lưu đã hoạt động tốt.
+C. Đau tại dẫn lưu là đáp ứng mong đợi khi nằm nghiêng.
+D. Có thể chờ ca sau vì tư thế đã được chỉ định.
+16. Người bệnh sau mổ có y lệnh bơm tiêm điện. Bơm thuốc đã được kiểm tra chạy trong tổng 30 mL (thời gian 2 giờ). Với chế độ mL/h, điều dưỡng cần cài tốc độ bao nhiêu?
+A. 60 mL/h.
+*B. 15 mL/h.
+C. 1 mL/h.
+D. 2 mL/h.
 17. Nạn nhân chấn thương kín sau va đập mạnh, quần áo không thấm máu nhưng mạch nhanh, huyết áp giảm và đau bụng tăng. Cách giải thích nào liên kết các dữ kiện tốt nhất?
-    A. Có thể đang mất máu ra ngoài.
-    *B. Chỉ khi xuất hiện mất máu ở miệng hoặc mũi mới trường hợp mất máu trong.
-    C. Chỉ khi hiện mất máu trong.
-    D. Quần áo khô cho thấy lượng máu tuần hoàn chưa giảm đáng kể.
+*A. Có thể đang có tình trạng mất máu trong (nội tạng) gây sốc mất máu.
+B. Chỉ khi xuất hiện mất máu ở miệng hoặc mũi mới nghĩ đến mất máu trong.
+C. Huyết áp giảm chủ yếu do đau nếu chưa thấy vết thương hở.
+D. Quần áo khô cho thấy lượng máu tuần hoàn chưa giảm đáng kể.
 18. Sau tai nạn giao thông, người nhà muốn bế nạn nhân nghi gãy đùi lên xe máy vì bệnh viện gần. Nhận xét nào hợp lý nhất?
-    A. Có thể bế lên trước rồi bất động bằng cố định trên xe.
-    *B. Có thể đỡ nạn nhân tự ghi chạy trong hành trình.
-    C. Cần vận chuyển có bất động, hỗ trợ và theo dõi phù hợp.
-    D. Có thể đi xe máy nếu quãng đường ngắn hơn thường lệ.
+A. Có thể bế lên trước rồi bất động bằng cố định trên xe.
+B. Có thể đỡ nạn nhân tự giữ chân trong hành trình.
+*C. Cần vận chuyển có bất động, hỗ trợ và theo dõi phù hợp.
+D. Có thể đi xe máy nếu quãng đường ngắn hơn thường lệ.
 19. Nạn nhân tỉnh sau tai nạn, đường thở thông, cẳng chân gãy hở đang chảy máu. Cách sơ cứu vùng tổn thương nào phù hợp nhất?
-    A. Rửa sâu đầu xương bằng dung cụ có sẵn rồi cố định.
-    *B. Nắn đầu xương vào rồi băng kín để hạn chế mất máu.
-    C. Kiểm soát chảy máu, che phủ và bất động theo tư thế gãy.
-    D. Kéo chi thẳng trước, kiểm tra chảy máu sau khi nẹp.
+A. Rửa sâu đầu xương bằng dụng cụ có sẵn rồi cố định.
+B. Nắn đầu xương vào rồi băng kín để hạn chế mất máu.
+*C. Kiểm soát chảy máu, che phủ và bất động theo tư thế gãy.
+D. Kéo chi thẳng trước, kiểm tra chảy máu sau khi nẹp.
 20. Người bệnh 31 tuổi có mảnh kính lớn cắm sâu cẳng tay; máu chảy quanh chân dị vật. Lựa chọn sơ cứu phù hợp nhất?
-    A. Rút kính nhanh rồi ép trực tiếp vào lỗ.
-    *B. Rửa sâu dưới dị vật trước bằng cố định.
-    C. Ép mạnh ngay trên kính để bịt nguồn máu.
-    D. Giữ dị vật, ép quanh và kê đỡ cố định tránh di động.
+A. Rút kính nhanh rồi ép trực tiếp vào lỗ.
+B. Rửa sâu dưới dị vật trước bằng cố định.
+C. Ép mạnh ngay trên kính để bịt nguồn máu.
+*D. Giữ dị vật, ép quanh và kê đỡ cố định tránh di động.
 21. Người bệnh vừa được cắt chỉ và chuẩn bị về nhà. Điều dưỡng cần dựa nội dung nào vào kế hoạch hướng dẫn theo dõi?
-    A. Chăm sóc theo hướng dẫn, báo tách mẹp, chảy máu, đau tăng hoặc mù.
-    *B. Kéo thử hai mép hằng ngày, tự lấy mô khi thấy dịch.
-    C. Tự bôi sát khuẩn đậm đặc, chỉ báo khi đau không chịu được.
-    D. Tháo hết che phủ, chờ tự liền nếu mép tách và chảy máu.
-22. Điều dưỡng chuẩn bị khí dung cho người bệnh hen còn đỡn định. Sau bật máy, động cơ chạy nhưng bầu không tạo sương. Điều dưỡng nên làm gì trước khi đeo mặt nạ?
-    A. Kiểm tra bầu, dây nối và hoạt động tạo sương.
-    *B. Tăng mức máy đến tối đa rồi tiếp tục thực hiện.
-    C. Đeo mặt nạ và bắt đầu tính thời gian điều trị.
-    D. Thêm thuốc vào bầu trước khi kiểm tra dây nối.
-23. Tại khoa Nội, người bệnh tỉnh, tụ xoay trở được và đã có chỉ định thụt tháo. Tư thế thường được chọn trong quy trình là gì?
-    A. Nằm sấp đầu thấp.
-    *B. Nằm nghiêng phải.
-    C. Ngồi thẳng trên ghế.
-    D. Nằm nghiêng trái.
+*A. Chăm sóc theo hướng dẫn, báo tách mép, chảy máu, đau tăng hoặc mủ.
+B. Kéo thử hai mép hằng ngày, tự lấy mô khi thấy dịch.
+C. Tự bôi sát khuẩn đậm đặc, chỉ báo khi đau không chịu được.
+D. Tháo hết che phủ, chờ tự liền nếu mép tách và chảy máu.
+22. Điều dưỡng chuẩn bị khí dung cho người bệnh hen còn ổn định. Sau bật máy, động cơ chạy nhưng bầu không tạo sương. Điều dưỡng nên làm gì trước khi đeo mặt nạ?
+*A. Kiểm tra bầu, dây nối và hoạt động tạo sương.
+B. Tăng mức máy đến tối đa rồi tiếp tục thực hiện.
+C. Đeo mặt nạ và bắt đầu tính thời gian điều trị.
+D. Thêm thuốc vào bầu trước khi kiểm tra dây nối.
+23. Tại khoa Nội, người bệnh tỉnh, tự xoay trở được và đã có chỉ định thụt tháo. Tư thế thường được chọn trong quy trình là gì?
+A. Nằm sấp đầu thấp.
+B. Nằm nghiêng phải.
+C. Ngồi thẳng trên ghế.
+*D. Nằm nghiêng trái.
 24. Người bệnh đến cắt chỉ theo hẹn nhưng vết mổ còn sưng, căng và có dịch. Hành động nào phù hợp nhất?
-    A. Cắt đủ chỉ theo ngày hẹn rồi đánh giá mép sau.
-    *B. Đánh giá và báo bác sĩ trước khi quyết định cắt.
-    C. Kéo mạnh hai mép để thử độ chắc trước cắt.
-    D. Băng lại và ghi đã cắt theo lịch dù chưa thực hiện.
+A. Cắt đủ chỉ theo ngày hẹn rồi đánh giá mép sau.
+*B. Đánh giá và báo bác sĩ trước khi quyết định cắt.
+C. Kéo mạnh hai mép để thử độ chắc trước cắt.
+D. Băng lại và ghi đã cắt theo lịch dù chưa thực hiện.
 25. Tại khoa cấp cứu, người bệnh nôn máu ồ ạt, huyết áp tụt và mệt lả. Theo phân nhóm trong giáo trình, người bệnh cần được xếp vào nhóm nào?
-    A. Nhóm 3, cần theo dõi tình trạng còn che giấu.
-    *B. Nhóm 2, cần đánh giá đầy đủ mức độ nặng.
-    C. Nhóm 1, cần khám và xử trí khẩn cấp.
-    D. Nhóm 4, cần khám theo hướng ngoại trú.
+A. Nhóm 3, cần theo dõi tình trạng còn che giấu.
+B. Nhóm 2, cần đánh giá đầy đủ mức độ nặng.
+*C. Nhóm 1, cần khám và xử trí khẩn cấp.
+D. Nhóm 4, cần khám theo hướng ngoại trú.
 26. Trước khi in băng ghi điện tâm đồ cho người bệnh đau ngực, điều dưỡng phát hiện V1 đang đặt ở liên sườn II cạnh ức phải. Cần chuyển V1 đến vị trí nào?
-    A. Khoảng liên sườn IV sát bờ ức trái.
-    *B. Khoảng liên sườn II sát bờ ức phải.
-    C. Khoảng liên sườn IV sát bờ ức phải.
-    D. Khoảng liên sườn V đường giữa đòn trái.
+A. Khoảng liên sườn IV sát bờ ức trái.
+B. Khoảng liên sườn II sát bờ ức phải.
+*C. Khoảng liên sườn IV sát bờ ức phải.
+D. Khoảng liên sườn V đường giữa đòn trái.
 27. Người bệnh nằm lâu có vùng gót đỏ dai dẳng, ấn không nhạt màu. Có gối và phương tiện hỗ trợ phù hợp. Can thiệp nào cần ưu tiên?
-    A. Nâng đỡ cẳng chân để gót được giảm tỳ, rồi đánh giá lại da.
-    *B. Kê gối trực tiếp dưới gót để tăng lực tỳ tại điểm đó.
-    C. Xoa bóp mạnh trực tiếp vùng gót đỏ.
-    D. Chỉ phủ gạc và giữ nguyên tư thế nằm.
+*A. Nâng đỡ cẳng chân để gót được giảm tỳ, rồi đánh giá lại da.
+B. Kê gối trực tiếp dưới gót để tăng lực tỳ tại điểm đó.
+C. Xoa bóp mạnh trực tiếp vùng gót đỏ.
+D. Chỉ phủ gạc và giữ nguyên tư thế nằm.
 28. Nạn nhân đứt lìa bàn tay, máu chảy ồ ạt; nhóm có garô chuẩn và người biết dùng. Ưu tiên nào đúng nhất?
-    A. Băng lỏng mỏng cốt rồi chờ đợi cấp cứu đến.
-    *B. Cho uống nước trước để hỗ trợ lượng máu đã mất.
-    C. Tìm phần chi đứt rời trước dù kẹp bảo quản.
-    D. Cầm máu dọa tinh mạng và gọi cấp cứu ngay.
+A. Băng lỏng mỏng cốt rồi chờ đợi cấp cứu đến.
+B. Cho uống nước trước để hỗ trợ lượng máu đã mất.
+C. Tìm phần chi đứt rời trước dù kẹp bảo quản.
+*D. Cầm máu dọa tính mạng và gọi cấp cứu ngay.
 29. Người đàn ông 52 tuổi có vết thương sạch ở vùng cẳng chân. Sinh viên rửa một lượt, rồi quay miệng gạc đổ lại lau giữa vết thương. Lựa chọn sửa phù hợp nhất là gì?
-    A. Nhúng lại gạc cũ vào cốc dung dịch để làm sạch.
-    *B. Bỏ gạc đã dùng, dùng gạc mới cho lượt rửa tiếp theo.
-    C. Dùng mặt còn lại của gạc cũ để lau khi thấy bẩn.
-    D. Giữ nguyên vì vết sạch không thể làm bẩn gạc.
+A. Nhúng lại gạc cũ vào cốc dung dịch để làm sạch.
+*B. Bỏ gạc đã dùng, dùng gạc mới cho lượt rửa tiếp theo.
+C. Dùng mặt còn lại của gạc cũ để lau khi thấy bẩn.
+D. Giữ nguyên vì vết sạch không thể làm bẩn gạc.
 30. Trẻ 8 tháng đang ăn thịt hộc, còn tỉnh nhưng khó thở, ho yếu và tím. Cách phối hợp người lớn nào phù hợp với trẻ này?
-    A. Luân phiên 5 vỗ lưng và 5 ấn ngực, nâng đỡ đầu cổ thân.
-    *B. Giữ nguyên tư thế, chờ tự ho dù trẻ không phát tiếng.
-    C. Luân phiên 5 vỗ lưng và 5 ép bụng như người lớn.
-    D. Nắm chân dốc ngược, vỗ lưng đến khi trẻ khóc.
+*A. Luân phiên 5 vỗ lưng và 5 ấn ngực, nâng đỡ đầu cổ thân.
+B. Giữ nguyên tư thế, chờ tự ho dù trẻ không phát tiếng.
+C. Luân phiên 5 vỗ lưng và 5 ép bụng như người lớn.
+D. Nắm chân dốc ngược, vỗ lưng đến khi trẻ khóc.
 31. Người bệnh có đầu mỏm cụt đã phủ gạc, cần băng giữ để che kín đầu mỏm. Kiểu băng cơ bản nào phù hợp với yêu cầu che phủ này?
-    A. Băng xoáy ốc.
-    *B. Băng rắn quấn.
-    C. Băng hồi quy.
-    D. Băng vòng.
+A. Băng xoáy ốc.
+B. Băng rắn quấn.
+*C. Băng hồi quy.
+D. Băng vòng.
 32. Trong ca trực tại khoa hồi sức hô hấp, điều dưỡng nhận y lệnh chuẩn bị người bệnh và dụng cụ để bác sĩ thực hiện thủ thuật chọc dò dịch màng phổi. Điều dưỡng xác định vị trí chọc dò dịch màng phổi là:
-    A. Liên sườn II cạnh ức.
-    *B. Khoảng liên sườn VIII–IX đường nách sau.
-    C. Khoảng liên sườn VIII–IX đường nách trước.
-    D. Khoảng liên sườn VIII–IX đường nách giữa.
-33. Là điều dưỡng trực tổng tài cấp cứu, khi tiếp nhận tin thảm họa, thông tin nào cần hỏi rõ?
-    A. Vị trí, nguyên nhân, quy mô và ước tính số nạn nhân.
-    *B. Chỉ số xe cứu thương.
-    C. Chỉ tiền người bảo tồn.
-    D. Chỉ thời tiết.
+A. Liên sườn II cạnh ức.
+*B. Khoảng liên sườn VIII–IX đường nách sau.
+C. Khoảng liên sườn VIII–IX đường nách trước.
+D. Khoảng liên sườn VIII–IX đường nách giữa.
+33. Là điều dưỡng trực tổng đài cấp cứu, khi tiếp nhận tin thảm họa, thông tin nào cần hỏi rõ?
+*A. Vị trí, nguyên nhân, quy mô và ước tính số nạn nhân.
+B. Chỉ số xe cứu thương.
+C. Chỉ tên người báo tin.
+D. Chỉ thời tiết.
 34. Người đàn ông 34 tuổi bất tỉnh trong bể nước ngầm có thể có khí độc. Điều dưỡng chưa được huấn luyện cứu hộ không gian kín. Việc ưu tiên là gì?
-    A. Cảnh báo nguy hiểm, gọi cứu hộ chuyên trách, không tự vào khu vực nguy hiểm.
-    *B. Nín thở rồi vào vì thời gian cấp cứu rất ngắn.
-    C. Đeo khẩu trang y tế và xuống cứu nhanh.
-    D. Buộc dây vào eo rồi xuống ngay vì đã có người giữ dây.
+*A. Cảnh báo nguy hiểm, gọi cứu hộ chuyên trách, không tự vào khu vực nguy hiểm.
+B. Nín thở rồi vào vì thời gian cấp cứu rất ngắn.
+C. Đeo khẩu trang y tế và xuống cứu nhanh.
+D. Buộc dây vào eo rồi xuống ngay vì đã có người giữ dây.
 35. Người đàn ông 64 tuổi đang ăn cơm thì ho lớn, nói được từng câu và tự thở. Điều dưỡng nên làm gì trước?
-    A. Khuyến khích ho, theo dõi sát và sẵn sàng can thiệp nếu ho yếu đi.
-    *B. Ép bụng ngay để đưa đường thở ác toàn.
-    C. Vỗ lưng ngay dù nằm lần dù hơi vẫn mạnh.
-    D. Cho uống nước để đẩy thức ăn xuống.
-36. Người bệnh 58 tuổi đang được cấp cứu ngừng tuần hoàn bởi mở mắt, cử động có mục đích. Đánh giá nhanh thấy mạch cảnh 90 lần/phút nhưng chỉ tự thở 4 lần/phút, ngực nâng yếu. Hành động phù hợp nhất là gì?
-    A. Ngừng toàn bộ hỗ trợ vì đã có mạch và mở mắt.
-    *B. Chỉ cho oxy qua mặt nạ vì nhịp thở đã xuất hiện.
-    C. Tiếp tục ép tim và thổi ngạt 30:2 đến khi nhịp thở đạt bình thường.
-    D. Ngừng ép ngực, hỗ trợ hô hấp và tiếp tục theo dõi.
-37. Người bệnh thường nằm nghiêng, hay chạm sát nhau. Dạ vùng hông chưa đỏ nhưng trong hai gối có dấu ấn tự sau mỗi lần đổi tư thế. Điều chỉnh nào trực tiếp kiểm soát nguy cơ tại vị trí này?
-    A. Tách và kê đỡ giữa hai gối, đồng thời kiểm tra da mặt trong khớp gối.
-    *B. Chỉ lót vùng cụt vì mọi loét ép khi nằm nghiêng đều bắt đầu ở cùng cụt.
-    C. Kê cao hai gối nhưng tiếp tục để hai đầu gối tiếp xúc vào nhau.
-    D. Siết hai chân sát nhau hơn để giảm ma sát khi người bệnh cử động.
-38. Người bệnh tỉnh, nuốt được, đang được đặt ống đạ dày theo chỉ định. Khi ống đến vùng họng, người bệnh vẫn thở bình thường. Hướng dẫn phối hợp nào phù hợp?
-    A. Hướng dẫn ho mạnh liên tục để ống đi ra sau hơn.
-    *B. Hướng dẫn ngửa cổ tối đa và nín thở kéo dài.
-    C. Hướng dẫn nuốt phối hợp khi đưa ống nhẹ nhàng.
-    D. Hướng dẫn tự kéo ống mỗi khi cảm thấy vướng.
+*A. Khuyến khích ho, theo dõi sát và sẵn sàng can thiệp nếu ho yếu đi.
+B. Ép bụng ngay để đưa đường thở an toàn.
+C. Vỗ lưng ngay dù nằm lần dù hơi vẫn mạnh.
+D. Cho uống nước để đẩy thức ăn xuống.
+36. Người bệnh 58 tuổi đang được cấp cứu ngừng tuần hoàn mở mắt, cử động có mục đích. Đánh giá nhanh thấy mạch cảnh 90 lần/phút nhưng chỉ tự thở 4 lần/phút, ngực nâng yếu. Hành động phù hợp nhất là gì?
+A. Ngừng toàn bộ hỗ trợ vì đã có mạch và mở mắt.
+B. Chỉ cho oxy qua mặt nạ vì nhịp thở đã xuất hiện.
+C. Tiếp tục ép tim và thổi ngạt 30:2 đến khi nhịp thở đạt bình thường.
+*D. Ngừng ép ngực, hỗ trợ hô hấp và tiếp tục theo dõi.
+37. Người bệnh thường nằm nghiêng, hai gối hay chạm sát nhau. Vùng da hông chưa đỏ nhưng giữa hai gối có dấu ấn tỳ sau mỗi lần đổi tư thế. Điều chỉnh nào trực tiếp kiểm soát nguy cơ tại vị trí này?
+*A. Tách và kê đỡ giữa hai gối, đồng thời kiểm tra da mặt trong khớp gối.
+B. Chỉ lót vùng cụt vì mọi loét ép khi nằm nghiêng đều bắt đầu ở cùng cụt.
+C. Kê cao hai gối nhưng tiếp tục để hai đầu gối tiếp xúc vào nhau.
+D. Siết hai chân sát nhau hơn để giảm ma sát khi người bệnh cử động.
+38. Người bệnh tỉnh, nuốt được, đang được đặt ống thông dạ dày theo chỉ định. Khi ống đến vùng họng, người bệnh vẫn thở bình thường. Hướng dẫn phối hợp nào phù hợp?
+A. Hướng dẫn ho mạnh liên tục để ống đi ra sau hơn.
+B. Hướng dẫn ngửa cổ tối đa và nín thở kéo dài.
+*C. Hướng dẫn nuốt phối hợp khi đưa ống nhẹ nhàng.
+D. Hướng dẫn tự kéo ống mỗi khi cảm thấy vướng.
 39. Trong ca trực tại khoa Nội, điều dưỡng nhận y lệnh chuẩn bị người bệnh và phụ giúp bác sĩ thực hiện thủ thuật chọc dò dịch màng bụng cho người bệnh xơ gan. Điều dưỡng xác định vị trí chọc dò dịch là:
-    A. Vị trí chọc là giao điểm 2/3 ngoài và 1/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên trái.
-    *B. Vị trí chọc là giao điểm 1/3 ngoài và 2/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên trái.
-    C. Vị trí chọc là giao điểm 2/3 ngoài và 1/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên phải.
-    D. Vị trí chọc là giao điểm 1/3 ngoài và 2/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên phải.
-40. Người phụ nữ 69 tuổi nằm sau băng chân, đầu khư trú ngay nút cổ định đặt trên mặt cá; các ngón ấm, không tê, gac ổn định. Cách sửa phù hợp nhất với dữ kiện hiện tại là gì?
-    A. Chuyển điểm cố định khỏi chỗ xương nhô và tỉ đè, kiểm tra lại bằng.
-    *B. Tăng lực nút tại mặt cá để nút ít xê dịch hơn.
-    C. Chỉ đợi đến lần tại mặt cá để nút ít xê dịch hơn thường.
-    D. Tháo bỏ toàn bộ gạc và để vết thương hở vì mọi đau đều do gạc.
-41. Người đàn ông 44 tuổi bị máy cắt rạch cẳng chân. Máu chảy nhanh, gạc thấm trông vài giây; người bệnh còn tỉnh và huyết áp 120/80 mmHg. Điều dưỡng nên ưu tiên gì?
-    A. Rửa sạch rồi xác định mạch bị tổn thương trước cầm máu.
-    *B. Băng phủ nhẹ rồi chờ bác sĩ đánh giá.
-    C. Đo huyết áp lần hai để xác nhận mức mất máu.
-    D. Ép trực tiếp ngay, gọi hỗ trợ và chuẩn bị tăng cường cầm máu nếu không hiệu quả.
+*A. Vị trí chọc là giao điểm 2/3 ngoài và 1/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên trái.
+B. Vị trí chọc là giao điểm 1/3 ngoài và 2/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên trái.
+C. Vị trí chọc là giao điểm 2/3 ngoài và 1/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên phải.
+D. Vị trí chọc là giao điểm 1/3 ngoài và 2/3 trong của đường kẻ từ rốn tới gai chậu trước trên bên phải.
+40. Người phụ nữ 69 tuổi nằm sau băng chân, đau khu trú ngay nút cố định đặt trên mắt cá; các ngón ấm, không tê, gạc ổn định. Cách sửa phù hợp nhất với dữ kiện hiện tại là gì?
+*A. Chuyển điểm cố định khỏi chỗ xương nhô và tỳ đè, kiểm tra lại băng.
+B. Tăng lực nút tại mắt cá để nút ít xê dịch hơn.
+C. Chỉ đợi đến lần thay băng định kỳ rồi mới xử lý.
+D. Tháo bỏ toàn bộ gạc và để vết thương hở vì mọi đau đều do gạc.
+41. Người đàn ông 44 tuổi bị máy cắt rạch cẳng chân. Máu chảy nhanh, gạc thấm trong vài giây; người bệnh còn tỉnh và huyết áp 120/80 mmHg. Điều dưỡng nên ưu tiên gì?
+A. Rửa sạch rồi xác định mạch bị tổn thương trước cầm máu.
+B. Băng phủ nhẹ rồi chờ bác sĩ đánh giá.
+C. Đo huyết áp lần hai để xác nhận mức mất máu.
+*D. Ép trực tiếp ngay, gọi hỗ trợ và chuẩn bị tăng cường cầm máu nếu không hiệu quả.
 42. Người lớn ngừng tuần hoàn đang được ép ngực; khi ép tim người cấp cứu cần ấn tim với mức độ sâu phù hợp là bao nhiêu?
-    A. Khoảng 5–6 cm.
-    *B. Khoảng 2–3 cm.
-    C. Khoảng 3–4 cm.
-    D. Khoảng 7–8 cm.
+*A. Khoảng 5–6 cm.
+B. Khoảng 2–3 cm.
+C. Khoảng 3–4 cm.
+D. Khoảng 7–8 cm.
 43. Hai người bệnh vừa được ghi điện tim liền tiếp. Một bản đủ 12 chuyển đạo, rõ nét nhưng mang tên của người trước. Đánh giá nào đúng nhất trước khi bàn giao bản ghi?
-    A. Chưa đủ điều kiện bàn giao vì cần xác minh đúng người.
-    *B. Có thể giao vì chất lượng sóng quan trọng hơn tên in sẵn.
-    C. Chỉ cần sửa tên theo số giường mà chưa đổi chiếu lại.
-    D. Có thể chấp nhận nếu hai người bệnh ở cùng phòng.
+*A. Chưa đủ điều kiện bàn giao vì cần xác minh đúng người.
+B. Có thể giao vì chất lượng sóng quan trọng hơn tên in sẵn.
+C. Chỉ cần sửa tên theo số giường mà chưa đối chiếu lại.
+D. Có thể chấp nhận nếu hai người bệnh ở cùng phòng.
 44. Trong lúc bóp bóng qua mặt nạ cho người lớn đang được cấp cứu ngừng tuần hoàn, lồng ngực hầu như không nâng và người phụ nghe khí thoát nhiều quanh mép mặt nạ. Hành động nào phù hợp nhất trước khi bóp mạnh hoặc nhanh hơn?
-    A. Tăng ngay tốc độ bóp vì không thấy ngực nâng chứng tỏ cần nhiều nhịp hơn.
-    *B. Giữ nguyên mặt nạ và bóp với thể tích lớn hơn cho đến khi bụng phồng rõ.
-    C. Dừng ép ngực kéo dài để tập trung thông khí cho đến khi SpO2 tăng.
-    D. Kiểm tra lại mở đường thở và độ kín của mặt nạ, sau đó thử đẩy lồng ngực nâng.
+A. Tăng ngay tốc độ bóp vì không thấy ngực nâng chứng tỏ cần nhiều nhịp hơn.
+B. Giữ nguyên mặt nạ và bóp với thể tích lớn hơn cho đến khi bụng phồng rõ.
+C. Dừng ép ngực kéo dài để tập trung thông khí cho đến khi SpO2 tăng.
+*D. Kiểm tra lại mở đường thở và độ kín của mặt nạ, sau đó thử đẩy lồng ngực nâng.
 45. Người đàn ông 48 tuổi có băng dính chặt do dịch khô. Khi kéo thử, người bệnh đau và mép gạc kéo theo mô. Hành động phù hợp nhất tiếp theo là gì?
-    A. Cắt bỏ phần băng ngoài và giữ nguyên gạc dính qua ngày sau.
-    *B. Tiếp tục kéo trong khi người nhà giữ chặt chi người bệnh.
-    C. Kéo đứt khoát một lần để kết thúc đau nhanh hơn.
-    D. Dừng kéo, làm ẩm bằng dung dịch phù hợp rồi tháo từ từ.
+A. Cắt bỏ phần băng ngoài và giữ nguyên gạc dính qua ngày sau.
+B. Tiếp tục kéo trong khi người nhà giữ chặt chi người bệnh.
+C. Kéo dứt khoát một lần để kết thúc đau nhanh hơn.
+*D. Dừng kéo, làm ẩm bằng dung dịch phù hợp rồi tháo từ từ.
 46. Sau thảm họa, một nạn nhân có tổn thương cần can thiệp chuyên môn. Hai cơ sở tiếp nhận khác nhau về khả năng xử trí và tình trạng quá tải. Nhóm vận chuyển nên dựa chủ yếu vào yếu tố nào để chọn nơi chuyển đến?
-    A. Thói quen lựa chọn nơi chuyển của người lái xe.
-    *B. Sự thuận tiện trong tổng hợp danh sách người bệnh.
-    C. Mong muốn đưa mọi nạn nhân về cùng một cơ sở.
-    D. Nhu cầu can thiệp của nạn nhân và khả năng tiếp nhận phù hợp.
-47. Người đàn ông 68 tuổi hôn mê nằm ngửa lâu. Điều dưỡng muốn chọn nhóm vùng da dễ ưu tiên kiểm tra phù hợp tư thế. Nhóm nào đúng nhất theo giáo trình?
-    A. Chẩm, bả vai, xương cụt và gót chân.
-    *B. Ngực trước, rốn và phía trước đùi.
-    C. Mũi, bụng trước và lòng bàn tay.
-    D. Trán, cằm và lòng bàn chân.
+A. Thói quen lựa chọn nơi chuyển của người lái xe.
+B. Sự thuận tiện trong tổng hợp danh sách người bệnh.
+C. Mong muốn đưa mọi nạn nhân về cùng một cơ sở.
+*D. Nhu cầu can thiệp của nạn nhân và khả năng tiếp nhận phù hợp.
+47. Người đàn ông 68 tuổi hôn mê nằm ngửa lâu. Điều dưỡng muốn chọn nhóm vùng da dễ tỳ đè để ưu tiên kiểm tra phù hợp tư thế. Nhóm nào đúng nhất theo giáo trình?
+*A. Chẩm, bả vai, xương cụt và gót chân.
+B. Ngực trước, rốn và phía trước đùi.
+C. Mũi, bụng trước và lòng bàn tay.
+D. Trán, cằm và lòng bàn chân.
 48. Người bệnh đang được hút qua nội khí quản đột ngột tím, mạch chậm và không đều. Ống hút vẫn nằm trong nội khí quản. Điều dưỡng cần thực hiện hành động nào trước?
-    A. Đổi sang ống nhỏ hơn rồi tiếp tục hút để thông đường thở.
-    *B. Ngưng hút, rút ống hút và đánh giá hỗ trợ hô hấp tuần hoàn.
-    C. Hút thêm một lần ngắn để lấy hết đờm trước khi hỗ trợ.
-    D. Giảm áp lực, giữ ống tại chỗ và chờ nhịp tim ổn định.
-49. Người bệnh sau mổ tiền liệt tuyến đang rửa bằng quang theo y lệnh. Trong 2 giờ, dịch rửa vào 1000 mL, dịch ra 1300 mL; không rò thoát, lượng máu lẫn không đáng kể và thể tích dịch còn trong bàng quang không thay đổi. Lượng nước tiểu ước tính là bao nhiêu?
-    A. 1000 mL.
-    *B. 300 mL.
-    C. 1300 mL.
-    D. 2300 mL.
+A. Đổi sang ống nhỏ hơn rồi tiếp tục hút để thông đường thở.
+*B. Ngưng hút, rút ống hút và đánh giá hỗ trợ hô hấp tuần hoàn.
+C. Hút thêm một lần ngắn để lấy hết đờm trước khi hỗ trợ.
+D. Giảm áp lực, giữ ống tại chỗ và chờ nhịp tim ổn định.
+49. Người bệnh sau mổ tiền liệt tuyến đang rửa bàng quang theo y lệnh. Trong 2 giờ, dịch rửa vào 1000 mL, dịch ra 1300 mL; không rò thoát, lượng máu lẫn không đáng kể và thể tích dịch còn trong bàng quang không thay đổi. Lượng nước tiểu ước tính là bao nhiêu?
+A. 1000 mL.
+*B. 300 mL.
+C. 1300 mL.
+D. 2300 mL.
 50. Nạn nhân có garô ở đùi đã kiểm soát được chảy máu. Khi lập phiếu chuyển cấp cứu, điều dưỡng cần ghi nhóm thông tin nào?
-    A. Lượng máu trước đặt và thời điểm dự kiến đến viện.
-    *B. Giờ xe đến, hướng vận chuyển và số người đi cùng.
-    C. Giờ đặt, vị trí garô, diễn biến chảy máu và tình trạng.
-    D. Loại garô, số vòng siết và người hỗ trợ tại hiện trường.
+A. Lượng máu mất trước đặt và thời điểm dự kiến đến viện.
+B. Giờ xe đến, hướng vận chuyển và số người đi cùng.
+*C. Giờ đặt, vị trí garô, diễn biến chảy máu và tình trạng.
+D. Loại garô, số vòng siết và người hỗ trợ tại hiện trường.
 51. Nạn nhân tai nạn giao thông, cần bộc lộ vết thương ở chi do đang nghi gãy, quần bó chặt. Cách làm phù hợp nhất là gì?
-    A. Cho nạn nhân đứng lên và tự kéo quần xuống.
-    *B. Cắt dọc đường may, hạn chế di chuyển chi.
-    C. Xoay chi nhiều lần để nới phần vải đang bó.
-    D. Kéo ống quần qua bàn chân để giữ nguyên.
+A. Cho nạn nhân đứng lên và tự kéo quần xuống.
+*B. Cắt dọc đường may, hạn chế di chuyển chi.
+C. Xoay chi nhiều lần để nới phần vải đang bó.
+D. Kéo ống quần qua bàn chân để giữ nguyên.
 52. Người đàn ông 78 tuổi không tự trở mình, được chỉ định nghiêng trái. Sinh viên kéo riêng cánh tay để lật người trong khi phần mông chưa được đỡ. Cách sửa phù hợp nhất là gì?
-    A. Chị gắp chân rồi yêu cầu người bệnh tự lật.
-    *B. Phối hợp người phụ, đỡ vai và mông để xoay nhẹ nhàng.
-    C. Kéo mạnh hơn cánh tay để mông tự xoay theo.
-    D. Giữ nguyên vị trí và chỉ xoay đầu sang trái.
+A. Chỉ gấp chân rồi yêu cầu người bệnh tự lật.
+*B. Phối hợp người phụ, đỡ vai và mông để xoay nhẹ nhàng.
+C. Kéo mạnh hơn cánh tay để mông tự xoay theo.
+D. Giữ nguyên vị trí và chỉ xoay đầu sang trái.
 53. Hai nạn nhân ở hiện trường đang chờ cùng một phương tiện: người thứ nhất thẻ đỏ, người thứ hai thẻ vàng; cả hai đã được xử trí tối thiểu cần thiết. Phương án điều phối nào phù hợp nhất?
-    A. Ưu tiên thẻ đỏ trước và tiếp tục theo dõi người thẻ vàng.
-    *B. Chọn người đến tiếp kế sớm hơn để vận chuyển.
-    C. Ưu tiên thẻ vàng trước vì người này dễ di chuyển hơn.
-    D. Chọn người có người nhà đi cùng để thuận tiện bàn giao.
+*A. Ưu tiên thẻ đỏ trước và tiếp tục theo dõi người thẻ vàng.
+B. Chọn người đến tiếp tế sớm hơn để vận chuyển.
+C. Ưu tiên thẻ vàng trước vì người này dễ di chuyển hơn.
+D. Chọn người có người nhà đi cùng để thuận tiện bàn giao.
 54. Trước nẹp cẳng tay, bàn tay nạn nhân ấm và hồng; sau buộc nẹp, bàn tay tím lạnh và tê tăng. Điều dưỡng cần làm gì?
-    A. Chườm ấm bàn tay nhưng giữ nguyên lực buộc nẹp.
-    *B. Chờ đến bệnh viện vì nẹp đang giữ đúng hình dạng.
-    C. Đỡ chi, đánh giá đầu chi và chỉnh phần buộc gây chèn ép.
-    D. Buộc thêm để giữ chi ổn định hơn khi vận chuyển.
+A. Chườm ấm bàn tay nhưng giữ nguyên lực buộc nẹp.
+B. Chờ đến bệnh viện vì nẹp đang giữ đúng hình dạng.
+*C. Đỡ chi, đánh giá đầu chi và chỉnh phần buộc gây chèn ép.
+D. Buộc thêm để giữ chi ổn định hơn khi vận chuyển.
 55. Trong chọc hút dịch màng phổi, bơm hút cần được tháo ra để thay. Điều dưỡng khóa hệ thống trước khi ngắt nối rồi mới gắn bơm mới. Mục tiêu an toàn trực tiếp nhất của thao tác này là gì?
-    A. Tăng áp lực âm hơn giữ lại một lượng khí trong hệ thống.
-    *B. Ngăn dịch đông chỉ bằng cách tạo khoảng nghỉ giữa các lần hút.
-    C. Giữ tốc độ tháo dịch không đổi nên không cần theo dõi người bệnh.
-    D. Hạn chế không khí lọt vào khoang màng phổi khi hệ thống bị mở.
-56. Trong ca trực tại khoa Nội, điều dưỡng nhận y lệnh chuẩn bị người bệnh và phụ giúp bác sĩ thực hiện thủ thuật náo tủy cho người bệnh. Điều dưỡng xác định vị trí chọc dò là:
-    A. Vị trí chọc là vùng thắt lưng V và VI.
-    *B. Vị trí chọc là vùng thắt lưng I và II.
-    C. Vị trí chọc là vùng thắt lưng III và IV.
-    D. Vị trí chọc là vùng thắt lưng II và III.
-57. Người đàn ông 54 tuổi có chỉ định mở khí quản theo kế hoạch, không có tổn thương cột sống và chịu được tự thế bất kỳ yêu cầu. Điều dưỡng cần chuẩn bị tư thế nào để bộc lộ vùng cổ?
-    A. Nằm ngửa, kê gối đầu và theo chỉ dẫn để bộc lộ vùng cổ.
-    *B. Nằm nghiêng, chân co và lưng quay về phía bác sĩ.
-    C. Nằm sấp, đầu quay sang bên và hai tay ôm gối.
-    D. Nằm ngửa, kê gối cao dưới đầu để cằm sát ngực.
+A. Tăng áp lực âm hơn giữ lại một lượng khí trong hệ thống.
+B. Ngăn dịch đông chỉ bằng cách tạo khoảng nghỉ giữa các lần hút.
+C. Giữ tốc độ tháo dịch không đổi nên không cần theo dõi người bệnh.
+*D. Hạn chế không khí lọt vào khoang màng phổi khi hệ thống bị mở.
+56. Trong ca trực tại khoa Nội, điều dưỡng nhận y lệnh chuẩn bị người bệnh và phụ giúp bác sĩ thực hiện thủ thuật chọc dò tủy sống cho người bệnh. Điều dưỡng xác định vị trí chọc dò là:
+A. Vị trí chọc là vùng thắt lưng V và VI.
+B. Vị trí chọc là vùng thắt lưng I và II.
+*C. Vị trí chọc là vùng thắt lưng III và IV.
+D. Vị trí chọc là vùng thắt lưng II và III.
+57. Người đàn ông 54 tuổi có chỉ định mở khí quản theo kế hoạch, không có tổn thương cột sống và chịu được tư thế bất kỳ yêu cầu. Điều dưỡng cần chuẩn bị tư thế nào để bộc lộ vùng cổ?
+*A. Nằm ngửa, kê gối/độn dưới vai để cổ ưỡn tối đa.
+B. Nằm nghiêng, chân co và lưng quay về phía bác sĩ.
+C. Nằm sấp, đầu quay sang bên và hai tay ôm gối.
+D. Nằm ngửa, kê gối cao dưới đầu để cằm sát ngực.
 58. Người bệnh cần oxy liên tục đã từng hết khí giữa đường đi chụp. Điều dưỡng chuẩn bị cho lần vận chuyển tiếp theo. Kế hoạch nào kiểm soát tốt nhất nguy cơ gián đoạn oxy?
-    A. Giữ gió đi và về, thay bình khi người bệnh có dấu hiệu thiếu oxy.
-    *B. Chuẩn bị bình mới, giữ lưu lượng thấp hơn y lệnh khi đi đường.
-    C. Dự tính nhu cầu khí, chuẩn bị nguồn dự phòng và người theo dõi.
-    D. Mang người đủ lúc xuất phát, dự kiến mượn bình khi gần hết.
-59. Tại phòng thực hành liên tục, khi đặt ống thông dạ dày cho người bệnh, sinh viên đẩy ống thông vào dạ dày đã đến vạch do và được đánh giá chắc sau đó thực hiện bơm thử ăn vào cho người bệnh. Đánh giá nào đúng nhất?
-    A. Chưa đủ điều kiện sử dụng vì chưa xác nhận vị trí.
-    *B. Có thể dùng nếu người bệnh chưa ho sau đặt.
-    C. Có thể dùng vì vạch đo xác nhận đầu ống ở dạ dày.
-    D. Có thể dùng khi băng đã giữ ống không di chuyển.
+A. Giữ gió đi và về, thay bình khi người bệnh có dấu hiệu thiếu oxy.
+B. Chuẩn bị bình mới, giữ lưu lượng thấp hơn y lệnh khi đi đường.
+*C. Dự tính nhu cầu khí, chuẩn bị nguồn dự phòng và người theo dõi.
+D. Mang bình đủ lúc xuất phát, dự kiến mượn bình khi gần hết.
+59. Tại phòng thực hành liên tục, khi đặt ống thông dạ dày cho người bệnh, sinh viên đẩy ống thông vào dạ dày đã đến vạch đo và được đánh giá chắc sau đó thực hiện bơm thử ăn vào cho người bệnh. Đánh giá nào đúng nhất?
+*A. Chưa đủ điều kiện sử dụng vì chưa xác nhận vị trí.
+B. Có thể dùng nếu người bệnh chưa ho sau đặt.
+C. Có thể dùng vì vạch đo xác nhận đầu ống ở dạ dày.
+D. Có thể dùng khi băng đã giữ ống không di chuyển.
 60. Người bệnh vừa được chăm sóc vết loét cùng cụt. Nhóm dữ liệu nào cần ghi để ca sau đánh giá tiến triển và tiếp tục chăm sóc?
-    A. Số lần thay ga và tên người thu dọn.
-    *B. Chỉ ghi có loét nếu người bệnh than đau.
-    C. Giờ, tình trạng loét, can thiệp thực tế và đáp ứng.
-    D. Thuốc dự kiến dùng trong lần thay băng kế tiếp.
+A. Số lần thay ga và tên người thu dọn.
+B. Chỉ ghi có loét nếu người bệnh than đau.
+*C. Giờ, tình trạng loét, can thiệp thực tế và đáp ứng.
+D. Thuốc dự kiến dùng trong lần thay băng kế tiếp.
