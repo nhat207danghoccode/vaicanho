@@ -42,63 +42,59 @@
     box-shadow:0 0 14px #34d399;animation:pulse 1.6s infinite}
   @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
   .hud-sub{font-size:14px;font-weight:600;letter-spacing:.3px}
-  .you-badge{display:flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(251,191,36,0.15);
-    border:1px solid rgba(251,191,36,0.3);border-radius:20px;font-size:12px;color:#fbbf24;font-weight:600}
+  .hud-sub .star{color:#fbbf24;margin-left:4px}
   .admin-badge{display:inline-flex;align-items:center;gap:3px;
     background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;font-weight:800;
     padding:2px 8px;border-radius:999px;letter-spacing:.4px;text-transform:uppercase;
     box-shadow:0 2px 6px rgba(239,68,68,.4);margin-left:4px}
-  .admin-name-vfx{color:#e11d48!important;font-weight:800!important;
-    background:linear-gradient(90deg,#f59e0b,#ef4444,#a855f7,#f59e0b);
-    background-size:240% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-    animation:adminNameFlow 3s linear infinite;filter:drop-shadow(0 0 5px rgba(239,68,68,.24))}
-  @keyframes adminNameFlow{to{background-position:240% center}}
 
-  .student-panel{position:fixed;top:24px;right:24px;width:260px;max-height:calc(100vh - 48px);
-    background:rgba(10,14,24,.85);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);
-    border-radius:20px;color:#fff;z-index:10;box-shadow:0 10px 40px rgba(0,0,0,.6);
+  .student-panel{position:fixed;top:76px;right:16px;width:220px;max-height:calc(100vh - 160px);
+    background:rgba(10,14,24,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;color:#fff;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.5);
     display:flex;flex-direction:column;overflow:hidden;
-    transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .3s}
-  .student-panel.closed{transform:translateX(calc(100% + 40px));opacity:0;pointer-events:none}
-  .panel-header{padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,.08);
-    font-size:13px;font-weight:700;letter-spacing:.5px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .panel-header .title-wrap{display:flex;flex-direction:column}
-  .panel-header .total{font-size:11px;opacity:.5;font-weight:400;margin-top:2px}
-  .panel-close{width:28px;height:28px;border-radius:50%;border:none;flex-shrink:0;
-    background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:16px;
+    transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .3s;
+    font-size:11px}
+  .student-panel.closed{transform:translateX(calc(100% + 30px));opacity:0;pointer-events:none}
+  .panel-header{padding:10px 12px 8px;border-bottom:1px solid rgba(255,255,255,.06);
+    font-size:11px;font-weight:700;letter-spacing:.3px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .panel-header .title-wrap{display:flex;flex-direction:column;min-width:0}
+  .panel-header .title-wrap > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .panel-header .total{font-size:9.5px;opacity:.5;font-weight:400;margin-top:1px}
+  .panel-close{width:22px;height:22px;border-radius:50%;border:none;flex-shrink:0;
+    background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:12px;
     line-height:1;display:flex;align-items:center;justify-content:center;transition:all .2s}
   .panel-close:hover{background:rgba(239,68,68,.3)}
-  .panel-open-btn{position:fixed;top:24px;right:24px;z-index:10;width:52px;height:52px;border-radius:50%;
-    background:rgba(10,14,24,.85);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12);
-    color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 10px 40px rgba(0,0,0,.6);transition:all .25s;opacity:0;pointer-events:none;transform:scale(0.8)}
+  .panel-open-btn{position:fixed;top:76px;right:16px;z-index:9;width:40px;height:40px;border-radius:50%;
+    background:rgba(10,14,24,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);
+    color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s;opacity:0;pointer-events:none;transform:scale(0.8)}
   .panel-open-btn.visible{opacity:1;pointer-events:auto;transform:scale(1)}
   .panel-open-btn:hover{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.6)}
-  .panel-body{overflow-y:auto;padding:8px 12px 12px;flex:1}
-  .panel-body::-webkit-scrollbar{width:6px}
-  .panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px}
-  .panel-section{margin-top:10px}
-  .panel-section-title{font-size:11px;text-transform:uppercase;letter-spacing:.8px;
-    padding:6px 8px;opacity:.7;font-weight:600;display:flex;justify-content:space-between;align-items:center}
-  .panel-section-title .count{background:rgba(255,255,255,.1);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+  .panel-body{overflow-y:auto;padding:4px 6px 8px;flex:1;scrollbar-width:thin}
+  .panel-body::-webkit-scrollbar{width:4px}
+  .panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+  .panel-section{margin-top:4px}
+  .panel-section-title{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;
+    padding:4px 6px;opacity:.7;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+  .panel-section-title .count{background:rgba(255,255,255,.1);padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700}
   .section-online .panel-section-title{color:#34d399}
   .section-online .count{background:rgba(52,211,153,.2);color:#34d399}
   .section-offline .panel-section-title{color:#ef4444}
   .section-offline .count{background:rgba(239,68,68,.2);color:#ef4444}
-  .student-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:2px 0;border-radius:8px;
-    font-size:12px;transition:background .2s;cursor:pointer;position:relative}
+  .student-item{display:flex;align-items:center;gap:6px;padding:4px 6px;margin:1px 0;border-radius:6px;
+    font-size:11px;transition:background .15s;cursor:pointer;position:relative}
   .student-item:hover{background:rgba(255,255,255,.08)}
   .student-item.active{background:rgba(52,211,153,.15);outline:1px solid rgba(52,211,153,.4)}
   .student-item.you{background:rgba(251,191,36,.12);outline:1px solid rgba(251,191,36,.4)}
   .student-item.you:hover{background:rgba(251,191,36,.2)}
-  .student-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-  .student-item.online .student-dot{background:#34d399;box-shadow:0 0 6px #34d399}
-  .student-item.offline .student-dot{background:#ef4444;box-shadow:0 0 6px #ef4444}
-  .student-item.you .student-dot{background:#fbbf24;box-shadow:0 0 6px #fbbf24}
-  .student-name{flex:1}
+  .student-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .student-item.online .student-dot{background:#34d399;box-shadow:0 0 4px #34d399}
+  .student-item.offline .student-dot{background:#ef4444;box-shadow:0 0 4px #ef4444}
+  .student-item.you .student-dot{background:#fbbf24;box-shadow:0 0 4px #fbbf24}
+  .student-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .student-name.you-label{color:#fbbf24;font-weight:700}
-  .student-seat{font-size:10px;opacity:.4}
-  .student-skin{font-size:9px;opacity:.5;font-style:italic}
+  .student-seat{display:none}
+  .student-skin{display:none}
 
   .focus-banner{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
     padding:14px 28px;background:rgba(10,14,24,.9);backdrop-filter:blur(16px);
@@ -180,12 +176,11 @@
 <div class="hud">
   <div class="pulse" id="pulse"></div>
   <div class="hud-sub" id="hudSub">Đang tải...</div>
-  <div class="you-badge" id="youBadge" style="display:none">⭐ <span id="youName">Bạn</span></div>
 </div>
 
-<div class="student-panel" id="studentPanel">
+<div class="student-panel closed" id="studentPanel">
   <div class="panel-header">
-    <div class="title-wrap"><span>👥 Danh sách học sinh</span><span class="total" id="panelTotal">50 học sinh</span></div>
+    <div class="title-wrap"><span>👥 Danh sách</span><span class="total" id="panelTotal">0 người</span></div>
     <button class="panel-close" id="panelClose" title="Đóng">✕</button>
   </div>
   <div class="panel-body">
@@ -200,7 +195,7 @@
   </div>
 </div>
 
-<button class="panel-open-btn" id="panelOpen" title="Mở danh sách">☰</button>
+<button class="panel-open-btn visible" id="panelOpen" title="Mở danh sách">☰</button>
 
 <div class="focus-banner" id="focusBanner">
   <div><div class="focus-name" id="focusName">—</div><div class="focus-status" id="focusStatus">—</div></div>
@@ -272,6 +267,7 @@
       const data=snap.val()||{};
       const users=Object.entries(data).map(([id,u])=>({...u,uid:id})).filter(u=>u.name);
       window.syncClassroomUsers && window.syncClassroomUsers(users);
+      window.syncAdminPresence && window.syncAdminPresence(users);
     });
   }
 })();
@@ -1227,11 +1223,7 @@ window.syncClassroomUsers = function(users){
   applyHiddenNpcs();
 };
 
-/* ============================================================
-   ADMIN & MODERATION SYSTEM (đồng bộ với rpg.html)
-   ============================================================ */
 const ADMIN_NAME = 'ADM Nhật';
-const ADMIN_CODE = '03102007';
 const FIREBASE_CFG = {apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
 let adminDB = null;
 try {
@@ -1244,6 +1236,7 @@ try {
 let isAdmin = false;
 let allMembers = {};
 let allMods = {};
+let allPresence = {};
 let hiddenNpcs = [];
 try { hiddenNpcs = JSON.parse(localStorage.getItem('hidden_npcs')||'[]'); } catch(e){ hiddenNpcs = []; }
 
@@ -1313,19 +1306,30 @@ function renderAdminMembers(){
   if(!isAdmin) return;
   const box = document.getElementById('adminMembers');
   if(!box) return;
-  const names = Object.keys(allMembers).filter(n => n !== myName());
+  const myNameNow = myName();
+  const namesSet = new Set();
+  Object.keys(allMembers).forEach(n => { if(n !== myNameNow) namesSet.add(n); });
+  Object.keys(allPresence).forEach(n => { if(n !== myNameNow) namesSet.add(n); });
+  const names = Array.from(namesSet).sort((a,b) => {
+    const aOn = !!(allMembers[a] && allMembers[a].online) || !!(allPresence[a] && allPresence[a].online);
+    const bOn = !!(allMembers[b] && allMembers[b].online) || !!(allPresence[b] && allPresence[b].online);
+    if(aOn !== bOn) return aOn ? -1 : 1;
+    return a.localeCompare(b,'vi');
+  });
   if(!names.length){ box.innerHTML = '<div class="admin-empty">Không có thành viên khác</div>'; return; }
   box.innerHTML = names.map(n => {
-    const m = allMembers[n]||{};
-    const mod = allMods[n]||{};
+    const m = allMembers[n] || {};
+    const p = allPresence[n] || {};
+    const online = !!(m.online || p.online);
+    const mod = allMods[n] || {};
     const stu = students.find(s=>s.name===n);
     const isHidden = stu && stu.uid && hiddenNpcs.includes(stu.uid);
     const banned = !!mod.ban;
     const kicked = !!mod.kick;
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
-        <div class="an">${n}</div>
-        <div class="as">${m.online?'Online':'Offline'}${banned?' · đã chặn':''}${kicked&&!banned?' · đã kick':''}${isHidden?' · NPC ẩn':''}</div>
+        <div class="an">${n}${online?'':' 💤'}</div>
+        <div class="as">${online?'Đang học':'Đang ngủ'}${banned?' · đã chặn':''}${kicked&&!banned?' · đã kick':''}${isHidden?' · NPC ẩn':''}</div>
       </div>
       ${stu && stu.uid ? `<button class="${isHidden?'show':'hide'}" onclick="adminToggleNpc('${stu.uid}')">${isHidden?'Hiện NPC':'Ẩn NPC'}</button>` : ''}
       ${banned
@@ -1399,6 +1403,12 @@ window.adminUnban = async function(name){
   } catch(e){ alert('Lỗi: '+e.message); }
 };
 
+window.syncAdminPresence = function(users){
+  allPresence = {};
+  users.forEach(u => { allPresence[u.name] = u; });
+  if(isAdmin) renderAdminMembers();
+};
+
 if(adminDB){
   adminDB.ref('rooms/nhom1/members').on('value', s => { allMembers = s.val()||{}; renderAdminMembers(); });
   adminDB.ref('rooms/nhom1/moderations').on('value', s => {
@@ -1414,9 +1424,6 @@ document.getElementById('adminFab').addEventListener('click', ()=>{
   renderAdminMembers(); renderAdminBanned();
 });
 
-/* ============================================================
-   PANEL HỌC SINH
-   ============================================================ */
 const studentPanel = document.getElementById('studentPanel');
 const panelOpenBtn = document.getElementById('panelOpen');
 const listOnline = document.getElementById('listOnline');
@@ -1438,7 +1445,7 @@ function renderStudentList() {
   let nOn = 0, nOff = 0;
   students.filter(s => s.active).forEach(s => { if (s.isOnline) nOn++; else nOff++; });
   countOnline.textContent = nOn; countOffline.textContent = nOff;
-  panelTotal.textContent = `${nOn+nOff} người · ${nOn} đang học · ${nOff} đang ngủ`;
+  panelTotal.textContent = `${nOn+nOff} người`;
   listOnline.innerHTML = ''; listOffline.innerHTML = '';
   const sortedOnline = [...students.filter(s => s.active && s.isOnline)].sort((a, b) => {
     if (a.isYou) return -1; if (b.isYou) return 1; return 0;
@@ -1450,9 +1457,8 @@ function renderStudentList() {
     if (focusedStudent === s) item.classList.add('active');
     const nameClass = s.isYou ? 'student-name you-label' : 'student-name';
     const nameText = s.isYou ? '⭐ ' + s.name : s.name;
-    const skinName = CHARACTER_PRESETS[s.presetKey].name;
     const adminTag = isAdminIdentity(s.name) ? ' <span class="admin-badge">👑</span>' : '';
-    item.innerHTML = `<span class="student-dot"></span><span class="${nameClass}">${nameText}${adminTag}</span><span class="student-skin">${skinName}</span><span class="student-seat">${s.seat}</span>`;
+    item.innerHTML = `<span class="student-dot"></span><span class="${nameClass}">${nameText}${adminTag}</span>`;
     item.addEventListener('click', () => focusOnStudent(s));
     listOnline.appendChild(item);
   });
@@ -1461,8 +1467,7 @@ function renderStudentList() {
     item.className = 'student-item offline';
     item.dataset.seat = s.seat;
     if (focusedStudent === s) item.classList.add('active');
-    const skinName = CHARACTER_PRESETS[s.presetKey].name;
-    item.innerHTML = `<span class="student-dot"></span><span class="student-name">${s.name}</span><span class="student-skin">${skinName}</span><span class="student-seat">${s.seat}</span>`;
+    item.innerHTML = `<span class="student-dot"></span><span class="student-name">${s.name}</span>`;
     item.addEventListener('click', () => focusOnStudent(s));
     listOffline.appendChild(item);
   });
@@ -1471,7 +1476,10 @@ function renderStudentList() {
 function updateHud() {
   const activeStudents = students.filter(s => s.active);
   const nOn = activeStudents.filter(s => s.isOnline).length;
-  document.getElementById('hudSub').textContent = `${nOn} đang học · ${activeStudents.length - nOn} đang ngủ`;
+  const nOff = activeStudents.length - nOn;
+  const meName = myName();
+  const star = isAdminIdentity(meName) ? ' <span class="star">⭐</span>' : '';
+  document.getElementById('hudSub').innerHTML = `${nOn} đang học · ${nOff} đang ngủ${star}`;
   document.getElementById('pulse').style.background = nOn > students.length/2 ? '#34d399' : '#ef4444';
   document.getElementById('pulse').style.boxShadow = `0 0 14px ${nOn > students.length/2 ? '#34d399' : '#ef4444'}`;
 }
@@ -1550,13 +1558,20 @@ function focusOnStudent(student) {
 function exitFocus() { resetCamera(); }
 document.getElementById('focusClose').addEventListener('click', exitFocus);
 
-/* ============================================================
-   MODAL NHẬP TÊN + ADMIN GÁN QUA TÊN
-   ============================================================ */
 const nameModal = document.getElementById('nameModal');
 const nameInput = document.getElementById('nameInput');
 const nameBtn = document.getElementById('nameBtn');
 let playerName = 'Bạn';
+
+function detectDeviceName(){
+  const ua = navigator.userAgent || '';
+  if (/Windows/i.test(ua)) return 'Máy tính Windows';
+  if (/Macintosh|Mac OS/i.test(ua)) return 'Máy Mac';
+  if (/Android/i.test(ua)) return 'Điện thoại Android';
+  if (/iPhone|iPad/i.test(ua)) return 'Thiết bị Apple';
+  if (/Linux/i.test(ua)) return 'Máy Linux';
+  return 'Thiết bị';
+}
 
 async function handleNameSubmit(){
   const val = nameInput.value.trim();
@@ -1587,11 +1602,12 @@ async function handleNameSubmit(){
         await adminDB.ref('rooms/nhom1/members/'+val+'/isAdmin').set(true).catch(()=>{});
         isAdmin = true;
         document.getElementById('adminFab').classList.add('on');
+        updateHud();
       }
     } catch(e){}
   } else {
     const ok = await checkAdmin();
-    if(ok) document.getElementById('adminFab').classList.add('on');
+    if(ok){ document.getElementById('adminFab').classList.add('on'); updateHud(); }
   }
 }
 nameBtn.addEventListener('click', handleNameSubmit);
@@ -1608,35 +1624,31 @@ function applyPlayerName() {
   newSprite.position.set(0, 2.6, 0);
   npc.add(newSprite);
   npc.userData.nameSprite = newSprite;
-  document.getElementById('youName').textContent = playerName;
-  document.getElementById('youBadge').style.display = 'flex';
   renderStudentList(); updateHud();
 }
 
 (async function boot(){
-  const savedName = (localStorage.getItem('chat_name') || '').trim();
-  if(savedName){
-    playerName = savedName;
-    nameInput.value = savedName;
-    const banned = await checkBanned();
-    if(banned){
-      nameModal.classList.add('hide');
-      return;
-    }
-    applyPlayerName();
-    nameModal.classList.add('hide');
-    window.startClassroomPresence?.();
-    const ok = await checkAdmin();
-    if(ok) document.getElementById('adminFab').classList.add('on');
-  } else {
-    setTimeout(() => nameInput.focus(), 100);
+  let savedName = (localStorage.getItem('chat_name') || '').trim();
+  if(!savedName){
+    savedName = detectDeviceName();
+    localStorage.setItem('chat_name', savedName);
   }
+  playerName = savedName;
+  nameInput.value = savedName;
+  const banned = await checkBanned();
+  if(banned){
+    nameModal.classList.add('hide');
+    return;
+  }
+  applyPlayerName();
+  nameModal.classList.add('hide');
+  window.startClassroomPresence?.();
+  const ok = await checkAdmin();
+  if(ok){ document.getElementById('adminFab').classList.add('on'); }
+  updateHud();
   applyHiddenNpcs();
 })();
 
-/* ============================================================
-   ANIMATION
-   ============================================================ */
 const clock = new THREE.Clock();
 let frameCount = 0, listRefreshTimer = 0;
 
