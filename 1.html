@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Phòng Học — Minecraft Studio NPCs</title>
+<title>Phòng Máy Tính 3D — Minecraft Studio NPCs</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{overflow:hidden;background:#080b14;font-family:system-ui,sans-serif}
@@ -44,6 +44,15 @@
   .hud-sub{font-size:14px;font-weight:600;letter-spacing:.3px}
   .you-badge{display:flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(251,191,36,0.15);
     border:1px solid rgba(251,191,36,0.3);border-radius:20px;font-size:12px;color:#fbbf24;font-weight:600}
+  .admin-badge{display:inline-flex;align-items:center;gap:3px;
+    background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;font-weight:800;
+    padding:2px 8px;border-radius:999px;letter-spacing:.4px;text-transform:uppercase;
+    box-shadow:0 2px 6px rgba(239,68,68,.4);margin-left:4px}
+  .admin-name-vfx{color:#e11d48!important;font-weight:800!important;
+    background:linear-gradient(90deg,#f59e0b,#ef4444,#a855f7,#f59e0b);
+    background-size:240% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:adminNameFlow 3s linear infinite;filter:drop-shadow(0 0 5px rgba(239,68,68,.24))}
+  @keyframes adminNameFlow{to{background-position:240% center}}
 
   .student-panel{position:fixed;top:24px;right:24px;width:260px;max-height:calc(100vh - 48px);
     background:rgba(10,14,24,.85);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);
@@ -77,7 +86,7 @@
   .section-offline .panel-section-title{color:#ef4444}
   .section-offline .count{background:rgba(239,68,68,.2);color:#ef4444}
   .student-item{display:flex;align-items:center;gap:8px;padding:6px 10px;margin:2px 0;border-radius:8px;
-    font-size:12px;transition:background .2s;cursor:pointer}
+    font-size:12px;transition:background .2s;cursor:pointer;position:relative}
   .student-item:hover{background:rgba(255,255,255,.08)}
   .student-item.active{background:rgba(52,211,153,.15);outline:1px solid rgba(52,211,153,.4)}
   .student-item.you{background:rgba(251,191,36,.12);outline:1px solid rgba(251,191,36,.4)}
@@ -106,6 +115,53 @@
   .focus-close:hover{background:rgba(239,68,68,.3)}
   .hint{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
     color:rgba(255,255,255,.3);font-size:11px;z-index:10;pointer-events:none;text-align:center}
+
+  #adminFab{position:fixed;right:18px;bottom:18px;z-index:60;width:50px;height:50px;border-radius:50%;
+    border:1px solid #f59e0b55;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;
+    font-size:22px;cursor:pointer;display:none;align-items:center;justify-content:center;
+    box-shadow:0 10px 28px #ef444466;animation:adminFabPulse 2s ease-in-out infinite}
+#adminFab.on{display:flex}
+@keyframes adminFabPulse{0%,100%{box-shadow:0 10px 28px #ef444466}50%{box-shadow:0 10px 32px #ef4444aa,0 0 0 6px #ef444422}}
+#adminPanel{position:fixed;inset:0;z-index:70;background:rgba(8,11,20,.75);backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;padding:16px}
+#adminPanel.on{display:flex}
+.admin-card{position:relative;width:min(540px,100%);max-height:86vh;overflow:auto;background:#0f1523;color:#fff;
+  border:1px solid #ffffff1f;border-radius:20px;padding:22px;box-shadow:0 30px 80px #000a}
+.admin-card h3{margin:0 0 4px;font-size:18px;background:linear-gradient(90deg,#f59e0b,#ef4444);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.admin-card .sub{font-size:12px;color:#8da0b7;margin-bottom:16px}
+.admin-tabs{display:flex;gap:6px;margin-bottom:14px}
+.admin-tabs button{flex:1;padding:9px;border:1px solid #ffffff18;background:#131a2b;color:#aab7c9;
+  border-radius:10px;font:700 12px system-ui;cursor:pointer;transition:.15s}
+.admin-tabs button.on{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border-color:transparent}
+.admin-list{display:flex;flex-direction:column;gap:8px}
+.admin-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #ffffff14;
+  border-radius:12px;background:#0b1220}
+.admin-row .an{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-row .as{font-size:10.5px;color:#8da0b7;margin-top:2px}
+.admin-row button{border:0;border-radius:9px;padding:7px 11px;font:700 11.5px system-ui;cursor:pointer;color:#fff;white-space:nowrap}
+.admin-row button.kick{background:#f59e0b}
+.admin-row button.unban{background:#10b981}
+.admin-row button.ban{background:#ef4444}
+.admin-row button.hide{background:#334155}
+.admin-row button.show{background:#0ea5e9}
+.admin-empty{color:#8da0b7;text-align:center;padding:18px;font-size:12.5px}
+.admin-close{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:50%;
+  border:1px solid #ffffff22;background:#131a2b;color:#fff;font-size:18px;cursor:pointer;line-height:1}
+
+  .banned-overlay{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f0a1f,#1a0f2e);
+    display:flex;align-items:center;justify-content:center;padding:20px}
+  .banned-card{max-width:440px;width:100%;background:rgba(255,255,255,.06);backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:40px 32px 32px;text-align:center;color:#fff;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
+  .banned-icon-core{width:70px;height:70px;border-radius:50%;margin:0 auto 18px;
+    background:linear-gradient(135deg,#ef4444,#b91c1c);display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:32px;box-shadow:0 12px 30px -8px #ef4444,0 0 0 6px rgba(239,68,68,.15)}
+  .banned-card h1{font-size:24px;font-weight:900;margin-bottom:8px}
+  .banned-card p{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.65)}
+  .banned-card .banned-reason{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:12px;
+    padding:12px 16px;margin:16px 0;font-size:13px;text-align:left}
+  .banned-card .banned-reason b{color:#fbbf24}
 </style>
 </head>
 <body>
@@ -153,6 +209,30 @@
 
 <div class="hint">Click vào nhân vật để xem cận cảnh · Kéo chuột để xoay · Lăn chuột để zoom · ESC để thoát</div>
 
+<button id="adminFab" title="Quản trị">👑</button>
+<div id="adminPanel">
+  <div class="admin-card">
+    <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('on')">×</button>
+    <h3>Quản trị phòng học</h3>
+    <div class="sub">Kick/ẩn NPC · Ban/Unban · Danh sách bị chặn</div>
+    <div class="admin-tabs">
+      <button id="tabMembers" class="on" onclick="adminSwitchTab('members')">👥 Thành viên</button>
+      <button id="tabBanned" onclick="adminSwitchTab('banned')">🚫 Bị chặn</button>
+    </div>
+    <div id="adminMembers" class="admin-list"></div>
+    <div id="adminBanned" class="admin-list" style="display:none"></div>
+  </div>
+</div>
+
+<div id="banOverlay" class="banned-overlay" style="display:none">
+  <div class="banned-card">
+    <div class="banned-icon-core">🚫</div>
+    <h1>Truy cập bị chặn</h1>
+    <p id="banOverlayReason">Tài khoản đã bị quản trị viên chặn khỏi hệ thống.</p>
+    <div class="banned-reason" id="banOverlayReasonBox" style="display:none"><b>Lý do:</b> <span id="banOverlayReasonText"></span></div>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -167,8 +247,8 @@
     try{ app=firebase.app('classroomPresence'); }catch(e){ app=firebase.initializeApp(cfg,'classroomPresence'); }
     db=app.database();
   }catch(e){}
-  const root='rooms/nhom1';
-  const presenceRef=db?db.ref(root+'/presence/'+uid):null;
+  const ROOM='rooms/nhom1';
+  const presenceRef=db?db.ref(ROOM+'/presence/'+uid):null;
 
   window.startClassroomPresence=function(){
     const name=(localStorage.getItem('chat_name')||'').trim();
@@ -188,7 +268,7 @@
   if(presenceRef && (localStorage.getItem('chat_name')||'').trim()) window.startClassroomPresence();
 
   if(db){
-    db.ref(root+'/presence').on('value',snap=>{
+    db.ref(ROOM+'/presence').on('value',snap=>{
       const data=snap.val()||{};
       const users=Object.entries(data).map(([id,u])=>({...u,uid:id})).filter(u=>u.name);
       window.syncClassroomUsers && window.syncClassroomUsers(users);
@@ -914,11 +994,17 @@ const FIRST_NAMES = ['An', 'Bình', 'Cường', 'Dũng', 'Em', 'Phong', 'Giang',
                      'Quỳnh', 'Tâm', 'Thảo', 'Tuấn', 'Vân', 'Xuân', 'Đức', 'Hòa', 'Kiên', 'Long',
                      'Mạnh', 'Nga', 'Phát', 'Quang', 'Tùng', 'Thắng', 'Vinh', 'Yên', 'Bách', 'Cẩm'];
 
-function makeNameSprite(name, isYou = false) {
+function makeNameSprite(name, isYou = false, isAdmin = false) {
   const canvas = document.createElement('canvas');
-  canvas.width = 256; canvas.height = 64;
+  canvas.width = 320; canvas.height = 64;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = isYou ? 'rgba(60, 45, 10, 0.92)' : 'rgba(10, 16, 30, 0.85)';
+  if(isAdmin){
+    const grad = ctx.createLinearGradient(0,0,320,0);
+    grad.addColorStop(0,'#f59e0b'); grad.addColorStop(.5,'#ef4444'); grad.addColorStop(1,'#a855f7');
+    ctx.fillStyle = grad;
+  } else {
+    ctx.fillStyle = isYou ? 'rgba(60, 45, 10, 0.92)' : 'rgba(10, 16, 30, 0.85)';
+  }
   const r = 20;
   ctx.beginPath();
   ctx.moveTo(r, 0); ctx.lineTo(canvas.width - r, 0);
@@ -930,17 +1016,18 @@ function makeNameSprite(name, isYou = false) {
   ctx.lineTo(0, r);
   ctx.quadraticCurveTo(0, 0, r, 0);
   ctx.fill();
-  ctx.strokeStyle = isYou ? 'rgba(251, 191, 36, 1)' : 'rgba(52, 211, 153, 0.8)';
-  ctx.lineWidth = 3; ctx.stroke();
-  ctx.fillStyle = isYou ? '#fbbf24' : '#ffffff';
+  ctx.strokeStyle = isAdmin ? 'rgba(255,255,255,1)' : (isYou ? 'rgba(251, 191, 36, 1)' : 'rgba(52, 211, 153, 0.8)');
+  ctx.lineWidth = isAdmin ? 4 : 3; ctx.stroke();
+  ctx.fillStyle = isAdmin ? '#ffffff' : (isYou ? '#fbbf24' : '#ffffff');
   ctx.font = 'bold 34px system-ui, Arial';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(name, canvas.width/2, canvas.height/2 + 2);
+  const label = isAdmin ? '👑 ' + name : name;
+  ctx.fillText(label, canvas.width/2, canvas.height/2 + 2);
   const texture = new THREE.CanvasTexture(canvas);
   texture.minFilter = THREE.LinearFilter;
   const mat = new THREE.SpriteMaterial({ map: texture, transparent: true });
   const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(1.6, 0.4, 1);
+  sprite.scale.set(2.0, 0.4, 1);
   return sprite;
 }
 
@@ -1117,7 +1204,8 @@ window.syncClassroomUsers = function(users){
     const old = student.npc.userData.nameSprite;
     if(user){
       if(old) student.npc.remove(old);
-      const sprite = makeNameSprite(student.name, student.isYou);
+      const isAdminUser = isAdminIdentity(student.name);
+      const sprite = makeNameSprite(student.name, student.isYou, isAdminUser);
       sprite.position.set(0,2.6,0);
       student.npc.add(sprite);
       student.npc.userData.nameSprite = sprite;
@@ -1136,8 +1224,199 @@ window.syncClassroomUsers = function(users){
   });
   for(let i=ordered.length;i<slots.length;i++) slots[i].active = false;
   renderStudentList(); updateHud();
+  applyHiddenNpcs();
 };
 
+/* ============================================================
+   ADMIN & MODERATION SYSTEM (đồng bộ với rpg.html)
+   ============================================================ */
+const ADMIN_NAME = 'ADM Nhật';
+const ADMIN_CODE = '03102007';
+const FIREBASE_CFG = {apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
+let adminDB = null;
+try {
+  let app;
+  try { app = firebase.app('classroomPresence'); }
+  catch(e) { app = firebase.initializeApp(FIREBASE_CFG, 'classroomPresence'); }
+  adminDB = app.database();
+} catch(e){}
+
+let isAdmin = false;
+let allMembers = {};
+let allMods = {};
+let hiddenNpcs = [];
+try { hiddenNpcs = JSON.parse(localStorage.getItem('hidden_npcs')||'[]'); } catch(e){ hiddenNpcs = []; }
+
+function myName(){ return (localStorage.getItem('chat_name')||'').trim(); }
+function myDevice(){ return localStorage.getItem('classroom_uid')||''; }
+
+function isAdminIdentity(name){
+  const n = String(name||'').trim();
+  if(n === ADMIN_NAME) return true;
+  const m = allMembers[n] || {};
+  return !!m.isAdmin;
+}
+
+async function checkAdmin(){
+  if(!adminDB) return false;
+  const name = myName();
+  if(!name) return false;
+  try {
+    if(name === ADMIN_NAME){
+      const snap = await adminDB.ref('rooms/nhom1/adminDevice').once('value');
+      const bound = snap.val();
+      if(!bound){
+        await adminDB.ref('rooms/nhom1/adminDevice').set({ device: myDevice(), time: Date.now() });
+        isAdmin = true;
+        return true;
+      }
+      if(bound.device === myDevice()){ isAdmin = true; return true; }
+      return false;
+    }
+    const memberSnap = await adminDB.ref('rooms/nhom1/members/'+name+'/isAdmin').once('value');
+    isAdmin = memberSnap.val() === true;
+    return isAdmin;
+  } catch(e){ return false; }
+}
+
+async function checkBanned(){
+  if(!adminDB) return false;
+  const name = myName();
+  if(!name) return false;
+  try {
+    const snap = await adminDB.ref('rooms/nhom1/moderations/'+name).once('value');
+    const mod = snap.val();
+    if(mod && mod.ban){
+      const ov = document.getElementById('banOverlay');
+      const box = document.getElementById('banOverlayReasonBox');
+      const txt = document.getElementById('banOverlayReasonText');
+      if(mod.reason){ box.style.display = 'block'; txt.textContent = mod.reason; }
+      else { box.style.display = 'none'; }
+      ov.style.display = 'flex';
+      return true;
+    }
+  } catch(e){}
+  return false;
+}
+
+function applyHiddenNpcs(){
+  students.forEach(s => {
+    if(!s.uid) return;
+    if(hiddenNpcs.includes(s.uid)){
+      s.npc.visible = false;
+      if(s.deskPC) s.deskPC.visible = false;
+    }
+  });
+}
+
+function renderAdminMembers(){
+  if(!isAdmin) return;
+  const box = document.getElementById('adminMembers');
+  if(!box) return;
+  const names = Object.keys(allMembers).filter(n => n !== myName());
+  if(!names.length){ box.innerHTML = '<div class="admin-empty">Không có thành viên khác</div>'; return; }
+  box.innerHTML = names.map(n => {
+    const m = allMembers[n]||{};
+    const mod = allMods[n]||{};
+    const stu = students.find(s=>s.name===n);
+    const isHidden = stu && stu.uid && hiddenNpcs.includes(stu.uid);
+    const banned = !!mod.ban;
+    const kicked = !!mod.kick;
+    return `<div class="admin-row">
+      <div style="flex:1;min-width:0">
+        <div class="an">${n}</div>
+        <div class="as">${m.online?'Online':'Offline'}${banned?' · đã chặn':''}${kicked&&!banned?' · đã kick':''}${isHidden?' · NPC ẩn':''}</div>
+      </div>
+      ${stu && stu.uid ? `<button class="${isHidden?'show':'hide'}" onclick="adminToggleNpc('${stu.uid}')">${isHidden?'Hiện NPC':'Ẩn NPC'}</button>` : ''}
+      ${banned
+        ? `<button class="unban" onclick="adminUnban('${n}')">Mở chặn</button>`
+        : `<button class="ban" onclick="adminBan('${n}')">Chặn</button>`}
+    </div>`;
+  }).join('');
+}
+
+function renderAdminBanned(){
+  if(!isAdmin) return;
+  const box = document.getElementById('adminBanned');
+  if(!box) return;
+  const banned = Object.keys(allMods).filter(n => allMods[n] && allMods[n].ban);
+  if(!banned.length){ box.innerHTML = '<div class="admin-empty">Chưa có ai bị chặn</div>'; return; }
+  box.innerHTML = banned.map(n => {
+    const mod = allMods[n]||{};
+    return `<div class="admin-row">
+      <div style="flex:1;min-width:0">
+        <div class="an">${n}</div>
+        <div class="as">${mod.reason ? 'Lý do: '+mod.reason : 'Không có lý do'}</div>
+      </div>
+      <button class="unban" onclick="adminUnban('${n}')">Mở chặn</button>
+    </div>`;
+  }).join('');
+}
+
+window.adminSwitchTab = function(tab){
+  document.getElementById('tabMembers').classList.toggle('on', tab==='members');
+  document.getElementById('tabBanned').classList.toggle('on', tab==='banned');
+  document.getElementById('adminMembers').style.display = tab==='members' ? 'flex' : 'none';
+  document.getElementById('adminBanned').style.display = tab==='banned' ? 'flex' : 'none';
+};
+
+window.adminToggleNpc = function(uid){
+  if(!isAdmin) return;
+  const idx = hiddenNpcs.indexOf(uid);
+  if(idx >= 0) hiddenNpcs.splice(idx,1);
+  else hiddenNpcs.push(uid);
+  localStorage.setItem('hidden_npcs', JSON.stringify(hiddenNpcs));
+  students.forEach(s => {
+    if(s.uid === uid){
+      const show = !hiddenNpcs.includes(uid);
+      s.npc.visible = show;
+      if(s.deskPC) s.deskPC.visible = show;
+    }
+  });
+  renderAdminMembers();
+};
+
+window.adminBan = async function(name){
+  if(!isAdmin || !adminDB) return;
+  const reason = prompt('Lý do chặn '+name+'? (có thể bỏ trống)','') || '';
+  try {
+    await adminDB.ref('rooms/nhom1/moderations/'+name).update({
+      ban:true, kick:true, mute:true, reason, time:Date.now(), by:myName()
+    });
+    await adminDB.ref('rooms/nhom1/members/'+name).remove().catch(()=>{});
+    await adminDB.ref('rooms/nhom1/presence').orderByChild('name').equalTo(name).once('value').then(s=>{
+      s.forEach(c => c.ref.remove());
+    }).catch(()=>{});
+  } catch(e){ alert('Lỗi: '+e.message); }
+};
+
+window.adminUnban = async function(name){
+  if(!isAdmin || !adminDB) return;
+  try {
+    await adminDB.ref('rooms/nhom1/moderations/'+name).update({
+      ban:false, kick:false, mute:false, reason:'', time:Date.now(), by:myName()
+    });
+  } catch(e){ alert('Lỗi: '+e.message); }
+};
+
+if(adminDB){
+  adminDB.ref('rooms/nhom1/members').on('value', s => { allMembers = s.val()||{}; renderAdminMembers(); });
+  adminDB.ref('rooms/nhom1/moderations').on('value', s => {
+    allMods = s.val()||{};
+    renderAdminMembers(); renderAdminBanned();
+    const me = myName();
+    if(me && allMods[me] && allMods[me].ban){ checkBanned(); }
+  });
+}
+
+document.getElementById('adminFab').addEventListener('click', ()=>{
+  document.getElementById('adminPanel').classList.add('on');
+  renderAdminMembers(); renderAdminBanned();
+});
+
+/* ============================================================
+   PANEL HỌC SINH
+   ============================================================ */
 const studentPanel = document.getElementById('studentPanel');
 const panelOpenBtn = document.getElementById('panelOpen');
 const listOnline = document.getElementById('listOnline');
@@ -1172,7 +1451,8 @@ function renderStudentList() {
     const nameClass = s.isYou ? 'student-name you-label' : 'student-name';
     const nameText = s.isYou ? '⭐ ' + s.name : s.name;
     const skinName = CHARACTER_PRESETS[s.presetKey].name;
-    item.innerHTML = `<span class="student-dot"></span><span class="${nameClass}">${nameText}</span><span class="student-skin">${skinName}</span><span class="student-seat">${s.seat}</span>`;
+    const adminTag = isAdminIdentity(s.name) ? ' <span class="admin-badge">👑</span>' : '';
+    item.innerHTML = `<span class="student-dot"></span><span class="${nameClass}">${nameText}${adminTag}</span><span class="student-skin">${skinName}</span><span class="student-seat">${s.seat}</span>`;
     item.addEventListener('click', () => focusOnStudent(s));
     listOnline.appendChild(item);
   });
@@ -1260,7 +1540,7 @@ function focusOnStudent(student) {
   }
   const skinName = CHARACTER_PRESETS[student.presetKey].name;
   document.getElementById('focusStatus').textContent =
-    `${student.seat} · ${student.isOnline ? '🌞 Đang học' : '🌙 Đang ngủ'} · Skin: ${skinName}${student.isYou ? ' · Nhân vật của bạn' : ''}`;
+    `${student.seat} · ${student.isOnline ? '🌞 Đang học' : '🌙 Đang ngủ'} · Skin: ${skinName}${student.isYou ? ' · Nhân vật của bạn' : ''}${isAdminIdentity(student.name) ? ' · 👑 ADMIN' : ''}`;
   banner.classList.add('visible');
   document.querySelectorAll('.student-item').forEach(el => {
     if (el.dataset.seat === student.seat) el.classList.add('active');
@@ -1270,12 +1550,15 @@ function focusOnStudent(student) {
 function exitFocus() { resetCamera(); }
 document.getElementById('focusClose').addEventListener('click', exitFocus);
 
+/* ============================================================
+   MODAL NHẬP TÊN + ADMIN GÁN QUA TÊN
+   ============================================================ */
 const nameModal = document.getElementById('nameModal');
 const nameInput = document.getElementById('nameInput');
 const nameBtn = document.getElementById('nameBtn');
 let playerName = 'Bạn';
 
-function handleNameSubmit() {
+async function handleNameSubmit(){
   const val = nameInput.value.trim();
   if (!val || val.length > 20) {
     nameInput.classList.add('invalid');
@@ -1285,9 +1568,31 @@ function handleNameSubmit() {
   }
   playerName = val;
   localStorage.setItem('chat_name', playerName);
+
+  if(adminDB){
+    const banned = await checkBanned();
+    if(banned){ nameModal.classList.add('hide'); return; }
+  }
+
   applyPlayerName();
   nameModal.classList.add('hide');
   window.startClassroomPresence?.();
+
+  if(val === ADMIN_NAME && adminDB){
+    try {
+      const snap = await adminDB.ref('rooms/nhom1/adminDevice').once('value');
+      const bound = snap.val();
+      if(!bound || bound.device === myDevice()){
+        await adminDB.ref('rooms/nhom1/adminDevice').set({ device: myDevice(), time: Date.now() });
+        await adminDB.ref('rooms/nhom1/members/'+val+'/isAdmin').set(true).catch(()=>{});
+        isAdmin = true;
+        document.getElementById('adminFab').classList.add('on');
+      }
+    } catch(e){}
+  } else {
+    const ok = await checkAdmin();
+    if(ok) document.getElementById('adminFab').classList.add('on');
+  }
 }
 nameBtn.addEventListener('click', handleNameSubmit);
 nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleNameSubmit(); });
@@ -1299,7 +1604,7 @@ function applyPlayerName() {
   const npc = youStudent.npc;
   const oldSprite = npc.userData.nameSprite;
   if (oldSprite) npc.remove(oldSprite);
-  const newSprite = makeNameSprite(playerName, true);
+  const newSprite = makeNameSprite(playerName, true, isAdminIdentity(playerName));
   newSprite.position.set(0, 2.6, 0);
   npc.add(newSprite);
   npc.userData.nameSprite = newSprite;
@@ -1307,16 +1612,31 @@ function applyPlayerName() {
   document.getElementById('youBadge').style.display = 'flex';
   renderStudentList(); updateHud();
 }
-const savedDeviceName = (localStorage.getItem('chat_name') || '').trim();
-if (savedDeviceName) {
-  playerName = savedDeviceName;
-  nameInput.value = savedDeviceName;
-  applyPlayerName();
-  nameModal.classList.add('hide');
-} else {
-  setTimeout(() => nameInput.focus(), 100);
-}
 
+(async function boot(){
+  const savedName = (localStorage.getItem('chat_name') || '').trim();
+  if(savedName){
+    playerName = savedName;
+    nameInput.value = savedName;
+    const banned = await checkBanned();
+    if(banned){
+      nameModal.classList.add('hide');
+      return;
+    }
+    applyPlayerName();
+    nameModal.classList.add('hide');
+    window.startClassroomPresence?.();
+    const ok = await checkAdmin();
+    if(ok) document.getElementById('adminFab').classList.add('on');
+  } else {
+    setTimeout(() => nameInput.focus(), 100);
+  }
+  applyHiddenNpcs();
+})();
+
+/* ============================================================
+   ANIMATION
+   ============================================================ */
 const clock = new THREE.Clock();
 let frameCount = 0, listRefreshTimer = 0;
 
