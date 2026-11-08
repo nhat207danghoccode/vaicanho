@@ -228,7 +228,7 @@
   <div class="admin-card">
     <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('on')">×</button>
     <h3>Quản trị phòng học</h3>
-    <div class="sub">Danh sách theo từng máy (uid) — kick/ẩn/ban đúng máy, kể cả trùng tên</div>
+    <div class="sub">Danh sách theo từng máy (uid) — gồm cả người đang ngủ · kick/ẩn/ban đúng máy</div>
     <div class="admin-tabs">
       <button id="tabMembers" class="on" onclick="adminSwitchTab('members')">👥 Thành viên</button>
       <button id="tabBanned" onclick="adminSwitchTab('banned')">🚫 Bị chặn</button>
@@ -275,9 +275,21 @@
   window.startClassroomPresence=function(){
     const name=(localStorage.getItem('chat_name')||'').trim();
     if(!name||!presenceRef) return;
-    const record={name,uid,online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP,device:navigator.userAgent.slice(0,100)};
-    presenceRef.onDisconnect().set({name,uid,online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
-    presenceRef.set(record);
+    const write = () => {
+      presenceRef.set({
+        name, uid,
+        online: true,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP,
+        device: navigator.userAgent.slice(0,100)
+      });
+    };
+    presenceRef.onDisconnect().set({name, uid, online:false, lastSeen: firebase.database.ServerValue.TIMESTAMP});
+    write();
+    if(window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
+    window.__presenceHeartbeat = setInterval(write, 30000);
+    if(db){
+      db.ref(ROOM+'/members/'+name).update({ uid, name, online:true, lastSeen: firebase.database.ServerValue.TIMESTAMP }).catch(()=>{});
+    }
   };
 
   window.addEventListener('beforeunload',()=>{
@@ -293,8 +305,8 @@
     db.ref(ROOM+'/presence').on('value',snap=>{
       const data=snap.val()||{};
       const users=Object.entries(data).map(([id,u])=>({...u,uid:id})).filter(u=>u.name);
-      window.syncClassroomUsers && window.syncClassroomUsers(users);
       window.syncAdminPresence && window.syncAdminPresence(users);
+      window.syncClassroomUsers && window.syncClassroomUsers(users);
     });
   }
 })();
@@ -1179,6 +1191,13 @@ for (let row = 0; row < ROWS; row++) {
   }
 }
 
+const SEAT_POSITIONS = students.map(s => ({
+  x: s.npc.position.x,
+  z: s.npc.position.z,
+  deskX: s.deskPC ? s.deskPC.position.x : 0,
+  deskZ: s.deskPC ? s.deskPC.position.z : 0,
+}));
+
 function makePlant(x, z) {
   const g = new THREE.Group();
   const pPot = new THREE.Mesh(cylGeo(0.42, 0.32, 0.55, 12), M.pot);
@@ -1216,10 +1235,9 @@ const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
 scene.add(dust);
 
 // ==== QUẢN LÝ ĐỒNG BỘ ẨN / BAN / SKIN QUA FIREBASE ====
-// hidden: uid -> true (chỉ uid, không dùng name)
-// moderations: uid -> {ban, reason, ...}
 let hiddenUids = {};
 let skinByUid = {};
+let _lastVisibleKey = '';
 
 window.syncClassroomUsers = function(users){
   const selfUid = localStorage.getItem('classroom_uid');
@@ -1310,17 +1328,40 @@ window.syncClassroomUsers = function(users){
 
 function applyHiddenNpcs(){
   const selfUid = localStorage.getItem('classroom_uid');
+  const visibleSlots = [];
+
   students.forEach(s => {
-    if(s.isYou || s.uid === selfUid){
+    if(!s.active) { s.npc.visible = false; if(s.deskPC) s.deskPC.visible = false; return; }
+    if(s.isYou || s.uid === selfUid || !s.uid || !hiddenUids[s.uid]){
+      visibleSlots.push(s);
+    } else {
+      s.npc.visible = false;
+      if(s.deskPC) s.deskPC.visible = false;
+    }
+  });
+
+  const key = visibleSlots.map(s => s.uid || s.seat).join('|');
+  if(key !== _lastVisibleKey){
+    _lastVisibleKey = key;
+    visibleSlots.forEach((s, i) => {
+      const pos = SEAT_POSITIONS[i];
+      if(!pos) return;
+      s.npc.position.x = pos.x;
+      s.npc.position.z = pos.z;
+      if(s.deskPC){
+        s.deskPC.position.x = pos.deskX;
+        s.deskPC.position.z = pos.deskZ;
+      }
+      s.seat = `H${Math.floor(i / COLS) + 1}-C${(i % COLS) + 1}`;
       s.npc.visible = true;
       if(s.deskPC) s.deskPC.visible = true;
-      return;
-    }
-    if(!s.uid) return;
-    const hide = !!hiddenUids[s.uid];
-    s.npc.visible = !hide;
-    if(s.deskPC) s.deskPC.visible = !hide;
-  });
+    });
+  } else {
+    visibleSlots.forEach(s => {
+      s.npc.visible = true;
+      if(s.deskPC) s.deskPC.visible = true;
+    });
+  }
 }
 
 function rebuildStudentSkin(student, presetKey){
@@ -1412,35 +1453,47 @@ async function checkBanned(){
   return false;
 }
 
-// ==== ADMIN PANEL: mỗi presence (uid) 1 dòng riêng ====
+// ==== ADMIN PANEL: mỗi presence (uid) 1 dòng riêng, gồm cả offline ====
 function getPresenceList(){
   const selfUid = localStorage.getItem('classroom_uid');
   const selfName = myName();
+  const now = Date.now();
   const map = new Map();
-  // presence chính
+
   Object.values(allPresence).forEach(p => {
     if(!p || !p.uid) return;
-    if(p.uid === selfUid) return; // bỏ chính admin khỏi danh sách thao tác
-    map.set(p.uid, {
-      uid: p.uid,
-      name: String(p.name || 'Người dùng'),
-      online: !!p.online,
-      device: String(p.device || ''),
-      lastSeen: p.lastSeen || 0
-    });
+    if(p.uid === selfUid) return;
+    map.set(p.uid, { ...p });
   });
-  // members (dự phòng nếu presence chưa có)
+
   Object.entries(allMembers).forEach(([n, m]) => {
     if(!m) return;
     if(n === selfName) return;
-    if(m.uid && map.has(m.uid)) return;
-    if(m.uid){
-      map.set(m.uid, {
-        uid: m.uid, name: n, online: !!m.online,
-        device: String(m.device || ''), lastSeen: m.lastSeen || 0
-      });
-    }
+    const uid = m.uid || ('name:'+n);
+    if(uid === selfUid) return;
+    if(map.has(uid)) return;
+    const lastSeen = Number(m.lastSeen) || 0;
+    map.set(uid, {
+      uid, name: n,
+      online: m.online === true && (now - lastSeen) < 60000,
+      device: String(m.device || ''),
+      lastSeen
+    });
   });
+
+  Object.entries(allMods).forEach(([uid, mod]) => {
+    if(!mod || !mod.ban) return;
+    if(uid === selfUid) return;
+    if(map.has(uid)) return;
+    map.set(uid, {
+      uid,
+      name: mod.name || 'Ẩn danh',
+      online: false,
+      device: '',
+      lastSeen: 0
+    });
+  });
+
   return Array.from(map.values()).sort((a,b) => {
     if(a.online !== b.online) return a.online ? -1 : 1;
     return a.name.localeCompare(b.name,'vi');
@@ -1462,7 +1515,7 @@ function renderAdminMembers(){
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
         <div class="an">${p.name}${p.online ? '' : ' 💤'}</div>
-        <div class="as">${p.online ? 'Đang học' : 'Đang ngủ'}${banned ? ' · đã ban' : ''}${isHidden ? ' · NPC ẩn' : ''}</div>
+        <div class="as">${p.online ? '🌞 Đang học' : '🌙 Đang ngủ'}${banned ? ' · đã ban' : ''}${isHidden ? ' · NPC ẩn' : ''}</div>
         <div class="admin-uid">uid: ${shortUid} · ${deviceShort}</div>
       </div>
       <button class="${isHidden?'show':'hide'}" onclick="adminToggleNpc('${p.uid}')">${isHidden?'Hiện':'Ẩn'}</button>
@@ -1530,16 +1583,24 @@ window.adminUnban = async function(uid){
     await adminDB.ref('rooms/nhom1/moderations/'+uid).update({
       ban:false, kick:false, mute:false, reason:'', time:Date.now(), by:myName()
     });
-    const hid = await adminDB.ref('rooms/nhom1/hidden/'+uid).once('value');
-    if(hid.exists() && allMods[uid] && allMods[uid].ban !== true){
-      // không tự động bỏ ẩn, để admin tự bấm Hiện
-    }
   } catch(e){ alert('Lỗi: '+e.message); }
 };
 
 window.syncAdminPresence = function(users){
   allPresence = {};
-  users.forEach(u => { if(u && u.uid) allPresence[u.uid] = u; });
+  const now = Date.now();
+  users.forEach(u => {
+    if(!u || !u.uid) return;
+    const lastSeen = Number(u.lastSeen) || 0;
+    const fresh = (now - lastSeen) < 60000;
+    allPresence[u.uid] = {
+      uid: u.uid,
+      name: String(u.name || 'Người dùng'),
+      online: u.online === true && fresh,
+      device: String(u.device || ''),
+      lastSeen
+    };
+  });
   if(isAdmin) renderAdminMembers();
 };
 
@@ -1722,7 +1783,11 @@ function detectDeviceName(){
   return '';
 }
 
-function getSavedName(){ return (localStorage.getItem('chat_name') || '').trim(); }
+// CHỈ coi là đã đặt tên nếu user thực sự gõ tên (có cờ chat_name_user_set)
+function getSavedName(){
+  if(localStorage.getItem('chat_name_user_set') !== '1') return '';
+  return (localStorage.getItem('chat_name') || '').trim();
+}
 
 async function handleNameSubmit(){
   const val = nameInput.value.trim();
@@ -1740,6 +1805,7 @@ async function handleNameSubmit(){
   }
   playerName = val;
   localStorage.setItem('chat_name', playerName);
+  localStorage.setItem('chat_name_user_set', '1');
 
   if(adminDB){
     const banned = await checkBanned();
@@ -1831,6 +1897,11 @@ function updateNameInputPlaceholder(){
 }
 
 (async function boot(){
+  // nếu có tên cũ nhưng thiếu cờ user_set → xoá tên cũ (tránh dùng tên thiết bị đã lưu nhầm)
+  if(localStorage.getItem('chat_name_user_set') !== '1' && localStorage.getItem('chat_name')){
+    localStorage.removeItem('chat_name');
+  }
+
   const savedName = getSavedName();
   if(savedName){
     playerName = savedName;
@@ -1866,7 +1937,7 @@ function updateNameInputPlaceholder(){
 })();
 
 const clock = new THREE.Clock();
-let frameCount = 0, listRefreshTimer = 0, hiddenFallbackTimer = 0;
+let frameCount = 0, listRefreshTimer = 0, hiddenFallbackTimer = 0, adminRefreshTimer = 0;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -1879,6 +1950,9 @@ function animate() {
 
   hiddenFallbackTimer += dt;
   if (hiddenFallbackTimer > 0.5) { hiddenFallbackTimer = 0; applyHiddenNpcs(); }
+
+  adminRefreshTimer += dt;
+  if (adminRefreshTimer > 3) { adminRefreshTimer = 0; if(isAdmin && document.getElementById('adminPanel').classList.contains('on')) renderAdminMembers(); }
 
   const activeStudents = students.filter(s => s.active);
   const nOn = activeStudents.filter(s => s.isOnline).length;
