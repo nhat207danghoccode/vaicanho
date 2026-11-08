@@ -4752,17 +4752,10 @@ function closeClassroom3D(){const shell=document.getElementById('classroom3DShel
 
 <script>
 (function(){
-  function detectDeviceName(){
-    const ua = navigator.userAgent || '';
-    if (/Windows/i.test(ua)) return 'Máy tính Windows';
-    if (/Macintosh|Mac OS/i.test(ua)) return 'Máy Mac';
-    if (/Android/i.test(ua)) return 'Điện thoại Android';
-    if (/iPhone|iPad/i.test(ua)) return 'Thiết bị Apple';
-    if (/Linux/i.test(ua)) return 'Máy Linux';
-    return 'Thiết bị';
-  }
-  if (!(localStorage.getItem('chat_name') || '').trim()) {
-    localStorage.setItem('chat_name', detectDeviceName());
+  // Tên tạm thời = uid rút gọn (6 ký tự cuối), KHÔNG lưu vào chat_name
+  function tempNameFromUid(){
+    const id = localStorage.getItem('classroom_uid') || '';
+    return 'Khách-' + (id.slice(-6) || '??????');
   }
 
   const cfg = {
@@ -4783,11 +4776,15 @@ function closeClassroom3D(){const shell=document.getElementById('classroom3DShel
     const db = app.database();
     const uid = localStorage.getItem('classroom_uid') || ('u_'+Math.random().toString(36).slice(2)+Date.now().toString(36));
     if (!localStorage.getItem('classroom_uid')) localStorage.setItem('classroom_uid', uid);
-    const name = (localStorage.getItem('chat_name') || '').trim();
-    if (!name) return;
+
+    // Tên thật nếu user đã nhập, ngược lại dùng tên tạm từ uid
+    const real = (localStorage.getItem('chat_name') || '').trim();
+    const name = real || tempNameFromUid();
+
     const ref = db.ref('rooms/nhom1/presence/' + uid);
     ref.onDisconnect().set({ name, uid, online:false, lastSeen: firebase.database.ServerValue.TIMESTAMP });
     ref.set({ name, uid, online:true, lastSeen: firebase.database.ServerValue.TIMESTAMP, device: navigator.userAgent.slice(0,100) });
+
     window.addEventListener('beforeunload', () => {
       ref.set({ name, uid, online:false, lastSeen: firebase.database.ServerValue.TIMESTAMP });
     });
