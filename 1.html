@@ -272,8 +272,12 @@
 (function(){
   const cfg={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
   let db=null;
-  const uid=localStorage.getItem('classroom_uid')||('u_'+Math.random().toString(36).slice(2)+Date.now().toString(36));
-  if(!localStorage.getItem('classroom_uid'))localStorage.setItem('classroom_uid',uid);
+
+  // UID dùng chung với chat (chat_device_id) để ban khớp 2 phía
+  let uid=localStorage.getItem('classroom_uid')||localStorage.getItem('chat_device_id')||('u_'+Math.random().toString(36).slice(2)+Date.now().toString(36));
+  localStorage.setItem('classroom_uid',uid);
+  localStorage.setItem('chat_device_id',uid);
+
   try{
     let app;
     try{ app=firebase.app('classroomPresence'); }catch(e){ app=firebase.initializeApp(cfg,'classroomPresence'); }
@@ -282,10 +286,88 @@
   const ROOM='rooms/nhom1';
   const presenceRef=db?db.ref(ROOM+'/presence/'+uid):null;
 
+  // ==== BAN WATCHER (realtime, chặn hoàn toàn) ====
+  window.__isBanned = false;
+  window.__banWatchStarted = false;
+
+  function renderBanOverlay(mod){
+    let ov = document.getElementById('banOverlay');
+    if(!ov){
+      ov = document.createElement('div');
+      ov.id = 'banOverlay';
+      ov.className = 'banned-overlay';
+      ov.style.display = 'none';
+      ov.innerHTML = `
+        <div class="banned-card">
+          <div class="banned-icon-core">🚫</div>
+          <h1>Truy cập bị chặn</h1>
+          <p id="banOverlayReason">Tài khoản đã bị quản trị viên chặn khỏi hệ thống.</p>
+          <div class="banned-reason" id="banOverlayReasonBox" style="display:none"><b>Lý do:</b> <span id="banOverlayReasonText"></span></div>
+        </div>`;
+      document.body.appendChild(ov);
+    }
+    const box = document.getElementById('banOverlayReasonBox');
+    const txt = document.getElementById('banOverlayReasonText');
+    if(mod && mod.reason){ box.style.display='block'; txt.textContent = mod.reason; }
+    else { box.style.display='none'; }
+    ov.style.display = 'flex';
+  }
+  function hideBanOverlay(){
+    const ov = document.getElementById('banOverlay');
+    if(ov) ov.style.display = 'none';
+  }
+  window.__renderBanOverlay = renderBanOverlay;
+  window.__hideBanOverlay = hideBanOverlay;
+
+  function applyBanState(mod){
+    if(mod && (mod.ban === true || mod.kick === true)){
+      window.__isBanned = true;
+      renderBanOverlay(mod);
+      if(window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
+      if(presenceRef) presenceRef.remove().catch(()=>{});
+      const nm = (localStorage.getItem('chat_name')||'').trim();
+      if(nm && db) db.ref(ROOM+'/members/'+nm).remove().catch(()=>{});
+      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','adminFab','focusBanner'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.style.display='none';
+      });
+      document.querySelectorAll('.hud').forEach(el=>el.style.display='none');
+    } else {
+      window.__isBanned = false;
+      hideBanOverlay();
+    }
+  }
+  window.__applyBanState = applyBanState;
+
+  window.startBanWatcher = function(){
+    if(!db || window.__banWatchStarted) return;
+    window.__banWatchStarted = true;
+
+    // Theo UID (device)
+    db.ref(ROOM+'/moderations/'+uid).on('value', s => {
+      applyBanState(s.val());
+    });
+
+    // Theo TÊN (rpg.html ban theo tên) — lắng nghe tên hiện tại
+    function watchByName(){
+      const nm = (localStorage.getItem('chat_name')||'').trim();
+      if(!nm) return;
+      if(window.__nameBanRef) window.__nameBanRef.off();
+      window.__nameBanRef = db.ref(ROOM+'/moderations/'+nm);
+      window.__nameBanRef.on('value', s => {
+        const mod = s.val();
+        if(mod && (mod.ban || mod.kick)) applyBanState(mod);
+      });
+    }
+    watchByName();
+    window.__watchBanByName = watchByName;
+  };
+
   window.startClassroomPresence=function(){
+    if(window.__isBanned) return;
     const name=(localStorage.getItem('chat_name')||'').trim();
     if(!name||!presenceRef) return;
     const write = () => {
+      if(window.__isBanned) return;
       presenceRef.set({
         name, uid,
         online: true,
@@ -309,10 +391,15 @@
     }
   });
 
+  window.__classroomDb = db;
+  window.__classroomUid = uid;
+
+  if(db) window.startBanWatcher();
   if(presenceRef && (localStorage.getItem('chat_name')||'').trim()) window.startClassroomPresence();
 
   if(db){
     db.ref(ROOM+'/presence').on('value',snap=>{
+      if(window.__isBanned) return;
       const data=snap.val()||{};
       const users=Object.entries(data).map(([id,u])=>({...u,uid:id})).filter(u=>u.name);
       window.syncAdminPresence && window.syncAdminPresence(users);
@@ -1250,6 +1337,7 @@ let skinByUid = {};
 let _lastVisibleKey = '';
 
 window.syncClassroomUsers = function(users){
+  if(window.__isBanned) return;
   const selfUid = localStorage.getItem('classroom_uid');
 
   const uniq = new Map();
@@ -1337,6 +1425,7 @@ window.syncClassroomUsers = function(users){
 };
 
 function applyHiddenNpcs(){
+  if(window.__isBanned) return;
   const selfUid = localStorage.getItem('classroom_uid');
   const visibleSlots = [];
 
@@ -1443,21 +1532,36 @@ async function checkAdmin(){
   } catch(e){ return false; }
 }
 
+// ==== CHECK BANNED: đọc cả UID lẫn TÊN ====
 async function checkBanned(){
   if(!adminDB) return false;
   const uid = myDevice();
-  if(!uid) return false;
+  const nm = myName();
+  if(!uid && !nm) return false;
   try {
-    const snap = await adminDB.ref('rooms/nhom1/moderations/'+uid).once('value');
-    const mod = snap.val();
-    if(mod && mod.ban){
-      const ov = document.getElementById('banOverlay');
-      const box = document.getElementById('banOverlayReasonBox');
-      const txt = document.getElementById('banOverlayReasonText');
-      if(mod.reason){ box.style.display = 'block'; txt.textContent = mod.reason; }
-      else { box.style.display = 'none'; }
-      ov.style.display = 'flex';
+    let mod = null;
+    if(uid){
+      const snap = await adminDB.ref('rooms/nhom1/moderations/'+uid).once('value');
+      mod = snap.val();
+    }
+    if((!mod || (!mod.ban && !mod.kick)) && nm){
+      const snap2 = await adminDB.ref('rooms/nhom1/moderations/'+nm).once('value');
+      const m2 = snap2.val();
+      if(m2 && (m2.ban || m2.kick)) mod = m2;
+    }
+    if(mod && (mod.ban || mod.kick)){
+      window.__isBanned = true;
+      if(window.__renderBanOverlay) window.__renderBanOverlay(mod);
+      if(window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
+      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','adminFab','focusBanner'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.style.display='none';
+      });
+      document.querySelectorAll('.hud').forEach(el=>el.style.display='none');
       return true;
+    }
+    if(!mod || (!mod.ban && !mod.kick)){
+      if(window.__hideBanOverlay) window.__hideBanOverlay();
+      window.__isBanned = false;
     }
   } catch(e){}
   return false;
@@ -1575,6 +1679,7 @@ window.adminToggleNpc = async function(uid){
   } catch(e){ alert('Lỗi: '+e.message); }
 };
 
+// ==== ADMIN BAN: ghi cả UID lẫn TÊN ====
 window.adminBan = async function(uid, name){
   if(!isAdmin || !adminDB || !uid) return;
   const reason = prompt('Lý do ban '+(name||uid)+'? (có thể bỏ trống)','') || '';
@@ -1582,17 +1687,31 @@ window.adminBan = async function(uid, name){
     await adminDB.ref('rooms/nhom1/moderations/'+uid).update({
       ban:true, kick:true, mute:true, reason, name: name||'', time:Date.now(), by:myName()
     });
+    if(name){
+      await adminDB.ref('rooms/nhom1/moderations/'+name).update({
+        ban:true, kick:true, mute:true, reason, name, time:Date.now(), by:myName()
+      }).catch(()=>{});
+    }
     await adminDB.ref('rooms/nhom1/hidden/'+uid).set(true);
     await adminDB.ref('rooms/nhom1/presence/'+uid).remove().catch(()=>{});
   } catch(e){ alert('Lỗi: '+e.message); }
 };
 
+// ==== ADMIN UNBAN: xóa cả UID lẫn TÊN ====
 window.adminUnban = async function(uid){
   if(!isAdmin || !adminDB || !uid) return;
   try {
+    const snap = await adminDB.ref('rooms/nhom1/moderations/'+uid).once('value');
+    const mod = snap.val() || {};
     await adminDB.ref('rooms/nhom1/moderations/'+uid).update({
       ban:false, kick:false, mute:false, reason:'', time:Date.now(), by:myName()
     });
+    if(mod.name){
+      await adminDB.ref('rooms/nhom1/moderations/'+mod.name).update({
+        ban:false, kick:false, mute:false, reason:'', time:Date.now(), by:myName()
+      }).catch(()=>{});
+    }
+    await adminDB.ref('rooms/nhom1/hidden/'+uid).remove().catch(()=>{});
   } catch(e){ alert('Lỗi: '+e.message); }
 };
 
@@ -1620,7 +1739,7 @@ if(adminDB){
     allMods = s.val()||{};
     renderAdminMembers(); renderAdminBanned();
     const me = myDevice();
-    if(me && allMods[me] && allMods[me].ban){ checkBanned(); }
+    if(me && allMods[me] && (allMods[me].ban || allMods[me].kick)) checkBanned();
   });
   adminDB.ref('rooms/nhom1/hidden').on('value', s => {
     hiddenUids = s.val() || {};
@@ -1707,6 +1826,7 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function handleClick(clientX, clientY) {
+  if(window.__isBanned) return;
   mouse.x = (clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
@@ -1731,6 +1851,7 @@ function handleClick(clientX, clientY) {
 }
 
 function focusOnStudent(student) {
+  if(window.__isBanned) return;
   camMode = 'focus';
   focusedStudent = student;
   students.forEach(s => {
@@ -1801,6 +1922,7 @@ function getSavedName(){
 }
 
 async function handleNameSubmit(){
+  if(window.__isBanned) return;
   const val = nameInput.value.trim();
   if (!val) {
     nameInput.classList.add('invalid');
@@ -1824,11 +1946,13 @@ async function handleNameSubmit(){
   if(adminDB){
     const banned = await checkBanned();
     if(banned){ nameModal.classList.add('hide'); return; }
-    // xóa members cũ nếu đổi tên
     if(oldName && oldName !== val){
       await adminDB.ref('rooms/nhom1/members/'+oldName).remove().catch(()=>{});
     }
+    if(window.__watchBanByName) window.__watchBanByName();
   }
+
+  if(window.__isBanned) return;
 
   applyPlayerName();
   nameModal.classList.add('hide');
@@ -1873,11 +1997,13 @@ function applyPlayerName() {
   npc.add(newSprite);
   npc.userData.nameSprite = newSprite;
   renderStudentList(); updateHud();
+  if (window.__watchBanByName) window.__watchBanByName();
 }
 
 // ====== NÚT ĐỔI TÊN ======
 const renameBtn = document.getElementById('renameBtn');
 renameBtn.addEventListener('click', () => {
+  if(window.__isBanned) return;
   const cur = getSavedName();
   modalTitle.textContent = cur ? 'Đổi tên' : 'Chào mừng đến lớp!';
   modalSubtitle.textContent = cur ? 'Nhập tên mới của bạn' : 'Nhập tên của bạn để vào phòng máy tính';
@@ -1912,11 +2038,13 @@ function updateSkinGridSelection(){
   });
 }
 wardrobeBtn.addEventListener('click', () => {
+  if(window.__isBanned) return;
   updateSkinGridSelection();
   wardrobePanel.classList.add('on');
 });
 
 async function pickSkin(key){
+  if(window.__isBanned) return;
   const me = students.find(s => s.isYou);
   if(!me || !me.uid || !adminDB) return;
   await adminDB.ref('rooms/nhom1/skins/'+me.uid).set(key);
@@ -1948,7 +2076,7 @@ function updateNameInputPlaceholder(){
     }
     applyPlayerName();
     nameModal.classList.add('hide');
-    window.startClassroomPresence?.();
+    if(!window.__isBanned) window.startClassroomPresence?.();
   } else {
     updateNameInputPlaceholder();
     nameInput.value = '';
@@ -1981,7 +2109,7 @@ function animate() {
   const now = performance.now();
 
   listRefreshTimer += dt;
-  if (listRefreshTimer > 2) { listRefreshTimer = 0; renderStudentList(); updateHud(); }
+  if (listRefreshTimer > 2) { listRefreshTimer = 0; if(!window.__isBanned){ renderStudentList(); updateHud(); } }
 
   hiddenFallbackTimer += dt;
   if (hiddenFallbackTimer > 0.5) { hiddenFallbackTimer = 0; applyHiddenNpcs(); }
