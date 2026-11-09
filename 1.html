@@ -168,7 +168,9 @@
     color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
     box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s}
   .wardrobe-btn{right:64px}
-  .rename-btn{right:112px}
+  .rename-btn{right:112px;width:auto;min-width:40px;height:40px;padding:0 11px;gap:7px;border-radius:999px}
+  .rename-btn span{font:700 11px system-ui;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media(max-width:600px){.rename-btn{right:112px;max-width:125px}.rename-btn span{max-width:65px}}
   .leaderboard-btn{position:fixed;top:76px;right:160px;z-index:9;width:40px;height:40px;border-radius:50%;
     background:rgba(10,14,24,.78);backdrop-filter:blur(14px);border:1px solid rgba(250,204,21,.35);
     color:#facc15;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;
@@ -274,7 +276,7 @@
 
 <button class="panel-open-btn visible" id="panelOpen" title="Mở danh sách">☰</button>
 <button class="wardrobe-btn" id="wardrobeBtn" title="Tủ đồ">👕</button>
-<button class="rename-btn" id="renameBtn" title="Đổi tên">✏️</button>
+<button class="rename-btn" id="renameBtn" title="Đặt tên / Đổi tên" aria-label="Đặt tên / Đổi tên"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c.5-3.5 2.7-5.3 6.5-5.3 2 0 3.5.5 4.6 1.5"/><path d="m16 17 4.8-4.8 1.7 1.7-4.8 4.8-2.6.9z"/></svg><span id="renameNameLabel">Đặt tên</span></button>
 <button class="leaderboard-btn" id="leaderboardBtn" title="Bảng xếp hạng học tập">🏆</button>
 <div id="leaderboardPanel" aria-hidden="true">
   <div class="leaderboard-card">
@@ -2021,6 +2023,8 @@ const modalSubtitle = document.getElementById('modalSubtitle');
 const nameInput = document.getElementById('nameInput');
 const nameBtn = document.getElementById('nameBtn');
 let playerName = '';
+const renameNameLabel = document.getElementById('renameNameLabel');
+function refreshRenameNameLabel(){ if(renameNameLabel) renameNameLabel.textContent=getSavedName()||'Đặt tên'; }
 
 function detectDeviceName(){
   const ua = navigator.userAgent || '';
@@ -2101,6 +2105,14 @@ async function handleNameSubmit(){
 }
 nameBtn.addEventListener('click', handleNameSubmit);
 nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleNameSubmit(); });
+window.addEventListener('storage', e=>{
+  if(e.key!=='chat_name') return;
+  const next=(localStorage.getItem('chat_name')||'').trim();
+  if(!next)return;
+  playerName=next;localStorage.setItem('chat_name_user_set','1');
+  applyPlayerName();window.startClassroomPresence?.();
+  if(adminDB){adminDB.ref('rooms/nhom1/members/'+next).update({uid:myDevice(),name:next,online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});}
+});
 
 function applyPlayerName() {
   const youStudent = students.find(s => s.isYou);
@@ -2113,7 +2125,7 @@ function applyPlayerName() {
   newSprite.position.set(0, 2.6, 0);
   npc.add(newSprite);
   npc.userData.nameSprite = newSprite;
-  renderStudentList(); updateHud();
+  renderStudentList(); updateHud(); refreshRenameNameLabel();
   if (window.__watchBanByName) window.__watchBanByName();
 }
 
@@ -2183,6 +2195,7 @@ function updateNameInputPlaceholder(){
   }
 
   const savedName = getSavedName();
+  refreshRenameNameLabel();
   if(savedName){
     playerName = savedName;
     nameInput.value = savedName;
