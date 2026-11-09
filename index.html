@@ -1821,22 +1821,6 @@
 }
 .qbtn[data-tab="STATS"] i { color: #ffffff !important; }
 
-/* Nút "Chat Nhóm" (chứa SVG và gọi openRPGGame) */
-.qbtn[onclick="openRPGGame()"] {
-  background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  box-shadow: 0 6px 16px -6px rgba(139, 92, 246, 0.55) !important;
-  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
-}
-.qbtn[onclick="openRPGGame()"]:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 22px -6px rgba(139, 92, 246, 0.7) !important;
-  color: #ffffff !important;
-}
-.qbtn[onclick="openRPGGame()"] svg { stroke: #ffffff !important; }
-
 /* Nút "Hôm nay học gì?" (gọi showTomorrowSchedule) */
 .qbtn[onclick="showTomorrowSchedule()"] {
   background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%) !important;
@@ -2057,12 +2041,6 @@ B. Đúng"></textarea>
           <button class="qbtn" data-tab="STATS" onclick="switchTab('STATS')">
             <i class="fas fa-chart-pie"></i> Thống kê
           </button>
-          <button class="qbtn" onclick="openRPGGame()">
-  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;">
-    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-  </svg>
-  Chat Nhóm
-</button>
 <button class="qbtn" type="button" onclick="openClassroom3D()" style="background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border-color:transparent;font-weight:800">
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 9h.01M15 9h.01"/></svg>
   Phòng học
@@ -2368,7 +2346,6 @@ B. Đúng"></textarea>
     }, 250);
   }
   setTimeout(() => {
-    if (typeof window.startClassSelection === "function") window.startClassSelection();
     const saved = localStorage.getItem("currentSubject");
     if (saved && typeof SUBJECTS !== "undefined" && SUBJECTS[saved]) {
       currentSubject = saved;
@@ -4386,198 +4363,6 @@ if(savedTheme){
 </script>
 
 <style>
-#classGate{position:fixed;inset:0;z-index:10000020;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,10,31,.72);backdrop-filter:blur(10px)}
-#classGate.on{display:flex}
-#classGate .cg-card{width:min(440px,100%);background:#fff;color:#17172b;border-radius:22px;padding:26px;box-shadow:0 30px 90px #0004;text-align:center;font-family:var(--font,system-ui,sans-serif)}
-#classGate .cg-icon{width:44px;height:44px;border-radius:18px;margin:0 auto 12px;display:grid;place-items:center;color:white;font-size:23px;background:linear-gradient(135deg,#7c3aed,#ec4899)}
-#classGate h2{font-size:20px;margin-bottom:5px;font-weight:900}#classGate p{font-size:12px;color:#77778d;margin-bottom:18px}
-#classGate .cg-classes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-#classGate .cg-class{border:1px solid #e4e4ef;border-radius:12px;background:#f8f8fc;padding:14px 4px;font-size:15px;font-weight:900;cursor:pointer;color:#4b3b83;transition:.16s}
-#classGate .cg-class:hover:not(:disabled){background:#ede9fe;border-color:#a78bfa;transform:translateY(-2px)}
-#classGate .cg-class:disabled{opacity:.65;cursor:not-allowed;transform:none}
-#classGate .cg-class.selected{background:#ddd6fe;border-color:#7c3aed;color:#4c1d95;opacity:1}
-#classGate .cg-note{margin-top:15px;margin-bottom:0;font-size:11px;color:#999}
-#classGate .cg-auth{display:none;margin-top:16px;text-align:left}#classGate .cg-auth.on{display:block}
-#classGate .cg-auth label{display:block;font-size:12px;font-weight:800;margin-bottom:6px}
-#classGate .cg-auth input{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;font-size:14px;outline:none}
-#classGate .cg-auth button{width:100%;margin-top:9px;padding:12px;border:0;border-radius:10px;color:#fff;background:linear-gradient(135deg,#7c3aed,#ec4899);font-weight:800;cursor:pointer}
-#classGate .cg-error{display:none;margin-top:9px;color:#b91c1c;font-size:12px;font-weight:700}#classGate .cg-error.on{display:block}
-#rpgGameShell{display:none;position:fixed;inset:0;z-index:10000010;background:rgba(17,12,35,.42);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:14px}
-#rpgGameShell.on{display:flex}#rpgGameFrame{position:relative;width:min(440px,96vw);height:min(760px,92vh);border:1px solid rgba(255,255,255,.65);border-radius:24px;background:#fff;box-shadow:0 28px 100px rgba(15,10,40,.35);overflow:hidden}
-@media(max-width:520px){#rpgGameShell{padding:7px}#rpgGameFrame{width:100%;height:min(780px,96vh);border-radius:20px}}
-@media(max-width:520px){#classGate .cg-card{padding:22px 16px}#classGate .cg-class{padding:12px 2px}}
-</style>
-
-<div id="classGate" role="dialog" aria-modal="true" aria-labelledby="cgTitle">
- <div class="cg-card">
-  <div class="cg-icon"><i class="fas fa-user-graduate"></i></div>
-  <h2 id="cgTitle">Xác nhận lớp học</h2>
-  <p>Chọn lớp của bạn để tiếp tục vào khu vực học tập.</p>
-  <div class="cg-classes">
-   <button class="cg-class" onclick="chooseStudyClass('19A')">19A</button>
-   <button class="cg-class" onclick="chooseStudyClass('19B')">19B</button>
-   <button class="cg-class" onclick="chooseStudyClass('19C')">19C</button>
-   <button class="cg-class" onclick="chooseStudyClass('19D')">19D</button>
-   <button class="cg-class" onclick="chooseStudyClass('19E')">19E</button>
-  </div>
-  <p class="cg-note">Lựa chọn sẽ được lưu trên trình duyệt cho lần sau.</p>
-  <div class="cg-auth" id="cgAuth">
-   <label for="cgPassword">Phát hiện kẻ xâm nhập — nhập mật khẩu để thông qua</label>
-   <input id="cgPassword" type="password" autocomplete="off" placeholder="Nhập mật khẩu thông qua">
-   <button type="button" onclick="verifyStudyGate()">Xác minh và tiếp tục</button>
-   <div class="cg-error" id="cgError">Mật khẩu không đúng. Thử lại.</div>
-  </div>
- </div>
-</div>
-
-<div id="rpgGameShell" aria-label="Chat nhóm">
- <iframe id="rpgGameFrame" title="RPG v2" data-src="rpg.html"></iframe>
-</div>
-
-<script>
-(function(){
- const CLASS_KEY='nhat_study_class_choice_v1';
- function renderLockedClass(cls){
-   document.querySelectorAll('.cg-class').forEach(button=>{
-     const isChosen=button.textContent.trim()===cls;
-     button.disabled=true;
-     button.classList.toggle('selected',isChosen);
-     button.setAttribute('aria-pressed',isChosen?'true':'false');
-   });
-   document.getElementById('cgTitle').textContent='Đã khóa lớp '+cls;
-   document.querySelector('#classGate .cg-card > p').textContent='Lớp đã được chốt trên trình duyệt này. Không thể đổi trong giao diện.';
-   document.getElementById('cgAuth').classList.remove('on');
- }
- window.startClassSelection=function(){
-   const savedClass=localStorage.getItem(CLASS_KEY);
-   if(savedClass){renderLockedClass(savedClass);return;}
-   document.querySelectorAll('.cg-class').forEach(button=>{button.disabled=false;button.classList.remove('selected');button.removeAttribute('aria-pressed');});
-   document.getElementById('classGate').classList.add('on');
- };
- function finishClassChoice(cls){
-   if(localStorage.getItem(CLASS_KEY)) return;
-   localStorage.setItem(CLASS_KEY,cls);
-   renderLockedClass(cls);
-   document.getElementById('classGate').classList.remove('on');
-   if(typeof showToast==='function') showToast('Đã khóa lựa chọn lớp '+cls+'.');
- }
- window.chooseStudyClass=function(cls){
-   if(localStorage.getItem(CLASS_KEY) || window.pendingStudyClass) return;
-   if(cls==='19D'){
-     finishClassChoice(cls);
-     return;
-   }
-   window.pendingStudyClass=cls;
-   document.querySelectorAll('.cg-class').forEach(button=>{
-     button.disabled=true;
-     const isChosen=button.textContent.trim()===cls;
-     button.classList.toggle('selected',isChosen);
-     button.setAttribute('aria-pressed',isChosen?'true':'false');
-   });
-   document.getElementById('cgTitle').textContent='Xác minh lớp '+cls;
-   document.querySelector('#classGate .cg-card > p').textContent='Đã chọn lớp '+cls+'. Không thể chuyển sang lớp 19D; hãy xác minh để tiếp tục.';
-   document.getElementById('cgAuth').classList.add('on');
-   document.getElementById('cgError').classList.remove('on');
-   document.getElementById('cgPassword').value='';
-   document.getElementById('cgPassword').focus();
- };
- window.verifyStudyGate=function(){
-   const input=document.getElementById('cgPassword');
-   const error=document.getElementById('cgError');
-   if(input.value!=='19D'){
-     error.classList.add('on');
-     input.value='';
-     input.focus();
-     return;
-   }
-   error.classList.remove('on');
-   finishClassChoice(window.pendingStudyClass||'19D');
-   window.pendingStudyClass=null;
- };
- document.getElementById('cgPassword').addEventListener('keydown',e=>{if(e.key==='Enter')window.verifyStudyGate();});
-
- function buildRPGQuestionSet(){
-   const bank=(parsedQuestionsDS||[]).map(item=>{
-     const rawOptions=(item.arr||[]);
-     const opts=rawOptions.map(raw=>raw.replace(/^\s*\*/,'').replace(/^\s*[A-E]\s*[.\):\s]+/,'').trim()).filter(Boolean);
-     const answer=getCorrectAnswer(item);
-     const original=rawOptions.find(raw=>raw.startsWith('*'));
-     const answerLetter=answer||(original&&((original.match(/^\*?([A-E])/i)||[])[1]));
-     const correct=rawOptions.findIndex(raw=>{const match=raw.match(/^\s*\*?\s*([A-E])/i);return !!match&&match[1].toUpperCase()===String(answerLetter||'').toUpperCase();});
-     return {q:item.q,opts,correct};
-   }).filter(item=>item.q&&item.opts.length>=2&&Number.isInteger(item.correct)&&item.correct>=0&&item.correct<item.opts.length);
-   for(let i=bank.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bank[i],bank[j]]=[bank[j],bank[i]];}
-   return bank.slice(0,80);
- }
-
- function sendRPGQuestionSet(){
-   const frame=document.getElementById('rpgGameFrame');
-   if(!frame||!frame.contentWindow)return;
-   const questions=buildRPGQuestionSet();
-   if(!questions.length)return;
-   const className=localStorage.getItem('nhat_study_class_choice_v1')||'Chưa chọn lớp';
-   const subjectName=(SUBJECTS[currentSubject]&&SUBJECTS[currentSubject].name)||currentSubject||'Môn đang học';
-   try {
-     frame.contentWindow.postMessage({type:'STUDY_QUESTIONS',questions,subject:subjectName,className},'*');
-   } catch(e) { console.warn('postMessage failed', e); }
- }
-
- let rpgBooted = false;
-
- window.openRPGGame = function(){
-   if(!buildRPGQuestionSet().length){
-     if(typeof showToast==='function') showToast('Chưa có câu hỏi hợp lệ. Hãy chọn môn và chờ ngân hàng câu hỏi tải xong.');
-     return;
-   }
-   window.startClassSelection();
-   document.getElementById('rpgGameShell').classList.add('on');
-
-   const frame = document.getElementById('rpgGameFrame');
-   const src = frame.dataset.src || 'rpg.html';
-
-   if(!rpgBooted){
-     rpgBooted = true;
-     frame.addEventListener('load', function onLoad(){
-       setTimeout(sendRPGQuestionSet, 500);
-       setTimeout(sendRPGQuestionSet, 1500);
-       setTimeout(sendRPGQuestionSet, 2500);
-     }, { once: true });
-     frame.src = src;
-   } else {
-     setTimeout(sendRPGQuestionSet, 200);
-     setTimeout(sendRPGQuestionSet, 800);
-   }
- };
-
- window.closeRPGGame = function(){
-   document.getElementById('rpgGameShell').classList.remove('on');
- };
-
- window.addEventListener('message', function(e){
-   if(e.data && e.data.type === 'RPG_CLOSE'){
-     document.getElementById('rpgGameShell').classList.remove('on');
-   }
- });
-
- document.addEventListener('keydown',e=>{if(e.key==='Escape')window.closeRPGGame();});
-})();
-</script>
-
-<style>
-#chatFloatBubble{position:fixed;z-index:10000020;right:22px;bottom:24px;width:44px;height:44px;border:0;border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,#4361ee,#7c3aed);box-shadow:0 8px 26px #4338ca55;cursor:grab;touch-action:none;user-select:none}
-#chatFloatBubble.on{display:flex}
-#chatFloatBubble img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;pointer-events:none}
-#chatFloatBubble .chatFloatBadge{position:absolute;right:-3px;top:-4px;min-width:19px;height:19px;padding:0 5px;border-radius:12px;background:#ef4444;border:2px solid #fff;color:#fff;font:800 10px/15px Arial;text-align:center;display:none}
-#chatFloatBubble.has-new{animation:chatFloatPulse 1.4s ease-in-out infinite}
-@keyframes chatFloatPulse{0%,100%{box-shadow:0 8px 26px #4338ca55}50%{box-shadow:0 8px 28px #ec489988,0 0 0 7px #ec489922}}
-#chatFloatHint{position:fixed;z-index:10000019;right:90px;bottom:35px;max-width:210px;background:#fff;color:#202338;border:1px solid #e8e8f2;border-radius:14px;padding:9px 12px;box-shadow:0 8px 25px #1112;font:600 12px/1.4 Arial;display:none;pointer-events:none}
-#chatFloatHint.on{display:block}
-#chatBubbleRemoveZone{position:fixed;z-index:10000030;left:50%;bottom:22px;transform:translateX(-50%) scale(.8);width:58px;height:58px;border-radius:50%;background:#ef4444;color:#fff;border:3px solid #fff;box-shadow:0 8px 30px #ef444488;display:flex;align-items:center;justify-content:center;font:900 30px/1 Arial;opacity:0;pointer-events:none;transition:opacity .16s,transform .16s}
-#chatBubbleRemoveZone.on{opacity:1;transform:translateX(-50%) scale(1)}
-#chatBubbleRemoveZone.over{background:#b91c1c;box-shadow:0 0 0 10px #ef444433,0 8px 30px #ef444488;transform:translateX(-50%) scale(1.12)}
-@media(max-width:600px){#chatFloatBubble{width:40px;height:40px;right:14px;bottom:16px}#chatFloatHint{right:60px;bottom:25px}}
-
-
 html::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:linear-gradient(rgba(12,7,36,.24),rgba(12,7,36,.32)),var(--quiz-wallpaper);background-position:center;background-size:cover;background-repeat:no-repeat;transform:translateZ(0)}
 html{background:#100a2d!important;min-height:100%;background-attachment:fixed!important}
 body{background:transparent!important;min-height:100vh}
@@ -4604,71 +4389,6 @@ html.bg-white body{background:#fff!important;color:#202338!important}
 @media(max-width:600px){#bgThemeLauncher.bgThemeLauncherInline{padding:8px 10px}.bgThemePreview{height:52px}}
 
 </style>
-<button id="chatFloatBubble" type="button" aria-label="Mở chat nhóm" title="Kéo để di chuyển, chạm để mở chat">
-<img src="1.png" alt="Bóng chat" draggable="false">
-<span class="chatFloatBadge" id="chatFloatBadge"></span>
-</button>
-<div id="chatFloatHint">Có tin nhắn mới</div>
-<div id="chatBubbleRemoveZone" aria-label="Thả tại đây để tắt bóng chat" title="Thả vào đây để tắt bóng chat">×</div>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script>
-(function(){
- const bubble=document.getElementById('chatFloatBubble'),badge=document.getElementById('chatFloatBadge'),hint=document.getElementById('chatFloatHint'),removeZone=document.getElementById('chatBubbleRemoveZone');
- const shell=document.getElementById('rpgGameShell');
- shell.addEventListener('click',e=>{if(e.target===shell)shell.classList.remove('on');});
- const config={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
- let db=null,listenerStarted=false,currentName='',unseen=0,dragging=false,moved=false,startX=0,startY=0,originX=0,originY=0;
- function showBubble(name){currentName=name||currentName;bubble.classList.add('on');if(!listenerStarted)startListener();}
- function notify(mention){unseen=Math.min(99,unseen+1);badge.textContent=mention?'@':String(unseen);badge.style.display='block';bubble.classList.add('has-new');hint.textContent=mention?'Có người nhắc đến bạn (@)':'Có tin nhắn mới';hint.classList.add('on');clearTimeout(notify.timer);notify.timer=setTimeout(()=>hint.classList.remove('on'),3500);}
- function startListener(){
-  if(listenerStarted)return;listenerStarted=true;
-  try{
-   if(!window.firebase)return;
-   let app;try{app=firebase.app('floatingGroupChat');}catch(e){app=firebase.initializeApp(config,'floatingGroupChat');}
-   db=app.database();let ready=false;
-   db.ref('rooms/nhom1/messages').limitToLast(1).on('child_added',snap=>{
-    const m=snap.val()||{};if(!ready){ready=true;return;}
-    const body=String(m.text||m.message||m.content||'');const sender=String(m.name||m.username||'');
-    if(currentName&&sender===currentName)return;
-    let mention=false;
-    if(currentName){const escaped=currentName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');mention=new RegExp('@'+escaped+'(?![\\w])','i').test(body);}
-    notify(mention);
-   });
-  }catch(e){}
- }
- window.addEventListener('message',e=>{if(!e.data)return;if(e.data.type==='CHAT_BUBBLE_CHOICE'){if(e.data.enabled)showBubble(e.data.name);else bubble.classList.remove('on');}if(e.data.type==='RPG_CLOSE')shell.classList.remove('on');});
- bubble.addEventListener('pointerdown',e=>{dragging=true;moved=false;startX=e.clientX;startY=e.clientY;const r=bubble.getBoundingClientRect();originX=r.left;originY=r.top;bubble.style.left=originX+'px';bubble.style.top=originY+'px';bubble.style.right='auto';bubble.style.bottom='auto';bubble.setPointerCapture(e.pointerId);});
- bubble.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)>4||Math.abs(dy)>4)moved=true;if(moved){removeZone.classList.add('on');bubble.style.left=Math.max(0,Math.min(innerWidth-bubble.offsetWidth,originX+dx))+'px';bubble.style.top=Math.max(0,Math.min(innerHeight-bubble.offsetHeight,originY+dy))+'px';const r=removeZone.getBoundingClientRect(),b=bubble.getBoundingClientRect();const over=b.left+b.width/2>=r.left&&b.left+b.width/2<=r.right&&b.top+b.height/2>=r.top&&b.top+b.height/2<=r.bottom;removeZone.classList.toggle('over',over);}});
- bubble.addEventListener('pointerup',()=>{dragging=false;const r=removeZone.getBoundingClientRect(),b=bubble.getBoundingClientRect();const over=removeZone.classList.contains('over')&&b.left+b.width/2>=r.left&&b.left+b.width/2<=r.right&&b.top+b.height/2>=r.top&&b.top+b.height/2<=r.bottom;removeZone.classList.remove('on','over');if(moved){if(over){bubble.classList.remove('on','has-new');hint.classList.remove('on');shell.classList.remove('on');badge.style.display='none';window.dispatchEvent(new MessageEvent('message',{data:{type:'CHAT_BUBBLE_CHOICE',enabled:false}}));}setTimeout(()=>moved=false,80);return;}if(shell.classList.contains('on'))shell.classList.remove('on');else{unseen=0;badge.style.display='none';bubble.classList.remove('has-new');hint.classList.remove('on');shell.classList.add('on');}});
- bubble.addEventListener('pointercancel',()=>{dragging=false;removeZone.classList.remove('on','over');});
- addEventListener('resize',()=>{if(bubble.style.left){bubble.style.left=Math.max(0,Math.min(innerWidth-bubble.offsetWidth,parseFloat(bubble.style.left)||0))+'px';bubble.style.top=Math.max(0,Math.min(innerHeight-bubble.offsetHeight,parseFloat(bubble.style.top)||0))+'px';}});
-})();
-</script>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script>
-(function(){
-  const userName=(localStorage.getItem("chat_name")||"").trim();
-  if(!userName) return;
-  const cfg={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
-  try{
-    let app;try{app=firebase.app("chatModerationCheck");}catch(e){app=firebase.initializeApp(cfg,"chatModerationCheck");}
-    app.database().ref("rooms/nhom1/moderations/"+userName).on("value",snap=>{
-      const m=snap.val()||{};
-      if(m.ban){
-        if(document.getElementById("chatSiteBanOverlay")) return;
-        const el=document.createElement("div");el.id="chatSiteBanOverlay";
-        el.style.cssText="position:fixed;inset:0;z-index:2147483647;background:#111827;color:white;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font:600 18px system-ui";
-        el.innerHTML="<div><h2 style='margin-bottom:12px'>Truy cập đã bị quản trị viên chặn</h2><p style='font-size:14px;opacity:.8'>Tài khoản chat này không được phép truy cập trang Trắc Nghiệm.</p></div>";
-        document.body.appendChild(el);
-      }else{document.getElementById("chatSiteBanOverlay")?.remove();}
-    });
-  }catch(e){}
-})();
-</script>
-
 <div id="bgThemePanel" aria-label="Chọn nền giao diện" role="dialog" aria-modal="false">
   <div class="bgThemeHead"><span>🎨 Chọn nền giao diện</span><button id="bgThemeClose" type="button" aria-label="Đóng">×</button></div>
   <div class="bgThemeGrid">
