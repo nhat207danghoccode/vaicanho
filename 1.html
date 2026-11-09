@@ -169,6 +169,56 @@
     box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s}
   .wardrobe-btn{right:64px}
   .rename-btn{right:112px}
+  .leaderboard-btn{position:fixed;top:76px;right:160px;z-index:9;width:40px;height:40px;border-radius:50%;
+    background:rgba(10,14,24,.78);backdrop-filter:blur(14px);border:1px solid rgba(250,204,21,.35);
+    color:#facc15;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s}
+  .leaderboard-btn:hover{background:rgba(250,204,21,.18);border-color:#facc15;transform:translateY(-2px)}
+  #leaderboardPanel{position:fixed;inset:0;z-index:85;background:rgba(4,8,18,.78);backdrop-filter:blur(14px);
+    display:none;align-items:center;justify-content:center;padding:16px}
+  #leaderboardPanel.on{display:flex}
+  .leaderboard-card{position:relative;width:min(900px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#111b30,#090f1d);
+    color:#f8fafc;border:1px solid rgba(250,204,21,.22);border-radius:24px;padding:24px;
+    box-shadow:0 30px 90px #000c;scrollbar-width:thin}
+  .leaderboard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
+  .leaderboard-title{font-size:22px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(90deg,#fde68a,#f59e0b,#fef3c7);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .leaderboard-sub{font-size:12px;color:#94a3b8;margin-top:5px}
+  .leaderboard-close{width:34px;height:34px;flex-shrink:0;border-radius:50%;border:1px solid #ffffff20;background:#ffffff0c;color:#fff;font-size:19px;cursor:pointer}
+  .leaderboard-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin:14px 0 20px}
+  .leaderboard-podium-item{min-width:0;text-align:center;padding:15px 8px 13px;border:1px solid #ffffff12;border-radius:17px;background:linear-gradient(160deg,#ffffff0c,#ffffff04)}
+  .leaderboard-podium-item.first{border-color:#facc1566;background:linear-gradient(160deg,#facc1520,#ffffff05);transform:translateY(-7px)}
+  .leaderboard-medal{font-size:29px;line-height:1.2;margin-bottom:7px}
+  .leaderboard-podium-name{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .leaderboard-podium-rate{font-size:20px;font-weight:900;color:#fcd34d;margin-top:5px}
+  .leaderboard-podium-meta{font-size:10px;color:#94a3b8;margin-top:3px}
+  .leaderboard-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:16px}
+  .leaderboard-stat{padding:11px 13px;border-radius:13px;background:#ffffff08;border:1px solid #ffffff10}
+  .leaderboard-stat-label{font-size:10px;color:#94a3b8}
+  .leaderboard-stat-value{font-size:18px;font-weight:900;margin-top:3px}
+  .leaderboard-table-wrap{overflow-x:auto;border:1px solid #ffffff12;border-radius:15px}
+  .leaderboard-table{width:100%;border-collapse:collapse;min-width:640px;font-size:12px}
+  .leaderboard-table th{padding:11px 12px;text-align:left;color:#94a3b8;font-size:10px;letter-spacing:.5px;text-transform:uppercase;background:#ffffff08}
+  .leaderboard-table td{padding:12px;border-top:1px solid #ffffff0c;white-space:nowrap}
+  .leaderboard-table tr.me{background:#facc1510}
+  .leaderboard-rank{font-weight:900;color:#fcd34d}
+  .leaderboard-member{font-weight:750;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+  .leaderboard-kda{font-variant-numeric:tabular-nums;color:#cbd5e1}
+  .leaderboard-rate{font-weight:900;color:#6ee7b7}
+  .leaderboard-empty{text-align:center;color:#94a3b8;padding:26px 12px;font-size:13px}
+  .leaderboard-foot{font-size:10px;color:#64748b;margin-top:12px;line-height:1.5}
+  @media(max-width:600px){
+    .leaderboard-btn{right:160px;top:76px}
+    .leaderboard-card{padding:17px 12px;border-radius:18px}
+    .leaderboard-title{font-size:19px}
+    .leaderboard-podium{gap:6px}
+    .leaderboard-podium-item{padding:12px 5px}
+    .leaderboard-podium-name{font-size:10px}
+    .leaderboard-podium-rate{font-size:17px}
+    .leaderboard-summary{gap:6px}
+    .leaderboard-stat{padding:9px}
+    .leaderboard-stat-value{font-size:15px}
+  }
   .wardrobe-btn:hover,.rename-btn:hover{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.6)}
   #wardrobePanel{position:fixed;inset:0;z-index:80;background:rgba(8,11,20,.78);backdrop-filter:blur(12px);
     display:none;align-items:center;justify-content:center;padding:16px}
@@ -225,6 +275,19 @@
 <button class="panel-open-btn visible" id="panelOpen" title="Mở danh sách">☰</button>
 <button class="wardrobe-btn" id="wardrobeBtn" title="Tủ đồ">👕</button>
 <button class="rename-btn" id="renameBtn" title="Đổi tên">✏️</button>
+<button class="leaderboard-btn" id="leaderboardBtn" title="Bảng xếp hạng học tập">🏆</button>
+<div id="leaderboardPanel" aria-hidden="true">
+  <div class="leaderboard-card">
+    <div class="leaderboard-head">
+      <div><div class="leaderboard-title">🏆 BẢNG XẾP HẠNG HỌC TẬP</div><div class="leaderboard-sub">Toàn bộ thành viên phòng học · Đồng bộ kết quả từ Trắc Nghiệm By Nhật</div></div>
+      <button class="leaderboard-close" id="leaderboardClose" aria-label="Đóng">×</button>
+    </div>
+    <div class="leaderboard-summary" id="leaderboardSummary"></div>
+    <div class="leaderboard-podium" id="leaderboardPodium"></div>
+    <div class="leaderboard-table-wrap"><table class="leaderboard-table"><thead><tr><th>Hạng</th><th>Thành viên</th><th>KDA (Đ/S/B)</th><th>Lượt làm</th><th>Câu đã trả lời</th><th>Tỷ lệ đúng</th></tr></thead><tbody id="leaderboardRows"></tbody></table></div>
+    <div class="leaderboard-foot">KDA = số câu Đúng / Sai / Bỏ trống. Thành viên chưa làm bài vẫn được hiển thị với số liệu 0. Xếp hạng theo tỷ lệ đúng, sau đó tổng câu đúng và số lượt làm.</div>
+  </div>
+</div>
 
 <div class="focus-banner" id="focusBanner">
   <div><div class="focus-name" id="focusName">—</div><div class="focus-status" id="focusStatus">—</div></div>
@@ -327,7 +390,7 @@
       if(presenceRef) presenceRef.remove().catch(()=>{});
       const nm = (localStorage.getItem('chat_name')||'').trim();
       if(nm && db) db.ref(ROOM+'/members/'+nm).remove().catch(()=>{});
-      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','adminFab','focusBanner'].forEach(id=>{
+      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','leaderboardBtn','adminFab','focusBanner'].forEach(id=>{
         const el=document.getElementById(id); if(el) el.style.display='none';
       });
       document.querySelectorAll('.hud').forEach(el=>el.style.display='none');
@@ -1553,7 +1616,7 @@ async function checkBanned(){
       window.__isBanned = true;
       if(window.__renderBanOverlay) window.__renderBanOverlay(mod);
       if(window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
-      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','adminFab','focusBanner'].forEach(id=>{
+      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','leaderboardBtn','adminFab','focusBanner'].forEach(id=>{
         const el=document.getElementById(id); if(el) el.style.display='none';
       });
       document.querySelectorAll('.hud').forEach(el=>el.style.display='none');
@@ -1731,10 +1794,12 @@ window.syncAdminPresence = function(users){
     };
   });
   if(isAdmin) renderAdminMembers();
+  if(window.renderLearningLeaderboard) window.renderLearningLeaderboard();
 };
 
 if(adminDB){
-  adminDB.ref('rooms/nhom1/members').on('value', s => { allMembers = s.val()||{}; renderAdminMembers(); });
+  adminDB.ref('rooms/nhom1/members').on('value', s => { allMembers = s.val()||{}; renderAdminMembers(); if(window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
+  adminDB.ref('rooms/nhom1/learningStats').on('value', s => { window.__learningStats = s.val()||{}; if(window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
   adminDB.ref('rooms/nhom1/moderations').on('value', s => {
     allMods = s.val()||{};
     renderAdminMembers(); renderAdminBanned();
@@ -1821,6 +1886,58 @@ function updateHud() {
   document.getElementById('pulse').style.boxShadow = `0 0 14px ${nOn > students.length/2 ? '#34d399' : '#ef4444'}`;
 }
 renderStudentList(); updateHud();
+
+const leaderboardPanel = document.getElementById('leaderboardPanel');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+const leaderboardClose = document.getElementById('leaderboardClose');
+function escapeLeaderboardText(value){
+  return String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+window.renderLearningLeaderboard = function(){
+  if(!leaderboardPanel) return;
+  const statData=window.__learningStats||{};
+  const members=new Map();
+  Object.entries(allMembers||{}).forEach(([name,m])=>{
+    if(!m) return;
+    const id=String(m.uid||('name_'+name));
+    members.set(id,{uid:id,name:String(m.name||name),online:m.online===true});
+  });
+  Object.entries(allPresence||{}).forEach(([id,p])=>{
+    if(!p) return;
+    const old=members.get(id)||{};
+    members.set(id,{...old,uid:id,name:String(p.name||old.name||'Người dùng'),online:p.online===true});
+  });
+  const rows=Array.from(members.values()).map(m=>{
+    const st=statData[m.uid]||{};
+    const correct=Math.max(0,Number(st.correct)||0);
+    const wrong=Math.max(0,Number(st.wrong)||0);
+    const unanswered=Math.max(0,Number(st.unanswered)||0);
+    const attempts=Math.max(0,Number(st.attempts)||0);
+    const answered=correct+wrong;
+    return {...m,correct,wrong,unanswered,attempts,answered,accuracy:answered?Math.round(correct/answered*100):0};
+  }).sort((a,b)=>{
+    if((a.attempts>0)!==(b.attempts>0)) return a.attempts>0?-1:1;
+    return b.accuracy-a.accuracy || b.correct-a.correct || b.attempts-a.attempts || a.name.localeCompare(b.name,'vi');
+  });
+  const totalCorrect=rows.reduce((a,x)=>a+x.correct,0);
+  const activeLearners=rows.filter(x=>x.attempts>0).length;
+  document.getElementById('leaderboardSummary').innerHTML=
+    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">THÀNH VIÊN</div><div class="leaderboard-stat-value">${rows.length}</div></div>`+
+    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">ĐÃ TỪNG LÀM BÀI</div><div class="leaderboard-stat-value">${activeLearners}</div></div>`+
+    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">TỔNG CÂU ĐÚNG</div><div class="leaderboard-stat-value">${totalCorrect.toLocaleString('vi-VN')}</div></div>`;
+  const podium=document.getElementById('leaderboardPodium');
+  const rankedRows=rows.filter(x=>x.attempts>0);
+  const podiumOrder=[rankedRows[1],rankedRows[0],rankedRows[2]];
+  const medals=['🥈','👑','🥉'];
+  podium.innerHTML=podiumOrder.map((m,i)=>m?`<div class="leaderboard-podium-item ${i===1?'first':''}"><div class="leaderboard-medal">${medals[i]}</div><div class="leaderboard-podium-name">${escapeLeaderboardText(m.name)}</div><div class="leaderboard-podium-rate">${m.attempts?m.accuracy+'%':'—'}</div><div class="leaderboard-podium-meta">${m.attempts} lượt · ${m.correct} câu đúng</div></div>`:'<div class="leaderboard-podium-item"><div class="leaderboard-medal">—</div><div class="leaderboard-podium-name">Chưa có</div><div class="leaderboard-podium-rate">—</div><div class="leaderboard-podium-meta">Chưa có thành viên</div></div>').join('');
+  const body=document.getElementById('leaderboardRows');
+  if(!rows.length){body.innerHTML='<tr><td colspan="6" class="leaderboard-empty">Chưa có thành viên trong phòng học.</td></tr>';return;}
+  const myUid=myDevice();
+  body.innerHTML=rows.map((m,i)=>`<tr class="${m.uid===myUid?'me':''}"><td class="leaderboard-rank">${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}</td><td class="leaderboard-member">${escapeLeaderboardText(m.name)}${m.uid===myUid?' · Bạn':''}${m.online?' <span style="color:#34d399">●</span>':' <span style="color:#64748b">●</span>'}</td><td class="leaderboard-kda">${m.correct} / ${m.wrong} / ${m.unanswered}</td><td>${m.attempts}</td><td>${m.answered.toLocaleString('vi-VN')}</td><td class="leaderboard-rate">${m.attempts?m.accuracy+'%':'Chưa làm'}</td></tr>`).join('');
+};
+leaderboardBtn.addEventListener('click',()=>{leaderboardPanel.classList.add('on');leaderboardPanel.setAttribute('aria-hidden','false');window.renderLearningLeaderboard();});
+leaderboardClose.addEventListener('click',()=>{leaderboardPanel.classList.remove('on');leaderboardPanel.setAttribute('aria-hidden','true');});
+leaderboardPanel.addEventListener('click',e=>{if(e.target===leaderboardPanel) leaderboardClose.click();});
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
