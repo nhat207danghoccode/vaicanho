@@ -23,7 +23,6 @@
   #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
   .wrap{position:relative;z-index:2;min-height:100vh}
 
-  
   .view{
     position:fixed;inset:0;
     display:none;flex-direction:column;
@@ -36,7 +35,6 @@
   @keyframes viewIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
   .view-inner{width:100%;max-width:640px;margin:auto}
 
-  
   .hero h1{
     font-family:'Cinzel',serif;
     font-size:clamp(2.2rem,6vw,4.5rem);
@@ -57,7 +55,6 @@
   }
   .hero .btn-wrap{text-align:center}
 
-  
   .btn{
     padding:.95rem 2.4rem;
     font-family:'Cinzel',serif;letter-spacing:.15em;
@@ -71,7 +68,6 @@
   .btn:active{transform:scale(.97)}
   .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-  
   .menu-title{
     font-family:'Cinzel',serif;text-align:center;
     font-size:1.3rem;letter-spacing:.1em;margin-bottom:1.5rem;
@@ -101,7 +97,6 @@
   }
   .menu-card:hover svg{transform:scale(1.15) rotate(-5deg)}
 
-  
   .glass{
     background:rgba(255,255,255,.04);
     border:1px solid rgba(255,255,255,.1);
@@ -118,7 +113,6 @@
   }
   .glass .sub{text-align:center;color:var(--muted);font-size:.82rem;margin-bottom:1.6rem;font-weight:300}
 
-  
   .field{margin-bottom:1rem}
   .field label{display:block;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
   .field input, .field select{
@@ -135,10 +129,9 @@
   .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
   @media(max-width:520px){.row{grid-template-columns:1fr}}
 
-  
   .top-bar{
     position:absolute;top:1rem;left:1rem;right:1rem;
-    display:flex;justify-content:space-between;align-items:center;
+    display:flex;justify-content:flex-start;align-items:center;gap:.6rem;
     z-index:20;pointer-events:none;
   }
   .top-bar > *{pointer-events:auto}
@@ -154,7 +147,6 @@
   .back-btn:hover{color:var(--gold);border-color:rgba(212,175,55,.4)}
   .back-btn svg{width:14px;height:14px;fill:currentColor}
 
-  
   .result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.8rem;margin-top:1.2rem}
   .stat{
     background:rgba(255,255,255,.03);
@@ -176,7 +168,6 @@
     white-space:pre-line;
   }
 
-  
   .scores{margin-top:1.2rem;display:grid;gap:.9rem}
   .score-row{display:flex;align-items:center;gap:.8rem}
   .score-row .label{width:100px;font-size:.78rem;color:var(--muted);flex-shrink:0}
@@ -184,7 +175,6 @@
   .score-fill{height:100%;width:0;border-radius:99px;transition:width 1.4s cubic-bezier(.2,.8,.3,1)}
   .score-val{width:40px;text-align:right;font-family:'Cinzel',serif;color:var(--gold);font-size:.88rem;flex-shrink:0}
 
-  
   .wheel-wrap{position:relative;width:min(72vw,300px);aspect-ratio:1;margin:1rem auto}
   .wheel{
     width:100%;height:100%;position:relative;
@@ -225,7 +215,6 @@
   }
   .wheel-center svg{width:26px;height:26px;fill:currentColor;margin-bottom:.2rem}
 
-  
   .tarot-stage{
     position:relative;width:100%;height:240px;
     margin:1.5rem 0;perspective:1200px;
@@ -276,7 +265,25 @@
     100%{transform:translate(180px, 40px) rotate(25deg)}
   }
 
-  
+  @media(max-width:600px){
+    .tarot-stage{height:200px;}
+    .tarot-card{
+      width:88px;height:150px;
+      margin-left:-44px;margin-top:-75px;
+    }
+    .tarot-card.pos-0{transform:translateX(-92px) rotate(-6deg)}
+    .tarot-card.pos-1{transform:translateX(0) rotate(0)}
+    .tarot-card.pos-2{transform:translateX(92px) rotate(6deg)}
+  }
+  @media(max-width:380px){
+    .tarot-card{
+      width:76px;height:130px;
+      margin-left:-38px;margin-top:-65px;
+    }
+    .tarot-card.pos-0{transform:translateX(-78px) rotate(-5deg)}
+    .tarot-card.pos-2{transform:translateX(78px) rotate(5deg)}
+  }
+
   .coins-row{
     display:flex;gap:.6rem;justify-content:center;
     margin:1.5rem 0;perspective:800px;
@@ -300,7 +307,6 @@
     100%{transform:rotateY(360deg) translateY(0)}
   }
 
-  
   .hexagram{display:flex;flex-direction:column-reverse;gap:5px;align-items:center;margin:1rem auto;width:140px}
   .yao{display:flex;gap:6px;width:100%;height:12px}
   .yao span{background:var(--gold);border-radius:2px;box-shadow:0 0 10px rgba(212,175,55,.4);flex:1}
@@ -309,7 +315,6 @@
   .yao.animate span{animation:yaoIn .5s ease both}
   @keyframes yaoIn{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
 
-  
   .spin-number{
     font-family:'Cinzel',serif;font-size:3.5rem;
     color:var(--gold);text-shadow:0 0 30px rgba(212,175,55,.6);
@@ -319,7 +324,6 @@
   .spin-number.spinning{animation:numPulse .15s linear infinite}
   @keyframes numPulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
 
-  
   .spinner-wrap{
     position:relative;width:min(72vw,280px);aspect-ratio:1;
     margin:1.5rem auto;
@@ -348,10 +352,8 @@
     font-family:'Cinzel',serif;color:#0a0618;font-weight:700;font-size:1rem;
   }
 
-  
   .particle{position:fixed;pointer-events:none;z-index:999;border-radius:50%}
 
-  
   @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   ::-webkit-scrollbar{width:8px}
@@ -367,41 +369,44 @@
 
   .tarot-zoom-overlay{
     position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;
-    padding:22px;background:rgba(5,3,14,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    padding:18px;background:rgba(5,3,14,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   }
   .tarot-zoom-overlay.active{display:flex;animation:fadeIn .2s ease both}
   .tarot-zoom-panel{
-    position:relative;width:min( min(88vw,390px), calc(100vh - 70px) * .62 );max-height:92vh;
-    display:flex;flex-direction:column;align-items:center;gap:12px;
+    position:relative;
+    width:min(86vw, calc(88vh * 0.58), 460px);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
     animation:tarotZoomIn .28s cubic-bezier(.2,.8,.2,1) both;
   }
   .tarot-zoom-image{
-    display:block;width:100%;height:auto;max-height:72vh;object-fit:contain;
-    border:2px solid rgba(232,194,92,.9);border-radius:16px;
+    display:block;width:100%;height:auto;max-height:72vh;
+    object-fit:contain;
+    border:2px solid rgba(232,194,92,.9);
+    border-radius:16px;
     box-shadow:0 0 24px rgba(212,175,55,.25),0 20px 70px rgba(0,0,0,.65);
+    background:#170d2a;
   }
-  .tarot-zoom-title{font-family:'Cinzel',serif;color:var(--gold-light);font-size:1.05rem;text-align:center;text-shadow:0 0 14px rgba(212,175,55,.35)}
-  .tarot-zoom-meaning{color:#eee5ff;text-align:center;font-size:.92rem;line-height:1.55;max-width:460px}
+  .tarot-zoom-title{font-family:'Cinzel',serif;color:var(--gold-light);font-size:1.02rem;text-align:center;text-shadow:0 0 14px rgba(212,175,55,.35)}
+  .tarot-zoom-meaning{color:#eee5ff;text-align:center;font-size:.88rem;line-height:1.55;max-width:100%}
   .tarot-zoom-close{
-    position:absolute;right:-12px;top:-12px;width:40px;height:40px;border-radius:50%;
+    position:absolute;right:-10px;top:-10px;width:40px;height:40px;border-radius:50%;
     border:1px solid rgba(232,194,92,.8);background:#211334;color:#f5e6a8;font-size:25px;
     display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;
     box-shadow:0 4px 18px rgba(0,0,0,.45)
   }
-  .tarot-zoom-hint{font-size:.76rem;color:#c6b8df;text-align:center}
+  .tarot-zoom-hint{font-size:.72rem;color:#c6b8df;text-align:center}
   @keyframes tarotZoomIn{from{opacity:0;transform:scale(.86) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
   @media(max-width:600px){
-    .tarot-zoom-overlay{padding:18px}
-    .tarot-zoom-panel{width:min(82vw,340px);max-height:90vh}
-    .tarot-zoom-image{max-height:66vh}
+    .tarot-zoom-overlay{padding:14px}
+    .tarot-zoom-panel{width:min(88vw, calc(88vh * 0.58), 360px)}
+    .tarot-zoom-image{max-height:68vh}
+    .tarot-zoom-meaning{font-size:.82rem}
   }
-
 </style>
 </head>
 <body>
 <div class="cursor-glow" id="cursorGlow"></div>
 <canvas id="bg-canvas"></canvas>
-
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -414,7 +419,6 @@
     <symbol id="ic-back" viewBox="0 0 24 24"><path d="M15.4 7.4L14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></symbol>
     <symbol id="ic-home" viewBox="0 0 24 24"><path d="M12 3L2 12h3v9h6v-6h2v6h6v-9h3L12 3z"/></symbol>
 
-    
     <symbol id="z-aries" viewBox="0 0 24 24"><path d="M12 3a4 4 0 00-4 4v2a1 1 0 002 0V7a2 2 0 014 0v9a1 1 0 002 0V7a4 4 0 00-4-4z"/><path d="M6 11a2 2 0 100 4 2 2 0 000-4zm12 0a2 2 0 100 4 2 2 0 000-4z"/></symbol>
     <symbol id="z-taurus" viewBox="0 0 24 24"><path d="M12 9a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zM6 3h12v2H6V3z"/></symbol>
     <symbol id="z-gemini" viewBox="0 0 24 24"><path d="M5 3h14v2H5V3zm0 16h14v2H5v-2zM7 5h2v14H7V5zm8 0h2v14h-2V5z"/></symbol>
@@ -428,25 +432,12 @@
     <symbol id="z-aquarius" viewBox="0 0 24 24"><path d="M3 9l4-3 4 3 4-3 4 3v2l-4-3-4 3-4-3-4 3V9zm0 6l4-3 4 3 4-3 4 3v2l-4-3-4 3-4-3-4 3v-2z"/></symbol>
     <symbol id="z-pisces" viewBox="0 0 24 24"><path d="M7 3a5 5 0 015 5v8a5 5 0 01-10 0h2a3 3 0 106 0V8a3 3 0 10-6 0H2a5 5 0 015-5zm10 0a5 5 0 015 5h-2a3 3 0 10-6 0v8a3 3 0 106 0h2a5 5 0 01-10 0V8a5 5 0 015-5z"/></symbol>
 
-    
-    <symbol id="t-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M11 2h2v3h-2V2zm0 17h2v3h-2v-3zM2 11h3v2H2v-2zm17 0h3v2h-3v-2zM4.9 4.9l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zm10.7 10.7l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zM4.9 19.1l-1.4-1.4 2.1-2.1 1.4 1.4-2.1 2.1zm10.7-10.7l-1.4-1.4 2.1-2.1 1.4 1.4-2.1 2.1z"/></symbol>
-    <symbol id="t-moon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9 7 7 0 01-9-9z"/></symbol>
-    <symbol id="t-star" viewBox="0 0 24 24"><path d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.5l7.1-.6L12 2z"/></symbol>
-    <symbol id="t-cup" viewBox="0 0 24 24"><path d="M5 4h14v3a4 4 0 01-4 4h-1v3h3v2h-3v4h-2v-4H9v-2h3v-3H8a4 4 0 01-4-4V4zm2 2v1a2 2 0 002 2h6a2 2 0 002-2V6H7z"/></symbol>
-    <symbol id="t-sword" viewBox="0 0 24 24"><path d="M20 2l-8 8-2-2 8-8h2v2zM10 10l-6 6 2 2 6-6-2-2zm-4 8l-2 2 2 2 2-2-2-2z"/></symbol>
-    <symbol id="t-key" viewBox="0 0 24 24"><path d="M14 2a6 6 0 00-5.7 8L2 16.3V22h5.7l1.3-1.3V19h1.7l1.3-1.3V16h1.7l1.3-1.3A6 6 0 1014 2zm2 4a2 2 0 11-4 0 2 2 0 014 0z"/></symbol>
-    <symbol id="t-heart" viewBox="0 0 24 24"><path d="M12 21s-8-5-8-11a4 4 0 018-1 4 4 0 018 1c0 6-8 11-8 11z"/></symbol>
-    <symbol id="t-eye" viewBox="0 0 24 24"><path d="M12 5C6 5 2 12 2 12s4 7 10 7 10-7 10-7-4-7-10-7zm0 3a4 4 0 110 8 4 4 0 010-8z"/></symbol>
-    <symbol id="t-skull" viewBox="0 0 24 24"><path d="M12 2a8 8 0 00-8 8v4l2 2v4h3v2h6v-2h3v-4l2-2v-4a8 8 0 00-8-8zm-3 8a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm6 0a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/></symbol>
-    <symbol id="t-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4" stroke="currentColor" stroke-width="1.5"/></symbol>
-    <symbol id="t-fool" viewBox="0 0 24 24"><path d="M12 2l1 4h3l-2 3 1 4-3-2-3 2 1-4-2-3h3l1-4zM7 17a5 5 0 0010 0H7z"/></symbol>
     <symbol id="t-back" viewBox="0 0 24 24"><path d="M12 2l3 5h-6l3-5zm0 20l-3-5h6l-3 5zM2 12l5-3v6l-5-3zm20 0l-5 3V9l5 3z"/><circle cx="12" cy="12" r="3"/></symbol>
   </defs>
 </svg>
 
 <div class="wrap">
 
-  
   <section class="view active" id="view-home">
     <div class="view-inner">
       <div class="hero">
@@ -460,7 +451,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-menu">
     <div class="view-inner">
       <div class="top-bar">
@@ -502,7 +492,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-tuvi">
     <div class="view-inner">
       <div class="top-bar">
@@ -518,7 +507,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-tuvi-shake">
     <div class="view-inner">
       <div class="glass">
@@ -532,7 +520,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-tuvi-result">
     <div class="view-inner">
       <div class="top-bar">
@@ -557,7 +544,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-tarot">
     <div class="view-inner">
       <div class="top-bar">
@@ -571,7 +557,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-tarot-shuffle">
     <div class="view-inner">
       <div class="glass">
@@ -582,7 +567,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-tarot-pick">
     <div class="view-inner">
       <div class="top-bar">
@@ -597,7 +581,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-dich">
     <div class="view-inner">
       <div class="top-bar">
@@ -611,7 +594,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-dich-shake">
     <div class="view-inner">
       <div class="glass">
@@ -623,7 +605,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-dich-result">
     <div class="view-inner">
       <div class="top-bar">
@@ -644,7 +625,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-numerology">
     <div class="view-inner">
       <div class="top-bar">
@@ -660,7 +640,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-numerology-spin">
     <div class="view-inner">
       <div class="glass">
@@ -671,7 +650,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-numerology-result">
     <div class="view-inner">
       <div class="top-bar">
@@ -692,7 +670,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-score">
     <div class="view-inner">
       <div class="top-bar">
@@ -707,7 +684,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-score-spin">
     <div class="view-inner">
       <div class="glass">
@@ -722,7 +698,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-score-result">
     <div class="view-inner">
       <div class="top-bar">
@@ -742,7 +717,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-study">
     <div class="view-inner">
       <div class="top-bar">
@@ -762,7 +736,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-study-spin">
     <div class="view-inner">
       <div class="glass">
@@ -773,7 +746,6 @@
     </div>
   </section>
 
-  
   <section class="view" id="view-study-result">
     <div class="view-inner">
       <div class="top-bar">
@@ -797,8 +769,6 @@
 
 </div>
 
-
-
 <div class="tarot-zoom-overlay" id="tarot-zoom-overlay" onclick="if(event.target===this)closeTarotZoom()" aria-hidden="true">
   <div class="tarot-zoom-panel" role="dialog" aria-modal="true" aria-labelledby="tarot-zoom-title">
     <button id="tarot-zoom-close" class="tarot-zoom-close" type="button" aria-label="Đóng" onclick="closeTarotZoom()">×</button>
@@ -817,7 +787,6 @@ function go(viewName){
   document.getElementById('view-'+viewName).classList.add('active');
   window.scrollTo(0,0);
 }
-
 
 (function starfield(){
   const canvas = document.getElementById('bg-canvas');
@@ -880,7 +849,6 @@ function go(viewName){
   });
 })();
 
-
 (function crystalBall(){
   const canvas = document.getElementById('crystal-canvas');
   if (!canvas) return;
@@ -932,13 +900,11 @@ function go(viewName){
   addEventListener('resize', resize); setTimeout(resize,100);
 })();
 
-
 const glow = document.getElementById('cursorGlow');
 addEventListener('mousemove', e=>{
   glow.style.left = e.clientX+'px';
   glow.style.top  = e.clientY+'px';
 });
-
 
 const ZODIAC = [
   {name:'Bạch Dương', icon:'z-aries', color:'#ff6b6b'},
@@ -971,7 +937,6 @@ const READINGS = [
   'Có một mối duyên lành đang đến gần. Hãy chú ý đến những cuộc gặp gỡ tình cờ trong thời gian tới.',
   'Tài lộc đang luân chuyển về phía bạn. Hãy sáng suốt trong các quyết định tài chính, cơ hội tốt đang mở ra.',
 ];
-
 
 function digSum(n){
   while (n > 9) n = String(n).split('').reduce((a,b)=>a+Number(b),0);
@@ -1063,7 +1028,6 @@ function buildWheel(container, centerEl, zodiac, highlight){
   }
 }
 
-
 function startTuVi(){
   const name = document.getElementById('tv-name').value.trim() || 'Bạn';
   const dob  = document.getElementById('tv-dob').value;
@@ -1097,7 +1061,6 @@ function startTuVi(){
     }, 1200);
   }, 2000);
 }
-
 
 const TAROT_DECK = [
   {id:'the-fool', name:'The Fool — Kẻ Khờ', image:'tarot/the-fool.webp', mean:'Khởi đầu mới, sự tò mò và lòng can đảm bước vào điều chưa biết. Hãy cởi mở nhưng vẫn cân nhắc lựa chọn.'},
@@ -1204,7 +1167,6 @@ function showTarotReading(positions){
   rd.style.display = 'block';
 }
 
-
 const TRIGRAMS = [
   {name:'Càn', lines:'111', image:'Trời'},
   {name:'Đoài', lines:'110', image:'Đầm'},
@@ -1286,7 +1248,6 @@ function renderDichResult(yao){
   }, 1000);
 }
 
-
 const PYTHAGORAS = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
 const NU_READINGS = {
   1:'Số 1 — Người tiên phong, độc lập, có tố chất lãnh đạo. Hãy tin vào chính kiến của mình.',
@@ -1343,7 +1304,6 @@ function renderNumerology(d){
     }, 400 + i*200);
   });
 }
-
 
 const SCORE_FIELDS = [
   {key:'love', label:'Tình duyên'},
@@ -1408,7 +1368,6 @@ function renderScore(scores, total, dob){
     burstParticles(r.left+r.width/2, r.top+r.height/2);
   }, 1200);
 }
-
 
 const STUDY_FIELDS = [
   {key:'logic', label:'Tư duy logic'},
