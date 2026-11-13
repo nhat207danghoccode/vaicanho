@@ -2075,6 +2075,10 @@ B. Đúng"></textarea>
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 9h.01M15 9h.01"/></svg>
   Phòng học
 </button>
+<button class="qbtn" type="button" onclick="openFortuneTab()" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border-color:transparent;font-weight:800">
+  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M7.5 7.5l9 9M16.5 7.5l-9 9"/></svg>
+  Bói toán
+</button>
 <button class="qbtn" type="button" onclick="showTomorrowSchedule()">
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;">
     <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h3M8 17h7"/>
@@ -4499,6 +4503,22 @@ function openClassroom3D(){
  if(!frame.dataset.loaded){frame.src='1.html';frame.dataset.loaded='1';}
 }
 function closeClassroom3D(){const shell=document.getElementById('classroom3DShell');shell.classList.remove('on');shell.setAttribute('aria-hidden','true');}
+function openFortuneTab(){
+ const shell=document.getElementById('fortuneTabShell');
+ const frame=document.getElementById('fortuneTabFrame');
+ shell.classList.add('on');shell.setAttribute('aria-hidden','false');
+ if(!frame.dataset.loaded){frame.src='bt.html';frame.dataset.loaded='1';}
+}
+function closeFortuneTab(){
+ const shell=document.getElementById('fortuneTabShell');
+ shell.classList.remove('on');shell.setAttribute('aria-hidden','true');
+}
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){
+  closeFortuneTab();
+  closeClassroom3D();
+ }
+});
 </script>
 
 <script>
@@ -4603,3 +4623,16 @@ function closeClassroom3D(){const shell=document.getElementById('classroom3DShel
 </script>
 </body>
 </html>
+
+
+<style>
+#fortuneTabShell{display:none;position:fixed;inset:0;z-index:2147483001;background:#080512}
+#fortuneTabShell.on{display:block}
+#fortuneTabFrame{width:100%;height:100%;border:0;display:block;background:#080512}
+#fortuneTabClose{position:absolute;right:16px;top:14px;z-index:3;width:42px;height:42px;border:1px solid #ffffff55;border-radius:50%;background:#171027eF;color:#fff;font-size:25px;cursor:pointer;box-shadow:0 4px 18px #0008}
+#fortuneTabClose:hover{background:#7c3aed}
+</style>
+<div id="fortuneTabShell" aria-hidden="true">
+ <button id="fortuneTabClose" type="button" onclick="closeFortuneTab()" aria-label="Đóng bói toán">×</button>
+ <iframe id="fortuneTabFrame" title="Bói toán" allow="fullscreen"></iframe>
+</div>
