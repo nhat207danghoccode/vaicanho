@@ -135,27 +135,7 @@
   }
   .map-card:hover img{transform:scale(1.012);filter:contrast(1.03) saturate(1.04)}
 
-  .map-tools{
-    position:absolute;top:14px;right:14px;z-index:5;
-    display:flex;flex-direction:column;gap:7px;
-  }
-  .tool-btn{
-    width:38px;height:38px;border-radius:11px;border:1px solid var(--border);
-    background:rgba(255,255,255,.94);backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    display:grid;place-items:center;cursor:pointer;
-    box-shadow:0 6px 18px -6px rgba(15,23,42,.2);
-    transition:transform .22s var(--spring),box-shadow .22s var(--ease),background .2s;
-    color:#475569;
-  }
-  .tool-btn:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 10px 24px -6px rgba(15,23,42,.28);background:#fff;color:var(--accent)}
-  .tool-btn:active{transform:scale(.94)}
-  .tool-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .tool-btn.active{background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border-color:transparent}
-
   svg#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-  svg#overlay.zoomed{cursor:grab}
-  svg#overlay.zoomed:active{cursor:grabbing}
 
   .hot{pointer-events:auto;cursor:pointer;transform-box:fill-box;transform-origin:center}
   .hot circle{
@@ -257,7 +237,7 @@
     background-size:contain;background-repeat:no-repeat;
     transition:transform .2s var(--ease);
   }
-  .select-wrap:focus-within::after{transform:translateY(-50%) rotate(180deg);stroke:var(--accent)}
+  .select-wrap:focus-within::after{transform:translateY(-50%) rotate(180deg)}
 
   .swap-btn{
     align-self:center;width:32px;height:32px;border-radius:50%;
@@ -399,17 +379,6 @@
         </defs>
         <g id="viewport"></g>
       </svg>
-      <div class="map-tools">
-        <button class="tool-btn" id="zoomIn" title="Phóng to">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <button class="tool-btn" id="zoomOut" title="Thu nhỏ">
-          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-        <button class="tool-btn" id="zoomReset" title="Căn giữa">
-          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 3 3 9 9 9"/></svg>
-        </button>
-      </div>
     </div>
 
     <aside class="sidebar">
@@ -453,7 +422,7 @@
       </div>
 
       <div class="hint">
-        <strong>💡 Mẹo:</strong> Dùng nút phóng to/thu nhỏ ở góc bản đồ. Bấm marker để xem tên khu, bấm nút đổi chiều để hoán đổi điểm đi/đến.
+        <strong>💡 Mẹo:</strong> Bấm marker để xem tên khu, bấm nút đổi chiều để hoán đổi điểm đi/đến.
       </div>
     </aside>
 
@@ -506,27 +475,122 @@ const INFO = {
   "07":"Trạm điện","08":"Nhà tang lễ","09":"Trạm biến áp","10":"Khu xử lý rác thải"
 };
 
-const N = {
-  "G":[1062,261],"p1":[760,650],"p2":[790,600],"p3":[830,565],
-  "p4":[875,535],"p5":[925,505],"p6":[975,460],"p7":[1015,420],
-  "p8":[960,405],"p9":[915,385],"p10":[865,375],"p11":[815,390],
-  "p12":[765,410],"p13":[720,445],"p14":[675,485],"p15":[635,520],
-  "p16":[600,490],"p17":[615,450],"p18":[650,410],"p19":[700,380],
-  "p20":[760,345],"p21":[800,315]
-};
 const E = [
-  ["G","p1"],["p1","p2"],["p2","p3"],["p3","p4"],["p4","p5"],["p5","p6"],
-  ["p6","p7"],["p7","p8"],["p8","p9"],["p9","p10"],["p10","p11"],["p11","p12"],
-  ["p12","p13"],["p13","p14"],["p14","p15"],["p15","p16"],["p16","p17"],
-  ["p17","p18"],["p18","p19"],["p19","p20"],["p20","p21"],
-  ["p13","p17"],["p12","p19"],["p10","p20"],["p5","p8"]
+  ["G","A3"],
+  ["G","01"],
+  ["G","A"],
+  ["G","A4"],
+  ["G","06"],
+  ["G","A1"],
+  ["G","A2"],
+  ["G","A5"],
+  ["G","A6"],
+  ["G","A7"],
+  ["G","A8"],
+  ["G","B"],
+  ["G","C"],
+  ["G","D"],
+  ["G","02"],
+  ["G","03"],
+  ["G","04"],
+  ["G","05"],
+  ["G","07"],
+  ["G","08"],
+  ["G","09"],
+  ["G","10"],
+  
+  ["A","A1"],
+  ["A","A2"],
+  ["A","A3"],
+  ["A","A4"],
+  ["A","A5"],
+  ["A","A6"],
+  ["A","A7"],
+  ["A","A8"],
+  ["A","B"],
+  ["A","C"],
+  ["A","D"],
+  
+  ["A1","A2"],
+  ["A1","A3"],
+  ["A1","A5"],
+  ["A1","A8"],
+  ["A1","C"],
+  
+  ["A2","A3"],
+  ["A2","A5"],
+  ["A2","A8"],
+  ["A2","C"],
+  
+  ["A3","A4"],
+  ["A3","A5"],
+  ["A3","06"],
+  
+  ["A4","A5"],
+  ["A4","A6"],
+  ["A4","A7"],
+  ["A4","06"],
+  
+  ["A5","A6"],
+  ["A5","A8"],
+  ["A5","B"],
+  ["A5","06"],
+  
+  ["A6","A7"],
+  ["A6","A8"],
+  ["A6","D"],
+  
+  ["A7","A8"],
+  ["A7","D"],
+  
+  ["A8","B"],
+  ["A8","D"],
+  
+  ["B","C"],
+  ["B","D"],
+  
+  ["C","D"],
+  
+  ["01","A4"],
+  ["01","06"],
+  ["01","G"],
+  
+  ["02","A1"],
+  ["02","A2"],
+  ["02","A3"],
+  ["02","05"],
+  
+  ["03","A1"],
+  ["03","A2"],
+  ["03","04"],
+  
+  ["04","A2"],
+  ["04","A3"],
+  ["04","A5"],
+  
+  ["05","A1"],
+  ["05","A2"],
+  ["05","C"],
+  
+  ["06","A4"],
+  ["06","A5"],
+  ["06","A6"],
+  ["06","A7"],
+  ["06","G"],
+  
+  ["07","A3"],
+  ["07","A6"],
+  
+  ["08","A3"],
+  ["08","A6"],
+  
+  ["09","A2"],
+  ["09","A3"],
+  
+  ["10","A2"],
+  ["10","A3"],
+  ["10","A6"]
 ];
-const ATT = {
-  "A":"p4","A1":"p21","A2":"p10","A3":"p8","A4":"p14","A5":"p15",
-  "A6":"p16","A7":"p17","A8":"p18","B":"p14","C":"p7","D":"p18",
-  "01":"p4","02":"p7","03":"p10","04":"p11","05":"p21","06":"p15",
-  "07":"p18","08":"p17","09":"p19","10":"p20"
-};
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const svg = document.getElementById('overlay');
@@ -582,30 +646,57 @@ function drawMarkers(){
   });
 }
 
-function adjList(){
-  const a={};
-  Object.keys(N).forEach(k=>a[k]=[]);
-  E.forEach(([u,v])=>{a[u].push(v);a[v].push(u)});
-  return a;
+function dist(a,b){
+  const [x1,y1]=P[a], [x2,y2]=P[b];
+  return Math.hypot(x2-x1, y2-y1);
 }
-function nearest(id){return id==='G'?'G':ATT[id]}
 
-function findPath(a,b){
+function buildGraph(){
+  const adj={};
+  Object.keys(P).forEach(k=>adj[k]=[]);
+  const seen=new Set();
+  const add=(u,v)=>{
+    if(u===v) return;
+    const key=u<v?u+'|'+v:v+'|'+u;
+    if(seen.has(key)) return;
+    seen.add(key);
+    const w=dist(u,v);
+    adj[u].push([v,w]);
+    adj[v].push([u,w]);
+  };
+  E.forEach(([u,v])=>add(u,v));
+  return adj;
+}
+
+const GRAPH = buildGraph();
+
+function dijkstra(a,b){
   if(a===b) return [a];
-  const A=adjList(),q=[a],prev={[a]:null};
-  while(q.length){
-    const u=q.shift();
-    for(const v of A[u]){
-      if(!(v in prev)){
+  const adj=GRAPH;
+  const distMap={}, prev={}, visited=new Set();
+  Object.keys(adj).forEach(k=>distMap[k]=Infinity);
+  distMap[a]=0;
+
+  const pq=[[0,a]];
+  while(pq.length){
+    let mi=0;
+    for(let i=1;i<pq.length;i++) if(pq[i][0]<pq[mi][0]) mi=i;
+    const [d,u]=pq.splice(mi,1)[0];
+    if(visited.has(u)) continue;
+    visited.add(u);
+    if(u===b) break;
+    for(const [v,w] of adj[u]){
+      const nd=d+w;
+      if(nd<distMap[v]){
+        distMap[v]=nd;
         prev[v]=u;
-        if(v===b){q.length=0;break}
-        q.push(v);
+        pq.push([nd,v]);
       }
     }
   }
   if(!(b in prev)) return [];
-  const r=[];let cur=b;
-  while(cur!==null){r.push(cur);cur=prev[cur]}
+  const r=[]; let cur=b;
+  while(cur!==undefined){r.push(cur);cur=prev[cur]}
   return r.reverse();
 }
 
@@ -622,13 +713,10 @@ function drawRoute(){
   const f=fromSel.value,t=toSel.value;
   if(f===t){ showToast('Điểm đi và điểm đến trùng nhau'); return; }
 
-  const a=nearest(f),b=nearest(t);
-  const r=findPath(a,b);
+  const r = dijkstra(f, t);
   if(!r.length){ showToast('Không tìm thấy đường đi'); return; }
 
-  let pts=r.map(k=>N[k].join(',')).join(' ');
-  if(f!=='G'){const [x,y]=P[f];pts=x+','+y+' '+pts}
-  if(t!=='G'){const [x,y]=P[t];pts+=' '+x+','+y}
+  const pts = r.map(k=>P[k].join(',')).join(' ');
 
   const p=document.createElementNS(SVGNS,'polyline');
   p.setAttribute('points',pts);p.classList.add('route');
@@ -669,71 +757,6 @@ document.getElementById('swap').addEventListener('click',()=>{
   toSel.value=tmp;
   showToast('Đã đổi chiều đi');
 });
-
-let scale=1, tx=0, ty=0;
-const minScale=.8, maxScale=5;
-
-function applyTransform(){
-  viewport.setAttribute('transform',`translate(${tx} ${ty}) scale(${scale})`);
-  svg.classList.toggle('zoomed', scale>1.02);
-}
-
-function zoomAt(factor, cx, cy){
-  const newScale=Math.min(maxScale,Math.max(minScale,scale*factor));
-  const k=newScale/scale;
-  tx = cx - k*(cx - tx);
-  ty = cy - k*(cy - ty);
-  scale = newScale;
-  applyTransform();
-}
-
-function clientToSvg(clientX, clientY){
-  const rect=svg.getBoundingClientRect();
-  const vbW=1280, vbH=905;
-  const rectAspect=rect.width/rect.height;
-  const vbAspect=vbW/vbH;
-  let drawW, drawH, offX=0, offY=0;
-  if(rectAspect>vbAspect){ drawH=rect.height; drawW=drawH*vbAspect; offX=(rect.width-drawW)/2; }
-  else { drawW=rect.width; drawH=drawW/vbAspect; offY=(rect.height-drawH)/2; }
-  const x=((clientX-rect.left-offX)/drawW)*vbW;
-  const y=((clientY-rect.top-offY)/drawH)*vbH;
-  return [x,y];
-}
-
-document.getElementById('zoomIn').addEventListener('click',()=>zoomAt(1.35,640,452));
-document.getElementById('zoomOut').addEventListener('click',()=>zoomAt(1/1.35,640,452));
-document.getElementById('zoomReset').addEventListener('click',()=>{scale=1;tx=0;ty=0;applyTransform();showToast('Đã căn giữa bản đồ')});
-
-let isPanning=false, lastX=0, lastY=0;
-svg.addEventListener('pointerdown',e=>{
-  if(scale<=1.02) return;
-  isPanning=true; lastX=e.clientX; lastY=e.clientY;
-  svg.setPointerCapture(e.pointerId);
-});
-svg.addEventListener('pointermove',e=>{
-  if(!isPanning) return;
-  const rect=svg.getBoundingClientRect();
-  const vbW=1280, vbH=905;
-  const rectAspect=rect.width/rect.height;
-  const vbAspect=vbW/vbH;
-  let drawW, drawH;
-  if(rectAspect>vbAspect){ drawH=rect.height; drawW=drawH*vbAspect; }
-  else { drawW=rect.width; drawH=drawW/vbAspect; }
-  const sx=(e.clientX-lastX)*(vbW/drawW);
-  const sy=(e.clientY-lastY)*(vbH/drawH);
-  tx+=sx; ty+=sy;
-  lastX=e.clientX; lastY=e.clientY;
-  applyTransform();
-});
-svg.addEventListener('pointerup',()=>{isPanning=false});
-svg.addEventListener('pointercancel',()=>{isPanning=false});
-
-svg.addEventListener('wheel',e=>{
-  e.preventDefault();
-  const [cx,cy]=clientToSvg(e.clientX,e.clientY);
-  const factor=e.deltaY<0?1.12:1/1.12;
-  zoomAt(factor,cx,cy);
-},{passive:false});
 
 drawMarkers();
 </script>
