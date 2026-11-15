@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bản đồ Bệnh viện Đa khoa tỉnh Hà Tĩnh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg-1:#eef2f8;--bg-2:#f8fafc;
+    --surface:rgba(255,255,255,.85);
+    --surface-solid:#ffffff;
+    --border:rgba(148,163,184,.22);
+    --text:#0f172a;--muted:#64748b;--subtle:#94a3b8;
+    --accent:#3b82f6;--accent-2:#6366f1;
+    --success:#10b981;--warning:#f59e0b;--danger:#ef4444;
+    --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+    --shadow-md:0 4px 14px rgba(15,23,42,.06),0 2px 4px rgba(15,23,42,.04);
+    --shadow-lg:0 20px 45px -15px rgba(15,23,42,.18),0 8px 20px -8px rgba(15,23,42,.08);
+  }
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #dbeafe 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #e0e7ff 0%, transparent 50%),
+      linear-gradient(180deg,#f8fafc 0%, #eef2f8 100%);
+    background-attachment:fixed;
+    color:var(--text);min-height:100vh;padding:28px 24px 40px;
+    display:flex;justify-content:center;-webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:1480px;width:100%}
+
+  
+  .header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:20px;flex-wrap:wrap;gap:16px;
+    animation:fadeDown .5s ease;
+  }
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+
+  .brand{display:flex;align-items:center;gap:16px}
+  .brand-icon{
+    position:relative;width:56px;height:56px;border-radius:18px;
+    background:linear-gradient(135deg,#3b82f6 0%,#6366f1 100%);
+    display:grid;place-items:center;font-size:28px;
+    box-shadow:0 12px 28px -8px rgba(59,130,246,.55),
+               inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .brand-text h1{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:1.45rem;font-weight:800;letter-spacing:-.025em;line-height:1.15;
+    background:linear-gradient(135deg,#0f172a 0%,#334155 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .brand-text p{
+    font-size:.84rem;color:var(--muted);font-weight:500;margin-top:4px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .brand-text p::before{
+    content:"";width:6px;height:6px;border-radius:50%;background:var(--success);
+    box-shadow:0 0 0 3px rgba(16,185,129,.18);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 3px rgba(16,185,129,.18)}
+    50%{box-shadow:0 0 0 6px rgba(16,185,129,.06)}
+  }
+
+  .header-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .meta-chip{
+    display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:500;
+    color:#475569;background:var(--surface);backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);border:1px solid var(--border);
+    padding:9px 15px;border-radius:12px;box-shadow:var(--shadow-sm);
+  }
+  .meta-chip svg{width:15px;height:15px;stroke:#64748b}
+
+  
+  .notice{
+    display:flex;align-items:flex-start;gap:14px;
+    background:linear-gradient(135deg,rgba(254,243,199,.55),rgba(253,230,138,.35));
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid rgba(245,158,11,.28);
+    border-radius:16px;padding:14px 18px;margin-bottom:20px;
+    box-shadow:0 4px 20px -8px rgba(245,158,11,.25);
+    animation:fadeDown .6s ease .1s both;
+  }
+  .notice-icon{
+    flex-shrink:0;width:34px;height:34px;border-radius:10px;
+    background:rgba(245,158,11,.18);display:grid;place-items:center;font-size:18px;
+  }
+  .notice-content{flex:1;min-width:0}
+  .notice-content strong{
+    display:block;font-size:.88rem;font-weight:700;color:#92400e;
+    margin-bottom:2px;letter-spacing:-.01em;
+  }
+  .notice-content span{font-size:.82rem;color:#78350f;line-height:1.5;opacity:.9}
+
+  
+  .layout{
+    display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;
+    animation:fadeUp .6s ease .15s both;
+  }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  
+  .map-card{
+    position:relative;background:var(--surface-solid);
+    border-radius:24px;overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-lg);
+    aspect-ratio:1280/905;
+  }
+  .map-card::before{
+    content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+    border-radius:24px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);
+  }
+  .map-card img{
+    display:block;width:100%;height:100%;object-fit:contain;
+    user-select:none;-webkit-user-drag:none;
+    transition:filter .3s ease;
+  }
+  .map-card:hover img{filter:contrast(1.02) saturate(1.02)}
+
+  .map-badge{
+    position:absolute;top:16px;left:16px;z-index:4;
+    display:flex;align-items:center;gap:7px;
+    background:rgba(255,255,255,.9);backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    padding:7px 13px;border-radius:100px;
+    border:1px solid rgba(148,163,184,.25);
+    font-size:.75rem;font-weight:600;color:#334155;
+    box-shadow:0 4px 12px -4px rgba(15,23,42,.15);
+  }
+  .map-badge .live-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--success);
+    box-shadow:0 0 0 3px rgba(16,185,129,.2);
+    animation:pulse 2s infinite;
+  }
+
+  svg#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+
+  
+  .hot{pointer-events:auto;cursor:pointer}
+  .hot circle{
+    fill:#3b82f6;stroke:#fff;stroke-width:2.8;
+    transition:fill .2s ease, r .2s ease, filter .2s ease;
+    filter:drop-shadow(0 3px 6px rgba(59,130,246,.35));
+  }
+  .hot text{
+    font-family:'Inter',sans-serif;font-weight:800;font-size:13.5px;fill:#fff;
+    paint-order:stroke;stroke:#1e40af;stroke-width:3.8px;stroke-linejoin:round;
+    pointer-events:none;letter-spacing:-.02em;
+  }
+  .hot:hover circle{
+    fill:var(--success);r:14;
+    filter:drop-shadow(0 4px 14px rgba(16,185,129,.55));
+  }
+  .hot.active circle{
+    fill:var(--danger);r:14;
+    filter:drop-shadow(0 4px 14px rgba(239,68,68,.55));
+  }
+  .hot.active text{stroke:#991b1b}
+
+  
+  .route{
+    fill:none;stroke:#fff;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;
+    filter:drop-shadow(0 3px 8px rgba(15,23,42,.35));
+  }
+  .route2{
+    fill:none;stroke:url(#routeGrad);stroke-width:5;
+    stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:3000;stroke-dashoffset:0;
+    animation:dash 1.4s cubic-bezier(.4,0,.2,1);
+    filter:drop-shadow(0 0 8px rgba(59,130,246,.5));
+  }
+  @keyframes dash{from{stroke-dashoffset:3000}to{stroke-dashoffset:0}}
+
+  
+  .sidebar{
+    background:var(--surface);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    border-radius:24px;padding:26px;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-lg);
+    display:flex;flex-direction:column;gap:20px;
+    position:sticky;top:24px;
+  }
+  .sidebar-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-bottom:16px;border-bottom:1px solid var(--border);
+  }
+  .sidebar-head h2{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:1.12rem;font-weight:800;letter-spacing:-.02em;
+    display:flex;align-items:center;gap:10px;
+  }
+  .sidebar-head h2 .icon-wrap{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,#dbeafe,#c7d2fe);
+    display:grid;place-items:center;font-size:15px;
+  }
+  .route-count{
+    font-size:.72rem;font-weight:600;color:#3b82f6;
+    background:rgba(59,130,246,.1);padding:5px 11px;border-radius:100px;
+    border:1px solid rgba(59,130,246,.18);
+  }
+
+  .field{display:flex;flex-direction:column;gap:7px}
+  .field label{
+    font-size:.73rem;font-weight:700;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.06em;
+    display:flex;align-items:center;gap:6px;
+  }
+  .field label .badge-dot{width:8px;height:8px;border-radius:50%}
+  .field label.from .badge-dot{background:var(--success);box-shadow:0 0 0 3px rgba(16,185,129,.2)}
+  .field label.to .badge-dot{background:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.2)}
+
+  .field select{
+    width:100%;padding:12px 15px;border-radius:12px;
+    border:1.5px solid var(--border);background:rgba(248,250,252,.9);
+    color:var(--text);font-size:.875rem;font-weight:500;font-family:inherit;
+    cursor:pointer;transition:all .18s ease;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 15px center;
+    box-shadow:inset 0 1px 2px rgba(15,23,42,.03);
+  }
+  .field select:hover{background-color:#fff;border-color:#cbd5e1}
+  .field select:focus{
+    outline:none;border-color:var(--accent);background:#fff;
+    box-shadow:0 0 0 4px rgba(59,130,246,.13),inset 0 1px 2px rgba(15,23,42,.03);
+  }
+
+  .btn-row{display:flex;gap:10px;margin-top:2px}
+  .btn{
+    flex:1;padding:13px 18px;border-radius:12px;border:none;font-family:inherit;
+    font-size:.875rem;font-weight:700;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .15s ease,box-shadow .2s ease,background .2s ease;
+    letter-spacing:-.01em;
+  }
+  .btn svg{width:15px;height:15px}
+  .btn:active{transform:scale(.97)}
+  .btn-primary{
+    background:linear-gradient(135deg,#3b82f6 0%,#4f46e5 100%);color:#fff;
+    box-shadow:0 6px 18px -4px rgba(59,130,246,.55),
+               inset 0 1px 0 rgba(255,255,255,.2);
+  }
+  .btn-primary:hover{
+    background:linear-gradient(135deg,#2563eb 0%,#4338ca 100%);
+    box-shadow:0 10px 26px -4px rgba(59,130,246,.65),
+               inset 0 1px 0 rgba(255,255,255,.2);
+    transform:translateY(-1px);
+  }
+  .btn-ghost{
+    background:rgba(241,245,249,.9);color:#475569;
+    border:1px solid var(--border);
+  }
+  .btn-ghost:hover{background:#e2e8f0;color:var(--text);transform:translateY(-1px)}
+
+  .info{
+    background:linear-gradient(135deg,#eff6ff 0%,#f0f9ff 100%);
+    border:1px solid rgba(191,219,254,.7);
+    border-radius:16px;padding:18px;min-height:104px;
+    transition:all .25s ease;position:relative;overflow:hidden;
+  }
+  .info::before{
+    content:"";position:absolute;top:0;left:0;width:4px;height:100%;
+    background:linear-gradient(180deg,#3b82f6,#6366f1);
+  }
+  .info b{
+    display:flex;align-items:center;gap:7px;font-size:.92rem;font-weight:800;
+    color:#1e40af;margin-bottom:8px;letter-spacing:-.01em;
+    font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .info .muted{font-size:.83rem;color:#475569;line-height:1.6}
+
+  .hint{
+    font-size:.76rem;color:var(--muted);line-height:1.65;padding:14px 16px;
+    background:rgba(248,250,252,.8);border-radius:12px;
+    border:1px dashed rgba(148,163,184,.4);
+  }
+  .hint strong{color:#3b82f6;font-weight:700}
+
+  
+  .toast{
+    position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120px);
+    background:rgba(15,23,42,.95);backdrop-filter:blur(12px);
+    color:#fff;padding:14px 22px;border-radius:14px;
+    font-size:.86rem;font-weight:600;z-index:999;
+    box-shadow:0 20px 40px -10px rgba(0,0,0,.4);
+    display:flex;align-items:center;gap:10px;
+    transition:transform .35s cubic-bezier(.4,0,.2,1);
+    border:1px solid rgba(255,255,255,.1);
+  }
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast .toast-dot{width:8px;height:8px;border-radius:50%;background:var(--success)}
+
+  @media(max-width:1100px){
+    .layout{grid-template-columns:1fr}
+    .sidebar{position:static}
+  }
+  @media(max-width:640px){
+    body{padding:16px 14px 32px}
+    .brand-icon{width:46px;height:46px;border-radius:15px;font-size:22px}
+    .brand-text h1{font-size:1.15rem}
+    .header-meta{display:none}
+    .sidebar{padding:20px}
+  }
+
+  html,body{width:100%;height:100%;min-height:100%;overflow:hidden}
+  body{padding:10px;display:block}
+  .app{width:100%;max-width:none;height:100%;display:flex;flex-direction:column}
+  .header{flex:0 0 auto;margin-bottom:10px}
+  .notice{flex:0 0 auto;margin-bottom:10px;padding:9px 14px}
+  .layout{flex:1 1 auto;min-height:0;grid-template-columns:minmax(0,1fr) 340px;gap:12px}
+  .map-card{height:100%;min-height:0;aspect-ratio:auto}
+  .sidebar{height:100%;min-height:0;overflow:auto;position:relative;top:auto;padding:18px;gap:14px}
+  @media(max-width:900px){
+    html,body{height:auto;min-height:100%;overflow:auto}
+    body{padding:10px}
+    .app{height:auto;min-height:100%;display:block}
+    .layout{display:grid;grid-template-columns:1fr;min-height:0}
+    .map-card{height:auto;aspect-ratio:1280/905;min-height:280px}
+    .sidebar{height:auto;overflow:visible}
+  }
+  @media(max-height:650px) and (min-width:901px){
+    .header{margin-bottom:6px}
+    .brand-icon{width:40px;height:40px}
+    .brand-text h1{font-size:1.1rem}
+    .notice{padding:6px 10px;margin-bottom:6px}
+    .sidebar{padding:12px;gap:8px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">🏥</div>
+      <div class="brand-text">
+        <h1>Bệnh viện Đa khoa tỉnh Hà Tĩnh</h1>
+        <p>Sơ đồ nội khu · Chỉ đường thông minh</p>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>1280 × 905</span>
+      </div>
+      <div class="meta-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        <span>24 điểm đánh dấu</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="notice">
+    <div class="notice-icon">⚠️</div>
+    <div class="notice-content">
+      <strong>Sơ đồ chỉ mang tính chất tham khảo</strong>
+      <span>Vị trí các khu có thể hơi lệch so với thực tế. Mong mọi người thông cảm và đối chiếu với biển chỉ dẫn tại bệnh viện.</span>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <div class="map-card">
+      <div class="map-badge">
+        <span class="live-dot"></span>
+        <span>Đang hoạt động</span>
+      </div>
+      <img id="mapImage" src="map.jpg" alt="Sơ đồ bệnh viện Đa khoa tỉnh Hà Tĩnh">
+      <svg id="overlay" viewBox="0 0 1280 905" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="100%" stop-color="#6366f1"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h2><span class="icon-wrap">🧭</span> Chỉ đường</h2>
+        <span class="route-count" id="routeCount">24 điểm</span>
+      </div>
+
+      <div class="field">
+        <label class="from"><span class="badge-dot"></span> Điểm xuất phát</label>
+        <select id="from"></select>
+      </div>
+
+      <div class="field">
+        <label class="to"><span class="badge-dot"></span> Điểm đến</label>
+        <select id="to"></select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="go">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Chỉ đường
+        </button>
+        <button class="btn btn-ghost" id="clear">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Xóa
+        </button>
+      </div>
+
+      <div class="info" id="info">
+        <b>👋 Chào mừng bạn</b>
+        <div class="muted">Bấm vào marker trên bản đồ để xem thông tin chi tiết, hoặc chọn điểm đi/đến để tìm đường đi ngắn nhất.</div>
+      </div>
+
+      <div class="hint">
+        <strong>💡 Mẹo:</strong> Đường chỉ dẫn là tuyến đi bộ mô phỏng theo lối nội bộ. Bạn có thể bấm marker để xem tên khu.
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-dot"></span>
+  <span id="toastMsg">Đã tìm thấy đường đi!</span>
+</div>
+
+<script>
+
+const P = {
+  "10":[580,290],
+  "A":[815,480],
+  "A1":[760,309],
+  "A2":[875,287],
+  "A3":[935,323],
+  "A4":[798,559],
+  "A5":[720,615],
+  "A6":[585,495],
+  "A7":[580,460],
+  "A8":[655,400],
+  "B":[675,505],
+  "C":[813,245],
+  "D":[587,440],
+  "G":[720,705],
+  "01":[904,560],
+  "02":[1070,435],
+  "03":[830,365],
+  "04":[772,378],
+  "05":[783,263],
+  "06":[650,565],
+  "07":[580,390],
+  "08":[465,368],
+  "09":[525,313]
+};
+
+const INFO = {
+  "A":"Tòa nhà chính bệnh viện","A1":"Khối A1 · khu khám/điều trị",
+  "A2":"Khối A2 · khoa y học cổ truyền","A3":"Khối A3 · các khoa điều trị",
+  "A4":"Khối A4 · khoa truyền nhiễm","A5":"Khối A5 · khoa nội",
+  "A6":"Khối A6 · phòng vật tư thiết bị y tế / khoa da liễu",
+  "A7":"Khu điều trị phạm nhân","A8":"Trung tâm sản nhi",
+  "B":"Trung tâm xạ trị","C":"Căn tin bệnh viện / khoa dinh dưỡng",
+  "D":"Khối hành chính quản trị","G":"Cổng chính · lối vào bệnh viện",
+  "01":"Bãi đỗ xe ô tô","02":"Cây xanh, thể thao","03":"Đài phun nước",
+  "04":"Hành lang nội bộ","05":"Khu phối hợp bệnh nhân","06":"Khu nhà",
+  "07":"Trạm điện","08":"Nhà tang lễ","09":"Trạm biến áp","10":"Khu xử lý rác thải"
+};
+
+const N = {
+  "G":[720,705],"p1":[760,650],"p2":[790,600],"p3":[830,565],
+  "p4":[875,535],"p5":[925,505],"p6":[975,460],"p7":[1015,420],
+  "p8":[960,405],"p9":[915,385],"p10":[865,375],"p11":[815,390],
+  "p12":[765,410],"p13":[720,445],"p14":[675,485],"p15":[635,520],
+  "p16":[600,490],"p17":[615,450],"p18":[650,410],"p19":[700,380],
+  "p20":[760,345],"p21":[800,315]
+};
+const E = [
+  ["G","p1"],["p1","p2"],["p2","p3"],["p3","p4"],["p4","p5"],["p5","p6"],
+  ["p6","p7"],["p7","p8"],["p8","p9"],["p9","p10"],["p10","p11"],["p11","p12"],
+  ["p12","p13"],["p13","p14"],["p14","p15"],["p15","p16"],["p16","p17"],
+  ["p17","p18"],["p18","p19"],["p19","p20"],["p20","p21"],
+  ["p13","p17"],["p12","p19"],["p10","p20"],["p5","p8"]
+];
+const ATT = {
+  "A":"p4","A1":"p21","A2":"p10","A3":"p8","A4":"p14","A5":"p15",
+  "A6":"p16","A7":"p17","A8":"p18","B":"p14","C":"p7","D":"p18",
+  "01":"p4","02":"p7","03":"p10","04":"p11","05":"p21","06":"p15",
+  "07":"p18","08":"p17","09":"p19","10":"p20"
+};
+
+const svg = document.getElementById('overlay');
+const infoEl = document.getElementById('info');
+const fromSel = document.getElementById('from');
+const toSel = document.getElementById('to');
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+const routeCount = document.getElementById('routeCount');
+const items = ['G','A','A1','A2','A3','A4','A5','A6','A7','A8','B','C','D',
+               '01','02','03','04','05','06','07','08','09','10'];
+
+routeCount.textContent = items.length + ' điểm';
+
+items.forEach(id=>{
+  const o1=document.createElement('option');
+  o1.value=id;o1.textContent=id+' — '+INFO[id];
+  fromSel.appendChild(o1);
+  toSel.appendChild(o1.cloneNode(true));
+});
+fromSel.value='G';
+toSel.value='A';
+
+function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function drawMarkers(){
+  svg.querySelectorAll('.hot').forEach(el=>el.remove());
+  items.forEach((id, idx)=>{
+    const [x,y]=P[id];
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.classList.add('hot');
+    g.dataset.id=id;
+    g.innerHTML=`<circle cx="${x}" cy="${y}" r="11"></circle>
+                 <text x="${x+15}" y="${y+4.5}">${id}</text>`;
+    g.style.opacity = 0;
+    g.style.transform = 'scale(0.5)';
+    g.style.transformOrigin = `${x}px ${y}px`;
+    g.style.transition = `opacity .4s ease ${idx*20}ms, transform .4s cubic-bezier(.34,1.56,.64,1) ${idx*20}ms`;
+    requestAnimationFrame(()=>{
+      g.style.opacity = 1;
+      g.style.transform = 'scale(1)';
+    });
+    g.addEventListener('click',()=>{
+      svg.querySelectorAll('.hot.active').forEach(el=>el.classList.remove('active'));
+      g.classList.add('active');
+      infoEl.innerHTML=`<b>📍 ${esc(id)}</b><div class="muted">${esc(INFO[id])}</div>`;
+    });
+    svg.appendChild(g);
+  });
+}
+
+function adjList(){
+  const a={};
+  Object.keys(N).forEach(k=>a[k]=[]);
+  E.forEach(([u,v])=>{a[u].push(v);a[v].push(u)});
+  return a;
+}
+function nearest(id){return id==='G'?'G':ATT[id]}
+
+function findPath(a,b){
+  if(a===b) return [a];
+  const A=adjList(),q=[a],prev={[a]:null};
+  while(q.length){
+    const u=q.shift();
+    for(const v of A[u]){
+      if(!(v in prev)){
+        prev[v]=u;
+        if(v===b){q.length=0;break}
+        q.push(v);
+      }
+    }
+  }
+  if(!(b in prev)) return [];
+  const r=[];let cur=b;
+  while(cur!==null){r.push(cur);cur=prev[cur]}
+  return r.reverse();
+}
+
+let toastTimer;
+function showToast(msg){
+  toastMsg.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 2600);
+}
+
+function drawRoute(){
+  svg.querySelectorAll('.route,.route2,.route-dot').forEach(el=>el.remove());
+  const f=fromSel.value,t=toSel.value;
+  if(f===t){ showToast('Điểm đi và điểm đến trùng nhau'); return; }
+
+  const a=nearest(f),b=nearest(t);
+  const r=findPath(a,b);
+  if(!r.length){ showToast('Không tìm thấy đường đi'); return; }
+
+  let pts=r.map(k=>N[k].join(',')).join(' ');
+  if(f!=='G'){const [x,y]=P[f];pts=x+','+y+' '+pts}
+  if(t!=='G'){const [x,y]=P[t];pts+=' '+x+','+y}
+
+  const p=document.createElementNS('http://www.w3.org/2000/svg','polyline');
+  p.setAttribute('points',pts);p.classList.add('route');
+  svg.appendChild(p);
+
+  const p2=p.cloneNode();
+  p2.classList.remove('route');p2.classList.add('route2');
+  svg.appendChild(p2);
+
+  [[...P[f]],[...P[t]]].forEach((q,i)=>{
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',q[0]);c.setAttribute('cy',q[1]);
+    c.setAttribute('r',i?10:9);
+    c.setAttribute('fill',i?'#ef4444':'#10b981');
+    c.setAttribute('stroke','#fff');c.setAttribute('stroke-width','3.5');
+    c.style.filter = i?'drop-shadow(0 2px 8px rgba(239,68,68,.6))':'drop-shadow(0 2px 8px rgba(16,185,129,.6))';
+    c.classList.add('route-dot');
+    svg.appendChild(c);
+  });
+
+  infoEl.innerHTML=`<b>🧭 Lộ trình</b>
+    <div class="muted">${esc(INFO[f])} → ${esc(INFO[t])}</div>`;
+  showToast('Đã vẽ đường đi ngắn nhất!');
+}
+
+document.getElementById('go').addEventListener('click',drawRoute);
+document.getElementById('clear').addEventListener('click',()=>{
+  svg.querySelectorAll('.route,.route2,.route-dot').forEach(el=>el.remove());
+  infoEl.innerHTML=`<b>👋 Đã xóa đường đi</b>
+    <div class="muted">Bấm marker trên bản đồ hoặc chọn điểm đi/đến để bắt đầu lại.</div>`;
+  showToast('Đã xóa đường đi');
+});
+
+drawMarkers();
+</script>
+</body>
+</html>

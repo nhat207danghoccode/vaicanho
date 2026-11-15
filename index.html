@@ -1822,8 +1822,8 @@
 }
 .qbtn[onclick="confirmReload()"] i { color: #ffffff !important; }
 
-/* Nút "Thống kê" (có data-tab="STATS") */
-.qbtn[data-tab="STATS"] {
+/* Nút "Sơ đồ bệnh viện" */
+.qbtn[data-tab="HOSPITAL"] {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
   border-color: transparent !important;
   color: #ffffff !important;
@@ -1831,12 +1831,12 @@
   box-shadow: 0 6px 16px -6px rgba(16, 185, 129, 0.55) !important;
   transition: transform 0.18s ease, box-shadow 0.18s ease !important;
 }
-.qbtn[data-tab="STATS"]:hover {
+.qbtn[data-tab="HOSPITAL"]:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 10px 22px -6px rgba(16, 185, 129, 0.7) !important;
   color: #ffffff !important;
 }
-.qbtn[data-tab="STATS"] i { color: #ffffff !important; }
+.qbtn[data-tab="HOSPITAL"] i { color: #ffffff !important; }
 
 /* Nút "Hôm nay học gì?" (gọi showTomorrowSchedule) */
 .qbtn[onclick="showTomorrowSchedule()"] {
@@ -2068,8 +2068,8 @@ B. Đúng"></textarea>
           <button class="qbtn subject-switch" onclick="changeSubject()" aria-label="Đổi môn học">
             <i class="fas fa-book-open"></i> Đổi môn
           </button>
-          <button class="qbtn" data-tab="STATS" onclick="switchTab('STATS')">
-            <i class="fas fa-chart-pie"></i> Thống kê
+          <button class="qbtn" data-tab="HOSPITAL" onclick="switchTab('HOSPITAL')">
+            <i class="fas fa-hospital"></i> Sơ đồ bệnh viện
           </button>
 <button class="qbtn" type="button" onclick="openClassroom3D()" style="background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border-color:transparent;font-weight:800">
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 9h.01M15 9h.01"/></svg>
@@ -2105,77 +2105,10 @@ B. Đúng"></textarea>
       <div id="quiz-container-TF" class="hidden"></div>
       <div id="quiz-container-MC" class="hidden"></div>
 
-      <div class="panel hidden" id="statsBox">
-        <div class="st-wrap">
-          <div class="st-head" style="margin-bottom:12px;justify-content:flex-end">
-            <button class="qbtn" type="button" onclick="clearStatsHistory()" style="border-color:#ef4444;color:#ef4444"><i class="fas fa-trash-can"></i> Xóa lịch sử thống kê</button>
-          </div>
-          <div class="st-tabs">
-            <button class="st-tab on" data-st="all">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-              Tất cả <span class="st-badge" id="stBadgeAll">0</span>
-            </button>
-            <button class="st-tab green" data-st="best">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z"/></svg>
-              Đúng nhất <span class="st-badge" id="stBadgeBest">0</span>
-            </button>
-            <button class="st-tab red" data-st="wrong">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-              Đúng sai <span class="st-badge" id="stBadgeWrong">0</span>
-            </button>
-          </div>
-
-          <div class="st-view on" id="stViewAll">
-            <div class="st-grid" id="stStatsAll"></div>
-            <div class="st-split">
-              <div class="st-panel">
-                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg></span> Tổng hợp đúng / sai</h3>
-                <div class="st-chart-wrap"><div class="st-glow"></div><canvas id="stChartAll"></canvas></div>
-              </div>
-              <div class="st-panel">
-                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span> Đánh giá &amp; cải thiện</h3>
-                <div id="stInsightAll"></div>
-              </div>
-            </div>
-            <div class="st-panel">
-              <div class="st-head"><h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg></span> Tất cả lần làm bài</h3><span class="st-count" id="stCountAll">0 lần</span></div>
-              <div class="st-list" id="stListAll"></div>
-            </div>
-          </div>
-
-          <div class="st-view" id="stViewBest">
-            <div class="st-grid" id="stStatsBest"></div>
-            <div class="st-split">
-              <div class="st-panel">
-                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg></span> Lần đúng nhất</h3>
-                <div class="st-chart-wrap"><div class="st-glow"></div><canvas id="stChartBest"></canvas></div>
-              </div>
-              <div class="st-panel">
-                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg></span> Xếp hạng lần theo % đúng</h3>
-                <div class="st-rank" id="stRankBest"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="st-view" id="stViewWrong">
-            <div class="st-grid" id="stStatsWrong"></div>
-            <div class="st-split">
-              <div class="st-panel">
-                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg></span> Tổng hợp lần có câu sai</h3>
-                <div class="st-chart-wrap"><div class="st-glow"></div><canvas id="stChartWrong"></canvas></div>
-              </div>
-              <div class="st-panel">
-                <h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span> Đánh giá &amp; cải thiện</h3>
-                <div id="stInsightWrong"></div>
-              </div>
-            </div>
-            <div class="st-panel">
-              <div class="st-head"><h3><span class="st-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/></svg></span> Lịch sử lần có câu sai</h3><span class="st-count" id="stCountWrong">0 lần</span></div>
-              <div class="st-list" id="stListWrong"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section id="hospitalBox" class="hidden" style="position:fixed;inset:0;z-index:100000;width:100vw;height:100dvh;background:#f8fafc;padding:0;margin:0;overflow:hidden">
+  <button type="button" onclick="switchTab('DS')" aria-label="Đóng sơ đồ bệnh viện" style="position:absolute;right:14px;top:12px;z-index:100002;border:0;border-radius:999px;width:42px;height:42px;background:#0f172a;color:#fff;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 4px 18px #0003">×</button>
+  <iframe id="hospitalFrame" src="bv.html" title="Sơ đồ Bệnh viện Đa khoa tỉnh Hà Tĩnh" loading="lazy" style="display:block;width:100%;height:100%;border:0;background:#f8fafc" allowfullscreen></iframe>
+</section>
 
       <div class="foot">Create @Nhat2007 <i class="fas fa-heart"></i></div>
     </main>
@@ -2797,36 +2730,6 @@ async function showTomorrowSchedule(){
 }
 
 function switchTab(type, skipPartialPrompt){
-    if(type==="STATS" && !skipPartialPrompt && currentTab && !["STATS","EXAM","NOTE","CREATE"].includes(currentTab) && cachedQuestionNodes.length){
-        const total=cachedQuestionNodes.length;
-        const answered=cachedQuestionNodes.filter(q=>q.classList.contains("answered")).length;
-        if(answered>0){
-            const correct=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&!q.classList.contains("wrong-question")).length;
-            const wrong=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&q.classList.contains("wrong-question")).length;
-            const unanswered=total-answered;
-            const snapshot=[currentSubject,total,correct,wrong,unanswered].join("|");
-            if(answered<total){
-                showConfirm({
-                    title:"Thống kê khi chưa hoàn thành?",
-                    desc:"Bạn đã trả lời "+answered+"/"+total+" câu: đúng "+correct+", sai "+wrong+", còn "+unanswered+" câu chưa làm. Lưu tiến độ hiện tại? Câu bỏ trống không tính là câu sai.",
-                    okText:"Lưu thống kê tiến độ",
-                    okIcon:"fas fa-chart-pie",
-                    onConfirm:()=>{
-                        if(typeof window.recordStatsSession==="function" && window.lastStatsSnapshotKey!==snapshot){
-                            window.recordStatsSession(correct,wrong,{total:total,unanswered:unanswered,partial:true,subject:currentSubject});
-                            window.lastStatsSnapshotKey=snapshot;
-                        }
-                        switchTab("STATS",true);
-                    }
-                });
-                return;
-            }
-            if(window.lastStatsSnapshotKey!==snapshot && typeof window.recordStatsSession==="function"){
-                window.recordStatsSession(correct,wrong,{total:total,unanswered:0,submitted:true,subject:currentSubject});
-                window.lastStatsSnapshotKey=snapshot;
-            }
-        }
-    }
     currentTab=type;
     document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("activeTab",b.dataset.tab===type));
     const tkbBox=document.getElementById("tkbBox");
@@ -2838,8 +2741,8 @@ function switchTab(type, skipPartialPrompt){
 
     document.getElementById("infoStrip").classList.toggle("hidden",type==="TKB");
     document.getElementById("chipsRow").classList.toggle("hidden",type==="TKB");
-    document.getElementById("statsBox").classList.add("hidden");
-    document.getElementById("statsBox").classList.remove("on");
+    const hospitalBox=document.getElementById("hospitalBox");
+    if(hospitalBox) hospitalBox.classList.add("hidden");
 
     ["quiz-container","quiz-container-TF","quiz-container-MC"].forEach(id=>{
         const el = document.getElementById(id);
@@ -2877,16 +2780,11 @@ function switchTab(type, skipPartialPrompt){
         showActiveContainer();
         return;
     }
-    if(type==="STATS"){
+    if(type==="HOSPITAL"){
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
-        const sb = document.getElementById("statsBox");
-        sb.classList.remove("hidden");
-        sb.classList.add("on");
+        document.getElementById("hospitalBox").classList.remove("hidden");
         clearInterval(examInterval);
-        if(typeof window.renderStatsAll === "function") window.renderStatsAll();
-        if(typeof window.renderStatsBest === "function") window.renderStatsBest();
-        if(typeof window.renderStatsWrong === "function") window.renderStatsWrong();
         window.scrollTo({top:0,behavior:"smooth"});
         return;
     }
