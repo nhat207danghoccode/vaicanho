@@ -293,6 +293,10 @@
     font-family:'Plus Jakarta Sans',sans-serif;
   }
   .info .muted{font-size:.81rem;color:#475569;line-height:1.55}
+  .info .route-meta{
+    margin-top:10px;padding-top:8px;border-top:1px dashed rgba(59,130,246,.25);
+    display:flex;gap:15px;font-size:0.78rem;color:#1e40af;font-weight:600;
+  }
 
   .hint{
     font-size:.74rem;color:var(--muted);line-height:1.6;padding:12px 14px;
@@ -436,6 +440,7 @@
 
 <script>
 
+// TỌA ĐỘ 
 const P = {
   "10":[580,290],
   "A":[815,480],
@@ -459,7 +464,20 @@ const P = {
   "06":[650,565],
   "07":[580,390],
   "08":[465,368],
-  "09":[525,313]
+  "09":[525,313],
+  
+  // CÁC WAYPOINT 
+  "W1":[800, 320], // Giao lộ A1-A2
+  "W2":[920, 290], // Giao lộ A2-A3
+  "W3":[1000, 270], // Đoạn nối lên G
+  "W4":[850, 380], // Giao lộ trung tâm (chỗ A3 vòng xuống)
+  "W5":[810, 450], // Lối đi bộ xuống A
+  "W6":[760, 430], // Lối đi bộ chỗ A8
+  "W7":[720, 470], // Lối đi bộ chỗ B
+  "W8":[650, 440], // Lối đi bộ chỗ D
+  "W9":[590, 430], // Lối đi bộ chỗ A7
+  "W10":[780, 550], // Lối đi bộ xuống A5, A4
+  "W11":[700, 540] // Lối đi bộ xuống A5
 };
 
 const INFO = {
@@ -476,120 +494,47 @@ const INFO = {
 };
 
 const E = [
-  ["G","A3"],
-  ["G","01"],
-  ["G","A"],
-  ["G","A4"],
-  ["G","06"],
-  ["G","A1"],
-  ["G","A2"],
-  ["G","A5"],
-  ["G","A6"],
-  ["G","A7"],
-  ["G","A8"],
-  ["G","B"],
-  ["G","C"],
-  ["G","D"],
-  ["G","02"],
-  ["G","03"],
-  ["G","04"],
-  ["G","05"],
-  ["G","07"],
-  ["G","08"],
-  ["G","09"],
-  ["G","10"],
+  // 1. TRỤC ĐỎ CHÍNH VẼ (A1 -> A2 -> A3 -> G)
+  ["A1", "W1"],
+  ["W1", "A2"],
+  ["A2", "W2"],
+  ["W2", "A3"],
+  ["A3", "W3"],
+  ["W3", "G"],
+
+  // 2. CÁC NHÁNH RẼ XUỐNG DƯỚI THEO NÉT ĐỎ
+  ["A3", "W4"],
+  ["W4", "W5"],
+  ["W5", "A"],
+  ["W4", "W6"],
+  ["W6", "W7"],
+  ["W7", "W8"],
+  ["W8", "W9"],
   
-  ["A","A1"],
-  ["A","A2"],
-  ["A","A3"],
-  ["A","A4"],
-  ["A","A5"],
-  ["A","A6"],
-  ["A","A7"],
-  ["A","A8"],
-  ["A","B"],
-  ["A","C"],
-  ["A","D"],
-  
-  ["A1","A2"],
-  ["A1","A3"],
-  ["A1","A5"],
-  ["A1","A8"],
-  ["A1","C"],
-  
-  ["A2","A3"],
-  ["A2","A5"],
-  ["A2","A8"],
-  ["A2","C"],
-  
-  ["A3","A4"],
-  ["A3","A5"],
-  ["A3","06"],
-  
-  ["A4","A5"],
-  ["A4","A6"],
-  ["A4","A7"],
-  ["A4","06"],
-  
-  ["A5","A6"],
-  ["A5","A8"],
-  ["A5","B"],
-  ["A5","06"],
-  
-  ["A6","A7"],
-  ["A6","A8"],
-  ["A6","D"],
-  
-  ["A7","A8"],
-  ["A7","D"],
-  
-  ["A8","B"],
-  ["A8","D"],
-  
-  ["B","C"],
-  ["B","D"],
-  
-  ["C","D"],
-  
-  ["01","A4"],
-  ["01","06"],
-  ["01","G"],
-  
-  ["02","A1"],
-  ["02","A2"],
-  ["02","A3"],
-  ["02","05"],
-  
-  ["03","A1"],
-  ["03","A2"],
-  ["03","04"],
-  
-  ["04","A2"],
-  ["04","A3"],
-  ["04","A5"],
-  
-  ["05","A1"],
-  ["05","A2"],
-  ["05","C"],
-  
-  ["06","A4"],
-  ["06","A5"],
-  ["06","A6"],
-  ["06","A7"],
-  ["06","G"],
-  
-  ["07","A3"],
-  ["07","A6"],
-  
-  ["08","A3"],
-  ["08","A6"],
-  
-  ["09","A2"],
-  ["09","A3"],
-  
-  ["10","A2"],
-  ["10","A3"],
-  ["10","A6"]
+  // 3. NHÁNH XUỐNG KHU A4, A5
+  ["A", "W10"],
+  ["W10", "W11"],
+  ["W11", "W7"], // Nối vòng
+  ["W10", "A4"],
+  ["W11", "A5"],
+
+  // 4. NỐI CÁC TÒA NHÀ KHÁC VÀO HÀNH LANG GẦN NHẤT
+  ["C", "W1"],
+  ["05", "W1"],
+  ["04", "W4"],
+  ["03", "W4"],
+  ["A8", "W6"],
+  ["B", "W7"],
+  ["D", "W8"],
+  ["A7", "W9"],
+  ["A6", "W9"],
+  ["06", "W11"],
+  ["01", "W10"],
+  ["02", "W5"],
+  ["07", "W8"],
+  ["08", "W9"],
+  ["09", "W1"],
+  ["10", "W1"]
 ];
 
 const SVGNS = 'http://www.w3.org/2000/svg';
@@ -671,7 +616,7 @@ function buildGraph(){
 const GRAPH = buildGraph();
 
 function dijkstra(a,b){
-  if(a===b) return [a];
+  if(a===b) return { path: [a], dist: 0 };
   const adj=GRAPH;
   const distMap={}, prev={}, visited=new Set();
   Object.keys(adj).forEach(k=>distMap[k]=Infinity);
@@ -694,10 +639,11 @@ function dijkstra(a,b){
       }
     }
   }
-  if(!(b in prev)) return [];
+  if(!(b in prev)) return { path: [], dist: 0 };
+  
   const r=[]; let cur=b;
   while(cur!==undefined){r.push(cur);cur=prev[cur]}
-  return r.reverse();
+  return { path: r.reverse(), dist: distMap[b] };
 }
 
 let toastTimer;
@@ -713,7 +659,9 @@ function drawRoute(){
   const f=fromSel.value,t=toSel.value;
   if(f===t){ showToast('Điểm đi và điểm đến trùng nhau'); return; }
 
-  const r = dijkstra(f, t);
+  const result = dijkstra(f, t);
+  const r = result.path;
+  
   if(!r.length){ showToast('Không tìm thấy đường đi'); return; }
 
   const pts = r.map(k=>P[k].join(',')).join(' ');
@@ -738,8 +686,15 @@ function drawRoute(){
     viewport.appendChild(c);
   });
 
+  const meters = Math.round(result.dist * 0.5);
+  const minutes = Math.max(1, Math.ceil(meters / 80));
+
   infoEl.innerHTML=`<b>🧭 Lộ trình</b>
-    <div class="muted">${esc(INFO[f])} → ${esc(INFO[t])}</div>`;
+    <div class="muted" style="margin-bottom:8px">${esc(INFO[f])} → ${esc(INFO[t])}</div>
+    <div class="route-meta">
+      <span>📏 ~${meters} m</span>
+      <span>🚶 ~${minutes} phút</span>
+    </div>`;
   showToast('Đã vẽ đường đi ngắn nhất!');
 }
 
