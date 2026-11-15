@@ -33,7 +33,6 @@
   }
   .app{max-width:1480px;width:100%}
 
-  
   .header{
     display:flex;justify-content:space-between;align-items:center;
     margin-bottom:20px;flex-wrap:wrap;gap:16px;
@@ -78,7 +77,6 @@
   }
   .meta-chip svg{width:15px;height:15px;stroke:#64748b}
 
-  
   .notice{
     display:flex;align-items:flex-start;gap:14px;
     background:linear-gradient(135deg,rgba(254,243,199,.55),rgba(253,230,138,.35));
@@ -99,14 +97,12 @@
   }
   .notice-content span{font-size:.82rem;color:#78350f;line-height:1.5;opacity:.9}
 
-  
   .layout{
     display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;
     animation:fadeUp .6s ease .15s both;
   }
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-  
   .map-card{
     position:relative;background:var(--surface-solid);
     border-radius:24px;overflow:hidden;
@@ -125,25 +121,8 @@
   }
   .map-card:hover img{filter:contrast(1.02) saturate(1.02)}
 
-  .map-badge{
-    position:absolute;top:16px;left:16px;z-index:4;
-    display:flex;align-items:center;gap:7px;
-    background:rgba(255,255,255,.9);backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    padding:7px 13px;border-radius:100px;
-    border:1px solid rgba(148,163,184,.25);
-    font-size:.75rem;font-weight:600;color:#334155;
-    box-shadow:0 4px 12px -4px rgba(15,23,42,.15);
-  }
-  .map-badge .live-dot{
-    width:7px;height:7px;border-radius:50%;background:var(--success);
-    box-shadow:0 0 0 3px rgba(16,185,129,.2);
-    animation:pulse 2s infinite;
-  }
-
   svg#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
 
-  
   .hot{pointer-events:auto;cursor:pointer}
   .hot circle{
     fill:#3b82f6;stroke:#fff;stroke-width:2.8;
@@ -165,7 +144,6 @@
   }
   .hot.active text{stroke:#991b1b}
 
-  
   .route{
     fill:none;stroke:#fff;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;
     filter:drop-shadow(0 3px 8px rgba(15,23,42,.35));
@@ -179,7 +157,6 @@
   }
   @keyframes dash{from{stroke-dashoffset:3000}to{stroke-dashoffset:0}}
 
-  
   .sidebar{
     background:var(--surface);
     backdrop-filter:blur(20px) saturate(180%);
@@ -286,7 +263,6 @@
   }
   .hint strong{color:#3b82f6;font-weight:700}
 
-  
   .toast{
     position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120px);
     background:rgba(15,23,42,.95);backdrop-filter:blur(12px);
@@ -371,10 +347,6 @@
   <div class="layout">
 
     <div class="map-card">
-      <div class="map-badge">
-        <span class="live-dot"></span>
-        <span>Đang hoạt động</span>
-      </div>
       <img id="mapImage" src="map.jpg" alt="Sơ đồ bệnh viện Đa khoa tỉnh Hà Tĩnh">
       <svg id="overlay" viewBox="0 0 1280 905" preserveAspectRatio="xMidYMid meet">
         <defs>
@@ -447,7 +419,7 @@ const P = {
   "B":[675,505],
   "C":[813,245],
   "D":[587,440],
-  "G":[720,705],
+  "G":[1062,261],
   "01":[904,560],
   "02":[1070,435],
   "03":[830,365],
@@ -466,14 +438,14 @@ const INFO = {
   "A6":"Khối A6 · phòng vật tư thiết bị y tế / khoa da liễu",
   "A7":"Khu điều trị phạm nhân","A8":"Trung tâm sản nhi",
   "B":"Trung tâm xạ trị","C":"Căn tin bệnh viện / khoa dinh dưỡng",
-  "D":"Khối hành chính quản trị","G":"Cổng chính · lối vào bệnh viện",
+  "D":"Khối hành chính quản trị","G":"Nhà xe · chỗ để xe",
   "01":"Bãi đỗ xe ô tô","02":"Cây xanh, thể thao","03":"Đài phun nước",
   "04":"Hành lang nội bộ","05":"Khu phối hợp bệnh nhân","06":"Khu nhà",
   "07":"Trạm điện","08":"Nhà tang lễ","09":"Trạm biến áp","10":"Khu xử lý rác thải"
 };
 
 const N = {
-  "G":[720,705],"p1":[760,650],"p2":[790,600],"p3":[830,565],
+  "G":[1062,261],"p1":[760,650],"p2":[790,600],"p3":[830,565],
   "p4":[875,535],"p5":[925,505],"p6":[975,460],"p7":[1015,420],
   "p8":[960,405],"p9":[915,385],"p10":[865,375],"p11":[815,390],
   "p12":[765,410],"p13":[720,445],"p14":[675,485],"p15":[635,520],
