@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bản đồ Bệnh viện Đa khoa tỉnh Hà Tĩnh</title>
+
+<!-- Preload ảnh map: load ngay từ đầu, không chờ -->
+<link rel="preload" as="image" href="map.jpg" fetchpriority="high">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -117,25 +121,37 @@
   }
   @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
+  /* ===== MAP CARD — ĐÃ FIX ===== */
   .map-card{
-    position:relative;background:var(--surface-solid);
+    position:relative;
+    background:#eef2f8;              /* nền khớp body, không bao giờ trắng chói */
     border-radius:22px;overflow:hidden;
     border:1px solid var(--border);
     box-shadow:var(--shadow-lg);
     height:100%;min-height:0;
+    transition:box-shadow .3s var(--ease);
+    /* KHÔNG aspect-ratio cố định vì height đang 100% trong grid */
+  }
+  .map-card:hover{
+    box-shadow:0 28px 60px -18px rgba(15,23,42,.28),0 8px 22px -10px rgba(15,23,42,.12);
   }
   .map-card::before{
     content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
     border-radius:22px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.75);
   }
   .map-card img{
-    display:block;width:100%;height:100%;object-fit:contain;
+    display:block;
+    width:100%;height:100%;
+    object-fit:contain;
     user-select:none;-webkit-user-drag:none;
-    transition:transform .6s var(--ease),filter .4s var(--ease);
+    /* KHÔNG transition transform/filter — chống nháy khi zoom */
+    background:#eef2f8;
   }
-  .map-card:hover img{transform:scale(1.012);filter:contrast(1.03) saturate(1.04)}
 
-  svg#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+  svg#overlay{
+    position:absolute;inset:0;width:100%;height:100%;
+    pointer-events:none;z-index:2;
+  }
 
   .hot{pointer-events:auto;cursor:pointer;transform-box:fill-box;transform-origin:center}
   .hot circle{
@@ -373,7 +389,11 @@
   <div class="layout">
 
     <div class="map-card" id="mapCard">
-      <img id="mapImage" src="map.jpg" alt="Sơ đồ bệnh viện Đa khoa tỉnh Hà Tĩnh">
+      <!-- ẢNH ĐÃ FIX: khai báo kích thước, load ngay, không lazy -->
+      <img id="mapImage" src="map.jpg"
+           width="1280" height="905"
+           loading="eager" fetchpriority="high" decoding="sync"
+           alt="Sơ đồ bệnh viện Đa khoa tỉnh Hà Tĩnh">
       <svg id="overlay" viewBox="0 0 1280 905" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -467,17 +487,17 @@ const P = {
   "09":[525,313],
   
   // CÁC WAYPOINT 
-  "W1":[800, 320], // Giao lộ A1-A2
-  "W2":[920, 290], // Giao lộ A2-A3
-  "W3":[1000, 270], // Đoạn nối lên G
-  "W4":[850, 380], // Giao lộ trung tâm (chỗ A3 vòng xuống)
-  "W5":[810, 450], // Lối đi bộ xuống A
-  "W6":[760, 430], // Lối đi bộ chỗ A8
-  "W7":[720, 470], // Lối đi bộ chỗ B
-  "W8":[650, 440], // Lối đi bộ chỗ D
-  "W9":[590, 430], // Lối đi bộ chỗ A7
-  "W10":[780, 550], // Lối đi bộ xuống A5, A4
-  "W11":[700, 540] // Lối đi bộ xuống A5
+  "W1":[800, 320],
+  "W2":[920, 290],
+  "W3":[1000, 270],
+  "W4":[850, 380],
+  "W5":[810, 450],
+  "W6":[760, 430],
+  "W7":[720, 470],
+  "W8":[650, 440],
+  "W9":[590, 430],
+  "W10":[780, 550],
+  "W11":[700, 540]
 };
 
 const INFO = {
@@ -494,47 +514,12 @@ const INFO = {
 };
 
 const E = [
-  // 1. TRỤC ĐỎ CHÍNH VẼ (A1 -> A2 -> A3 -> G)
-  ["A1", "W1"],
-  ["W1", "A2"],
-  ["A2", "W2"],
-  ["W2", "A3"],
-  ["A3", "W3"],
-  ["W3", "G"],
-
-  // 2. CÁC NHÁNH RẼ XUỐNG DƯỚI THEO NÉT ĐỎ
-  ["A3", "W4"],
-  ["W4", "W5"],
-  ["W5", "A"],
-  ["W4", "W6"],
-  ["W6", "W7"],
-  ["W7", "W8"],
-  ["W8", "W9"],
-  
-  // 3. NHÁNH XUỐNG KHU A4, A5
-  ["A", "W10"],
-  ["W10", "W11"],
-  ["W11", "W7"], // Nối vòng
-  ["W10", "A4"],
-  ["W11", "A5"],
-
-  // 4. NỐI CÁC TÒA NHÀ KHÁC VÀO HÀNH LANG GẦN NHẤT
-  ["C", "W1"],
-  ["05", "W1"],
-  ["04", "W4"],
-  ["03", "W4"],
-  ["A8", "W6"],
-  ["B", "W7"],
-  ["D", "W8"],
-  ["A7", "W9"],
-  ["A6", "W9"],
-  ["06", "W11"],
-  ["01", "W10"],
-  ["02", "W5"],
-  ["07", "W8"],
-  ["08", "W9"],
-  ["09", "W1"],
-  ["10", "W1"]
+  ["A1", "W1"], ["W1", "A2"], ["A2", "W2"], ["W2", "A3"], ["A3", "W3"], ["W3", "G"],
+  ["A3", "W4"], ["W4", "W5"], ["W5", "A"], ["W4", "W6"], ["W6", "W7"], ["W7", "W8"], ["W8", "W9"],
+  ["A", "W10"], ["W10", "W11"], ["W11", "W7"], ["W10", "A4"], ["W11", "A5"],
+  ["C", "W1"], ["05", "W1"], ["04", "W4"], ["03", "W4"], ["A8", "W6"], ["B", "W7"],
+  ["D", "W8"], ["A7", "W9"], ["A6", "W9"], ["06", "W11"], ["01", "W10"],
+  ["02", "W5"], ["07", "W8"], ["08", "W9"], ["09", "W1"], ["10", "W1"]
 ];
 
 const SVGNS = 'http://www.w3.org/2000/svg';
