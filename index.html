@@ -2265,20 +2265,6 @@ B. Đúng"></textarea>
   <span id="toastText">Đã lưu!</span>
 </div>
 
-<script>
-(function(){
-  const saved = localStorage.getItem("currentSubject");
-  if (saved && typeof SUBJECTS !== "undefined" && SUBJECTS[saved]) {
-    currentSubject = saved;
-    window.currentSubject = saved;
-    if (typeof hideSubjectSelect === "function") hideSubjectSelect();
-    if (typeof loadQuestionFiles === "function") loadQuestionFiles();
-  } else if (typeof showSubjectSelect === "function") {
-    showSubjectSelect();
-  }
-})();
-</script>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
@@ -2405,6 +2391,21 @@ function buildSubjectList(){
     });
 }
 buildSubjectList();
+
+(function initializeSubjectSelection(){
+    const saved = localStorage.getItem("currentSubject");
+    if(saved && SUBJECTS[saved]){
+        currentSubject = saved;
+        window.currentSubject = saved;
+        hideSubjectSelect();
+        loadQuestionFiles();
+    }else{
+        localStorage.removeItem("currentSubject");
+        currentSubject = "";
+        window.currentSubject = "";
+        showSubjectSelect();
+    }
+})();
 
 function showSubjectSelect(){
     document.getElementById("subjectSelect").classList.add("on");
