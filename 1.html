@@ -1,30 +1,30 @@
-l<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phòng Máy Tính 3D — Lớp Học Trực Tuyến</title>
+<title>Phòng Học 3D — Đọc Sách & Lập Trình</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { overflow: hidden; background: #070a12; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #f1f5f9; }
+  body { overflow: hidden; background: #080b13; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #f1f5f9; }
   canvas { display: block; }
 
   /* ===== MODAL NHẬP TÊN ===== */
   .name-modal {
     position: fixed; inset: 0; z-index: 100;
-    background: rgba(6, 9, 18, 0.88); backdrop-filter: blur(16px);
+    background: rgba(8, 11, 19, 0.88); backdrop-filter: blur(16px);
     display: flex; align-items: center; justify-content: center;
     transition: opacity .35s, visibility .35s;
   }
   .name-modal.hide { opacity: 0; visibility: hidden; pointer-events: none; }
   .modal-card {
-    background: #111827; border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #121826; border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px; padding: 36px 32px; width: 390px; max-width: 92vw;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
   }
   .modal-icon {
     width: 56px; height: 56px; margin: 0 auto 18px;
-    background: #10b981; border-radius: 16px;
+    background: linear-gradient(135deg, #10b981, #f59e0b); border-radius: 16px;
     display: flex; align-items: center; justify-content: center; font-size: 28px;
   }
   .modal-title { font-size: 21px; font-weight: 700; text-align: center; margin-bottom: 6px; }
@@ -45,7 +45,7 @@ l<!DOCTYPE html>
   .name-btn:hover { background: #34d399; transform: translateY(-1px); }
   .modal-hint { text-align: center; margin-top: 14px; color: #64748b; font-size: 11.5px; }
 
-  /* ===== THANH TRẠNG THÁI & CÔNG CỤ TRÊN CÙNG (CHỐNG ĐÈ NÚT) ===== */
+  /* ===== THANH TRẠNG THÁI & CÔNG CỤ TRÊN CÙNG ===== */
   .top-bar {
     position: fixed; top: 16px; left: 16px; right: 16px; z-index: 20;
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -54,8 +54,8 @@ l<!DOCTYPE html>
   .hud {
     pointer-events: auto;
     display: flex; align-items: center; gap: 10px;
-    padding: 9px 16px; background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 999px;
+    padding: 9px 16px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 999px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   }
   .pulse { width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; }
@@ -68,13 +68,13 @@ l<!DOCTYPE html>
   }
   .tool-btn {
     height: 38px; padding: 0 13px; border-radius: 999px;
-    background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.12); color: #f8fafc;
     font-size: 12.5px; font-weight: 600; cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4); transition: all .2s;
   }
-  .tool-btn:hover { background: rgba(30, 41, 59, 0.95); border-color: rgba(52, 211, 153, 0.5); transform: translateY(-1px); }
+  .tool-btn:hover { background: rgba(30, 41, 59, 0.95); border-color: rgba(52, 211, 153, 0.55); transform: translateY(-1px); }
   .tool-btn.icon-only { width: 38px; padding: 0; font-size: 16px; }
   .tool-btn.gold { border-color: rgba(250, 204, 21, 0.35); color: #fde047; }
   .tool-btn.gold:hover { background: rgba(250, 204, 21, 0.15); border-color: #facc15; }
@@ -91,8 +91,8 @@ l<!DOCTYPE html>
 
   /* ===== DANH SÁCH THÀNH VIÊN ===== */
   .student-panel {
-    position: fixed; top: 66px; right: 16px; width: 230px; max-height: calc(100vh - 140px);
-    background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(14px);
+    position: fixed; top: 66px; right: 16px; width: 245px; max-height: calc(100vh - 140px);
+    background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
     z-index: 18; box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
     display: flex; flex-direction: column; overflow: hidden;
@@ -129,6 +129,7 @@ l<!DOCTYPE html>
   .student-item.you .student-dot { background: #fbbf24; }
   .student-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .student-name.you-label { color: #fbbf24; font-weight: 700; }
+  .mode-tag { font-size: 11px; opacity: 0.85; }
   .admin-badge {
     background: #ef4444; color: #fff; font-size: 9px; font-weight: 800;
     padding: 1px 6px; border-radius: 999px; margin-left: 4px;
@@ -143,7 +144,7 @@ l<!DOCTYPE html>
     opacity: 0; pointer-events: none; transition: all .3s ease;
   }
   .focus-banner.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-  .focus-banner.you { border-color: rgba(251, 191, 36, 0.55); }
+  .focus-banner.you { border-color: rgba(251, 191, 36, 0.75); }
   .focus-name { font-size: 14.5px; font-weight: 700; }
   .focus-name.you-label { color: #fbbf24; }
   .focus-status { font-size: 11px; color: #94a3b8; margin-top: 2px; }
@@ -154,7 +155,7 @@ l<!DOCTYPE html>
   .focus-close:hover { background: rgba(239, 68, 68, 0.35); }
   .hint {
     position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.35); font-size: 11px; z-index: 10; pointer-events: none;
+    color: rgba(255, 255, 255, 0.38); font-size: 11px; z-index: 10; pointer-events: none;
     white-space: nowrap;
   }
 
@@ -173,24 +174,31 @@ l<!DOCTYPE html>
   }
   #adminPanel.on { display: flex; }
   .admin-card {
-    position: relative; width: min(620px, 100%); max-height: 86vh; overflow: auto;
-    background: #111827; border: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative; width: min(650px, 100%); max-height: 86vh; overflow: auto;
+    background: #121826; border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px; padding: 22px; box-shadow: 0 28px 70px rgba(0, 0, 0, 0.8);
   }
   .admin-card h3 { font-size: 18px; color: #fbbf24; margin-bottom: 4px; }
   .admin-card .sub { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
   .admin-toolbar {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
     padding: 10px 12px; margin-bottom: 14px; border-radius: 12px;
     background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);
   }
-  .admin-toolbar span { font-size: 12px; color: #fca5a5; }
+  .admin-toolbar span { font-size: 12px; color: #fca5a5; flex: 1; min-width: 200px; }
+  .admin-toolbar-btns { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn-reset-all {
     background: #dc2626; color: #fff; border: none; border-radius: 9px;
-    padding: 8px 13px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    padding: 8px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
     transition: background .2s;
   }
   .btn-reset-all:hover { background: #ef4444; }
+  .btn-unban-all {
+    background: #059669; color: #fff; border: none; border-radius: 9px;
+    padding: 8px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    transition: background .2s;
+  }
+  .btn-unban-all:hover { background: #10b981; }
   .admin-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
   .admin-tabs button {
     flex: 1; padding: 9px; border: 1px solid rgba(255, 255, 255, 0.12);
@@ -204,9 +212,11 @@ l<!DOCTYPE html>
   }
   .admin-row .an { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .admin-row .as { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-  .admin-row button { border: 0; border-radius: 8px; padding: 6px 10px; font-weight: 700; font-size: 11.5px; cursor: pointer; color: #fff; }
+  .admin-row button { border: 0; border-radius: 8px; padding: 7px 11px; font-weight: 700; font-size: 11.5px; cursor: pointer; color: #fff; white-space: nowrap; }
   .admin-row button.unban { background: #10b981; }
+  .admin-row button.unban:hover { background: #059669; }
   .admin-row button.ban { background: #ef4444; }
+  .admin-row button.ban:hover { background: #dc2626; }
   .admin-row button.hide { background: #475569; }
   .admin-row button.show { background: #0284c7; }
   .admin-empty { color: #94a3b8; text-align: center; padding: 20px; font-size: 12.5px; }
@@ -223,7 +233,7 @@ l<!DOCTYPE html>
   }
   #wardrobePanel.on, #leaderboardPanel.on { display: flex; }
   .wardrobe-card {
-    position: relative; width: min(520px, 100%); background: #111827;
+    position: relative; width: min(520px, 100%); background: #121826;
     border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; padding: 24px; text-align: center;
   }
   .wardrobe-card h3 { margin-bottom: 16px; font-size: 18px; }
@@ -237,7 +247,7 @@ l<!DOCTYPE html>
 
   .leaderboard-card {
     position: relative; width: min(860px, 100%); max-height: 88vh; overflow: auto;
-    background: #111827; border: 1px solid rgba(250, 204, 21, 0.25);
+    background: #121826; border: 1px solid rgba(250, 204, 21, 0.25);
     border-radius: 20px; padding: 24px;
   }
   .leaderboard-title { font-size: 20px; font-weight: 800; color: #fde047; }
@@ -272,7 +282,7 @@ l<!DOCTYPE html>
     display: flex; align-items: center; justify-content: center; padding: 20px;
   }
   .banned-card {
-    max-width: 420px; width: 100%; background: #111827;
+    max-width: 420px; width: 100%; background: #121826;
     border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 20px; padding: 36px 28px; text-align: center;
   }
   .banned-icon-core {
@@ -291,9 +301,9 @@ l<!DOCTYPE html>
 
 <div class="name-modal" id="nameModal">
   <div class="modal-card">
-    <div class="modal-icon">💻</div>
+    <div class="modal-icon">📚💻</div>
     <div class="modal-title" id="modalTitle">Chào mừng đến lớp!</div>
-    <div class="modal-subtitle" id="modalSubtitle">Nhập tên của bạn để ngồi vào bàn máy tính</div>
+    <div class="modal-subtitle" id="modalSubtitle">Nhập tên của bạn để chọn bàn đọc sách hoặc lập trình</div>
     <input type="text" class="name-input" id="nameInput" placeholder="Tên của bạn..." maxlength="20" autocomplete="off">
     <button class="name-btn" id="nameBtn">Vào phòng học →</button>
     <div class="modal-hint">Tên sẽ hiển thị phía trên nhân vật của bạn</div>
@@ -307,9 +317,10 @@ l<!DOCTYPE html>
     <div class="hud-sub" id="hudSub">Đang kết nối...</div>
   </div>
   <div class="top-actions">
+    <button class="tool-btn" id="switchDeskBtn" title="Đổi bàn của bạn giữa Đọc sách & Bấm máy">🔄 <span id="switchDeskLabel">Đổi bàn</span></button>
     <button class="tool-btn gold" id="leaderboardBtn" title="Bảng xếp hạng học tập">🏆 <span>Xếp hạng</span></button>
     <button class="tool-btn" id="renameBtn" title="Đổi tên nhân vật">✏️ <span class="rename-label" id="renameNameLabel">Đặt tên</span></button>
-    <button class="tool-btn icon-only" id="wardrobeBtn" title="Tủ đồ chọn skin">👕</button>
+    <button class="tool-btn icon-only" id="wardrobeBtn" title="Tủ đồ chọn trang phục">👕</button>
     <button class="tool-btn icon-only" id="panelOpen" title="Mở danh sách lớp">☰</button>
   </div>
 </div>
@@ -360,16 +371,19 @@ l<!DOCTYPE html>
   <div class="admin-card">
     <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('on')">×</button>
     <h3>👑 Quản trị phòng học</h3>
-    <div class="sub">Quản lý thành viên theo thiết bị (UID) · Ẩn/Chặn hoặc Reset toàn bộ về 0</div>
+    <div class="sub">Quản lý thành viên, mở chặn (Unban) hoặc Reset toàn bộ dữ liệu về 0</div>
 
     <div class="admin-toolbar">
-      <span>⚠️ Xóa toàn bộ danh sách thành viên, điểm số & trạng thái online để ghi nhận lại từ đầu:</span>
-      <button class="btn-reset-all" id="adminResetAllBtn" onclick="adminResetAllMembers()">🔄 Reset thành viên</button>
+      <span>⚠️ Thao tác nhanh cho quản trị viên:</span>
+      <div class="admin-toolbar-btns">
+        <button class="btn-unban-all" onclick="adminUnbanAll()">🔓 Mở chặn tất cả</button>
+        <button class="btn-reset-all" id="adminResetAllBtn" onclick="adminResetAllMembers()">🔄 Reset thành viên</button>
+      </div>
     </div>
 
     <div class="admin-tabs">
       <button id="tabMembers" class="on" onclick="adminSwitchTab('members')">👥 Thành viên</button>
-      <button id="tabBanned" onclick="adminSwitchTab('banned')">🚫 Bị chặn</button>
+      <button id="tabBanned" onclick="adminSwitchTab('banned')">🚫 Bị chặn (<span id="bannedCountBadge">0</span>)</button>
     </div>
     <div id="adminMembers" class="admin-list"></div>
     <div id="adminBanned" class="admin-list" style="display:none"></div>
@@ -453,6 +467,9 @@ l<!DOCTYPE html>
     } else {
       window.__isBanned = false;
       hideBanOverlay();
+      ['topBar'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.style.display = '';
+      });
     }
   }
   window.__applyBanState = applyBanState;
@@ -469,6 +486,7 @@ l<!DOCTYPE html>
       window.__nameBanRef.on('value', s => {
         const mod = s.val();
         if (mod && (mod.ban || mod.kick)) applyBanState(mod);
+        else if (!window.__isBanned) hideBanOverlay();
       });
     }
     watchByName();
@@ -531,12 +549,12 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.12;
+renderer.toneMappingExposure = 1.14;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x090e1a);
-scene.fog = new THREE.FogExp2(0x090e1a, 0.012);
+scene.fog = new THREE.FogExp2(0x090e1a, 0.011);
 
 const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 220);
 
@@ -636,16 +654,20 @@ function createNoiseTexture(width, height, drawFunc) {
 function generateFaceTexture(style, skinColor) {
   return createNoiseTexture(16, 16, (ctx) => {
     ctx.fillStyle = skinColor; ctx.fillRect(0, 0, 16, 16);
-    if (style === 'cyber') {
+    if (style === 'scholar') {
+      ctx.fillStyle = '#292524'; ctx.fillRect(0, 0, 16, 4); ctx.fillRect(0, 4, 2, 2); ctx.fillRect(14, 4, 2, 2);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(2, 8, 4, 2); ctx.fillRect(10, 8, 4, 2);
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(4, 8, 2, 2); ctx.fillRect(10, 8, 2, 2);
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(1, 7, 6, 1); ctx.fillRect(1, 10, 6, 1);
+      ctx.fillRect(9, 7, 6, 1); ctx.fillRect(9, 10, 6, 1);
+      ctx.fillRect(7, 8, 2, 1);
+      ctx.fillStyle = '#78350f'; ctx.fillRect(6, 12, 4, 1);
+    } else if (style === 'cyber') {
       ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 16, 5);
       ctx.fillStyle = '#ec4899'; ctx.fillRect(1, 6, 14, 4);
       ctx.fillStyle = '#38bdf8'; ctx.fillRect(3, 7, 10, 2);
       ctx.fillStyle = '#94a3b8'; ctx.fillRect(6, 12, 4, 1);
-    } else if (style === 'helmet') {
-      ctx.fillStyle = '#cbd5e1'; ctx.fillRect(0, 0, 16, 7);
-      ctx.fillStyle = '#334155'; ctx.fillRect(1, 4, 14, 3);
-      ctx.fillStyle = '#38bdf8'; ctx.fillRect(3, 5, 3, 1); ctx.fillRect(10, 5, 3, 1);
-      ctx.fillStyle = '#94a3b8'; ctx.fillRect(7, 7, 2, 8);
     } else if (style === 'long') {
       ctx.fillStyle = '#b45309'; ctx.fillRect(0, 0, 16, 6);
       ctx.fillStyle = '#92400e'; ctx.fillRect(0, 0, 3, 8); ctx.fillRect(13, 0, 3, 8);
@@ -678,14 +700,15 @@ function generateShirtTexture(style, skinColor) {
       ctx.fillStyle = '#4d7c0f'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#365314'; ctx.fillRect(0, 12, 16, 4);
       ctx.fillStyle = '#84cc16'; ctx.fillRect(4, 2, 8, 2);
+    } else if (style === 'cardigan') {
+      ctx.fillStyle = '#78350f'; ctx.fillRect(0, 0, 16, 16);
+      ctx.fillStyle = '#f8fafc'; ctx.fillRect(5, 0, 6, 7);
+      ctx.fillStyle = '#b91c1c'; ctx.fillRect(7, 2, 2, 6);
+      ctx.fillStyle = '#92400e'; ctx.fillRect(0, 13, 16, 3);
     } else if (style === 'cyberpunk') {
       ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#ec4899'; ctx.fillRect(1, 0, 2, 16); ctx.fillRect(13, 0, 2, 16);
       ctx.fillStyle = '#06b6d4'; ctx.fillRect(7, 2, 2, 12);
-    } else if (style === 'armor') {
-      ctx.fillStyle = '#475569'; ctx.fillRect(0, 0, 16, 16);
-      ctx.fillStyle = '#e2e8f0'; ctx.fillRect(2, 2, 12, 12);
-      ctx.fillStyle = '#0ea5e9'; ctx.fillRect(7, 6, 2, 4);
     } else if (style === 'ninja') {
       ctx.fillStyle = '#18181b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#dc2626'; ctx.fillRect(0, 10, 16, 3);
@@ -705,12 +728,12 @@ function generatePantsTexture(style) {
     if (style === 'brown') {
       ctx.fillStyle = '#44403c'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#292524'; ctx.fillRect(0, 12, 16, 4);
+    } else if (style === 'khaki') {
+      ctx.fillStyle = '#a8a29e'; ctx.fillRect(0, 0, 16, 16);
+      ctx.fillStyle = '#78716c'; ctx.fillRect(0, 12, 16, 4);
     } else if (style === 'neon') {
       ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#06b6d4'; ctx.fillRect(1, 0, 2, 12); ctx.fillRect(13, 0, 2, 12);
-    } else if (style === 'iron') {
-      ctx.fillStyle = '#334155'; ctx.fillRect(0, 0, 16, 16);
-      ctx.fillStyle = '#cbd5e1'; ctx.fillRect(2, 2, 12, 8);
     } else if (style === 'ninja') {
       ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#71717a'; ctx.fillRect(2, 10, 12, 2);
@@ -725,8 +748,8 @@ function generateHairTexture(style) {
   return createNoiseTexture(16, 16, (ctx) => {
     let color = '#3e2723';
     if (style === 'long') color = '#b45309';
+    else if (style === 'scholar') color = '#1c1917';
     else if (style === 'cyber') color = '#06b6d4';
-    else if (style === 'helmet') color = '#94a3b8';
     else if (style === 'ninja') color = '#09090b';
     else if (style === 'ender') color = '#2e1065';
     ctx.fillStyle = color; ctx.fillRect(0, 0, 16, 16);
@@ -738,12 +761,12 @@ function generateSkinTexture(skinColor) {
 }
 
 const CHARACTER_PRESETS = {
-  steve:  { skin: '#d49a6a', head: 'classic', top: 'teal',      bottom: 'blue',  name: 'Học viên Nam', headset: '#10b981' },
-  alex:   { skin: '#f3bfa0', head: 'long',    top: 'green',     bottom: 'brown', name: 'Học viên Nữ',  headset: '#f43f5e' },
-  cyber:  { skin: '#cbd5e1', head: 'cyber',   top: 'cyberpunk', bottom: 'neon',  name: 'Cyber Dev',    headset: '#06b6d4' },
-  knight: { skin: '#e5a77d', head: 'helmet',  top: 'armor',     bottom: 'iron',  name: 'Hiệp Sĩ Code', headset: '#38bdf8' },
-  ninja:  { skin: '#9a6b4c', head: 'ninja',   top: 'ninja',     bottom: 'ninja', name: 'Ninja Bug',    headset: '#ef4444' },
-  mage:   { skin: '#cbd5e1', head: 'ender',   top: 'ender',     bottom: 'neon',  name: 'Pháp Sư AI',   headset: '#a855f7' },
+  steve:   { skin: '#d49a6a', head: 'classic', top: 'teal',      bottom: 'blue',  name: 'Học Viên Nam' },
+  scholar: { skin: '#f1c29b', head: 'scholar', top: 'cardigan',  bottom: 'khaki', name: 'Thư Sinh' },
+  alex:    { skin: '#f3bfa0', head: 'long',    top: 'green',     bottom: 'brown', name: 'Học Viên Nữ' },
+  cyber:   { skin: '#cbd5e1', head: 'cyber',   top: 'cyberpunk', bottom: 'neon',  name: 'Cyber Dev' },
+  ninja:   { skin: '#9a6b4c', head: 'ninja',   top: 'ninja',     bottom: 'ninja', name: 'Ninja Code' },
+  mage:    { skin: '#cbd5e1', head: 'ender',   top: 'ender',     bottom: 'brown', name: 'Học Giả AI' },
 };
 const PRESET_KEYS = Object.keys(CHARACTER_PRESETS);
 
@@ -766,8 +789,6 @@ function buildMinecraftCharacter(presetKey) {
   const shirtMat = new THREE.MeshStandardMaterial({ map: generateShirtTexture(preset.top, preset.skin), roughness: 0.8 });
   const pantsMat = new THREE.MeshStandardMaterial({ map: generatePantsTexture(preset.bottom), roughness: 0.8 });
   const shoeMat  = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
-  const headsetMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.35, metalness: 0.6 });
-  const headsetGlowMat = new THREE.MeshStandardMaterial({ color: preset.headset, emissive: preset.headset, emissiveIntensity: 0.9 });
 
   const SEAT_Y = 0.78;
   const TORSO_CENTER_Y = SEAT_Y + torsoHeight / 2;
@@ -788,18 +809,6 @@ function buildMinecraftCharacter(presetKey) {
   const hairTop = new THREE.Mesh(getBoxGeo(headSize + 0.04, 0.1, headSize + 0.04), hairMat);
   hairTop.position.set(0, headSize / 2 + 0.02, -0.01);
   headGroup.add(hairTop);
-
-  const bandTop = new THREE.Mesh(getBoxGeo(headSize + 0.12, 0.05, 0.09), headsetMat);
-  bandTop.position.set(0, headSize / 2 + 0.08, 0);
-  headGroup.add(bandTop);
-  [-1, 1].forEach(side => {
-    const earCup = new THREE.Mesh(getBoxGeo(0.07, 0.22, 0.22), headsetMat);
-    earCup.position.set(side * (headSize / 2 + 0.035), 0, 0);
-    headGroup.add(earCup);
-    const ledRing = new THREE.Mesh(getBoxGeo(0.02, 0.14, 0.14), headsetGlowMat);
-    ledRing.position.set(side * (headSize / 2 + 0.072), 0, 0);
-    headGroup.add(ledRing);
-  });
 
   torsoGroup.add(headGroup);
 
@@ -867,7 +876,7 @@ function buildMinecraftCharacter(presetKey) {
   };
 }
 
-/* ===== MÀN HÌNH CODE ===== */
+/* ===== MÀN HÌNH CODE & TRANG SÁCH ===== */
 const CODE_SNIPPETS = [
   { lang: 'JavaScript', lines: [
     '<span style="color:#c586c0">async function</span> <span style="color:#dcdcaa">loadClass</span>() {',
@@ -887,6 +896,13 @@ const CODE_SNIPPETS = [
     '  <span style="color:#569cd6">&lt;canvas</span> <span style="color:#9cdcfe">id</span>=<span style="color:#ce9178">"scene"</span><span style="color:#569cd6">&gt;&lt;/canvas&gt;</span>',
     '<span style="color:#569cd6">&lt;/section&gt;</span>'
   ]}
+];
+
+const BOOK_TOPICS = [
+  { title: 'Chương 1: Tư Duy', cover: 0x991b1b, lines: ['Đọc sách mở ra chân trời', 'kiến thức mới mỗi ngày.', 'Tập trung và ghi nhớ', 'những ý chính quan trọng.'] },
+  { title: 'Thuật Toán & Logic', cover: 0x1e3a8a, lines: ['Thuật toán là nền tảng', 'của mọi phần mềm hiện đại.', 'Phân tích bài toán rõ ràng', 'trước khi viết mã lệnh.'] },
+  { title: 'Văn Học & Nghệ Thuật', cover: 0x065f46, lines: ['Ngôn từ nuôi dưỡng tâm hồn', 'và khơi nguồn sáng tạo.', 'Mỗi trang sách là một', 'hành trình khám phá.'] },
+  { title: 'Khoa Học Vũ Trụ', cover: 0x581c87, lines: ['Hàng tỷ ngôi sao tỏa sáng', 'trong dải ngân hà rộng lớn.', 'Khám phá quy luật tự nhiên', 'của không gian & thời gian.'] },
 ];
 
 function createMonitorCanvas() {
@@ -937,12 +953,24 @@ function drawCodeScreen(mon, snippet, scrollY, isOnline) {
   });
 }
 
-/* ===== VẬT LIỆU PHÒNG HỌC & CỬA SỔ PHONG CẢNH ===== */
+function createBookPageTexture(titleText, lines) {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 320;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fef3c7'; ctx.fillRect(0, 0, 256, 320);
+  ctx.strokeStyle = '#d97706'; ctx.lineWidth = 4; ctx.strokeRect(8, 8, 240, 304);
+  ctx.fillStyle = '#78350f'; ctx.font = 'bold 18px serif';
+  ctx.fillText(titleText, 22, 38);
+  ctx.fillStyle = '#451a03'; ctx.font = '13px serif';
+  lines.forEach((ln, i) => ctx.fillText(ln, 22, 68 + i * 24));
+  return new THREE.CanvasTexture(c);
+}
+
+/* ===== VẬT LIỆU PHÒNG HỌC ===== */
 function createWoodFloorTexture() {
   const c = document.createElement('canvas'); c.width = 256; c.height = 256;
   const ctx = c.getContext('2d');
-  ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, 256, 256);
-  ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3;
+  ctx.fillStyle = '#261c17'; ctx.fillRect(0, 0, 256, 256);
+  ctx.strokeStyle = '#140f0c'; ctx.lineWidth = 3;
   for (let y = 0; y < 256; y += 32) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(256, y); ctx.stroke();
     const shift = (y / 32) % 2 === 0 ? 0 : 64;
@@ -957,20 +985,28 @@ function createWoodFloorTexture() {
 }
 
 const M = {
-  floor: new THREE.MeshStandardMaterial({ map: createWoodFloorTexture(), roughness: 0.55, metalness: 0.15 }),
+  floor: new THREE.MeshStandardMaterial({ map: createWoodFloorTexture(), roughness: 0.58, metalness: 0.1 }),
   wall: new THREE.MeshStandardMaterial({ color: 0x1e2536, roughness: 0.85, side: THREE.DoubleSide }),
   wallTrim: new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 }),
   windowFrame: new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.35, metalness: 0.7 }),
   windowSill: new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.4 }),
   ceiling: new THREE.MeshStandardMaterial({ color: 0x131826, roughness: 0.9 }),
-  ledPanel: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe0f2fe, emissiveIntensity: 1.4 }),
-  deskTop: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.45, metalness: 0.1 }),
+  ledPanel: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe0f2fe, emissiveIntensity: 1.3 }),
+  deskTopPc: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.45, metalness: 0.1 }),
+  deskTopBook: new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.48, metalness: 0.05 }),
   deskFrame: new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.7 }),
-  chair: new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.5 }),
+  chairPc: new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.5 }),
+  chairBook: new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.55 }),
   monitor: new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.3, metalness: 0.5 }),
   pcCase: new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.35, metalness: 0.6 }),
   pcRgb: new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x10b981, emissiveIntensity: 1.2 }),
   mousePad: new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 }),
+  lampMetal: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.35, metalness: 0.75 }),
+  lampShade: new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.4 }),
+  lampBulbOn: new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfbbf24, emissiveIntensity: 1.8 }),
+  lampBulbOff: new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.5 }),
+  mug: new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 }),
+  coffee: new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.2 }),
   pot: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.75 }),
   leaf: new THREE.MeshStandardMaterial({ color: 0x16a34a, roughness: 0.55 }),
   windowGlass: new THREE.MeshPhysicalMaterial({
@@ -982,16 +1018,14 @@ const screenMatBase = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive
 
 /* ===== HỆ THỐNG ÁNH SÁNG ===== */
 scene.add(new THREE.HemisphereLight(0xbae6fd, 0x1e293b, 0.65));
-const ambient = new THREE.AmbientLight(0x64748b, 0.45); scene.add(ambient);
+const ambient = new THREE.AmbientLight(0x64748b, 0.46); scene.add(ambient);
 
-// Ánh trăng xanh dịu hắt từ cửa sổ phong cảnh vào lớp học
 const moonWindowLight = new THREE.DirectionalLight(0x7dd3fc, 0.65);
 moonWindowLight.position.set(-28, 12, 0);
 scene.add(moonWindowLight);
 
-const ceilingLights = [];
 [[-6, 8.2, -7], [6, 8.2, -7], [-6, 8.2, 2], [6, 8.2, 2]].forEach((pos, i) => {
-  const l = new THREE.PointLight(0xf8fafc, 0.95, 26, 1.8);
+  const l = new THREE.PointLight(0xf8fafc, 0.92, 26, 1.8);
   l.position.set(pos[0], pos[1], pos[2]);
   if (i === 0) {
     l.castShadow = true;
@@ -999,14 +1033,12 @@ const ceilingLights = [];
     l.shadow.bias = -0.0008;
   }
   scene.add(l);
-  ceilingLights.push(l);
-
   const ledMesh = new THREE.Mesh(getBoxGeo(2.8, 0.08, 0.9), M.ledPanel);
   ledMesh.position.set(pos[0], 8.95, pos[2]);
   scene.add(ledMesh);
 });
 
-/* ===== KIẾN TRÚC PHÒNG HỌC ===== */
+/* ===== KIẾN TRÚC PHÒNG HỌC & CỬA SỔ PHONG CẢNH ===== */
 const ROOM = { w: 26, d: 30, h: 9 };
 const HALF_W = ROOM.w / 2, HALF_D = ROOM.d / 2;
 
@@ -1025,38 +1057,32 @@ wf.position.set(0, ROOM.h / 2, HALF_D); scene.add(wf);
 const wr = new THREE.Mesh(getBoxGeo(0.4, ROOM.h, ROOM.d), M.wall);
 wr.position.set(HALF_W, ROOM.h / 2, 0); scene.add(wr);
 
-/* ===== CỬA SỔ LỚN BÊN TƯỜNG TRÁI & PHONG CẢNH THIÊN NHIÊN BÊN NGOÀI ===== */
+// Cửa sổ phong cảnh bên tường trái
 const wlBottom = new THREE.Mesh(getBoxGeo(0.4, 2.3, ROOM.d), M.wall);
 wlBottom.position.set(-HALF_W, 1.15, 0); scene.add(wlBottom);
 
 const wlTop = new THREE.Mesh(getBoxGeo(0.4, 2.1, ROOM.d), M.wall);
 wlTop.position.set(-HALF_W, ROOM.h - 1.05, 0); scene.add(wlTop);
 
-// Bậu cửa sổ trắng chạy dọc theo dãy cửa sổ
 const windowSill = new THREE.Mesh(getBoxGeo(0.65, 0.14, 25), M.windowSill);
 windowSill.position.set(-HALF_W + 0.08, 2.32, 0); scene.add(windowSill);
 
-// 3 ô cửa sổ kính rộng với khung nhôm đen và song chia ô tinh tế
 [-8, 0, 8].forEach(zCenter => {
-  // Khung ngang trên & dưới
   const topBar = new THREE.Mesh(getBoxGeo(0.24, 0.14, 6.2), M.windowFrame);
   topBar.position.set(-HALF_W, 6.85, zCenter); scene.add(topBar);
   const botBar = new THREE.Mesh(getBoxGeo(0.24, 0.14, 6.2), M.windowFrame);
   botBar.position.set(-HALF_W, 2.42, zCenter); scene.add(botBar);
 
-  // 3 thanh đứng chia ô kính
   [-3.0, 0, 3.0].forEach(dz => {
     const vBar = new THREE.Mesh(getBoxGeo(0.24, 4.5, 0.14), M.windowFrame);
     vBar.position.set(-HALF_W, 4.63, zCenter + dz); scene.add(vBar);
   });
 
-  // Tấm kính trong suốt
   const pane = new THREE.Mesh(new THREE.PlaneGeometry(6.0, 4.4), M.windowGlass);
   pane.rotation.y = Math.PI / 2;
   pane.position.set(-HALF_W, 4.63, zCenter);
   scene.add(pane);
 
-  // Chậu hoa nhỏ trang trí trên bậu cửa sổ
   const miniPot = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.22, 12), M.pot);
   miniPot.position.set(-HALF_W + 0.2, 2.5, zCenter + 2.2); scene.add(miniPot);
   const miniBush = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), M.leaf);
@@ -1065,17 +1091,15 @@ windowSill.position.set(-HALF_W + 0.08, 2.32, 0); scene.add(windowSill);
   flower.position.set(-HALF_W + 0.22, 2.84, zCenter + 2.18); scene.add(flower);
 });
 
-// Các cột tường ngăn cách 3 khung cửa sổ
 [-13, -4.5, 4.5, 13].forEach(zPillar => {
   const pillar = new THREE.Mesh(getBoxGeo(0.45, 4.6, 2.8), M.wallTrim);
   pillar.position.set(-HALF_W, 4.6, zPillar); scene.add(pillar);
 });
 
-/* ===== DỰNG PHONG CẢNH THIÊN NHIÊN NGOÀI CỬA SỔ (BẦU TRỜI SAO, TRĂNG, NÚI, HỒ NƯỚC & RỪNG THÔNG) ===== */
+/* ===== PHONG CẢNH THIÊN NHIÊN NGOÀI CỬA SỔ ===== */
 const landscapeGroup = new THREE.Group();
 scene.add(landscapeGroup);
 
-// 1. Bầu trời hoàng hôn chuyển đêm & dải ngân hà lấp lánh
 function createScenicSkyTexture() {
   const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
   const ctx = c.getContext('2d');
@@ -1084,11 +1108,10 @@ function createScenicSkyTexture() {
   grad.addColorStop(0.35, '#0c1938');
   grad.addColorStop(0.68, '#1e3a6e');
   grad.addColorStop(0.88, '#3b5998');
-  grad.addColorStop(1.0, '#f59e0b'); // Ánh chân trời vàng cam ấm áp
+  grad.addColorStop(1.0, '#f59e0b');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 1024, 512);
 
-  // Vẽ các ngôi sao lấp lánh
   for (let i = 0; i < 260; i++) {
     const sx = Math.random() * 1024;
     const sy = Math.random() * 340;
@@ -1097,7 +1120,6 @@ function createScenicSkyTexture() {
     ctx.beginPath(); ctx.arc(sx, sy, r, 0, Math.PI * 2); ctx.fill();
   }
 
-  // Vẽ ánh trăng tròn sáng dịu & quầng hào quang
   const mx = 680, my = 140;
   const moonGlow = ctx.createRadialGradient(mx, my, 10, mx, my, 110);
   moonGlow.addColorStop(0, 'rgba(254, 249, 195, 0.95)');
@@ -1108,7 +1130,6 @@ function createScenicSkyTexture() {
 
   ctx.fillStyle = '#fef9c3';
   ctx.beginPath(); ctx.arc(mx, my, 26, 0, Math.PI * 2); ctx.fill();
-
   return new THREE.CanvasTexture(c);
 }
 
@@ -1120,17 +1141,14 @@ skyBackdrop.rotation.y = Math.PI / 2;
 skyBackdrop.position.set(-58, 14, 0);
 landscapeGroup.add(skyBackdrop);
 
-// 2. Mặt hồ phẳng lặng phản chiếu ánh trăng & ánh hoàng hôn
-const lakeMat = new THREE.MeshStandardMaterial({
-  color: 0x0c2442, emissive: 0x0a1d36, emissiveIntensity: 0.6,
-  roughness: 0.15, metalness: 0.85
-});
-const lakeMesh = new THREE.Mesh(new THREE.PlaneGeometry(46, 110), lakeMat);
+const lakeMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(46, 110),
+  new THREE.MeshStandardMaterial({ color: 0x0c2442, emissive: 0x0a1d36, emissiveIntensity: 0.6, roughness: 0.15, metalness: 0.85 })
+);
 lakeMesh.rotation.x = -Math.PI / 2;
 lakeMesh.position.set(-36, -0.4, 0);
 landscapeGroup.add(lakeMesh);
 
-// Dải ánh trăng phản chiếu lung linh trên mặt hồ
 const moonReflection = new THREE.Mesh(
   new THREE.PlaneGeometry(34, 4.2),
   new THREE.MeshBasicMaterial({ color: 0xfef08a, transparent: true, opacity: 0.28 })
@@ -1139,7 +1157,6 @@ moonReflection.rotation.x = -Math.PI / 2;
 moonReflection.position.set(-35, -0.35, -14);
 landscapeGroup.add(moonReflection);
 
-// 3. Các dãy núi trùng điệp xa gần bên kia hồ
 function addMountainRange(xPos, colorHex, heights, zSpread) {
   const mat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.9, flatShading: true });
   heights.forEach((h, idx) => {
@@ -1149,7 +1166,6 @@ function addMountainRange(xPos, colorHex, heights, zSpread) {
     cone.position.set(xPos, h / 2 - 1.5, zPos);
     landscapeGroup.add(cone);
 
-    // Chỏm tuyết trắng trên đỉnh núi cao
     if (h > 16) {
       const snow = new THREE.Mesh(
         new THREE.ConeGeometry(radius * 0.34, h * 0.34, 7),
@@ -1160,12 +1176,9 @@ function addMountainRange(xPos, colorHex, heights, zSpread) {
     }
   });
 }
-// Lớp núi xa (cao, phủ tuyết)
 addMountainRange(-52, 0x1e293b, [18, 24, 15, 22, 19, 25, 17], 84);
-// Lớp đồi núi gần hơn (xanh đậm)
 addMountainRange(-44, 0x0f292e, [10, 14, 9, 13, 11, 15, 10, 12], 76);
 
-// 4. Bờ cỏ & Rừng thông xanh ven cửa sổ tạo cảm giác gần gũi, sống động
 const grassBank = new THREE.Mesh(
   new THREE.BoxGeometry(10, 1.4, 70),
   new THREE.MeshStandardMaterial({ color: 0x14532d, roughness: 0.85 })
@@ -1181,29 +1194,21 @@ const pineTrees = [];
 function createPineTree(x, z, scale) {
   const tree = new THREE.Group();
   const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.16 * scale, 0.24 * scale, 1.6 * scale, 7), pineTrunkMat);
-  trunk.position.y = 0.8 * scale;
-  tree.add(trunk);
-
+  trunk.position.y = 0.8 * scale; tree.add(trunk);
   for (let layer = 0; layer < 3; layer++) {
     const r = (1.35 - layer * 0.32) * scale;
     const h = (1.8 - layer * 0.2) * scale;
     const crown = new THREE.Mesh(new THREE.ConeGeometry(r, h, 8), layer % 2 === 0 ? pineLeafMat1 : pineLeafMat2);
-    crown.position.y = (2.0 + layer * 1.05) * scale;
-    tree.add(crown);
+    crown.position.y = (2.0 + layer * 1.05) * scale; tree.add(crown);
   }
   tree.position.set(x, 0.8, z);
   landscapeGroup.add(tree);
   pineTrees.push({ tree, phase: Math.random() * Math.PI * 2 });
 }
-
 for (let i = 0; i < 18; i++) {
-  const z = -26 + i * 3.1 + (Math.random() - 0.5) * 1.2;
-  const x = -16.5 - Math.random() * 4.2;
-  const sc = 0.85 + Math.random() * 0.65;
-  createPineTree(x, z, sc);
+  createPineTree(-16.5 - Math.random() * 4.2, -26 + i * 3.1 + (Math.random() - 0.5) * 1.2, 0.85 + Math.random() * 0.65);
 }
 
-// 5. Đom đóm bay lấp lánh ngoài vườn cây bên cửa sổ
 const fireflyCount = 45;
 const fireflyPos = new Float32Array(fireflyCount * 3);
 for (let i = 0; i < fireflyCount; i++) {
@@ -1219,7 +1224,7 @@ const fireflies = new THREE.Points(
 );
 landscapeGroup.add(fireflies);
 
-/* ===== BẢNG TRẮNG, ĐỒNG HỒ & GIÁ SÁCH ===== */
+/* ===== BẢNG LỚP HỌC, ĐỒNG HỒ & GIÁ SÁCH ===== */
 const baseFront = new THREE.Mesh(getBoxGeo(ROOM.w, 0.35, 0.08), M.wallTrim);
 baseFront.position.set(0, 0.18, -HALF_D + 0.22); scene.add(baseFront);
 
@@ -1227,15 +1232,15 @@ function createWhiteboardTexture() {
   const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
   const ctx = c.getContext('2d');
   ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, 1024, 512);
-  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 42px sans-serif';
-  ctx.fillText('LỚP HỌC LẬP TRÌNH & TRẮC NGHIỆM TRỰC TUYẾN', 56, 86);
-  ctx.fillStyle = '#0284c7'; ctx.fillRect(56, 106, 912, 4);
-  ctx.fillStyle = '#334155'; ctx.font = '28px monospace';
-  ctx.fillText('1. Chọn nhân vật & đổi tên ở thanh công cụ góc trên', 64, 175);
-  ctx.fillText('2. Click vào bạn cùng lớp để xem góc nhìn cận cảnh', 64, 235);
-  ctx.fillText('3. Làm bài tập trắc nghiệm để lên top Bảng Xếp Hạng 🏆', 64, 295);
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 40px sans-serif';
+  ctx.fillText('KHÔNG GIAN HỌC TẬP: ĐỌC SÁCH & LẬP TRÌNH', 62, 86);
+  ctx.fillStyle = '#0284c7'; ctx.fillRect(62, 106, 900, 4);
+  ctx.fillStyle = '#334155'; ctx.font = '27px sans-serif';
+  ctx.fillText('• Khu vực kết hợp tự do: Bàn đọc sách & Bàn máy tính code', 64, 175);
+  ctx.fillText('• Nhấn nút "🔄 Đổi bàn" trên góc để tự chọn góc học yêu thích', 64, 235);
+  ctx.fillText('• Click vào từng thành viên để xem cận cảnh hoạt động', 64, 295);
   ctx.fillStyle = '#059669'; ctx.font = 'bold 26px sans-serif';
-  ctx.fillText('Chúc cả lớp học tập hiệu quả!', 64, 385);
+  ctx.fillText('Hoàn thành bài trắc nghiệm để lên top Bảng Xếp Hạng 🏆', 64, 375);
   return new THREE.CanvasTexture(c);
 }
 const board = new THREE.Mesh(getBoxGeo(10.5, 4.4, 0.1), new THREE.MeshStandardMaterial({ map: createWhiteboardTexture(), roughness: 0.35 }));
@@ -1253,29 +1258,31 @@ scene.add(clockGroup);
 
 function makeBookshelf(zPos) {
   const g = new THREE.Group();
-  const frame = new THREE.Mesh(getBoxGeo(0.5, 3.6, 2.2), M.deskFrame);
-  frame.position.y = 1.8; g.add(frame);
-  const colors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0x8b5cf6];
-  for (let row = 0; row < 4; row++) {
-    const shelf = new THREE.Mesh(getBoxGeo(0.52, 0.06, 2.1), M.deskTop);
-    shelf.position.y = 0.6 + row * 0.85; g.add(shelf);
-    for (let b = 0; b < 7; b++) {
-      const book = new THREE.Mesh(getBoxGeo(0.32, 0.52, 0.16), new THREE.MeshStandardMaterial({ color: colors[(row + b) % colors.length] }));
-      book.position.set(0.05, 0.9 + row * 0.85, -0.75 + b * 0.24);
+  const frame = new THREE.Mesh(getBoxGeo(0.55, 4.2, 2.4), M.chairBook);
+  frame.position.y = 2.1; g.add(frame);
+  const colors = [0x991b1b, 0x1e3a8a, 0x065f46, 0xb45309, 0x581c87, 0x374151];
+  for (let row = 0; row < 5; row++) {
+    const shelf = new THREE.Mesh(getBoxGeo(0.58, 0.06, 2.3), M.deskTopBook);
+    shelf.position.y = 0.55 + row * 0.82; g.add(shelf);
+    for (let b = 0; b < 8; b++) {
+      const hBook = 0.45 + ((row + b) % 3) * 0.06;
+      const book = new THREE.Mesh(getBoxGeo(0.34, hBook, 0.16), new THREE.MeshStandardMaterial({ color: colors[(row * 2 + b) % colors.length] }));
+      book.position.set(0.06, 0.58 + row * 0.82 + hBook / 2, -0.88 + b * 0.25);
       g.add(book);
     }
   }
   g.position.set(HALF_W - 0.5, 0, zPos);
   return g;
 }
-scene.add(makeBookshelf(-6));
-scene.add(makeBookshelf(-1.5));
+scene.add(makeBookshelf(-7.5));
+scene.add(makeBookshelf(-3.5));
+scene.add(makeBookshelf(0.5));
 
-/* ===== BÀN MÁY TÍNH GAMING + THÙNG PC RGB ===== */
+/* ===== BÀN KẾT HỢP NGẪU NHIÊN: 50% BẤM MÁY CODE — 50% ĐỌC SÁCH ===== */
 const COLS = 10, ROWS = 5;
 const colSpacing = 2.2, rowSpacing = 2.8;
 const startX = -(COLS - 1) * colSpacing / 2, startZ = -10;
-const students = [], npcs = [], monitors = [];
+const students = [], npcs = [], monitors = [], studyDesks = [];
 
 function makeNameSprite(name, isYou = false, isAdmin = false) {
   const canvas = document.createElement('canvas');
@@ -1299,9 +1306,10 @@ function makeNameSprite(name, isYou = false, isAdmin = false) {
   return sprite;
 }
 
+// Bàn 1: Dàn máy tính lập trình RGB
 function makePCDesk(snippet, studentIdx) {
   const g = new THREE.Group();
-  const top = new THREE.Mesh(getBoxGeo(2.0, 0.08, 0.95), M.deskTop);
+  const top = new THREE.Mesh(getBoxGeo(2.0, 0.08, 0.95), M.deskTopPc);
   top.position.set(0, 1.0, 0); top.castShadow = top.receiveShadow = true; g.add(top);
 
   [[-0.9, -0.4], [0.9, -0.4], [-0.9, 0.4], [0.9, 0.4]].forEach(([lx, lz]) => {
@@ -1326,7 +1334,7 @@ function makePCDesk(snippet, studentIdx) {
   screenMat.map = mon.texture; screenMat.emissiveMap = mon.texture;
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.96, 0.56), screenMat);
   screen.position.set(0, 1.62, -0.152); g.add(screen);
-  monitors.push({ mon, snippet, screen, studentIdx, isOnline: true });
+  monitors.push({ mon, snippet, screen, studentIdx });
 
   const pad = new THREE.Mesh(getBoxGeo(1.1, 0.01, 0.36), M.mousePad);
   pad.position.set(0.05, 1.045, 0.24); g.add(pad);
@@ -1335,9 +1343,9 @@ function makePCDesk(snippet, studentIdx) {
   const mouse = new THREE.Mesh(getBoxGeo(0.11, 0.035, 0.17), M.deskFrame);
   mouse.position.set(0.45, 1.06, 0.24); g.add(mouse);
 
-  const seat = new THREE.Mesh(getBoxGeo(0.84, 0.11, 0.82), M.chair);
+  const seat = new THREE.Mesh(getBoxGeo(0.84, 0.11, 0.82), M.chairPc);
   seat.position.set(0, 0.72, 0.85); seat.castShadow = true; g.add(seat);
-  const back = new THREE.Mesh(getBoxGeo(0.8, 0.9, 0.11), M.chair);
+  const back = new THREE.Mesh(getBoxGeo(0.8, 0.9, 0.11), M.chairPc);
   back.position.set(0, 1.18, 1.22); back.castShadow = true; g.add(back);
   const stem = new THREE.Mesh(getBoxGeo(0.09, 0.7, 0.09), M.deskFrame);
   stem.position.set(0, 0.36, 0.85); g.add(stem);
@@ -1345,18 +1353,99 @@ function makePCDesk(snippet, studentIdx) {
   return g;
 }
 
+// Bàn 2: Bàn đọc sách đèn vàng & chồng sách thư viện
+function makeReadingDesk(topic, idx) {
+  const g = new THREE.Group();
+  const top = new THREE.Mesh(getBoxGeo(2.0, 0.08, 0.95), M.deskTopBook);
+  top.position.set(0, 1.0, 0); top.castShadow = top.receiveShadow = true; g.add(top);
+
+  [[-0.9, -0.4], [0.9, -0.4], [-0.9, 0.4], [0.9, 0.4]].forEach(([lx, lz]) => {
+    const leg = new THREE.Mesh(getBoxGeo(0.07, 1.0, 0.07), M.deskFrame);
+    leg.position.set(lx, 0.5, lz); leg.castShadow = true; g.add(leg);
+  });
+
+  // Đèn bàn thư viện
+  const lampGroup = new THREE.Group();
+  lampGroup.position.set(-0.68, 1.04, -0.22);
+  const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.04, 16), M.lampMetal);
+  lampBase.position.y = 0.02; lampGroup.add(lampBase);
+  const lampArm1 = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.32, 8), M.lampMetal);
+  lampArm1.position.set(0, 0.18, 0); lampArm1.rotation.z = -0.2; lampGroup.add(lampArm1);
+  const lampArm2 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.26, 8), M.lampMetal);
+  lampArm2.position.set(0.08, 0.38, 0.06); lampArm2.rotation.z = 0.45; lampArm2.rotation.x = 0.3; lampGroup.add(lampArm2);
+  const lampShade = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.14, 16, 1, true), M.lampShade);
+  lampShade.position.set(0.16, 0.44, 0.12); lampShade.rotation.x = 0.25; lampGroup.add(lampShade);
+  const bulbMesh = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 10), M.lampBulbOn);
+  bulbMesh.position.set(0.16, 0.4, 0.12); lampGroup.add(bulbMesh);
+  g.add(lampGroup);
+
+  // Sách đang mở
+  const openBook = new THREE.Group();
+  openBook.position.set(0, 1.045, 0.18);
+  const coverMat = new THREE.MeshStandardMaterial({ color: topic.cover, roughness: 0.6 });
+  const pageTex = createBookPageTexture(topic.title, topic.lines);
+  const pageMat = new THREE.MeshStandardMaterial({ map: pageTex, roughness: 0.85 });
+
+  const backCover = new THREE.Mesh(getBoxGeo(0.62, 0.015, 0.42), coverMat);
+  backCover.position.y = 0.008; openBook.add(backCover);
+  const leftPage = new THREE.Mesh(getBoxGeo(0.28, 0.025, 0.38), pageMat);
+  leftPage.position.set(-0.145, 0.026, 0); leftPage.rotation.z = -0.07; openBook.add(leftPage);
+  const rightPage = new THREE.Mesh(getBoxGeo(0.28, 0.025, 0.38), pageMat);
+  rightPage.position.set(0.145, 0.026, 0); rightPage.rotation.z = 0.07; openBook.add(rightPage);
+
+  const flipPage = new THREE.Mesh(getBoxGeo(0.27, 0.004, 0.37), pageMat);
+  flipPage.position.set(0, 0.04, 0); openBook.add(flipPage);
+  g.add(openBook);
+
+  // Chồng 3 cuốn sách tham khảo & cốc cà phê
+  [0x1e40af, 0x991b1b, 0x065f46].forEach((col, si) => {
+    const sb = new THREE.Mesh(getBoxGeo(0.32, 0.055, 0.24), new THREE.MeshStandardMaterial({ color: col, roughness: 0.65 }));
+    sb.position.set(0.66, 1.068 + si * 0.056, -0.14);
+    sb.rotation.y = (si - 1) * 0.12; sb.castShadow = true; g.add(sb);
+  });
+
+  const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.048, 0.11, 14), M.mug);
+  mug.position.set(0.55, 1.095, 0.22); mug.castShadow = true; g.add(mug);
+  const coffeeTop = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.01, 14), M.coffee);
+  coffeeTop.position.set(0.55, 1.145, 0.22); g.add(coffeeTop);
+
+  // Ghế gỗ
+  const seat = new THREE.Mesh(getBoxGeo(0.84, 0.1, 0.82), M.chairBook);
+  seat.position.set(0, 0.72, 0.85); seat.castShadow = true; g.add(seat);
+  const back = new THREE.Mesh(getBoxGeo(0.8, 0.88, 0.1), M.chairBook);
+  back.position.set(0, 1.18, 1.22); back.castShadow = true; g.add(back);
+  [[-0.35, 0.5], [0.35, 0.5], [-0.35, 1.2], [0.35, 1.2]].forEach(([cx, cz]) => {
+    const cLeg = new THREE.Mesh(getBoxGeo(0.06, 0.72, 0.06), M.chairBook);
+    cLeg.position.set(cx, 0.36, cz); g.add(cLeg);
+  });
+
+  studyDesks.push({ idx, bulbMesh, flipPage, phase: Math.random() * 10 });
+  return g;
+}
+
+// Tạo danh sách 50 bàn trộn ngẫu nhiên 50% đọc sách - 50% bấm máy
+const deskModes = Array.from({ length: ROWS * COLS }, (_, i) => i % 2 === 0 ? 'book' : 'pc');
+for (let i = deskModes.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [deskModes[i], deskModes[j]] = [deskModes[j], deskModes[i]];
+}
+
 for (let row = 0; row < ROWS; row++) {
   for (let col = 0; col < COLS; col++) {
     const x = startX + col * colSpacing;
     const z = startZ + row * rowSpacing;
     const idx = row * COLS + col;
-    const snippet = CODE_SNIPPETS[idx % CODE_SNIPPETS.length];
-    const deskPC = makePCDesk(snippet, idx);
-    deskPC.position.set(x, 0, z);
-    scene.add(deskPC);
-
     const isYou = (row === 2 && col === 4);
-    const presetKey = isYou ? 'steve' : PRESET_KEYS[idx % PRESET_KEYS.length];
+    const savedYouMode = localStorage.getItem('my_desk_mode');
+    const mode = (isYou && (savedYouMode === 'book' || savedYouMode === 'pc')) ? savedYouMode : deskModes[idx];
+
+    const snippet = CODE_SNIPPETS[idx % CODE_SNIPPETS.length];
+    const topic = BOOK_TOPICS[idx % BOOK_TOPICS.length];
+    const deskObj = mode === 'book' ? makeReadingDesk(topic, idx) : makePCDesk(snippet, idx);
+    deskObj.position.set(x, 0, z);
+    scene.add(deskObj);
+
+    const presetKey = isYou ? (mode === 'book' ? 'scholar' : 'steve') : PRESET_KEYS[idx % PRESET_KEYS.length];
     const built = buildMinecraftCharacter(presetKey);
 
     const npc = new THREE.Group();
@@ -1392,23 +1481,62 @@ for (let row = 0; row < ROWS; row++) {
     npc.position.set(x, 0, z + 0.85);
     npc.rotation.y = Math.PI;
 
+    const onlineHeadRot = mode === 'book' ? 0.26 : 0;
     npc.userData = {
       ...built, characterGroup: built.group, nameSprite, seatLabel, isYou, youRing, zzzSprites,
       presetKey, presetName: CHARACTER_PRESETS[presetKey].name,
-      target: { headRotX: 0, zzzVisible: !isYou }, current: { headRotX: 0 },
+      target: { headRotX: onlineHeadRot, zzzVisible: !isYou }, current: { headRotX: onlineHeadRot },
       phase: Math.random() * 10, tapSpeed: 7 + Math.random() * 3
     };
 
     scene.add(npc);
     npcs.push(npc);
     students.push({
-      name, seat: seatLabel, npc, deskPC,
+      idx, name, seat: seatLabel, npc, deskPC: deskObj, mode,
       isOnline: isYou, isYou, presetKey, active: isYou,
       uid: isYou ? (localStorage.getItem('classroom_uid') || 'self') : null
     });
-    if (!isYou) { npc.visible = false; deskPC.visible = false; }
+    if (!isYou) { npc.visible = false; deskObj.visible = false; }
   }
 }
+
+// Nút cho phép người dùng tự chuyển đổi bàn của mình giữa Đọc sách & Bấm máy
+function refreshSwitchDeskBtn() {
+  const me = students.find(s => s.isYou);
+  const lbl = document.getElementById('switchDeskLabel');
+  if (me && lbl) lbl.textContent = me.mode === 'book' ? 'Sang bấm máy' : 'Sang đọc sách';
+}
+refreshSwitchDeskBtn();
+
+document.getElementById('switchDeskBtn').addEventListener('click', () => {
+  const me = students.find(s => s.isYou);
+  if (!me) return;
+  const newMode = me.mode === 'book' ? 'pc' : 'book';
+  localStorage.setItem('my_desk_mode', newMode);
+
+  // Xóa bàn cũ & dọn mảng theo dõi
+  const oldDesk = me.deskPC;
+  const posX = oldDesk.position.x, posZ = oldDesk.position.z;
+  scene.remove(oldDesk);
+
+  for (let i = monitors.length - 1; i >= 0; i--) if (monitors[i].studentIdx === me.idx) monitors.splice(i, 1);
+  for (let i = studyDesks.length - 1; i >= 0; i--) if (studyDesks[i].idx === me.idx) studyDesks.splice(i, 1);
+
+  const snippet = CODE_SNIPPETS[me.idx % CODE_SNIPPETS.length];
+  const topic = BOOK_TOPICS[me.idx % BOOK_TOPICS.length];
+  const newDesk = newMode === 'book' ? makeReadingDesk(topic, me.idx) : makePCDesk(snippet, me.idx);
+  newDesk.position.set(posX, 0, posZ);
+  scene.add(newDesk);
+
+  me.deskPC = newDesk;
+  me.mode = newMode;
+  me.npc.userData.target.headRotX = me.isOnline ? (newMode === 'book' ? 0.26 : 0) : 0.68;
+
+  refreshSwitchDeskBtn();
+  renderStudentList();
+  updateHud();
+  if (focusedStudent === me) focusOnStudent(me);
+});
 
 const SEAT_POSITIONS = students.map(s => ({
   x: s.npc.position.x, z: s.npc.position.z,
@@ -1492,7 +1620,7 @@ window.syncClassroomUsers = function(users) {
     st.npc.userData.nameSprite = sp;
     if (st.npc.userData.youRing) st.npc.userData.youRing.visible = false;
 
-    st.npc.userData.target.headRotX = st.isOnline ? 0 : 0.65;
+    st.npc.userData.target.headRotX = st.isOnline ? (st.mode === 'book' ? 0.26 : 0) : 0.68;
     st.npc.userData.target.zzzVisible = !st.isOnline;
 
     if (skinByUid[u.uid] && skinByUid[u.uid] !== st.presetKey && CHARACTER_PRESETS[skinByUid[u.uid]]) {
@@ -1509,7 +1637,7 @@ window.syncClassroomUsers = function(users) {
     youSlot.npc.userData.nameSprite = sp;
     youSlot.npc.visible = true;
     if (youSlot.deskPC) youSlot.deskPC.visible = true;
-    youSlot.npc.userData.target.headRotX = youSlot.isOnline ? 0 : 0.65;
+    youSlot.npc.userData.target.headRotX = youSlot.isOnline ? (youSlot.mode === 'book' ? 0.26 : 0) : 0.68;
     youSlot.npc.userData.target.zzzVisible = !youSlot.isOnline;
   }
 
@@ -1549,11 +1677,12 @@ function rebuildStudentSkin(student, presetKey) {
 
   const built = buildMinecraftCharacter(presetKey);
   npc.add(built.group);
+  const onlineHeadRot = student.mode === 'book' ? 0.26 : 0;
   npc.userData = {
     ...npc.userData, ...built, characterGroup: built.group,
     presetKey, presetName: CHARACTER_PRESETS[presetKey].name,
-    target: { headRotX: student.isOnline ? 0 : 0.65, zzzVisible: !student.isOnline },
-    current: { headRotX: 0 }
+    target: { headRotX: student.isOnline ? onlineHeadRot : 0.68, zzzVisible: !student.isOnline },
+    current: { headRotX: onlineHeadRot }
   };
   student.presetKey = presetKey;
 }
@@ -1608,9 +1737,10 @@ async function checkBanned() {
   return false;
 }
 
+/* ===== RESET TOÀN BỘ THÀNH VIÊN & XÓA LUÔN DANH SÁCH BỊ CHẶN ===== */
 window.adminResetAllMembers = async function() {
   if (!isAdmin || !adminDB) return;
-  const ok = confirm('Xác nhận RESET toàn bộ danh sách thành viên?\n\n- Xóa sạch toàn bộ thành viên cũ, điểm xếp hạng, trang phục đã lưu và danh sách ẩn.\n- Hệ thống sẽ tự động ghi nhận lại từ đầu khi các thành viên truy cập lại.');
+  const ok = confirm('Xác nhận RESET toàn bộ danh sách thành viên?\n\n- Xóa sạch toàn bộ thành viên cũ, điểm xếp hạng, trang phục đã lưu, danh sách ẩn VÀ danh sách bị chặn.\n- Hệ thống sẽ tự động ghi nhận lại từ đầu.');
   if (!ok) return;
 
   const btn = document.getElementById('adminResetAllBtn');
@@ -1622,7 +1752,8 @@ window.adminResetAllMembers = async function() {
       adminDB.ref('rooms/nhom1/members').remove(),
       adminDB.ref('rooms/nhom1/learningStats').remove(),
       adminDB.ref('rooms/nhom1/skins').remove(),
-      adminDB.ref('rooms/nhom1/hidden').remove()
+      adminDB.ref('rooms/nhom1/hidden').remove(),
+      adminDB.ref('rooms/nhom1/moderations').remove()
     ]);
 
     students.forEach(st => {
@@ -1632,34 +1763,45 @@ window.adminResetAllMembers = async function() {
         if (st.deskPC) st.deskPC.visible = false;
       }
     });
-    allMembers = {};
-    allPresence = {};
-    hiddenUids = {};
-    skinByUid = {};
-    window.__learningStats = {};
-    _lastVisibleKey = '';
+    allMembers = {}; allPresence = {}; hiddenUids = {}; skinByUid = {}; allMods = {};
+    window.__learningStats = {}; _lastVisibleKey = '';
 
     const admName = myName();
     if (admName) {
       window.startClassroomPresence?.();
       await adminDB.ref('rooms/nhom1/members/' + admName).set({
-        uid: myDevice(),
-        name: admName,
-        isAdmin: true,
-        online: true,
+        uid: myDevice(), name: admName, isAdmin: true, online: true,
         lastSeen: firebase.database.ServerValue.TIMESTAMP
       });
     }
 
-    renderStudentList();
-    updateHud();
-    renderAdminMembers();
+    renderStudentList(); updateHud(); renderAdminMembers(); renderAdminBanned();
     if (window.renderLearningLeaderboard) window.renderLearningLeaderboard();
-    alert('✅ Đã reset toàn bộ thành viên về 0! Dữ liệu sẽ được ghi nhận mới từ bây giờ.');
+    alert('✅ Đã reset toàn bộ thành viên & xóa sạch danh sách chặn!');
   } catch (e) {
     alert('❌ Lỗi khi reset: ' + e.message);
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '🔄 Reset thành viên'; }
+  }
+};
+
+/* ===== MỞ CHẶN TẤT CẢ (UNBAN ALL) ===== */
+window.adminUnbanAll = async function() {
+  if (!isAdmin || !adminDB) return;
+  const keys = Object.keys(allMods).filter(k => allMods[k] && (allMods[k].ban || allMods[k].kick));
+  if (!keys.length) {
+    alert('Hiện không có thành viên hay thiết bị nào đang bị chặn.');
+    return;
+  }
+  if (!confirm(`Mở chặn cho toàn bộ ${keys.length} mục đang bị chặn?`)) return;
+  try {
+    await adminDB.ref('rooms/nhom1/moderations').remove();
+    await adminDB.ref('rooms/nhom1/hidden').remove();
+    allMods = {}; hiddenUids = {};
+    renderAdminMembers(); renderAdminBanned(); applyHiddenNpcs();
+    alert('✅ Đã mở chặn toàn bộ thành viên!');
+  } catch (e) {
+    alert('❌ Lỗi mở chặn: ' + e.message);
   }
 };
 
@@ -1684,39 +1826,48 @@ function renderAdminMembers() {
   const list = getPresenceList();
   if (!list.length) { box.innerHTML = '<div class="admin-empty">Hiện chưa có thành viên nào khác</div>'; return; }
   box.innerHTML = list.map(p => {
-    const mod = allMods[p.uid] || {};
+    const modByUid = allMods[p.uid] || {};
+    const modByName = allMods[p.name] || {};
     const isHidden = !!hiddenUids[p.uid];
-    const banned = !!mod.ban;
+    const banned = !!(modByUid.ban || modByUid.kick || modByName.ban || modByName.kick);
     const shortUid = p.uid.length > 12 ? p.uid.slice(0, 6) + '…' + p.uid.slice(-4) : p.uid;
+    const safeUid = p.uid.replace(/'/g, "\\'");
+    const safeName = p.name.replace(/'/g, "\\'");
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
-        <div class="an">${p.name}${p.online ? '' : ' 💤'}</div>
-        <div class="as">${p.online ? '🌞 Đang học' : '🌙 Đang ngủ'}${banned ? ' · đã ban' : ''}${isHidden ? ' · đang ẩn' : ''}</div>
+        <div class="an">${escHtml(p.name)}${p.online ? '' : ' 💤'}</div>
+        <div class="as">${p.online ? '🌞 Đang học' : '🌙 Đang ngủ'}${banned ? ' · 🚫 đang bị chặn' : ''}${isHidden ? ' · đang ẩn' : ''}</div>
         <div class="admin-uid">UID: ${shortUid}</div>
       </div>
-      <button class="${isHidden ? 'show' : 'hide'}" onclick="adminToggleNpc('${p.uid}')">${isHidden ? 'Hiện' : 'Ẩn'}</button>
+      <button class="${isHidden ? 'show' : 'hide'}" onclick="adminToggleNpc('${safeUid}')">${isHidden ? 'Hiện' : 'Ẩn'}</button>
       ${banned
-        ? `<button class="unban" onclick="adminUnban('${p.uid}')">Mở ban</button>`
-        : `<button class="ban" onclick="adminBan('${p.uid}','${p.name.replace(/'/g, "\\'")}')">Ban</button>`}
+        ? `<button class="unban" onclick="adminUnban('${safeUid}','${safeName}')">🔓 Bỏ chặn</button>`
+        : `<button class="ban" onclick="adminBan('${safeUid}','${safeName}')">🚫 Chặn</button>`}
     </div>`;
   }).join('');
 }
 
 function renderAdminBanned() {
+  const badge = document.getElementById('bannedCountBadge');
+  const bannedKeys = Object.keys(allMods).filter(k => allMods[k] && (allMods[k].ban || allMods[k].kick));
+  if (badge) badge.textContent = bannedKeys.length;
+
   if (!isAdmin) return;
   const box = document.getElementById('adminBanned');
   if (!box) return;
-  const banned = Object.keys(allMods).filter(uid => allMods[uid] && allMods[uid].ban);
-  if (!banned.length) { box.innerHTML = '<div class="admin-empty">Chưa có thiết bị nào bị chặn</div>'; return; }
-  box.innerHTML = banned.map(uid => {
-    const mod = allMods[uid] || {};
-    const name = (allPresence[uid] && allPresence[uid].name) || mod.name || 'Ẩn danh';
+  if (!bannedKeys.length) { box.innerHTML = '<div class="admin-empty">Chưa có thành viên hay thiết bị nào bị chặn</div>'; return; }
+  box.innerHTML = bannedKeys.map(key => {
+    const mod = allMods[key] || {};
+    const name = (allPresence[key] && allPresence[key].name) || mod.name || key;
+    const safeKey = key.replace(/'/g, "\\'");
+    const safeName = String(name).replace(/'/g, "\\'");
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
-        <div class="an">${name}</div>
-        <div class="as">${mod.reason ? 'Lý do: ' + mod.reason : 'Không có lý do'}</div>
+        <div class="an">🚫 ${escHtml(name)}</div>
+        <div class="as">${mod.reason ? 'Lý do: ' + escHtml(mod.reason) : 'Không có lý do'}</div>
+        <div class="admin-uid">Mã khóa: ${escHtml(key)}</div>
       </div>
-      <button class="unban" onclick="adminUnban('${uid}')">Mở ban</button>
+      <button class="unban" onclick="adminUnban('${safeKey}','${safeName}')">🔓 Bỏ chặn</button>
     </div>`;
   }).join('');
 }
@@ -1726,6 +1877,8 @@ window.adminSwitchTab = function(tab) {
   document.getElementById('tabBanned').classList.toggle('on', tab === 'banned');
   document.getElementById('adminMembers').style.display = tab === 'members' ? 'flex' : 'none';
   document.getElementById('adminBanned').style.display = tab === 'banned' ? 'flex' : 'none';
+  if (tab === 'members') renderAdminMembers();
+  else renderAdminBanned();
 };
 
 window.adminToggleNpc = async function(uid) {
@@ -1738,19 +1891,33 @@ window.adminToggleNpc = async function(uid) {
 window.adminBan = async function(uid, name) {
   if (!isAdmin || !adminDB || !uid) return;
   const reason = prompt('Lý do chặn ' + (name || uid) + '? (có thể bỏ trống)', '') || '';
-  await adminDB.ref('rooms/nhom1/moderations/' + uid).update({ ban: true, kick: true, mute: true, reason, name: name || '', time: Date.now(), by: myName() });
-  if (name) await adminDB.ref('rooms/nhom1/moderations/' + name).update({ ban: true, kick: true, mute: true, reason, name, time: Date.now(), by: myName() }).catch(() => {});
+  const payload = { ban: true, kick: true, mute: true, reason, name: name || '', time: Date.now(), by: myName() };
+  await adminDB.ref('rooms/nhom1/moderations/' + uid).set(payload);
+  if (name) await adminDB.ref('rooms/nhom1/moderations/' + name).set(payload).catch(() => {});
   await adminDB.ref('rooms/nhom1/hidden/' + uid).set(true);
   await adminDB.ref('rooms/nhom1/presence/' + uid).remove().catch(() => {});
 };
 
-window.adminUnban = async function(uid) {
-  if (!isAdmin || !adminDB || !uid) return;
-  const snap = await adminDB.ref('rooms/nhom1/moderations/' + uid).once('value');
+window.adminUnban = async function(key, name) {
+  if (!isAdmin || !adminDB || !key) return;
+  const snap = await adminDB.ref('rooms/nhom1/moderations/' + key).once('value');
   const mod = snap.val() || {};
-  await adminDB.ref('rooms/nhom1/moderations/' + uid).update({ ban: false, kick: false, mute: false, reason: '', time: Date.now(), by: myName() });
-  if (mod.name) await adminDB.ref('rooms/nhom1/moderations/' + mod.name).update({ ban: false, kick: false, mute: false, reason: '', time: Date.now(), by: myName() }).catch(() => {});
-  await adminDB.ref('rooms/nhom1/hidden/' + uid).remove().catch(() => {});
+
+  // Xóa triệt để nút chặn theo cả UID lẫn Tên
+  await adminDB.ref('rooms/nhom1/moderations/' + key).remove().catch(() => {});
+  if (mod.name) await adminDB.ref('rooms/nhom1/moderations/' + mod.name).remove().catch(() => {});
+  if (name && name !== key) await adminDB.ref('rooms/nhom1/moderations/' + name).remove().catch(() => {});
+
+  // Tìm và xóa mọi bản ghi trùng tên hoặc trùng UID trong moderations
+  Object.entries(allMods).forEach(([k, v]) => {
+    if (v && (k === key || k === name || v.name === name || v.name === mod.name)) {
+      adminDB.ref('rooms/nhom1/moderations/' + k).remove().catch(() => {});
+    }
+  });
+
+  await adminDB.ref('rooms/nhom1/hidden/' + key).remove().catch(() => {});
+  renderAdminMembers();
+  renderAdminBanned();
 };
 
 window.syncAdminPresence = function(users) {
@@ -1769,9 +1936,12 @@ if (adminDB) {
   adminDB.ref('rooms/nhom1/members').on('value', s => { allMembers = s.val() || {}; renderAdminMembers(); if (window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
   adminDB.ref('rooms/nhom1/learningStats').on('value', s => { window.__learningStats = s.val() || {}; if (window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
   adminDB.ref('rooms/nhom1/moderations').on('value', s => {
-    allMods = s.val() || {}; renderAdminMembers(); renderAdminBanned();
-    const me = myDevice();
-    if (me && allMods[me] && (allMods[me].ban || allMods[me].kick)) checkBanned();
+    allMods = s.val() || {};
+    renderAdminMembers();
+    renderAdminBanned();
+    const me = myDevice(), nm = myName();
+    const modMe = (me && allMods[me]) || (nm && allMods[nm]);
+    if (modMe && (modMe.ban || modMe.kick)) checkBanned();
   });
   adminDB.ref('rooms/nhom1/hidden').on('value', s => { hiddenUids = s.val() || {}; applyHiddenNpcs(); if (isAdmin) renderAdminMembers(); });
   adminDB.ref('rooms/nhom1/skins').on('value', s => {
@@ -1810,7 +1980,8 @@ function renderStudentList() {
   onList.forEach(s => {
     const item = document.createElement('div');
     item.className = 'student-item online' + (s.isYou ? ' you' : '') + (focusedStudent === s ? ' active' : '');
-    item.innerHTML = `<span class="student-dot"></span><span class="student-name ${s.isYou ? 'you-label' : ''}">${s.isYou ? '⭐ ' + s.name : s.name}${isAdminIdentity(s.name) ? '<span class="admin-badge">ADM</span>' : ''}</span>`;
+    const modeIcon = s.mode === 'book' ? '📖' : '💻';
+    item.innerHTML = `<span class="student-dot"></span><span class="student-name ${s.isYou ? 'you-label' : ''}">${s.isYou ? '⭐ ' + escHtml(s.name) : escHtml(s.name)}${isAdminIdentity(s.name) ? '<span class="admin-badge">ADM</span>' : ''}</span><span class="mode-tag">${modeIcon}</span>`;
     item.addEventListener('click', () => focusOnStudent(s));
     listOnline.appendChild(item);
   });
@@ -1818,7 +1989,8 @@ function renderStudentList() {
   offList.forEach(s => {
     const item = document.createElement('div');
     item.className = 'student-item offline' + (focusedStudent === s ? ' active' : '');
-    item.innerHTML = `<span class="student-dot"></span><span class="student-name">${s.name}</span>`;
+    const modeIcon = s.mode === 'book' ? '📖' : '💻';
+    item.innerHTML = `<span class="student-dot"></span><span class="student-name">${escHtml(s.name)}</span><span class="mode-tag">${modeIcon}</span>`;
     item.addEventListener('click', () => focusOnStudent(s));
     listOffline.appendChild(item);
   });
@@ -1828,8 +2000,10 @@ function updateHud() {
   const active = students.filter(s => s.active);
   const nOn = active.filter(s => s.isOnline).length;
   const nOff = active.length - nOn;
+  const nBook = active.filter(s => s.isOnline && s.mode === 'book').length;
+  const nPc = nOn - nBook;
   const star = isAdminIdentity(myName()) ? '<span class="star">👑</span>' : '';
-  document.getElementById('hudSub').innerHTML = `${nOn} đang học · ${nOff} đang ngủ ${star}`;
+  document.getElementById('hudSub').innerHTML = `${nOn} học (${nBook} 📖 · ${nPc} 💻) · ${nOff} ngủ ${star}`;
 }
 
 const leaderboardPanel = document.getElementById('leaderboardPanel');
@@ -1915,15 +2089,16 @@ function focusOnStudent(student) {
   }
   student.npc.userData.highlightRing.visible = true;
 
-  targetLookAt.set(student.npc.position.x, 1.5, student.npc.position.z);
-  targetAngle = Math.PI / 2; targetPitch = 0.16; targetDist = 2.3;
+  targetLookAt.set(student.npc.position.x, 1.48, student.npc.position.z);
+  targetAngle = Math.PI / 2.2; targetPitch = 0.2; targetDist = 2.35;
 
   const banner = document.getElementById('focusBanner');
   const focusName = document.getElementById('focusName');
   focusName.textContent = (student.isYou ? '⭐ ' : '') + student.name;
   focusName.classList.toggle('you-label', student.isYou);
   banner.classList.toggle('you', student.isYou);
-  document.getElementById('focusStatus').textContent = `Vị trí ${student.seat} · ${student.isOnline ? '🌞 Đang học' : '🌙 Đang ngủ'} · ${CHARACTER_PRESETS[student.presetKey].name}`;
+  const activityText = student.isOnline ? (student.mode === 'book' ? '📖 Đang đọc sách' : '💻 Đang lập trình') : '🌙 Đang ngủ';
+  document.getElementById('focusStatus').textContent = `${student.seat} · ${activityText} · ${CHARACTER_PRESETS[student.presetKey].name}`;
   banner.classList.add('visible');
   renderStudentList();
 }
@@ -2001,7 +2176,7 @@ document.getElementById('renameBtn').addEventListener('click', () => {
   if (window.__isBanned) return;
   const cur = getSavedName();
   document.getElementById('modalTitle').textContent = cur ? 'Đổi tên hiển thị' : 'Chào mừng đến lớp!';
-  document.getElementById('modalSubtitle').textContent = cur ? 'Nhập tên mới của bạn (tối đa 20 ký tự)' : 'Nhập tên của bạn để ngồi vào bàn máy tính';
+  document.getElementById('modalSubtitle').textContent = cur ? 'Nhập tên mới của bạn (tối đa 20 ký tự)' : 'Nhập tên của bạn để chọn bàn đọc sách hoặc lập trình';
   nameInput.value = cur;
   nameModal.classList.remove('hide');
   setTimeout(() => { nameInput.focus(); nameInput.select(); }, 80);
@@ -2061,7 +2236,7 @@ function animate() {
   uiTimer += dt;
   if (uiTimer > 2.5) { uiTimer = 0; if (!window.__isBanned) { renderStudentList(); updateHud(); } }
 
-  // Chuyển động nhẹ nhàng cho phong cảnh ngoài cửa sổ
+  // Chuyển động thiên nhiên ngoài cửa sổ
   pineTrees.forEach(item => {
     item.tree.rotation.z = Math.sin(t * 1.1 + item.phase) * 0.025;
   });
@@ -2073,16 +2248,48 @@ function animate() {
   }
   fireflies.geometry.attributes.position.needsUpdate = true;
 
+  // Hiệu ứng đèn bàn & lật trang cho các bàn đọc sách
+  studyDesks.forEach(d => {
+    const st = students[d.idx];
+    const activeOnline = st && st.active && st.isOnline;
+    d.bulbMesh.material = activeOnline ? M.lampBulbOn : M.lampBulbOff;
+
+    if (activeOnline) {
+      const cycle = (t * 0.45 + d.phase) % 4;
+      if (cycle < 1.0) {
+        const angle = cycle * Math.PI;
+        d.flipPage.visible = true;
+        d.flipPage.rotation.z = angle;
+        d.flipPage.position.x = Math.cos(angle) * 0.135;
+        d.flipPage.position.y = 0.04 + Math.sin(angle) * 0.12;
+      } else {
+        d.flipPage.visible = false;
+      }
+    } else {
+      d.flipPage.visible = false;
+    }
+  });
+
+  // Hoạt ảnh phân tách rõ ràng: Bàn đọc sách (cúi đọc & lật trang) vs Bàn PC (gõ phím nhanh)
   npcs.forEach((npc, i) => {
     const u = npc.userData, s = students[i];
     if (!s || !s.active) { u.zzzSprites.forEach(sp => sp.visible = false); return; }
     u.current.headRotX += (u.target.headRotX - u.current.headRotX) * 0.1;
     u.headGroup.rotation.x = u.current.headRotX;
 
-    if (s.isOnline && Math.abs(u.current.headRotX) < 0.1) {
-      u.leftElbowGroup.rotation.x = -Math.PI / 2 + Math.sin(t * u.tapSpeed + u.phase) * 0.09;
-      u.rightElbowGroup.rotation.x = -Math.PI / 2 + Math.sin(t * u.tapSpeed + u.phase + 1.6) * 0.09;
-      u.headGroup.rotation.y = Math.sin(t * 0.9 + u.phase) * 0.08;
+    if (s.isOnline) {
+      if (s.mode === 'book') {
+        u.headGroup.rotation.y = Math.sin(t * 1.2 + u.phase) * 0.14;
+        u.leftElbowGroup.rotation.x = -Math.PI / 2.15 + Math.sin(t * 1.5 + u.phase) * 0.03;
+        const pageTurn = Math.max(0, Math.sin(t * 1.4 + u.phase));
+        u.rightElbowGroup.rotation.x = -Math.PI / 2.15 - pageTurn * 0.22;
+      } else {
+        u.leftElbowGroup.rotation.x = -Math.PI / 2 + Math.sin(t * u.tapSpeed + u.phase) * 0.09;
+        u.rightElbowGroup.rotation.x = -Math.PI / 2 + Math.sin(t * u.tapSpeed + u.phase + 1.6) * 0.09;
+        u.headGroup.rotation.y = Math.sin(t * 0.9 + u.phase) * 0.08;
+      }
+    } else {
+      u.headGroup.rotation.y = 0;
     }
 
     const headPos = new THREE.Vector3();
