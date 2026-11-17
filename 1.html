@@ -2,308 +2,372 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Phòng Máy Tính 3D — Minecraft Studio NPCs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phòng Máy Tính 3D — Lớp Học Trực Tuyến</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{overflow:hidden;background:#080b14;font-family:system-ui,sans-serif}
-  canvas{display:block}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: #070a12; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #f1f5f9; }
+  canvas { display: block; }
 
-  .name-modal{position:fixed;inset:0;z-index:100;background:rgba(5,8,15,0.85);backdrop-filter:blur(20px);
-    display:flex;align-items:center;justify-content:center;transition:opacity .5s, visibility .5s}
-  .name-modal.hide{opacity:0;visibility:hidden;pointer-events:none}
-  .modal-card{background:linear-gradient(145deg, rgba(20,26,42,0.95), rgba(12,16,28,0.98));
-    border:1px solid rgba(52,211,153,0.3);border-radius:28px;padding:48px 56px;width:420px;max-width:90vw;
-    box-shadow:0 32px 80px rgba(0,0,0,0.7);position:relative;overflow:hidden;
-    animation:modalIn .6s cubic-bezier(0.2,0.9,0.3,1.1)}
-  @keyframes modalIn{0%{transform:scale(0.9) translateY(20px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
-  .modal-icon{width:72px;height:72px;margin:0 auto 24px;background:linear-gradient(135deg,#059669,#34d399);
-    border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:38px;
-    box-shadow:0 12px 32px rgba(52,211,153,0.4);animation:iconFloat 3s ease-in-out infinite}
-  @keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-  .modal-title{color:#fff;font-size:24px;font-weight:800;text-align:center;margin-bottom:8px;letter-spacing:-0.5px}
-  .modal-subtitle{color:rgba(255,255,255,0.5);font-size:13px;text-align:center;margin-bottom:32px}
-  .name-input{width:100%;padding:16px 20px;background:rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.1);
-    border-radius:16px;color:#fff;font-size:16px;font-family:inherit;transition:all .3s;outline:none;margin-bottom:20px}
-  .name-input:focus{border-color:#34d399;background:rgba(52,211,153,0.05);box-shadow:0 0 0 4px rgba(52,211,153,0.1)}
-  .name-input::placeholder{color:rgba(255,255,255,0.25)}
-  .name-input.invalid{border-color:#ef4444;animation:shake 0.4s}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-  .name-btn{width:100%;padding:16px;background:linear-gradient(135deg,#059669,#34d399);border:none;
-    border-radius:16px;color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;
-    transition:all .3s;box-shadow:0 8px 24px rgba(52,211,153,0.3);display:flex;align-items:center;justify-content:center;gap:8px}
-  .name-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(52,211,153,0.5)}
-  .modal-hint{text-align:center;margin-top:16px;color:rgba(255,255,255,0.3);font-size:11px}
-  .modal-actions{display:flex;gap:10px;margin-top:10px}
-  .modal-actions .name-btn{flex:1}
-  .name-btn.secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);
-    box-shadow:none;font-weight:600;font-size:14px;padding:12px}
-  .name-btn.secondary:hover{background:rgba(255,255,255,.12)}
-
-  .hud{position:fixed;top:24px;left:24px;display:flex;align-items:center;gap:14px;
-    padding:14px 24px;background:rgba(10,14,24,.8);backdrop-filter:blur(16px);
-    border:1px solid rgba(255,255,255,.1);border-radius:60px;color:#fff;z-index:10;
-    box-shadow:0 10px 40px rgba(0,0,0,.6)}
-  .pulse{width:14px;height:14px;border-radius:50%;background:#34d399;
-    box-shadow:0 0 14px #34d399;animation:pulse 1.6s infinite}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.2)}}
-  .hud-sub{font-size:14px;font-weight:600;letter-spacing:.3px}
-  .hud-sub .star{color:#fbbf24;margin-left:4px}
-  .admin-badge{display:inline-flex;align-items:center;gap:3px;
-    background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:9px;font-weight:800;
-    padding:2px 8px;border-radius:999px;letter-spacing:.4px;text-transform:uppercase;
-    box-shadow:0 2px 6px rgba(239,68,68,.4);margin-left:4px}
-
-  .student-panel{position:fixed;top:76px;right:16px;width:220px;max-height:calc(100vh - 160px);
-    background:rgba(10,14,24,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.08);
-    border-radius:16px;color:#fff;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.5);
-    display:flex;flex-direction:column;overflow:hidden;
-    transition:transform .35s cubic-bezier(.4,0,.2,1), opacity .3s;
-    font-size:11px}
-  .student-panel.closed{transform:translateX(calc(100% + 30px));opacity:0;pointer-events:none}
-  .panel-header{padding:10px 12px 8px;border-bottom:1px solid rgba(255,255,255,.06);
-    font-size:11px;font-weight:700;letter-spacing:.3px;display:flex;justify-content:space-between;align-items:center;gap:6px}
-  .panel-header .title-wrap{display:flex;flex-direction:column;min-width:0}
-  .panel-header .title-wrap > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .panel-header .total{font-size:9.5px;opacity:.5;font-weight:400;margin-top:1px}
-  .panel-close{width:22px;height:22px;border-radius:50%;border:none;flex-shrink:0;
-    background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:12px;
-    line-height:1;display:flex;align-items:center;justify-content:center;transition:all .2s}
-  .panel-close:hover{background:rgba(239,68,68,.3)}
-  .panel-open-btn{position:fixed;top:76px;right:16px;z-index:9;width:40px;height:40px;border-radius:50%;
-    background:rgba(10,14,24,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);
-    color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s;opacity:0;pointer-events:none;transform:scale(0.8)}
-  .panel-open-btn.visible{opacity:1;pointer-events:auto;transform:scale(1)}
-  .panel-open-btn:hover{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.6)}
-  .panel-body{overflow-y:auto;padding:4px 6px 8px;flex:1;scrollbar-width:thin}
-  .panel-body::-webkit-scrollbar{width:4px}
-  .panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
-  .panel-section{margin-top:4px}
-  .panel-section-title{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;
-    padding:4px 6px;opacity:.7;font-weight:700;display:flex;justify-content:space-between;align-items:center}
-  .panel-section-title .count{background:rgba(255,255,255,.1);padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700}
-  .section-online .panel-section-title{color:#34d399}
-  .section-online .count{background:rgba(52,211,153,.2);color:#34d399}
-  .section-offline .panel-section-title{color:#ef4444}
-  .section-offline .count{background:rgba(239,68,68,.2);color:#ef4444}
-  .student-item{display:flex;align-items:center;gap:6px;padding:4px 6px;margin:1px 0;border-radius:6px;
-    font-size:11px;transition:background .15s;cursor:pointer;position:relative}
-  .student-item:hover{background:rgba(255,255,255,.08)}
-  .student-item.active{background:rgba(52,211,153,.15);outline:1px solid rgba(52,211,153,.4)}
-  .student-item.you{background:rgba(251,191,36,.12);outline:1px solid rgba(251,191,36,.4)}
-  .student-item.you:hover{background:rgba(251,191,36,.2)}
-  .student-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-  .student-item.online .student-dot{background:#34d399;box-shadow:0 0 4px #34d399}
-  .student-item.offline .student-dot{background:#ef4444;box-shadow:0 0 4px #ef4444}
-  .student-item.you .student-dot{background:#fbbf24;box-shadow:0 0 4px #fbbf24}
-  .student-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .student-name.you-label{color:#fbbf24;font-weight:700}
-
-  .focus-banner{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
-    padding:14px 28px;background:rgba(10,14,24,.9);backdrop-filter:blur(16px);
-    border:1px solid rgba(52,211,153,.4);border-radius:60px;color:#fff;z-index:10;
-    box-shadow:0 10px 40px rgba(0,0,0,.6);display:flex;align-items:center;gap:14px;
-    opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.4,0,.2,1)}
-  .focus-banner.visible{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
-  .focus-banner.you{border-color:rgba(251,191,36,.5)}
-  .focus-name{font-size:16px;font-weight:700}
-  .focus-name.you-label{color:#fbbf24}
-  .focus-status{font-size:11px;opacity:.6;margin-top:2px}
-  .focus-close{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.1);
-    color:#fff;cursor:pointer;font-size:16px;margin-left:8px;transition:all .2s}
-  .focus-close:hover{background:rgba(239,68,68,.3)}
-  .hint{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
-    color:rgba(255,255,255,.3);font-size:11px;z-index:10;pointer-events:none;text-align:center}
-
-  #adminFab{position:fixed;right:18px;bottom:18px;z-index:60;width:50px;height:50px;border-radius:50%;
-    border:1px solid #f59e0b55;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;
-    font-size:22px;cursor:pointer;display:none;align-items:center;justify-content:center;
-    box-shadow:0 10px 28px #ef444466;animation:adminFabPulse 2s ease-in-out infinite}
-#adminFab.on{display:flex}
-@keyframes adminFabPulse{0%,100%{box-shadow:0 10px 28px #ef444466}50%{box-shadow:0 10px 32px #ef4444aa,0 0 0 6px #ef444422}}
-#adminPanel{position:fixed;inset:0;z-index:70;background:rgba(8,11,20,.75);backdrop-filter:blur(10px);
-  display:none;align-items:center;justify-content:center;padding:16px}
-#adminPanel.on{display:flex}
-.admin-card{position:relative;width:min(600px,100%);max-height:86vh;overflow:auto;background:#0f1523;color:#fff;
-  border:1px solid #ffffff1f;border-radius:20px;padding:22px;box-shadow:0 30px 80px #000a}
-.admin-card h3{margin:0 0 4px;font-size:18px;background:linear-gradient(90deg,#f59e0b,#ef4444);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.admin-card .sub{font-size:12px;color:#8da0b7;margin-bottom:16px}
-.admin-tabs{display:flex;gap:6px;margin-bottom:14px}
-.admin-tabs button{flex:1;padding:9px;border:1px solid #ffffff18;background:#131a2b;color:#aab7c9;
-  border-radius:10px;font:700 12px system-ui;cursor:pointer;transition:.15s}
-.admin-tabs button.on{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border-color:transparent}
-.admin-list{display:flex;flex-direction:column;gap:8px}
-.admin-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #ffffff14;
-  border-radius:12px;background:#0b1220}
-.admin-row .an{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.admin-row .as{font-size:10.5px;color:#8da0b7;margin-top:2px}
-.admin-row button{border:0;border-radius:9px;padding:7px 11px;font:700 11.5px system-ui;cursor:pointer;color:#fff;white-space:nowrap}
-.admin-row button.kick{background:#f59e0b}
-.admin-row button.unban{background:#10b981}
-.admin-row button.ban{background:#ef4444}
-.admin-row button.hide{background:#334155}
-.admin-row button.show{background:#0ea5e9}
-.admin-empty{color:#8da0b7;text-align:center;padding:18px;font-size:12.5px}
-.admin-close{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:50%;
-  border:1px solid #ffffff22;background:#131a2b;color:#fff;font-size:18px;cursor:pointer;line-height:1}
-.admin-uid{font-size:9.5px;color:#5b6b82;font-family:monospace;margin-top:2px}
-
-  .banned-overlay{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#0f0a1f,#1a0f2e);
-    display:flex;align-items:center;justify-content:center;padding:20px}
-  .banned-card{max-width:440px;width:100%;background:rgba(255,255,255,.06);backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:40px 32px 32px;text-align:center;color:#fff;
-    box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
-  .banned-icon-core{width:70px;height:70px;border-radius:50%;margin:0 auto 18px;
-    background:linear-gradient(135deg,#ef4444,#b91c1c);display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:32px;box-shadow:0 12px 30px -8px #ef4444,0 0 0 6px rgba(239,68,68,.15)}
-  .banned-card h1{font-size:24px;font-weight:900;margin-bottom:8px}
-  .banned-card p{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.65)}
-  .banned-card .banned-reason{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:12px;
-    padding:12px 16px;margin:16px 0;font-size:13px;text-align:left}
-  .banned-card .banned-reason b{color:#fbbf24}
-
-  .wardrobe-btn,.rename-btn{position:fixed;top:76px;z-index:9;width:40px;height:40px;border-radius:50%;
-    background:rgba(10,14,24,.72);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);
-    color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s}
-  .wardrobe-btn{right:64px}
-  .rename-btn{right:112px;width:auto;min-width:40px;height:40px;padding:0 11px;gap:7px;border-radius:999px}
-  .rename-btn span{font:700 11px system-ui;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  @media(max-width:600px){.rename-btn{right:112px;max-width:125px}.rename-btn span{max-width:65px}}
-  .leaderboard-btn{position:fixed;top:76px;right:160px;z-index:9;width:40px;height:40px;border-radius:50%;
-    background:rgba(10,14,24,.78);backdrop-filter:blur(14px);border:1px solid rgba(250,204,21,.35);
-    color:#facc15;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s}
-  .leaderboard-btn:hover{background:rgba(250,204,21,.18);border-color:#facc15;transform:translateY(-2px)}
-  #leaderboardPanel{position:fixed;inset:0;z-index:85;background:rgba(4,8,18,.78);backdrop-filter:blur(14px);
-    display:none;align-items:center;justify-content:center;padding:16px}
-  #leaderboardPanel.on{display:flex}
-  .leaderboard-card{position:relative;width:min(900px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#111b30,#090f1d);
-    color:#f8fafc;border:1px solid rgba(250,204,21,.22);border-radius:24px;padding:24px;
-    box-shadow:0 30px 90px #000c;scrollbar-width:thin}
-  .leaderboard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px}
-  .leaderboard-title{font-size:22px;font-weight:900;letter-spacing:-.5px;background:linear-gradient(90deg,#fde68a,#f59e0b,#fef3c7);
-    -webkit-background-clip:text;background-clip:text;color:transparent}
-  .leaderboard-sub{font-size:12px;color:#94a3b8;margin-top:5px}
-  .leaderboard-close{width:34px;height:34px;flex-shrink:0;border-radius:50%;border:1px solid #ffffff20;background:#ffffff0c;color:#fff;font-size:19px;cursor:pointer}
-  .leaderboard-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end;margin:14px 0 20px}
-  .leaderboard-podium-item{min-width:0;text-align:center;padding:15px 8px 13px;border:1px solid #ffffff12;border-radius:17px;background:linear-gradient(160deg,#ffffff0c,#ffffff04)}
-  .leaderboard-podium-item.first{border-color:#facc1566;background:linear-gradient(160deg,#facc1520,#ffffff05);transform:translateY(-7px)}
-  .leaderboard-medal{font-size:29px;line-height:1.2;margin-bottom:7px}
-  .leaderboard-podium-name{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .leaderboard-podium-rate{font-size:20px;font-weight:900;color:#fcd34d;margin-top:5px}
-  .leaderboard-podium-meta{font-size:10px;color:#94a3b8;margin-top:3px}
-  .leaderboard-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:16px}
-  .leaderboard-stat{padding:11px 13px;border-radius:13px;background:#ffffff08;border:1px solid #ffffff10}
-  .leaderboard-stat-label{font-size:10px;color:#94a3b8}
-  .leaderboard-stat-value{font-size:18px;font-weight:900;margin-top:3px}
-  .leaderboard-table-wrap{overflow-x:auto;border:1px solid #ffffff12;border-radius:15px}
-  .leaderboard-table{width:100%;border-collapse:collapse;min-width:640px;font-size:12px}
-  .leaderboard-table th{padding:11px 12px;text-align:left;color:#94a3b8;font-size:10px;letter-spacing:.5px;text-transform:uppercase;background:#ffffff08}
-  .leaderboard-table td{padding:12px;border-top:1px solid #ffffff0c;white-space:nowrap}
-  .leaderboard-table tr.me{background:#facc1510}
-  .leaderboard-rank{font-weight:900;color:#fcd34d}
-  .leaderboard-member{font-weight:750;max-width:190px;overflow:hidden;text-overflow:ellipsis}
-  .leaderboard-kda{font-variant-numeric:tabular-nums;color:#cbd5e1}
-  .leaderboard-rate{font-weight:900;color:#6ee7b7}
-  .leaderboard-empty{text-align:center;color:#94a3b8;padding:26px 12px;font-size:13px}
-  .leaderboard-foot{font-size:10px;color:#64748b;margin-top:12px;line-height:1.5}
-  @media(max-width:600px){
-    .leaderboard-btn{right:160px;top:76px}
-    .leaderboard-card{padding:17px 12px;border-radius:18px}
-    .leaderboard-title{font-size:19px}
-    .leaderboard-podium{gap:6px}
-    .leaderboard-podium-item{padding:12px 5px}
-    .leaderboard-podium-name{font-size:10px}
-    .leaderboard-podium-rate{font-size:17px}
-    .leaderboard-summary{gap:6px}
-    .leaderboard-stat{padding:9px}
-    .leaderboard-stat-value{font-size:15px}
+  /* ===== MODAL NHẬP TÊN ===== */
+  .name-modal {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(6, 9, 18, 0.88); backdrop-filter: blur(16px);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity .35s, visibility .35s;
   }
-  .wardrobe-btn:hover,.rename-btn:hover{background:rgba(52,211,153,.2);border-color:rgba(52,211,153,.6)}
-  #wardrobePanel{position:fixed;inset:0;z-index:80;background:rgba(8,11,20,.78);backdrop-filter:blur(12px);
-    display:none;align-items:center;justify-content:center;padding:16px}
-  #wardrobePanel.on{display:flex}
-  .wardrobe-card{position:relative;width:min(560px,100%);max-height:86vh;overflow:auto;background:#0f1523;color:#fff;
-    border:1px solid #ffffff1f;border-radius:20px;padding:24px;box-shadow:0 30px 80px #000a;text-align:center}
-  .wardrobe-card h3{margin:0 0 16px;font-size:18px}
-  .skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
-  .skin-item{padding:12px 8px;border:1px solid #ffffff18;border-radius:12px;background:#131a2b;
-    color:#cbd5e1;cursor:pointer;font:700 12px system-ui;transition:.15s}
-  .skin-item:hover{background:#1c2540;border-color:#34d39980}
-  .skin-item.on{background:linear-gradient(135deg,#059669,#34d399);color:#fff;border-color:transparent}
-  .wardrobe-close{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:50%;
-    border:1px solid #ffffff22;background:#131a2b;color:#fff;font-size:18px;cursor:pointer;line-height:1}
+  .name-modal.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+  .modal-card {
+    background: #111827; border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px; padding: 36px 32px; width: 390px; max-width: 92vw;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+  }
+  .modal-icon {
+    width: 56px; height: 56px; margin: 0 auto 18px;
+    background: #10b981; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center; font-size: 28px;
+  }
+  .modal-title { font-size: 21px; font-weight: 700; text-align: center; margin-bottom: 6px; }
+  .modal-subtitle { color: #94a3b8; font-size: 13px; text-align: center; margin-bottom: 24px; }
+  .name-input {
+    width: 100%; padding: 13px 16px; background: #090d16;
+    border: 1.5px solid rgba(255, 255, 255, 0.14); border-radius: 12px;
+    color: #fff; font-size: 15px; outline: none; margin-bottom: 16px; transition: border-color .2s;
+  }
+  .name-input:focus { border-color: #10b981; }
+  .name-input.invalid { border-color: #ef4444; animation: shake .35s; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  .name-btn {
+    width: 100%; padding: 13px; background: #10b981; border: none;
+    border-radius: 12px; color: #042f2e; font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: background .2s, transform .15s;
+  }
+  .name-btn:hover { background: #34d399; transform: translateY(-1px); }
+  .modal-hint { text-align: center; margin-top: 14px; color: #64748b; font-size: 11.5px; }
+
+  /* ===== THANH TRẠNG THÁI & CÔNG CỤ TRÊN CÙNG (CHỐNG ĐÈ NÚT) ===== */
+  .top-bar {
+    position: fixed; top: 16px; left: 16px; right: 16px; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    pointer-events: none;
+  }
+  .hud {
+    pointer-events: auto;
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 16px; background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  }
+  .pulse { width: 10px; height: 10px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; }
+  .hud-sub { font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .hud-sub .star { color: #fbbf24; margin-left: 4px; }
+
+  .top-actions {
+    pointer-events: auto;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+  }
+  .tool-btn {
+    height: 38px; padding: 0 13px; border-radius: 999px;
+    background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12); color: #f8fafc;
+    font-size: 12.5px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4); transition: all .2s;
+  }
+  .tool-btn:hover { background: rgba(30, 41, 59, 0.95); border-color: rgba(52, 211, 153, 0.5); transform: translateY(-1px); }
+  .tool-btn.icon-only { width: 38px; padding: 0; font-size: 16px; }
+  .tool-btn.gold { border-color: rgba(250, 204, 21, 0.35); color: #fde047; }
+  .tool-btn.gold:hover { background: rgba(250, 204, 21, 0.15); border-color: #facc15; }
+  .tool-btn.hidden { display: none; }
+  .rename-label { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  @media (max-width: 640px) {
+    .top-bar { top: 10px; left: 10px; right: 10px; gap: 6px; }
+    .hud { padding: 7px 12px; }
+    .hud-sub { font-size: 12px; }
+    .tool-btn { height: 34px; padding: 0 10px; font-size: 11.5px; }
+    .tool-btn.icon-only { width: 34px; font-size: 14px; }
+    .rename-label { max-width: 60px; }
+  }
+
+  /* ===== DANH SÁCH THÀNH VIÊN ===== */
+  .student-panel {
+    position: fixed; top: 66px; right: 16px; width: 230px; max-height: calc(100vh - 140px);
+    background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+    z-index: 18; box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+    display: flex; flex-direction: column; overflow: hidden;
+    transition: transform .3s ease, opacity .25s ease; font-size: 12px;
+  }
+  .student-panel.closed { transform: translateX(calc(100% + 24px)); opacity: 0; pointer-events: none; }
+  .panel-header {
+    padding: 11px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-weight: 700; display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-header .total { font-size: 11px; color: #94a3b8; font-weight: 500; display: block; }
+  .panel-close {
+    width: 24px; height: 24px; border-radius: 50%; border: none;
+    background: rgba(255, 255, 255, 0.08); color: #fff; cursor: pointer; font-size: 12px;
+  }
+  .panel-close:hover { background: rgba(239, 68, 68, 0.35); }
+  .panel-body { overflow-y: auto; padding: 6px 8px 10px; flex: 1; scrollbar-width: thin; }
+  .panel-section-title {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .5px;
+    padding: 6px; font-weight: 700; display: flex; justify-content: space-between;
+  }
+  .section-online .panel-section-title { color: #34d399; }
+  .section-offline .panel-section-title { color: #f87171; }
+  .student-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 8px; margin: 2px 0;
+    border-radius: 8px; cursor: pointer; transition: background .15s;
+  }
+  .student-item:hover { background: rgba(255, 255, 255, 0.08); }
+  .student-item.active { background: rgba(16, 185, 129, 0.18); outline: 1px solid rgba(16, 185, 129, 0.45); }
+  .student-item.you { background: rgba(251, 191, 36, 0.12); outline: 1px solid rgba(251, 191, 36, 0.4); }
+  .student-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .student-item.online .student-dot { background: #10b981; }
+  .student-item.offline .student-dot { background: #ef4444; }
+  .student-item.you .student-dot { background: #fbbf24; }
+  .student-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .student-name.you-label { color: #fbbf24; font-weight: 700; }
+  .admin-badge {
+    background: #ef4444; color: #fff; font-size: 9px; font-weight: 800;
+    padding: 1px 6px; border-radius: 999px; margin-left: 4px;
+  }
+
+  /* ===== FOCUS BANNER & HINT ===== */
+  .focus-banner {
+    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px);
+    padding: 12px 22px; background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(14px);
+    border: 1px solid rgba(52, 211, 153, 0.45); border-radius: 999px; z-index: 15;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6); display: flex; align-items: center; gap: 14px;
+    opacity: 0; pointer-events: none; transition: all .3s ease;
+  }
+  .focus-banner.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  .focus-banner.you { border-color: rgba(251, 191, 36, 0.55); }
+  .focus-name { font-size: 14.5px; font-weight: 700; }
+  .focus-name.you-label { color: #fbbf24; }
+  .focus-status { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .focus-close {
+    width: 28px; height: 28px; border-radius: 50%; border: none;
+    background: rgba(255, 255, 255, 0.1); color: #fff; cursor: pointer; font-size: 14px;
+  }
+  .focus-close:hover { background: rgba(239, 68, 68, 0.35); }
+  .hint {
+    position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.35); font-size: 11px; z-index: 10; pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* ===== ADMIN PANEL & FAB ===== */
+  #adminFab {
+    position: fixed; right: 18px; bottom: 22px; z-index: 60; width: 48px; height: 48px;
+    border-radius: 50%; border: 1px solid rgba(251, 191, 36, 0.5);
+    background: linear-gradient(135deg, #f59e0b, #dc2626); color: #fff;
+    font-size: 20px; cursor: pointer; display: none; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.5);
+  }
+  #adminFab.on { display: flex; }
+  #adminPanel {
+    position: fixed; inset: 0; z-index: 70; background: rgba(6, 9, 18, 0.8);
+    backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  #adminPanel.on { display: flex; }
+  .admin-card {
+    position: relative; width: min(620px, 100%); max-height: 86vh; overflow: auto;
+    background: #111827; border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px; padding: 22px; box-shadow: 0 28px 70px rgba(0, 0, 0, 0.8);
+  }
+  .admin-card h3 { font-size: 18px; color: #fbbf24; margin-bottom: 4px; }
+  .admin-card .sub { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+  .admin-toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 12px; margin-bottom: 14px; border-radius: 12px;
+    background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+  .admin-toolbar span { font-size: 12px; color: #fca5a5; }
+  .btn-reset-all {
+    background: #dc2626; color: #fff; border: none; border-radius: 9px;
+    padding: 8px 13px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    transition: background .2s;
+  }
+  .btn-reset-all:hover { background: #ef4444; }
+  .admin-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .admin-tabs button {
+    flex: 1; padding: 9px; border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #1e293b; color: #cbd5e1; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer;
+  }
+  .admin-tabs button.on { background: #f59e0b; color: #0f172a; border-color: transparent; }
+  .admin-list { display: flex; flex-direction: column; gap: 8px; }
+  .admin-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; background: #0b1120;
+  }
+  .admin-row .an { font-size: 13px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .admin-row .as { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .admin-row button { border: 0; border-radius: 8px; padding: 6px 10px; font-weight: 700; font-size: 11.5px; cursor: pointer; color: #fff; }
+  .admin-row button.unban { background: #10b981; }
+  .admin-row button.ban { background: #ef4444; }
+  .admin-row button.hide { background: #475569; }
+  .admin-row button.show { background: #0284c7; }
+  .admin-empty { color: #94a3b8; text-align: center; padding: 20px; font-size: 12.5px; }
+  .admin-close, .wardrobe-close, .leaderboard-close {
+    position: absolute; top: 14px; right: 16px; width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15); background: #1e293b; color: #fff; font-size: 17px; cursor: pointer;
+  }
+  .admin-uid { font-size: 10px; color: #64748b; font-family: monospace; margin-top: 2px; }
+
+  /* ===== TỦ ĐỒ & BẢNG XẾP HẠNG ===== */
+  #wardrobePanel, #leaderboardPanel {
+    position: fixed; inset: 0; z-index: 80; background: rgba(6, 9, 18, 0.8);
+    backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  #wardrobePanel.on, #leaderboardPanel.on { display: flex; }
+  .wardrobe-card {
+    position: relative; width: min(520px, 100%); background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; padding: 24px; text-align: center;
+  }
+  .wardrobe-card h3 { margin-bottom: 16px; font-size: 18px; }
+  .skin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .skin-item {
+    padding: 13px 8px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
+    background: #1e293b; color: #e2e8f0; cursor: pointer; font-weight: 700; font-size: 12.5px;
+  }
+  .skin-item:hover { border-color: #10b981; }
+  .skin-item.on { background: #10b981; color: #042f2e; border-color: transparent; }
+
+  .leaderboard-card {
+    position: relative; width: min(860px, 100%); max-height: 88vh; overflow: auto;
+    background: #111827; border: 1px solid rgba(250, 204, 21, 0.25);
+    border-radius: 20px; padding: 24px;
+  }
+  .leaderboard-title { font-size: 20px; font-weight: 800; color: #fde047; }
+  .leaderboard-sub { font-size: 12px; color: #94a3b8; margin: 4px 0 16px; }
+  .leaderboard-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .leaderboard-stat { padding: 12px; border-radius: 12px; background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.08); }
+  .leaderboard-stat-label { font-size: 10.5px; color: #94a3b8; }
+  .leaderboard-stat-value { font-size: 18px; font-weight: 800; margin-top: 2px; }
+  .leaderboard-podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: end; margin-bottom: 18px; }
+  .leaderboard-podium-item {
+    text-align: center; padding: 14px 8px; border-radius: 14px;
+    background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .leaderboard-podium-item.first { border-color: rgba(250, 204, 21, 0.5); background: rgba(250, 204, 21, 0.08); }
+  .leaderboard-medal { font-size: 26px; margin-bottom: 4px; }
+  .leaderboard-podium-name { font-size: 12.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .leaderboard-podium-rate { font-size: 18px; font-weight: 800; color: #fde047; margin-top: 4px; }
+  .leaderboard-podium-meta { font-size: 10.5px; color: #94a3b8; margin-top: 2px; }
+  .leaderboard-table-wrap { overflow-x: auto; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; }
+  .leaderboard-table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 12.5px; }
+  .leaderboard-table th { padding: 10px 12px; text-align: left; color: #94a3b8; font-size: 10.5px; background: #1e293b; }
+  .leaderboard-table td { padding: 11px 12px; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+  .leaderboard-table tr.me { background: rgba(250, 204, 21, 0.08); }
+  .leaderboard-rank { font-weight: 800; color: #fde047; }
+  .leaderboard-rate { font-weight: 800; color: #34d399; }
+  .leaderboard-empty { text-align: center; color: #94a3b8; padding: 24px; }
+  .leaderboard-foot { font-size: 11px; color: #64748b; margin-top: 12px; }
+
+  /* ===== BAN OVERLAY ===== */
+  .banned-overlay {
+    position: fixed; inset: 0; z-index: 99999; background: #090d16;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .banned-card {
+    max-width: 420px; width: 100%; background: #111827;
+    border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 20px; padding: 36px 28px; text-align: center;
+  }
+  .banned-icon-core {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px;
+    background: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 30px;
+  }
+  .banned-card h1 { font-size: 22px; margin-bottom: 8px; }
+  .banned-card p { font-size: 13.5px; color: #94a3b8; }
+  .banned-reason {
+    background: #090d16; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px;
+    padding: 12px; margin-top: 16px; font-size: 13px; text-align: left;
+  }
 </style>
 </head>
 <body>
 
 <div class="name-modal" id="nameModal">
   <div class="modal-card">
-    <div class="modal-icon">⛏️</div>
+    <div class="modal-icon">💻</div>
     <div class="modal-title" id="modalTitle">Chào mừng đến lớp!</div>
-    <div class="modal-subtitle" id="modalSubtitle">Nhập tên của bạn để vào phòng máy tính</div>
+    <div class="modal-subtitle" id="modalSubtitle">Nhập tên của bạn để ngồi vào bàn máy tính</div>
     <input type="text" class="name-input" id="nameInput" placeholder="Tên của bạn..." maxlength="20" autocomplete="off">
-    <div class="modal-actions">
-      <button class="name-btn" id="nameBtn"><span>Vào phòng</span><span>→</span></button>
-    </div>
-    <div class="modal-hint">Tên sẽ hiện trên đầu nhân vật của bạn</div>
+    <button class="name-btn" id="nameBtn">Vào phòng học →</button>
+    <div class="modal-hint">Tên sẽ hiển thị phía trên nhân vật của bạn</div>
   </div>
 </div>
 
-<div class="hud">
-  <div class="pulse" id="pulse"></div>
-  <div class="hud-sub" id="hudSub">Đang tải...</div>
+<!-- THANH TRÊN CÙNG THỐNG NHẤT: KHÔNG BAO GIỜ ĐÈ NHAU -->
+<div class="top-bar" id="topBar">
+  <div class="hud">
+    <div class="pulse" id="pulse"></div>
+    <div class="hud-sub" id="hudSub">Đang kết nối...</div>
+  </div>
+  <div class="top-actions">
+    <button class="tool-btn gold" id="leaderboardBtn" title="Bảng xếp hạng học tập">🏆 <span>Xếp hạng</span></button>
+    <button class="tool-btn" id="renameBtn" title="Đổi tên nhân vật">✏️ <span class="rename-label" id="renameNameLabel">Đặt tên</span></button>
+    <button class="tool-btn icon-only" id="wardrobeBtn" title="Tủ đồ chọn skin">👕</button>
+    <button class="tool-btn icon-only" id="panelOpen" title="Mở danh sách lớp">☰</button>
+  </div>
 </div>
 
 <div class="student-panel closed" id="studentPanel">
   <div class="panel-header">
-    <div class="title-wrap"><span>👥 Danh sách</span><span class="total" id="panelTotal">0 người</span></div>
+    <div><span>👥 Danh sách lớp</span><span class="total" id="panelTotal">0 người</span></div>
     <button class="panel-close" id="panelClose" title="Đóng">✕</button>
   </div>
   <div class="panel-body">
     <div class="panel-section section-online">
-      <div class="panel-section-title"><span>🌞 Đang học</span><span class="count" id="countOnline">0</span></div>
+      <div class="panel-section-title"><span>🌞 Đang học</span><span id="countOnline">0</span></div>
       <div id="listOnline"></div>
     </div>
     <div class="panel-section section-offline">
-      <div class="panel-section-title"><span>🌙 Đang ngủ</span><span class="count" id="countOffline">0</span></div>
+      <div class="panel-section-title"><span>🌙 Đang ngủ</span><span id="countOffline">0</span></div>
       <div id="listOffline"></div>
     </div>
   </div>
 </div>
 
-<button class="panel-open-btn visible" id="panelOpen" title="Mở danh sách">☰</button>
-<button class="wardrobe-btn" id="wardrobeBtn" title="Tủ đồ">👕</button>
-<button class="rename-btn" id="renameBtn" title="Đặt tên / Đổi tên" aria-label="Đặt tên / Đổi tên"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c.5-3.5 2.7-5.3 6.5-5.3 2 0 3.5.5 4.6 1.5"/><path d="m16 17 4.8-4.8 1.7 1.7-4.8 4.8-2.6.9z"/></svg><span id="renameNameLabel">Đặt tên</span></button>
-<button class="leaderboard-btn" id="leaderboardBtn" title="Bảng xếp hạng học tập">🏆</button>
 <div id="leaderboardPanel" aria-hidden="true">
   <div class="leaderboard-card">
-    <div class="leaderboard-head">
-      <div><div class="leaderboard-title">🏆 BẢNG XẾP HẠNG HỌC TẬP</div><div class="leaderboard-sub">Toàn bộ thành viên phòng học · Đồng bộ kết quả từ Trắc Nghiệm By Nhật</div></div>
-      <button class="leaderboard-close" id="leaderboardClose" aria-label="Đóng">×</button>
-    </div>
+    <button class="leaderboard-close" id="leaderboardClose" aria-label="Đóng">×</button>
+    <div class="leaderboard-title">🏆 BẢNG XẾP HẠNG HỌC TẬP</div>
+    <div class="leaderboard-sub">Đồng bộ kết quả trực tiếp từ hệ thống Trắc Nghiệm</div>
     <div class="leaderboard-summary" id="leaderboardSummary"></div>
     <div class="leaderboard-podium" id="leaderboardPodium"></div>
-    <div class="leaderboard-table-wrap"><table class="leaderboard-table"><thead><tr><th>Hạng</th><th>Thành viên</th><th>KDA (Đ/S/B)</th><th>Lượt làm</th><th>Câu đã trả lời</th><th>Tỷ lệ đúng</th></tr></thead><tbody id="leaderboardRows"></tbody></table></div>
-    <div class="leaderboard-foot">KDA = số câu Đúng / Sai / Bỏ trống. Thành viên chưa làm bài vẫn được hiển thị với số liệu 0. Xếp hạng theo tỷ lệ đúng, sau đó tổng câu đúng và số lượt làm.</div>
+    <div class="leaderboard-table-wrap">
+      <table class="leaderboard-table">
+        <thead><tr><th>Hạng</th><th>Thành viên</th><th>KDA (Đ/S/B)</th><th>Lượt làm</th><th>Câu trả lời</th><th>Tỷ lệ đúng</th></tr></thead>
+        <tbody id="leaderboardRows"></tbody>
+      </table>
+    </div>
+    <div class="leaderboard-foot">KDA = Đúng / Sai / Bỏ trống. Thành viên chưa làm bài hiển thị số liệu 0.</div>
   </div>
 </div>
 
 <div class="focus-banner" id="focusBanner">
   <div><div class="focus-name" id="focusName">—</div><div class="focus-status" id="focusStatus">—</div></div>
-  <button class="focus-close" id="focusClose" title="Đóng (ESC)">✕</button>
+  <button class="focus-close" id="focusClose" title="Thoát góc nhìn (ESC)">✕</button>
 </div>
 
-<div class="hint">Click vào nhân vật để xem cận cảnh · Kéo chuột để xoay · Lăn chuột để zoom · ESC để thoát</div>
+<div class="hint">Click nhân vật để xem cận cảnh · Kéo chuột xoay · Lăn chuột zoom · Phím R đặt lại góc nhìn</div>
 
-<button id="adminFab" title="Quản trị">👑</button>
+<button id="adminFab" title="Bảng quản trị">👑</button>
 <div id="adminPanel">
   <div class="admin-card">
     <button class="admin-close" onclick="document.getElementById('adminPanel').classList.remove('on')">×</button>
-    <h3>Quản trị phòng học</h3>
-    <div class="sub">Danh sách theo từng máy (uid) — gồm cả người đang ngủ · kick/ẩn/ban đúng máy</div>
+    <h3>👑 Quản trị phòng học</h3>
+    <div class="sub">Quản lý thành viên theo thiết bị (UID) · Ẩn/Chặn hoặc Reset toàn bộ về 0</div>
+
+    <div class="admin-toolbar">
+      <span>⚠️ Xóa toàn bộ danh sách thành viên, điểm số & trạng thái online để ghi nhận lại từ đầu:</span>
+      <button class="btn-reset-all" id="adminResetAllBtn" onclick="adminResetAllMembers()">🔄 Reset thành viên</button>
+    </div>
+
     <div class="admin-tabs">
       <button id="tabMembers" class="on" onclick="adminSwitchTab('members')">👥 Thành viên</button>
       <button id="tabBanned" onclick="adminSwitchTab('banned')">🚫 Bị chặn</button>
@@ -316,7 +380,7 @@
 <div id="wardrobePanel">
   <div class="wardrobe-card">
     <button class="wardrobe-close" onclick="document.getElementById('wardrobePanel').classList.remove('on')">×</button>
-    <h3>👕 Tủ đồ — Chọn skin</h3>
+    <h3>👕 Tủ đồ — Chọn trang phục</h3>
     <div class="skin-grid" id="skinGrid"></div>
   </div>
 </div>
@@ -325,7 +389,7 @@
   <div class="banned-card">
     <div class="banned-icon-core">🚫</div>
     <h1>Truy cập bị chặn</h1>
-    <p id="banOverlayReason">Tài khoản đã bị quản trị viên chặn khỏi hệ thống.</p>
+    <p>Thiết bị hoặc tài khoản của bạn đã bị quản trị viên chặn khỏi phòng học.</p>
     <div class="banned-reason" id="banOverlayReasonBox" style="display:none"><b>Lý do:</b> <span id="banOverlayReasonText"></span></div>
   </div>
 </div>
@@ -335,67 +399,58 @@
 
 <script>
 (function(){
-  const cfg={apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
-  let db=null;
+  const cfg = {
+    apiKey: "AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",
+    authDomain: "anime-f57e6.firebaseapp.com",
+    databaseURL: "https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "anime-f57e6",
+    storageBucket: "anime-f57e6.firebasestorage.app",
+    messagingSenderId: "546284227871",
+    appId: "1:546284227871:web:68e939a098af2211ad342a"
+  };
+  let db = null;
+  let uid = localStorage.getItem('classroom_uid') || localStorage.getItem('chat_device_id') || ('u_' + Math.random().toString(36).slice(2) + Date.now().toString(36));
+  localStorage.setItem('classroom_uid', uid);
+  localStorage.setItem('chat_device_id', uid);
 
-  // UID dùng chung với chat (chat_device_id) để ban khớp 2 phía
-  let uid=localStorage.getItem('classroom_uid')||localStorage.getItem('chat_device_id')||('u_'+Math.random().toString(36).slice(2)+Date.now().toString(36));
-  localStorage.setItem('classroom_uid',uid);
-  localStorage.setItem('chat_device_id',uid);
-
-  try{
+  try {
     let app;
-    try{ app=firebase.app('classroomPresence'); }catch(e){ app=firebase.initializeApp(cfg,'classroomPresence'); }
-    db=app.database();
-  }catch(e){}
-  const ROOM='rooms/nhom1';
-  const presenceRef=db?db.ref(ROOM+'/presence/'+uid):null;
+    try { app = firebase.app('classroomPresence'); } catch(e) { app = firebase.initializeApp(cfg, 'classroomPresence'); }
+    db = app.database();
+  } catch(e) {}
 
-  // ==== BAN WATCHER (realtime, chặn hoàn toàn) ====
+  const ROOM = 'rooms/nhom1';
+  const presenceRef = db ? db.ref(ROOM + '/presence/' + uid) : null;
+
   window.__isBanned = false;
   window.__banWatchStarted = false;
 
-  function renderBanOverlay(mod){
-    let ov = document.getElementById('banOverlay');
-    if(!ov){
-      ov = document.createElement('div');
-      ov.id = 'banOverlay';
-      ov.className = 'banned-overlay';
-      ov.style.display = 'none';
-      ov.innerHTML = `
-        <div class="banned-card">
-          <div class="banned-icon-core">🚫</div>
-          <h1>Truy cập bị chặn</h1>
-          <p id="banOverlayReason">Tài khoản đã bị quản trị viên chặn khỏi hệ thống.</p>
-          <div class="banned-reason" id="banOverlayReasonBox" style="display:none"><b>Lý do:</b> <span id="banOverlayReasonText"></span></div>
-        </div>`;
-      document.body.appendChild(ov);
-    }
+  function renderBanOverlay(mod) {
+    const ov = document.getElementById('banOverlay');
     const box = document.getElementById('banOverlayReasonBox');
     const txt = document.getElementById('banOverlayReasonText');
-    if(mod && mod.reason){ box.style.display='block'; txt.textContent = mod.reason; }
-    else { box.style.display='none'; }
+    if (mod && mod.reason) { box.style.display = 'block'; txt.textContent = mod.reason; }
+    else { box.style.display = 'none'; }
     ov.style.display = 'flex';
   }
-  function hideBanOverlay(){
+  function hideBanOverlay() {
     const ov = document.getElementById('banOverlay');
-    if(ov) ov.style.display = 'none';
+    if (ov) ov.style.display = 'none';
   }
   window.__renderBanOverlay = renderBanOverlay;
   window.__hideBanOverlay = hideBanOverlay;
 
-  function applyBanState(mod){
-    if(mod && (mod.ban === true || mod.kick === true)){
+  function applyBanState(mod) {
+    if (mod && (mod.ban === true || mod.kick === true)) {
       window.__isBanned = true;
       renderBanOverlay(mod);
-      if(window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
-      if(presenceRef) presenceRef.remove().catch(()=>{});
-      const nm = (localStorage.getItem('chat_name')||'').trim();
-      if(nm && db) db.ref(ROOM+'/members/'+nm).remove().catch(()=>{});
-      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','leaderboardBtn','adminFab','focusBanner'].forEach(id=>{
-        const el=document.getElementById(id); if(el) el.style.display='none';
+      if (window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
+      if (presenceRef) presenceRef.remove().catch(() => {});
+      const nm = (localStorage.getItem('chat_name') || '').trim();
+      if (nm && db) db.ref(ROOM + '/members/' + nm).remove().catch(() => {});
+      ['nameModal', 'studentPanel', 'topBar', 'adminFab', 'focusBanner'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.style.display = 'none';
       });
-      document.querySelectorAll('.hud').forEach(el=>el.style.display='none');
     } else {
       window.__isBanned = false;
       hideBanOverlay();
@@ -403,70 +458,63 @@
   }
   window.__applyBanState = applyBanState;
 
-  window.startBanWatcher = function(){
-    if(!db || window.__banWatchStarted) return;
+  window.startBanWatcher = function() {
+    if (!db || window.__banWatchStarted) return;
     window.__banWatchStarted = true;
-
-    // Theo UID (device)
-    db.ref(ROOM+'/moderations/'+uid).on('value', s => {
-      applyBanState(s.val());
-    });
-
-    // Theo TÊN (rpg.html ban theo tên) — lắng nghe tên hiện tại
-    function watchByName(){
-      const nm = (localStorage.getItem('chat_name')||'').trim();
-      if(!nm) return;
-      if(window.__nameBanRef) window.__nameBanRef.off();
-      window.__nameBanRef = db.ref(ROOM+'/moderations/'+nm);
+    db.ref(ROOM + '/moderations/' + uid).on('value', s => applyBanState(s.val()));
+    function watchByName() {
+      const nm = (localStorage.getItem('chat_name') || '').trim();
+      if (!nm) return;
+      if (window.__nameBanRef) window.__nameBanRef.off();
+      window.__nameBanRef = db.ref(ROOM + '/moderations/' + nm);
       window.__nameBanRef.on('value', s => {
         const mod = s.val();
-        if(mod && (mod.ban || mod.kick)) applyBanState(mod);
+        if (mod && (mod.ban || mod.kick)) applyBanState(mod);
       });
     }
     watchByName();
     window.__watchBanByName = watchByName;
   };
 
-  window.startClassroomPresence=function(){
-    if(window.__isBanned) return;
-    const name=(localStorage.getItem('chat_name')||'').trim();
-    if(!name||!presenceRef) return;
+  window.startClassroomPresence = function() {
+    if (window.__isBanned) return;
+    const name = (localStorage.getItem('chat_name') || '').trim();
+    if (!name || !presenceRef) return;
     const write = () => {
-      if(window.__isBanned) return;
+      if (window.__isBanned) return;
       presenceRef.set({
-        name, uid,
-        online: true,
+        name, uid, online: true,
         lastSeen: firebase.database.ServerValue.TIMESTAMP,
-        device: navigator.userAgent.slice(0,100)
+        device: navigator.userAgent.slice(0, 100)
       });
     };
-    presenceRef.onDisconnect().set({name, uid, online:false, lastSeen: firebase.database.ServerValue.TIMESTAMP});
+    presenceRef.onDisconnect().set({ name, uid, online: false, lastSeen: firebase.database.ServerValue.TIMESTAMP });
     write();
-    if(window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
-    window.__presenceHeartbeat = setInterval(write, 30000);
-    if(db){
-      db.ref(ROOM+'/members/'+name).update({ uid, name, online:true, lastSeen: firebase.database.ServerValue.TIMESTAMP }).catch(()=>{});
+    if (window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
+    window.__presenceHeartbeat = setInterval(write, 25000);
+    if (db) {
+      db.ref(ROOM + '/members/' + name).update({ uid, name, online: true, lastSeen: firebase.database.ServerValue.TIMESTAMP }).catch(() => {});
     }
   };
 
-  window.addEventListener('beforeunload',()=>{
-    if(presenceRef){
-      const name=(localStorage.getItem('chat_name')||'').trim()||'Người dùng';
-      presenceRef.set({name,uid,online:false,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+  window.addEventListener('beforeunload', () => {
+    if (presenceRef) {
+      const name = (localStorage.getItem('chat_name') || '').trim() || 'Người dùng';
+      presenceRef.set({ name, uid, online: false, lastSeen: firebase.database.ServerValue.TIMESTAMP });
     }
   });
 
   window.__classroomDb = db;
   window.__classroomUid = uid;
 
-  if(db) window.startBanWatcher();
-  if(presenceRef && (localStorage.getItem('chat_name')||'').trim()) window.startClassroomPresence();
+  if (db) window.startBanWatcher();
+  if (presenceRef && (localStorage.getItem('chat_name') || '').trim()) window.startClassroomPresence();
 
-  if(db){
-    db.ref(ROOM+'/presence').on('value',snap=>{
-      if(window.__isBanned) return;
-      const data=snap.val()||{};
-      const users=Object.entries(data).map(([id,u])=>({...u,uid:id})).filter(u=>u.name);
+  if (db) {
+    db.ref(ROOM + '/presence').on('value', snap => {
+      if (window.__isBanned) return;
+      const data = snap.val() || {};
+      const users = Object.entries(data).map(([id, u]) => ({ ...u, uid: id })).filter(u => u && u.name);
       window.syncAdminPresence && window.syncAdminPresence(users);
       window.syncClassroomUsers && window.syncClassroomUsers(users);
     });
@@ -479,30 +527,30 @@
 <script>
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFShadowMap;
-renderer.shadowMap.autoUpdate = false;
-renderer.shadowMap.needsUpdate = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x080b14);
-scene.fog = new THREE.FogExp2(0x080b14, 0.018);
+scene.background = new THREE.Color(0x090e1a);
+scene.fog = new THREE.FogExp2(0x090e1a, 0.014);
 
-const camera = new THREE.PerspectiveCamera(55, window.innerWidth/window.innerHeight, 0.1, 200);
+const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 200);
 
-const CAM_DEFAULTS = { angle: Math.PI*0.15, pitch: 0.35, dist: 13, target: new THREE.Vector3(0, 2.0, -4) };
+const CAM_DEFAULTS = { angle: Math.PI * 0.16, pitch: 0.34, dist: 13.5, target: new THREE.Vector3(0, 1.8, -3.5) };
 let camAngle = CAM_DEFAULTS.angle, camPitch = CAM_DEFAULTS.pitch, camDist = CAM_DEFAULTS.dist;
 const camTarget = CAM_DEFAULTS.target.clone();
 let targetAngle = CAM_DEFAULTS.angle, targetPitch = CAM_DEFAULTS.pitch, targetDist = CAM_DEFAULTS.dist;
 const targetLookAt = CAM_DEFAULTS.target.clone();
 
 let camMode = 'free', focusedStudent = null;
-const PITCH_MIN = 0.02, PITCH_MAX = Math.PI/2 - 0.02;
-const DIST_MIN = 1.5, DIST_MAX = 22;
-const ROOM_HALF_W = 12.0, ROOM_HALF_D = 14.0, ROOM_MAX_Y = 8.5, ROOM_MIN_Y = 0.5;
+const PITCH_MIN = 0.04, PITCH_MAX = Math.PI / 2 - 0.04;
+const DIST_MIN = 1.6, DIST_MAX = 22;
+const ROOM_HALF_W = 12.2, ROOM_HALF_D = 14.2, ROOM_MAX_Y = 8.4, ROOM_MIN_Y = 0.55;
 
 function clampCameraInsideRoom(pos) {
   pos.x = Math.max(-ROOM_HALF_W, Math.min(ROOM_HALF_W, pos.x));
@@ -522,9 +570,8 @@ window.addEventListener('mousemove', e => {
   const dx = e.clientX - lastX, dy = e.clientY - lastY;
   if (Math.abs(e.clientX - dragStartX) > DRAG_THRESHOLD || Math.abs(e.clientY - dragStartY) > DRAG_THRESHOLD) hasDragged = true;
   if (hasDragged) {
-    targetAngle += dx * 0.008;
-    targetPitch += dy * 0.006;
-    targetPitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, targetPitch));
+    targetAngle += dx * 0.0075;
+    targetPitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, targetPitch + dy * 0.0055));
   }
   lastX = e.clientX; lastY = e.clientY;
 });
@@ -534,8 +581,7 @@ window.addEventListener('mouseup', e => {
 });
 renderer.domElement.addEventListener('wheel', e => {
   e.preventDefault();
-  targetDist += e.deltaY * 0.015;
-  targetDist = Math.max(DIST_MIN, Math.min(DIST_MAX, targetDist));
+  targetDist = Math.max(DIST_MIN, Math.min(DIST_MAX, targetDist + e.deltaY * 0.014));
 }, { passive: false });
 renderer.domElement.addEventListener('touchstart', e => {
   if (e.touches.length === 1) {
@@ -548,9 +594,8 @@ renderer.domElement.addEventListener('touchmove', e => {
   const dx = e.touches[0].clientX - lastX, dy = e.touches[0].clientY - lastY;
   if (Math.abs(e.touches[0].clientX - dragStartX) > DRAG_THRESHOLD || Math.abs(e.touches[0].clientY - dragStartY) > DRAG_THRESHOLD) hasDragged = true;
   if (hasDragged) {
-    targetAngle += dx * 0.008;
-    targetPitch += dy * 0.006;
-    targetPitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, targetPitch));
+    targetAngle += dx * 0.0075;
+    targetPitch = Math.max(PITCH_MIN, Math.min(PITCH_MAX, targetPitch + dy * 0.0055));
   }
   lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
 }, { passive: true });
@@ -559,6 +604,7 @@ renderer.domElement.addEventListener('touchend', e => {
   isDragging = false;
 });
 window.addEventListener('keydown', e => {
+  if (document.activeElement === nameInput) return;
   if (e.key === 'Escape') { if (camMode === 'focus') exitFocus(); }
   else if (e.key === '+' || e.key === '=') targetDist = Math.max(DIST_MIN, targetDist - 1.5);
   else if (e.key === '-' || e.key === '_') targetDist = Math.min(DIST_MAX, targetDist + 1.5);
@@ -572,13 +618,13 @@ function resetCamera() {
   students.forEach(s => s.npc.userData.highlightRing && (s.npc.userData.highlightRing.visible = false));
   document.querySelectorAll('.student-item.active').forEach(el => el.classList.remove('active'));
   const fb = document.getElementById('focusBanner');
-  fb.classList.remove('visible'); fb.classList.remove('you');
+  fb.classList.remove('visible', 'you');
 }
 
+/* ===== TEXTURE & MATERIAL CHO NHÂN VẬT & PHÒNG HỌC ===== */
 function createNoiseTexture(width, height, drawFunc) {
   const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = width; canvas.height = height;
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   drawFunc(ctx, width, height);
@@ -588,61 +634,41 @@ function createNoiseTexture(width, height, drawFunc) {
   return texture;
 }
 
-function generateZombieFace() {
-  return createNoiseTexture(16, 16, (ctx) => {
-    ctx.fillStyle = '#2d5a27'; ctx.fillRect(0, 0, 16, 16);
-    ctx.fillStyle = '#1c3d19'; ctx.fillRect(0, 0, 16, 4);
-    ctx.fillStyle = '#333333'; ctx.fillRect(2, 8, 4, 2); ctx.fillRect(10, 8, 4, 2);
-    ctx.fillStyle = '#122410'; ctx.fillRect(6, 11, 4, 2);
-  });
-}
-
-function generateEndermanFace() {
-  return createNoiseTexture(16, 16, (ctx) => {
-    ctx.fillStyle = '#111111'; ctx.fillRect(0, 0, 16, 16);
-    ctx.fillStyle = '#cc00ff'; ctx.fillRect(1, 8, 5, 2); ctx.fillRect(10, 8, 5, 2);
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(2, 8, 3, 1); ctx.fillRect(11, 8, 3, 1);
-  });
-}
-
 function generateFaceTexture(style, skinColor) {
   return createNoiseTexture(16, 16, (ctx) => {
     ctx.fillStyle = skinColor; ctx.fillRect(0, 0, 16, 16);
-
     if (style === 'cyber') {
       ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 16, 5);
       ctx.fillStyle = '#ec4899'; ctx.fillRect(1, 6, 14, 4);
-      ctx.fillStyle = '#06b6d4'; ctx.fillRect(3, 7, 10, 2);
-      ctx.fillStyle = '#64748b'; ctx.fillRect(6, 12, 4, 1);
+      ctx.fillStyle = '#38bdf8'; ctx.fillRect(3, 7, 10, 2);
+      ctx.fillStyle = '#94a3b8'; ctx.fillRect(6, 12, 4, 1);
     } else if (style === 'helmet') {
-      ctx.fillStyle = '#94a3b8'; ctx.fillRect(0, 0, 16, 7);
+      ctx.fillStyle = '#cbd5e1'; ctx.fillRect(0, 0, 16, 7);
       ctx.fillStyle = '#334155'; ctx.fillRect(1, 4, 14, 3);
       ctx.fillStyle = '#38bdf8'; ctx.fillRect(3, 5, 3, 1); ctx.fillRect(10, 5, 3, 1);
-      ctx.fillStyle = '#cbd5e1'; ctx.fillRect(7, 7, 2, 8);
+      ctx.fillStyle = '#94a3b8'; ctx.fillRect(7, 7, 2, 8);
     } else if (style === 'long') {
-      ctx.fillStyle = '#cb6d3a'; ctx.fillRect(0, 0, 16, 6);
-      ctx.fillStyle = '#af5428'; ctx.fillRect(0, 0, 16, 2); ctx.fillRect(0, 0, 3, 7); ctx.fillRect(13, 0, 3, 7);
-      ctx.fillStyle = '#fce2c7'; ctx.fillRect(3, 6, 10, 10);
-      ctx.fillStyle = '#cb6d3a'; ctx.fillRect(1, 6, 2, 4); ctx.fillRect(13, 6, 2, 3);
+      ctx.fillStyle = '#b45309'; ctx.fillRect(0, 0, 16, 6);
+      ctx.fillStyle = '#92400e'; ctx.fillRect(0, 0, 3, 8); ctx.fillRect(13, 0, 3, 8);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(2, 9, 4, 2); ctx.fillRect(10, 9, 4, 2);
-      ctx.fillStyle = '#178a48'; ctx.fillRect(4, 9, 2, 2); ctx.fillRect(10, 9, 2, 2);
+      ctx.fillStyle = '#15803d'; ctx.fillRect(4, 9, 2, 2); ctx.fillRect(10, 9, 2, 2);
       ctx.fillStyle = '#e19f7e'; ctx.fillRect(7, 11, 2, 1);
-      ctx.fillStyle = '#b36149'; ctx.fillRect(6, 12, 4, 1);
+      ctx.fillStyle = '#be185d'; ctx.fillRect(6, 13, 4, 1);
     } else if (style === 'ninja') {
-      ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, 16, 16);
+      ctx.fillStyle = '#18181b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = skinColor; ctx.fillRect(2, 7, 12, 4);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(3, 8, 3, 2); ctx.fillRect(10, 8, 3, 2);
-      ctx.fillStyle = '#ef4444'; ctx.fillRect(4, 8, 1, 2); ctx.fillRect(11, 8, 1, 2);
+      ctx.fillStyle = '#dc2626'; ctx.fillRect(4, 8, 1, 2); ctx.fillRect(11, 8, 1, 2);
     } else if (style === 'ender') {
       ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#a855f7'; ctx.fillRect(2, 8, 4, 2); ctx.fillRect(10, 8, 4, 2);
-      ctx.fillStyle = '#e9d5ff'; ctx.fillRect(3, 8, 2, 2); ctx.fillRect(11, 8, 2, 2);
+      ctx.fillStyle = '#f3e8ff'; ctx.fillRect(3, 8, 2, 2); ctx.fillRect(11, 8, 2, 2);
     } else {
-      ctx.fillStyle = '#4a2f13'; ctx.fillRect(0, 0, 16, 4); ctx.fillRect(0, 4, 2, 2); ctx.fillRect(14, 4, 2, 2);
+      ctx.fillStyle = '#3e2723'; ctx.fillRect(0, 0, 16, 4); ctx.fillRect(0, 4, 2, 2); ctx.fillRect(14, 4, 2, 2);
       ctx.fillStyle = '#ffffff'; ctx.fillRect(2, 8, 4, 2); ctx.fillRect(10, 8, 4, 2);
-      ctx.fillStyle = '#2d2585'; ctx.fillRect(4, 8, 2, 2); ctx.fillRect(10, 8, 2, 2);
-      ctx.fillStyle = '#9f6438'; ctx.fillRect(6, 10, 4, 1);
-      ctx.fillStyle = '#5c3818'; ctx.fillRect(5, 11, 6, 2);
+      ctx.fillStyle = '#1d4ed8'; ctx.fillRect(4, 8, 2, 2); ctx.fillRect(10, 8, 2, 2);
+      ctx.fillStyle = '#a16207'; ctx.fillRect(6, 10, 4, 1);
+      ctx.fillStyle = '#78350f'; ctx.fillRect(5, 12, 6, 1);
     }
   });
 }
@@ -650,30 +676,26 @@ function generateFaceTexture(style, skinColor) {
 function generateShirtTexture(style, skinColor) {
   return createNoiseTexture(16, 16, (ctx) => {
     if (style === 'green') {
-      ctx.fillStyle = '#557a2b'; ctx.fillRect(0, 0, 16, 16);
-      ctx.fillStyle = '#3f5e1f'; ctx.fillRect(0, 12, 16, 4);
-      ctx.fillStyle = '#78a83b'; ctx.fillRect(4, 2, 8, 2);
+      ctx.fillStyle = '#4d7c0f'; ctx.fillRect(0, 0, 16, 16);
+      ctx.fillStyle = '#365314'; ctx.fillRect(0, 12, 16, 4);
+      ctx.fillStyle = '#84cc16'; ctx.fillRect(4, 2, 8, 2);
     } else if (style === 'cyberpunk') {
       ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#ec4899'; ctx.fillRect(1, 0, 2, 16); ctx.fillRect(13, 0, 2, 16);
       ctx.fillStyle = '#06b6d4'; ctx.fillRect(7, 2, 2, 12);
-      ctx.fillStyle = '#1e293b'; ctx.fillRect(3, 4, 3, 5); ctx.fillRect(10, 4, 3, 5);
     } else if (style === 'armor') {
       ctx.fillStyle = '#475569'; ctx.fillRect(0, 0, 16, 16);
-      ctx.fillStyle = '#cbd5e1'; ctx.fillRect(2, 2, 12, 12);
-      ctx.fillStyle = '#38bdf8'; ctx.fillRect(7, 6, 2, 4);
-      ctx.fillStyle = '#94a3b8'; ctx.fillRect(3, 3, 10, 2);
+      ctx.fillStyle = '#e2e8f0'; ctx.fillRect(2, 2, 12, 12);
+      ctx.fillStyle = '#0ea5e9'; ctx.fillRect(7, 6, 2, 4);
     } else if (style === 'ninja') {
       ctx.fillStyle = '#18181b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#dc2626'; ctx.fillRect(0, 10, 16, 3);
-      ctx.fillStyle = '#27272a'; ctx.fillRect(5, 0, 6, 10);
     } else if (style === 'ender') {
       ctx.fillStyle = '#3b0764'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#a855f7'; ctx.fillRect(7, 0, 2, 16); ctx.fillRect(2, 4, 12, 2);
-      ctx.fillStyle = '#f0abfc'; ctx.fillRect(7, 4, 2, 2);
     } else {
-      ctx.fillStyle = '#00a8a8'; ctx.fillRect(0, 0, 16, 16);
-      ctx.fillStyle = '#008080'; ctx.fillRect(0, 13, 16, 3);
+      ctx.fillStyle = '#0284c7'; ctx.fillRect(0, 0, 16, 16);
+      ctx.fillStyle = '#0369a1'; ctx.fillRect(0, 13, 16, 3);
       ctx.fillStyle = skinColor; ctx.fillRect(5, 0, 6, 4);
     }
   });
@@ -682,33 +704,30 @@ function generateShirtTexture(style, skinColor) {
 function generatePantsTexture(style) {
   return createNoiseTexture(16, 16, (ctx) => {
     if (style === 'brown') {
-      ctx.fillStyle = '#473c33'; ctx.fillRect(0, 0, 16, 16);
-      ctx.fillStyle = '#2b241f'; ctx.fillRect(0, 12, 16, 4);
+      ctx.fillStyle = '#44403c'; ctx.fillRect(0, 0, 16, 16);
+      ctx.fillStyle = '#292524'; ctx.fillRect(0, 12, 16, 4);
     } else if (style === 'neon') {
       ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#06b6d4'; ctx.fillRect(1, 0, 2, 12); ctx.fillRect(13, 0, 2, 12);
-      ctx.fillStyle = '#ec4899'; ctx.fillRect(0, 12, 16, 4);
     } else if (style === 'iron') {
       ctx.fillStyle = '#334155'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#cbd5e1'; ctx.fillRect(2, 2, 12, 8);
-      ctx.fillStyle = '#475569'; ctx.fillRect(0, 11, 16, 5);
     } else if (style === 'ninja') {
       ctx.fillStyle = '#09090b'; ctx.fillRect(0, 0, 16, 16);
       ctx.fillStyle = '#71717a'; ctx.fillRect(2, 10, 12, 2);
-      ctx.fillStyle = '#27272a'; ctx.fillRect(0, 12, 16, 4);
     } else {
-      ctx.fillStyle = '#2b328c'; ctx.fillRect(0, 0, 16, 16);
-      ctx.fillStyle = '#1d2163'; ctx.fillRect(0, 12, 16, 4);
+      ctx.fillStyle = '#1e3a8a'; ctx.fillRect(0, 0, 16, 16);
+      ctx.fillStyle = '#172554'; ctx.fillRect(0, 12, 16, 4);
     }
   });
 }
 
 function generateHairTexture(style) {
   return createNoiseTexture(16, 16, (ctx) => {
-    let color = '#4a2f13';
-    if (style === 'long') color = '#b25828';
+    let color = '#3e2723';
+    if (style === 'long') color = '#b45309';
     else if (style === 'cyber') color = '#06b6d4';
-    else if (style === 'helmet') color = '#64748b';
+    else if (style === 'helmet') color = '#94a3b8';
     else if (style === 'ninja') color = '#09090b';
     else if (style === 'ender') color = '#2e1065';
     ctx.fillStyle = color; ctx.fillRect(0, 0, 16, 16);
@@ -716,20 +735,16 @@ function generateHairTexture(style) {
 }
 
 function generateSkinTexture(skinColor) {
-  return createNoiseTexture(16, 16, (ctx) => {
-    ctx.fillStyle = skinColor; ctx.fillRect(0, 0, 16, 16);
-  });
+  return createNoiseTexture(16, 16, (ctx) => { ctx.fillStyle = skinColor; ctx.fillRect(0, 0, 16, 16); });
 }
 
 const CHARACTER_PRESETS = {
-  steve:   { skin: '#c68b59', head: 'classic', top: 'teal',      bottom: 'blue',  name: 'Steve' },
-  alex:    { skin: '#e5a77d', head: 'long',    top: 'green',     bottom: 'brown', name: 'Alex' },
-  cyber:   { skin: '#3b4252', head: 'cyber',   top: 'cyberpunk', bottom: 'neon',  name: 'Cyber' },
-  knight:  { skin: '#e5a77d', head: 'helmet',  top: 'armor',     bottom: 'iron',  name: 'Knight' },
-  ninja:   { skin: '#734226', head: 'ninja',   top: 'ninja',     bottom: 'ninja', name: 'Ninja' },
-  mage:    { skin: '#3b4252', head: 'ender',   top: 'ender',     bottom: 'neon',  name: 'Mage' },
-  zombie:  { skin: '#2d5a27', head: 'zombie',  top: 'teal',      bottom: 'blue',  name: 'Zombie',  isMob: true },
-  enderman:{ skin: '#111111', head: 'enderman',top: 'ender',     bottom: 'blue',  name: 'Enderman', isMob: true },
+  steve:  { skin: '#d49a6a', head: 'classic', top: 'teal',      bottom: 'blue',  name: 'Học viên Nam', headset: '#10b981' },
+  alex:   { skin: '#f3bfa0', head: 'long',    top: 'green',     bottom: 'brown', name: 'Học viên Nữ',  headset: '#f43f5e' },
+  cyber:  { skin: '#cbd5e1', head: 'cyber',   top: 'cyberpunk', bottom: 'neon',  name: 'Cyber Dev',    headset: '#06b6d4' },
+  knight: { skin: '#e5a77d', head: 'helmet',  top: 'armor',     bottom: 'iron',  name: 'Hiệp Sĩ Code', headset: '#38bdf8' },
+  ninja:  { skin: '#9a6b4c', head: 'ninja',   top: 'ninja',     bottom: 'ninja', name: 'Ninja Bug',    headset: '#ef4444' },
+  mage:   { skin: '#cbd5e1', head: 'ender',   top: 'ender',     bottom: 'neon',  name: 'Pháp Sư AI',   headset: '#a855f7' },
 };
 const PRESET_KEYS = Object.keys(CHARACTER_PRESETS);
 
@@ -740,205 +755,142 @@ function getBoxGeo(w, h, d) {
   return GEO_CACHE[key];
 }
 
+/* ===== XÂY DỰNG NHÂN VẬT 3D TINH CHỈNH (CÓ TAI NGHE GAMING, TÓC 3D, GIÀY) ===== */
 function buildMinecraftCharacter(presetKey) {
-  const preset = CHARACTER_PRESETS[presetKey];
-  const isEnder = presetKey === 'enderman';
-  const isZombie = presetKey === 'zombie';
-
-  const torsoHeight = isEnder ? 1.4 : 0.8;
-  const torsoWidth  = isEnder ? 0.4 : 0.55;
-  const torsoDepth  = isEnder ? 0.22 : 0.3;
-  const limbWidth   = isEnder ? 0.18 : 0.26;
-  const limbLength  = isEnder ? 1.0 : 0.75;
-  const headSize    = isEnder ? 0.5 : 0.55;
+  const preset = CHARACTER_PRESETS[presetKey] || CHARACTER_PRESETS.steve;
+  const torsoHeight = 0.8, torsoWidth = 0.56, torsoDepth = 0.30;
+  const limbWidth = 0.25, limbLength = 0.74, headSize = 0.54;
 
   const group = new THREE.Group();
-
-  const skinHex = isZombie ? '#2d5a27' : (isEnder ? '#111111' : preset.skin);
-  const skinTex = generateSkinTexture(skinHex);
-  const hairTex = isZombie ? generateSkinTexture('#1c3d19')
-    : isEnder ? generateSkinTexture('#111111')
-    : generateHairTexture(preset.head);
-  const faceTex = isZombie ? generateZombieFace()
-    : isEnder ? generateEndermanFace()
-    : generateFaceTexture(preset.head, skinHex);
-  const shirtTex = isZombie ? generateSkinTexture('#008080')
-    : isEnder ? generateSkinTexture('#111111')
-    : generateShirtTexture(preset.top, skinHex);
-  const pantsTex = isZombie ? generateSkinTexture('#2b328c')
-    : isEnder ? generateSkinTexture('#111111')
-    : generatePantsTexture(preset.bottom);
-
-  const skinMat  = new THREE.MeshStandardMaterial({ map: skinTex, roughness: 0.85 });
-  const hairMat  = new THREE.MeshStandardMaterial({ map: hairTex, roughness: 0.9 });
-  const faceMat  = new THREE.MeshStandardMaterial({ map: faceTex, roughness: 0.85 });
-  const shirtMat = new THREE.MeshStandardMaterial({ map: shirtTex, roughness: 0.85 });
-  const pantsMat = new THREE.MeshStandardMaterial({ map: pantsTex, roughness: 0.85 });
+  const skinMat  = new THREE.MeshStandardMaterial({ map: generateSkinTexture(preset.skin), roughness: 0.8 });
+  const hairMat  = new THREE.MeshStandardMaterial({ map: generateHairTexture(preset.head), roughness: 0.85 });
+  const faceMat  = new THREE.MeshStandardMaterial({ map: generateFaceTexture(preset.head, preset.skin), roughness: 0.8 });
+  const shirtMat = new THREE.MeshStandardMaterial({ map: generateShirtTexture(preset.top, preset.skin), roughness: 0.8 });
+  const pantsMat = new THREE.MeshStandardMaterial({ map: generatePantsTexture(preset.bottom), roughness: 0.8 });
+  const shoeMat  = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
+  const headsetMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.35, metalness: 0.6 });
+  const headsetGlowMat = new THREE.MeshStandardMaterial({ color: preset.headset, emissive: preset.headset, emissiveIntensity: 0.9 });
 
   const SEAT_Y = 0.78;
   const TORSO_CENTER_Y = SEAT_Y + torsoHeight / 2;
 
   const torsoGroup = new THREE.Group();
   torsoGroup.position.set(0, TORSO_CENTER_Y, 0);
-  const torsoGeo = getBoxGeo(torsoWidth, torsoHeight, torsoDepth);
-  const torsoMesh = new THREE.Mesh(torsoGeo, shirtMat);
-  torsoMesh.castShadow = true;
-  torsoMesh.receiveShadow = true;
+  const torsoMesh = new THREE.Mesh(getBoxGeo(torsoWidth, torsoHeight, torsoDepth), shirtMat);
+  torsoMesh.castShadow = torsoMesh.receiveShadow = true;
   torsoGroup.add(torsoMesh);
   group.add(torsoGroup);
 
   const headGroup = new THREE.Group();
   headGroup.position.set(0, torsoHeight / 2 + headSize / 2, 0);
-  const headGeo = getBoxGeo(headSize, headSize, headSize);
-  const faceMaterials = [skinMat, skinMat, hairMat, skinMat, faceMat, hairMat];
-  const headMesh = new THREE.Mesh(headGeo, faceMaterials);
+  const headMesh = new THREE.Mesh(getBoxGeo(headSize, headSize, headSize), [skinMat, skinMat, hairMat, skinMat, faceMat, hairMat]);
   headMesh.castShadow = true;
   headGroup.add(headMesh);
+
+  // Lớp tóc 3D nổi khối phía trên đầu
+  const hairTop = new THREE.Mesh(getBoxGeo(headSize + 0.04, 0.1, headSize + 0.04), hairMat);
+  hairTop.position.set(0, headSize / 2 + 0.02, -0.01);
+  headGroup.add(hairTop);
+
+  // Tai nghe Gaming 3D trùm đầu
+  const bandTop = new THREE.Mesh(getBoxGeo(headSize + 0.12, 0.05, 0.09), headsetMat);
+  bandTop.position.set(0, headSize / 2 + 0.08, 0);
+  headGroup.add(bandTop);
+  [-1, 1].forEach(side => {
+    const earCup = new THREE.Mesh(getBoxGeo(0.07, 0.22, 0.22), headsetMat);
+    earCup.position.set(side * (headSize / 2 + 0.035), 0, 0);
+    headGroup.add(earCup);
+    const ledRing = new THREE.Mesh(getBoxGeo(0.02, 0.14, 0.14), headsetGlowMat);
+    ledRing.position.set(side * (headSize / 2 + 0.072), 0, 0);
+    headGroup.add(ledRing);
+  });
+
   torsoGroup.add(headGroup);
 
   function makeArm(side) {
     const armRoot = new THREE.Group();
-
-    armRoot.position.set(
-      side * (torsoWidth / 2 + limbWidth / 2),
-      torsoHeight / 2 - 0.02,
-      0
-    );
-
-    const upperArmMesh = new THREE.Mesh(
-      getBoxGeo(limbWidth, limbLength * 0.5, limbWidth),
-      [skinMat, skinMat, shirtMat, skinMat, skinMat, skinMat]
-    );
-    upperArmMesh.position.y = -limbLength * 0.25;
-    upperArmMesh.castShadow = true;
-    armRoot.add(upperArmMesh);
+    armRoot.position.set(side * (torsoWidth / 2 + limbWidth / 2), torsoHeight / 2 - 0.02, 0);
+    const upperArm = new THREE.Mesh(getBoxGeo(limbWidth, limbLength * 0.5, limbWidth), [skinMat, skinMat, shirtMat, skinMat, skinMat, skinMat]);
+    upperArm.position.y = -limbLength * 0.25;
+    upperArm.castShadow = true;
+    armRoot.add(upperArm);
 
     const elbowGroup = new THREE.Group();
     elbowGroup.position.y = -limbLength * 0.5;
     armRoot.add(elbowGroup);
 
-    const forearmMesh = new THREE.Mesh(
-      getBoxGeo(limbWidth * 0.9, limbLength * 0.5, limbWidth * 0.9),
-      [skinMat, skinMat, shirtMat, skinMat, skinMat, skinMat]
-    );
-    forearmMesh.position.y = -limbLength * 0.25;
-    forearmMesh.position.z = limbLength * 0.25;
-    forearmMesh.castShadow = true;
-    elbowGroup.add(forearmMesh);
-
+    const forearm = new THREE.Mesh(getBoxGeo(limbWidth * 0.9, limbLength * 0.5, limbWidth * 0.9), skinMat);
+    forearm.position.set(0, -limbLength * 0.25, limbLength * 0.25);
+    forearm.castShadow = true;
+    elbowGroup.add(forearm);
     elbowGroup.rotation.x = -Math.PI / 2;
-
     return { armRoot, elbowGroup };
   }
 
-  const leftArm = makeArm(-1);
-  const rightArm = makeArm(1);
+  const leftArm = makeArm(-1), rightArm = makeArm(1);
   torsoGroup.add(leftArm.armRoot);
   torsoGroup.add(rightArm.armRoot);
 
   function makeLeg(side) {
     const legRoot = new THREE.Group();
-
-    legRoot.position.set(
-      side * (limbWidth / 2 + 0.02),
-      -torsoHeight / 2,
-      0
-    );
-
-    const thighMesh = new THREE.Mesh(
-      getBoxGeo(limbWidth, limbLength, limbWidth),
-      pantsMat
-    );
-    thighMesh.position.y = -limbLength / 2;
-    thighMesh.castShadow = true;
-    legRoot.add(thighMesh);
+    legRoot.position.set(side * (limbWidth / 2 + 0.02), -torsoHeight / 2, 0);
+    const thigh = new THREE.Mesh(getBoxGeo(limbWidth, limbLength, limbWidth), pantsMat);
+    thigh.position.y = -limbLength / 2;
+    thigh.castShadow = true;
+    legRoot.add(thigh);
 
     const kneeGroup = new THREE.Group();
     kneeGroup.position.y = -limbLength;
     legRoot.add(kneeGroup);
 
-    const calfMesh = new THREE.Mesh(
-      getBoxGeo(limbWidth, limbLength, limbWidth),
-      pantsMat
-    );
-    calfMesh.position.y = -limbLength / 2;
-    calfMesh.castShadow = true;
-    kneeGroup.add(calfMesh);
+    const calf = new THREE.Mesh(getBoxGeo(limbWidth, limbLength * 0.85, limbWidth), pantsMat);
+    calf.position.y = -limbLength * 0.425;
+    calf.castShadow = true;
+    kneeGroup.add(calf);
+
+    const shoe = new THREE.Mesh(getBoxGeo(limbWidth + 0.02, limbLength * 0.18, limbWidth + 0.08), shoeMat);
+    shoe.position.set(0, -limbLength * 0.92, 0.03);
+    kneeGroup.add(shoe);
 
     legRoot.rotation.x = -Math.PI / 2;
     kneeGroup.rotation.x = Math.PI / 2;
-
     return { legRoot, kneeGroup };
   }
 
-  const leftLeg = makeLeg(-1);
-  const rightLeg = makeLeg(1);
+  const leftLeg = makeLeg(-1), rightLeg = makeLeg(1);
   group.add(leftLeg.legRoot);
   group.add(rightLeg.legRoot);
 
-  group.position.y = 0;
-
   return {
     group, torsoGroup, headGroup,
-    leftArmGroup: leftArm.armRoot,
-    rightArmGroup: rightArm.armRoot,
-    leftElbowGroup: leftArm.elbowGroup,
-    rightElbowGroup: rightArm.elbowGroup,
-    leftLegGroup: leftLeg.legRoot,
-    rightLegGroup: rightLeg.legRoot,
-    leftKneeGroup: leftLeg.kneeGroup,
-    rightKneeGroup: rightLeg.kneeGroup,
-    isMob: isEnder || isZombie,
-    torsoHeight, limbLength,
+    leftArmGroup: leftArm.armRoot, rightArmGroup: rightArm.armRoot,
+    leftElbowGroup: leftArm.elbowGroup, rightElbowGroup: rightArm.elbowGroup,
+    leftLegGroup: leftLeg.legRoot, rightLegGroup: rightLeg.legRoot,
+    leftKneeGroup: leftLeg.kneeGroup, rightKneeGroup: rightLeg.kneeGroup,
+    torsoHeight, limbLength
   };
 }
 
+/* ===== MÀN HÌNH CODE & ĐỒ HỌA PHÒNG HỌC ===== */
 const CODE_SNIPPETS = [
   { lang: 'JavaScript', lines: [
-    '<span style="color:#c586c0">function</span> <span style="color:#dcdcaa">chao</span>(<span style="color:#9cdcfe">ten</span>) {',
-    '  <span style="color:#c586c0">return</span> <span style="color:#ce9178">`Xin chào, ${ten}!`</span>;',
-    '}','',
-    '<span style="color:#c586c0">const</span> <span style="color:#9cdcfe">sinhVien</span> = [<span style="color:#ce9178">"An"</span>, <span style="color:#ce9178">"Bình"</span>];',
-    '<span style="color:#9cdcfe">sinhVien</span>.<span style="color:#dcdcaa">forEach</span>(<span style="color:#9cdcfe">s</span> => {',
-    '  <span style="color:#dcdcaa">console</span>.<span style="color:#dcdcaa">log</span>(<span style="color:#dcdcaa">chao</span>(<span style="color:#9cdcfe">s</span>));','});',
+    '<span style="color:#c586c0">async function</span> <span style="color:#dcdcaa">loadClass</span>() {',
+    '  <span style="color:#c586c0">const</span> <span style="color:#9cdcfe">students</span> = <span style="color:#c586c0">await</span> <span style="color:#dcdcaa">fetchRoom</span>();',
+    '  <span style="color:#9cdcfe">students</span>.<span style="color:#dcdcaa">forEach</span>(<span style="color:#9cdcfe">s</span> => <span style="color:#dcdcaa">render</span>(<span style="color:#9cdcfe">s</span>));',
+    '}'
   ]},
   { lang: 'Python', lines: [
-    '<span style="color:#c586c0">def</span> <span style="color:#dcdcaa">tinh_tong</span>(<span style="color:#9cdcfe">n</span>):',
-    '    <span style="color:#6a9955"># Tính tổng 1..n</span>',
-    '    <span style="color:#c586c0">return</span> <span style="color:#dcdcaa">sum</span>(<span style="color:#dcdcaa">range</span>(<span style="color:#b5cea8">1</span>, <span style="color:#9cdcfe">n</span> + <span style="color:#b5cea8">1</span>))','',
-    '<span style="color:#9cdcfe">ket_qua</span> = <span style="color:#dcdcaa">tinh_tong</span>(<span style="color:#b5cea8">100</span>)',
-    '<span style="color:#dcdcaa">print</span>(<span style="color:#ce9178">f"Tổng = {ket_qua}"</span>)',
+    '<span style="color:#c586c0">def</span> <span style="color:#dcdcaa">solve_quiz</span>(<span style="color:#9cdcfe">questions</span>):',
+    '    <span style="color:#9cdcfe">score</span> = <span style="color:#b5cea8">0</span>',
+    '    <span style="color:#c586c0">for</span> <span style="color:#9cdcfe">q</span> <span style="color:#c586c0">in</span> <span style="color:#9cdcfe">questions</span>:',
+    '        <span style="color:#c586c0">if</span> <span style="color:#9cdcfe">q</span>.<span style="color:#dcdcaa">check</span>(): <span style="color:#9cdcfe">score</span> += <span style="color:#b5cea8">1</span>',
+    '    <span style="color:#c586c0">return</span> <span style="color:#9cdcfe">score</span>'
   ]},
-  { lang: 'HTML', lines: [
-    '<span style="color:#569cd6">&lt;!DOCTYPE</span> <span style="color:#9cdcfe">html</span><span style="color:#569cd6">&gt;</span>',
-    '<span style="color:#569cd6">&lt;html&gt;</span>','  <span style="color:#569cd6">&lt;head&gt;</span>',
-    '    <span style="color:#569cd6">&lt;title&gt;</span>Phòng học<span style="color:#569cd6">&lt;/title&gt;</span>',
-    '  <span style="color:#569cd6">&lt;/head&gt;</span>','  <span style="color:#569cd6">&lt;body&gt;</span>',
-    '    <span style="color:#569cd6">&lt;h1&gt;</span>Hello World<span style="color:#569cd6">&lt;/h1&gt;</span>',
-    '  <span style="color:#569cd6">&lt;/body&gt;</span>','<span style="color:#569cd6">&lt;/html&gt;</span>',
-  ]},
-  { lang: 'CSS', lines: [
-    '<span style="color:#dcdcaa">.card</span> {',
-    '  <span style="color:#9cdcfe">background</span>: <span style="color:#ce9178">linear-gradient</span>(<span style="color:#b5cea8">45deg</span>, <span style="color:#ce9178">#667eea</span>, <span style="color:#ce9178">#764ba2</span>);',
-    '  <span style="color:#9cdcfe">border-radius</span>: <span style="color:#b5cea8">20px</span>;',
-    '  <span style="color:#9cdcfe">padding</span>: <span style="color:#b5cea8">40px</span>;',
-    '  <span style="color:#9cdcfe">color</span>: <span style="color:#ce9178">white</span>;','}',
-  ]},
-  { lang: 'Java', lines: [
-    '<span style="color:#569cd6">public class</span> <span style="color:#4ec9b0">SinhVien</span> {',
-    '  <span style="color:#569cd6">private</span> <span style="color:#4ec9b0">String</span> <span style="color:#9cdcfe">ten</span>;',
-    '  <span style="color:#569cd6">private int</span> <span style="color:#9cdcfe">tuoi</span>;','',
-    '  <span style="color:#569cd6">public</span> <span style="color:#dcdcaa">SinhVien</span>(<span style="color:#4ec9b0">String</span> <span style="color:#9cdcfe">ten</span>) {',
-    '    <span style="color:#569cd6">this</span>.<span style="color:#9cdcfe">ten</span> = <span style="color:#9cdcfe">ten</span>;','  }','}',
-  ]},
-  { lang: 'React', lines: [
-    '<span style="color:#569cd6">import</span> { <span style="color:#9cdcfe">useState</span> } <span style="color:#569cd6">from</span> <span style="color:#ce9178">"react"</span>;','',
-    '<span style="color:#569cd6">export default function</span> <span style="color:#dcdcaa">App</span>() {',
-    '  <span style="color:#569cd6">const</span> [<span style="color:#9cdcfe">count</span>, <span style="color:#9cdcfe">setCount</span>] = <span style="color:#dcdcaa">useState</span>(<span style="color:#b5cea8">0</span>);',
-    '  <span style="color:#c586c0">return</span> (',
-    '    <span style="color:#569cd6">&lt;button</span> <span style="color:#9cdcfe">onClick</span>={<span style="color:#9cdcfe">() =&gt; setCount</span>(<span style="color:#9cdcfe">count</span>+<span style="color:#b5cea8">1</span>)}<span style="color:#569cd6">&gt;</span>',
-    '      {<span style="color:#9cdcfe">count</span>}','    <span style="color:#569cd6">&lt;/button&gt;</span>','  );','}',
-  ]},
+  { lang: 'HTML/CSS', lines: [
+    '<span style="color:#569cd6">&lt;section</span> <span style="color:#9cdcfe">class</span>=<span style="color:#ce9178">"studio-3d"</span><span style="color:#569cd6">&gt;</span>',
+    '  <span style="color:#569cd6">&lt;canvas</span> <span style="color:#9cdcfe">id</span>=<span style="color:#ce9178">"scene"</span><span style="color:#569cd6">&gt;&lt;/canvas&gt;</span>',
+    '<span style="color:#569cd6">&lt;/section&gt;</span>'
+  ]}
 ];
 
 function createMonitorCanvas() {
@@ -954,316 +906,265 @@ function drawCodeScreen(mon, snippet, scrollY, isOnline) {
   const { ctx, canvas } = mon;
   const w = canvas.width, h = canvas.height;
   if (!isOnline) {
-    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#030712'; ctx.fillRect(0, 0, w, h);
     const t = Date.now() / 1000;
-    const alpha = 0.3 + Math.sin(t * 2) * 0.3;
-    ctx.fillStyle = `rgba(100, 150, 200, ${alpha})`;
-    ctx.font = 'bold 140px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('Zzz', w/2 + Math.sin(t) * 20, h/2 + Math.cos(t * 1.3) * 15);
-    ctx.fillStyle = `rgba(60, 80, 120, ${0.4 + Math.sin(t) * 0.2})`;
-    ctx.font = '16px monospace'; ctx.textAlign = 'right'; ctx.fillText('SLEEP MODE', w - 16, h - 16);
+    ctx.fillStyle = `rgba(148, 163, 184, ${0.35 + Math.sin(t * 2) * 0.25})`;
+    ctx.font = 'bold 110px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Zzz', w / 2, h / 2);
     return;
   }
-  ctx.fillStyle = '#1e1e2e'; ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = '#181825'; ctx.fillRect(0, 0, 30, h);
-  ctx.fillStyle = '#ff5f56'; ctx.beginPath(); ctx.arc(10, 10, 5, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#ffbd2e'; ctx.beginPath(); ctx.arc(26, 10, 5, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#27c93f'; ctx.beginPath(); ctx.arc(42, 10, 5, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#cdd6f4'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'left';
-  ctx.fillText(`${snippet.lang}`, 35, 28);
-  ctx.font = '14px "Consolas", "Monaco", monospace';
-  const lineHeight = 20, startY = 52;
-  const scrollOffset = Math.floor(scrollY) % (snippet.lines.length * lineHeight + 200);
+  ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, w, 30);
+  ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(14, 15, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.arc(30, 15, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.arc(46, 15, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 13px monospace'; ctx.textAlign = 'left';
+  ctx.fillText(snippet.lang, 68, 20);
+
+  const lineHeight = 24, startY = 58;
+  const offset = Math.floor(scrollY) % (snippet.lines.length * lineHeight + 120);
   snippet.lines.forEach((line, i) => {
-    const y = startY + i * lineHeight - scrollOffset;
-    if (y < -lineHeight || y > h + lineHeight) return;
-    ctx.fillStyle = '#585b70'; ctx.font = '12px monospace'; ctx.textAlign = 'right';
+    const y = startY + i * lineHeight - offset;
+    if (y < 32 || y > h) return;
+    ctx.fillStyle = '#475569'; ctx.font = '13px monospace'; ctx.textAlign = 'right';
     ctx.fillText(String(i + 1), 28, y);
-    ctx.textAlign = 'left'; ctx.font = '14px "Consolas", "Monaco", monospace';
-    drawHTMLText(ctx, line, 38, y);
+    ctx.textAlign = 'left';
+    const parts = line.split(/(<[^>]+>)/);
+    let curX = 40, color = '#e2e8f0';
+    for (const part of parts) {
+      if (!part) continue;
+      if (part.startsWith('<span')) { const m = part.match(/color:\s*([^;"]+)/); if (m) color = m[1].trim(); continue; }
+      if (part.startsWith('</span')) { color = '#e2e8f0'; continue; }
+      ctx.fillStyle = color; ctx.fillText(part, curX, y);
+      curX += ctx.measureText(part).width;
+    }
   });
-  const cursorY = startY + snippet.lines.length * lineHeight - scrollOffset;
-  if (cursorY > 0 && cursorY < h && Math.floor(Date.now() / 500) % 2 === 0) {
-    ctx.fillStyle = '#89b4fa'; ctx.fillRect(38, cursorY - 12, 8, 16);
-  }
-  const grad = ctx.createLinearGradient(0, h - 40, 0, h);
-  grad.addColorStop(0, 'rgba(30, 30, 46, 0)'); grad.addColorStop(1, 'rgba(30, 30, 46, 1)');
-  ctx.fillStyle = grad; ctx.fillRect(0, h - 40, w, 40);
 }
 
-function drawHTMLText(ctx, html, x, y) {
-  const parts = html.split(/(<[^>]+>)/);
-  let curX = x, color = '#cdd6f4';
-  for (const part of parts) {
-    if (!part) continue;
-    if (part.startsWith('<span')) { const m = part.match(/color:\s*([^;"]+)/); if (m) color = m[1].trim(); continue; }
-    if (part.startsWith('</span')) { color = '#cdd6f4'; continue; }
-    ctx.fillStyle = color; ctx.fillText(part, curX, y);
-    curX += ctx.measureText(part).width;
-  }
-}
-
-function buildGeom(pos, idx, nor) {
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  if (nor) g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
-  else g.computeVertexNormals();
-  g.setIndex(idx);
-  return g;
-}
-const CACHE = {};
-function boxGeo(w, h, d) {
-  const key = `b${w}_${h}_${d}`;
-  if (CACHE[key]) return CACHE[key];
-  const x=w/2, y=h/2, z=d/2;
-  const p = [-x,-y,-z, x,-y,-z, x,y,-z, -x,y,-z, -x,-y,z, x,-y,z, x,y,z, -x,y,z];
-  const n = [0,0,-1,0,0,-1,0,0,-1,0,0,-1, 0,0,1,0,0,1,0,0,1,0,0,1];
-  const i = [0,1,2, 0,2,3, 4,6,5, 4,7,6, 0,4,5, 0,5,1, 3,2,6, 3,6,7, 0,3,7, 0,7,4, 1,5,6, 1,6,2];
-  return CACHE[key] = buildGeom(p, i, n);
-}
-function cylGeo(rT, rB, h, seg) {
-  seg = seg || 16;
-  const key = `c${rT}_${rB}_${h}_${seg}`;
-  if (CACHE[key]) return CACHE[key];
-  const p=[], n=[], idx=[];
-  const half = h/2;
-  for (let i=0;i<=seg;i++){
-    const a=(i/seg)*Math.PI*2, c=Math.cos(a), s=Math.sin(a);
-    p.push(c*rT, half, s*rT); n.push(c,0,s);
-    p.push(c*rB,-half, s*rB); n.push(c,0,s);
-  }
-  for (let i=0;i<seg;i++){ const a=i*2,b=a+1,c=a+2,d=a+3; idx.push(a,b,d, a,d,c); }
-  const tc = p.length/3;
-  p.push(0,half,0); n.push(0,1,0);
-  for (let i=0;i<=seg;i++){ const a=(i/seg)*Math.PI*2; p.push(Math.cos(a)*rT, half, Math.sin(a)*rT); n.push(0,1,0); }
-  for (let i=0;i<seg;i++) idx.push(tc, tc+i+1, tc+i+2);
-  const bc = p.length/3;
-  p.push(0,-half,0); n.push(0,-1,0);
-  for (let i=0;i<=seg;i++){ const a=(i/seg)*Math.PI*2; p.push(Math.cos(a)*rB, -half, Math.sin(a)*rB); n.push(0,-1,0); }
-  for (let i=0;i<seg;i++) idx.push(bc, bc+i+2, bc+i+1);
-  return CACHE[key] = buildGeom(p, idx, n);
-}
-function sphGeo(r, ws, hs) {
-  ws = ws || 20; hs = hs || 16;
-  const key = `s${r}_${ws}_${hs}`;
-  if (CACHE[key]) return CACHE[key];
-  const p=[], n=[], idx=[];
-  for (let y=0;y<=hs;y++){
-    const phi=(y/hs)*Math.PI;
-    for (let x=0;x<=ws;x++){
-      const th=(x/ws)*Math.PI*2;
-      const nx=Math.sin(phi)*Math.cos(th), ny=Math.cos(phi), nz=Math.sin(phi)*Math.sin(th);
-      p.push(nx*r, ny*r, nz*r); n.push(nx,ny,nz);
+/* ===== VẬT LIỆU PHÒNG HỌC HIỆN ĐẠI ===== */
+function createWoodFloorTexture() {
+  const c = document.createElement('canvas'); c.width = 256; c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, 256, 256);
+  ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 3;
+  for (let y = 0; y < 256; y += 32) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(256, y); ctx.stroke();
+    const shift = (y / 32) % 2 === 0 ? 0 : 64;
+    for (let x = shift; x < 256; x += 128) {
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 32); ctx.stroke();
     }
   }
-  for (let y=0;y<hs;y++) for (let x=0;x<ws;x++){
-    const a=y*(ws+1)+x, b=a+ws+1;
-    idx.push(a,b,a+1, b,b+1,a+1);
-  }
-  return CACHE[key] = buildGeom(p, idx, n);
-}
-function planeGeo(w, h) {
-  const key = `p${w}_${h}`;
-  if (CACHE[key]) return CACHE[key];
-  const x=w/2, y=h/2;
-  const p = [-x,-y,0, x,-y,0, x,y,0, -x,y,0];
-  const n = [0,0,1, 0,0,1, 0,0,1, 0,0,1];
-  const i = [0,1,2, 0,2,3];
-  return CACHE[key] = buildGeom(p, i, n);
-}
-function ringGeo(rIn, rOut, seg) {
-  seg = seg || 32;
-  const key = `r${rIn}_${rOut}_${seg}`;
-  if (CACHE[key]) return CACHE[key];
-  const p=[], n=[], idx=[];
-  for (let i=0;i<=seg;i++){
-    const a=(i/seg)*Math.PI*2, c=Math.cos(a), s=Math.sin(a);
-    p.push(c*rIn, s*rIn, 0); n.push(0,0,1);
-    p.push(c*rOut, s*rOut, 0); n.push(0,0,1);
-  }
-  for (let i=0;i<seg;i++){ const a=i*2,b=a+1,c=a+2,d=a+3; idx.push(a,b,d, a,d,c); }
-  return CACHE[key] = buildGeom(p, idx, n);
-}
-function circleGeo(r, seg) {
-  seg = seg || 32;
-  const key = `ci${r}_${seg}`;
-  if (CACHE[key]) return CACHE[key];
-  const p=[0,0,0], n=[0,0,1], idx=[];
-  for (let i=0;i<=seg;i++){
-    const a=(i/seg)*Math.PI*2;
-    p.push(Math.cos(a)*r, Math.sin(a)*r, 0); n.push(0,0,1);
-  }
-  for (let i=1;i<=seg;i++) idx.push(0, i, i+1);
-  return CACHE[key] = buildGeom(p, idx, n);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(14, 16);
+  return tex;
 }
 
 const M = {
-  floor: new THREE.MeshStandardMaterial({ color: 0x1a2232, roughness: 0.65, metalness: 0.2, side: THREE.DoubleSide }),
-  wall: new THREE.MeshStandardMaterial({ color: 0x252c3d, roughness: 0.92, side: THREE.DoubleSide }),
-  ceiling: new THREE.MeshStandardMaterial({ color: 0x1a2030, roughness: 0.95, side: THREE.DoubleSide }),
-  wallAcc: new THREE.MeshStandardMaterial({ color: 0x2f3a52, roughness: 0.85 }),
-  desk: new THREE.MeshStandardMaterial({ color: 0x3a4a5a, roughness: 0.5, metalness: 0.3 }),
-  deskLeg: new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.4, metalness: 0.7 }),
-  chair: new THREE.MeshStandardMaterial({ color: 0x3a6fa8, roughness: 0.5 }),
-  metal: new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.3, metalness: 0.85 }),
-  monitor: new THREE.MeshStandardMaterial({ color: 0x0a0e1a, roughness: 0.3, metalness: 0.5 }),
-  pot: new THREE.MeshStandardMaterial({ color: 0xb06a4a, roughness: 0.8 }),
-  leaf: new THREE.MeshStandardMaterial({ color: 0x2e8b57, roughness: 0.6, side: THREE.DoubleSide }),
-  clockFace: new THREE.MeshStandardMaterial({ color: 0xf0f0f0, roughness: 0.4 }),
-  clockRim: new THREE.MeshStandardMaterial({ color: 0x2a2f3a, roughness: 0.3, metalness: 0.9 }),
-  clockHand: new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.5 }),
-  clockSec: new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.5 }),
-  clockTick: new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.6 }),
+  floor: new THREE.MeshStandardMaterial({ map: createWoodFloorTexture(), roughness: 0.55, metalness: 0.15 }),
+  wall: new THREE.MeshStandardMaterial({ color: 0x1e2536, roughness: 0.85, side: THREE.DoubleSide }),
+  wallTrim: new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 }),
+  ceiling: new THREE.MeshStandardMaterial({ color: 0x131826, roughness: 0.9 }),
+  ledPanel: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe0f2fe, emissiveIntensity: 1.4 }),
+  deskTop: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.45, metalness: 0.1 }), // Gỗ ấm sang trọng
+  deskFrame: new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.7 }),
+  chair: new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.5 }),
+  monitor: new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.3, metalness: 0.5 }),
+  pcCase: new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.35, metalness: 0.6 }),
+  pcRgb: new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x10b981, emissiveIntensity: 1.2 }),
+  mousePad: new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 }),
+  pot: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.75 }),
+  leaf: new THREE.MeshStandardMaterial({ color: 0x16a34a, roughness: 0.55 }),
+  windowGlass: new THREE.MeshStandardMaterial({ color: 0x0284c7, transparent: true, opacity: 0.25, roughness: 0.1, metalness: 0.8 })
 };
 
-const screenMatBase = new THREE.MeshStandardMaterial({
-  color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.2, roughness: 0.2,
-});
+const screenMatBase = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.15, roughness: 0.2 });
 
-scene.add(new THREE.HemisphereLight(0x8ea8ff, 0x1a1f2e, 0.5));
-const ambient = new THREE.AmbientLight(0x404860, 0.55); scene.add(ambient);
+/* ===== HỆ THỐNG ÁNH SÁNG ===== */
+scene.add(new THREE.HemisphereLight(0xbae6fd, 0x1e293b, 0.65));
+const ambient = new THREE.AmbientLight(0x64748b, 0.45); scene.add(ambient);
+
 const ceilingLights = [];
-[[-6,8,-7], [6,8,-7], [-6,8,3], [6,8,3]].forEach((pos, i) => {
-  const l = new THREE.PointLight(0xfff0dd, 0.9, 24, 2);
+[[-6, 8.2, -7], [6, 8.2, -7], [-6, 8.2, 2], [6, 8.2, 2]].forEach((pos, i) => {
+  const l = new THREE.PointLight(0xf8fafc, 0.95, 26, 1.8);
   l.position.set(pos[0], pos[1], pos[2]);
   if (i === 0) {
     l.castShadow = true;
-    l.shadow.mapSize.set(512, 512);
-    l.shadow.bias = -0.001;
+    l.shadow.mapSize.set(1024, 1024);
+    l.shadow.bias = -0.0008;
   }
   scene.add(l);
   ceilingLights.push(l);
+
+  // Đèn panel LED âm trần 3D
+  const ledMesh = new THREE.Mesh(getBoxGeo(2.8, 0.08, 0.9), M.ledPanel);
+  ledMesh.position.set(pos[0], 8.95, pos[2]);
+  scene.add(ledMesh);
 });
 
+/* ===== KIẾN TRÚC PHÒNG HỌC ===== */
 const ROOM = { w: 26, d: 30, h: 9 };
 const HALF_W = ROOM.w / 2, HALF_D = ROOM.d / 2;
 
-const floor = new THREE.Mesh(boxGeo(ROOM.w, 0.3, ROOM.d), M.floor);
+const floor = new THREE.Mesh(getBoxGeo(ROOM.w, 0.3, ROOM.d), M.floor);
 floor.position.y = -0.15; floor.receiveShadow = true; scene.add(floor);
-const ceiling = new THREE.Mesh(boxGeo(ROOM.w, 0.3, ROOM.d), M.ceiling);
+
+const ceiling = new THREE.Mesh(getBoxGeo(ROOM.w, 0.3, ROOM.d), M.ceiling);
 ceiling.position.y = ROOM.h + 0.15; scene.add(ceiling);
-const wb = new THREE.Mesh(boxGeo(ROOM.w, ROOM.h, 0.4), M.wall);
-wb.position.set(0, ROOM.h/2, -HALF_D); wb.receiveShadow = true; scene.add(wb);
-const wl = new THREE.Mesh(boxGeo(0.4, ROOM.h, ROOM.d), M.wall);
-wl.position.set(-HALF_W, ROOM.h/2, 0); wl.receiveShadow = true; scene.add(wl);
-const wr = new THREE.Mesh(boxGeo(0.4, ROOM.h, ROOM.d), M.wall);
-wr.position.set(HALF_W, ROOM.h/2, 0); wr.receiveShadow = true; scene.add(wr);
-const wf = new THREE.Mesh(boxGeo(ROOM.w, ROOM.h, 0.4), M.wall);
-wf.position.set(0, ROOM.h/2, HALF_D); wf.receiveShadow = true; scene.add(wf);
 
-const bbBack = new THREE.Mesh(boxGeo(ROOM.w, 0.4, 0.1), M.wallAcc);
-bbBack.position.set(0, 0.2, -HALF_D + 0.2); scene.add(bbBack);
-const board = new THREE.Mesh(boxGeo(9, 4, 0.1), new THREE.MeshStandardMaterial({ color: 0xf5f5f5 }));
-board.position.set(0, 5.5, -HALF_D + 0.3); scene.add(board);
-const boardFrame = new THREE.Mesh(boxGeo(9.3, 4.3, 0.08), M.metal);
-boardFrame.position.set(0, 5.5, -HALF_D + 0.2); scene.add(boardFrame);
+// Tường trước (bảng trắng), tường sau, tường phải
+const wb = new THREE.Mesh(getBoxGeo(ROOM.w, ROOM.h, 0.4), M.wall);
+wb.position.set(0, ROOM.h / 2, -HALF_D); wb.receiveShadow = true; scene.add(wb);
 
-const clockGroup = new THREE.Group();
-const CLOCK_RADIUS = 1.0;
-clockGroup.add(new THREE.Mesh(circleGeo(CLOCK_RADIUS, 48), M.clockFace));
-const clockRim = new THREE.Mesh(ringGeo(CLOCK_RADIUS, CLOCK_RADIUS + 0.08, 48), M.clockRim);
-clockRim.position.z = 0.01; clockGroup.add(clockRim);
-for (let i = 0; i < 12; i++) {
-  const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
-  const isMajor = i % 3 === 0;
-  const tickLen = isMajor ? 0.18 : 0.10;
-  const tickW = isMajor ? 0.05 : 0.025;
-  const rOuter = CLOCK_RADIUS * 0.88;
-  const tick = new THREE.Mesh(boxGeo(tickW, tickLen, 0.015), M.clockTick);
-  tick.position.set(Math.cos(angle) * (rOuter - tickLen/2), Math.sin(angle) * (rOuter - tickLen/2), 0.015);
-  tick.rotation.z = angle + Math.PI / 2;
-  clockGroup.add(tick);
+const wf = new THREE.Mesh(getBoxGeo(ROOM.w, ROOM.h, 0.4), M.wall);
+wf.position.set(0, ROOM.h / 2, HALF_D); scene.add(wf);
+
+const wr = new THREE.Mesh(getBoxGeo(0.4, ROOM.h, ROOM.d), M.wall);
+wr.position.set(HALF_W, ROOM.h / 2, 0); scene.add(wr);
+
+// Tường trái có 3 ô cửa sổ kính lớn nhìn ra bầu trời đêm
+const wlBottom = new THREE.Mesh(getBoxGeo(0.4, 2.4, ROOM.d), M.wall);
+wlBottom.position.set(-HALF_W, 1.2, 0); scene.add(wlBottom);
+const wlTop = new THREE.Mesh(getBoxGeo(0.4, 2.2, ROOM.d), M.wall);
+wlTop.position.set(-HALF_W, ROOM.h - 1.1, 0); scene.add(wlTop);
+[-11, -3.5, 4, 11.5].forEach(zPillar => {
+  const pillar = new THREE.Mesh(getBoxGeo(0.45, 4.4, 2.4), M.wallTrim);
+  pillar.position.set(-HALF_W, 4.6, zPillar); scene.add(pillar);
+});
+const glassPane = new THREE.Mesh(getBoxGeo(0.08, 4.4, 24), M.windowGlass);
+glassPane.position.set(-HALF_W, 4.6, 0); scene.add(glassPane);
+
+// Len chân tường chạy quanh phòng
+const baseFront = new THREE.Mesh(getBoxGeo(ROOM.w, 0.35, 0.08), M.wallTrim);
+baseFront.position.set(0, 0.18, -HALF_D + 0.22); scene.add(baseFront);
+
+// Bảng trắng thông minh phía trước lớp có nội dung bài giảng
+function createWhiteboardTexture() {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, 1024, 512);
+  ctx.fillStyle = '#0f172a'; ctx.font = 'bold 42px sans-serif';
+  ctx.fillText('LỚP HỌC LẬP TRÌNH & TRẮC NGHIỆM TRỰC TUYẾN', 56, 86);
+  ctx.fillStyle = '#0284c7'; ctx.fillRect(56, 106, 912, 4);
+  ctx.fillStyle = '#334155'; ctx.font = '28px monospace';
+  ctx.fillText('1. Chọn nhân vật & đổi tên ở thanh công cụ góc trên', 64, 175);
+  ctx.fillText('2. Click vào bạn cùng lớp để xem góc nhìn cận cảnh', 64, 235);
+  ctx.fillText('3. Làm bài tập trắc nghiệm để lên top Bảng Xếp Hạng 🏆', 64, 295);
+  ctx.fillStyle = '#059669'; ctx.font = 'bold 26px sans-serif';
+  ctx.fillText('Chúc cả lớp học tập hiệu quả!', 64, 385);
+  return new THREE.CanvasTexture(c);
 }
-const hourHandGeo = boxGeo(0.07, 0.5, 0.02); hourHandGeo.translate(0, 0.2, 0);
-const hourHand = new THREE.Mesh(hourHandGeo, M.clockHand); hourHand.position.z = 0.03; clockGroup.add(hourHand);
-const minHandGeo = boxGeo(0.05, 0.72, 0.02); minHandGeo.translate(0, 0.3, 0);
-const minHand = new THREE.Mesh(minHandGeo, M.clockHand); minHand.position.z = 0.04; clockGroup.add(minHand);
-const secHandGeo = boxGeo(0.025, 0.82, 0.015); secHandGeo.translate(0, 0.32, 0);
-const secHand = new THREE.Mesh(secHandGeo, M.clockSec); secHand.position.z = 0.05; clockGroup.add(secHand);
-const centerDot = new THREE.Mesh(circleGeo(0.06, 16), M.clockRim); centerDot.position.z = 0.06; clockGroup.add(centerDot);
-clockGroup.position.set(HALF_W - 0.25, 6.2, 5); clockGroup.rotation.y = -Math.PI / 2;
+const board = new THREE.Mesh(getBoxGeo(10.5, 4.4, 0.1), new THREE.MeshStandardMaterial({ map: createWhiteboardTexture(), roughness: 0.35 }));
+board.position.set(0, 5.2, -HALF_D + 0.28); scene.add(board);
+const boardFrame = new THREE.Mesh(getBoxGeo(10.8, 4.7, 0.08), M.deskFrame);
+boardFrame.position.set(0, 5.2, -HALF_D + 0.22); scene.add(boardFrame);
+
+// Đồng hồ treo tường
+const clockGroup = new THREE.Group();
+clockGroup.add(new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.06, 32).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xf8fafc })));
+const hourHand = new THREE.Mesh(getBoxGeo(0.06, 0.45, 0.03), M.deskFrame); hourHand.position.z = 0.05; clockGroup.add(hourHand);
+const minHand = new THREE.Mesh(getBoxGeo(0.04, 0.68, 0.03), M.deskFrame); minHand.position.z = 0.06; clockGroup.add(minHand);
+const secHand = new THREE.Mesh(getBoxGeo(0.02, 0.76, 0.03), new THREE.MeshStandardMaterial({ color: 0xef4444 })); secHand.position.z = 0.07; clockGroup.add(secHand);
+clockGroup.position.set(HALF_W - 0.25, 6.2, 4); clockGroup.rotation.y = -Math.PI / 2;
 scene.add(clockGroup);
 
-const FIRST_NAMES = ['An', 'Bình', 'Cường', 'Dũng', 'Em', 'Phong', 'Giang', 'Hà', 'Hùng', 'Khang',
-                     'Linh', 'Mai', 'Nam', 'Oanh', 'Phú', 'Quân', 'Sơn', 'Trang', 'Uyên', 'Vy',
-                     'Yến', 'Bảo', 'Chi', 'Đạt', 'Hải', 'Khánh', 'Lâm', 'Minh', 'Ngọc', 'Phương',
-                     'Quỳnh', 'Tâm', 'Thảo', 'Tuấn', 'Vân', 'Xuân', 'Đức', 'Hòa', 'Kiên', 'Long',
-                     'Mạnh', 'Nga', 'Phát', 'Quang', 'Tùng', 'Thắng', 'Vinh', 'Yên', 'Bách', 'Cẩm'];
+// Giá sách trang trí bên tường phải
+function makeBookshelf(zPos) {
+  const g = new THREE.Group();
+  const frame = new THREE.Mesh(getBoxGeo(0.5, 3.6, 2.2), M.deskFrame);
+  frame.position.y = 1.8; g.add(frame);
+  const colors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0x8b5cf6];
+  for (let row = 0; row < 4; row++) {
+    const shelf = new THREE.Mesh(getBoxGeo(0.52, 0.06, 2.1), M.deskTop);
+    shelf.position.y = 0.6 + row * 0.85; g.add(shelf);
+    for (let b = 0; b < 7; b++) {
+      const book = new THREE.Mesh(getBoxGeo(0.32, 0.52, 0.16), new THREE.MeshStandardMaterial({ color: colors[(row + b) % colors.length] }));
+      book.position.set(0.05, 0.9 + row * 0.85, -0.75 + b * 0.24);
+      g.add(book);
+    }
+  }
+  g.position.set(HALF_W - 0.5, 0, zPos);
+  return g;
+}
+scene.add(makeBookshelf(-6));
+scene.add(makeBookshelf(-1.5));
+
+/* ===== BÀN MÁY TÍNH GAMING + THÙNG PC RGB ===== */
+const COLS = 10, ROWS = 5;
+const colSpacing = 2.2, rowSpacing = 2.8;
+const startX = -(COLS - 1) * colSpacing / 2, startZ = -10;
+const students = [], npcs = [], monitors = [];
 
 function makeNameSprite(name, isYou = false, isAdmin = false) {
   const canvas = document.createElement('canvas');
   canvas.width = 320; canvas.height = 64;
   const ctx = canvas.getContext('2d');
-  if(isAdmin){
-    const grad = ctx.createLinearGradient(0,0,320,0);
-    grad.addColorStop(0,'#f59e0b'); grad.addColorStop(.5,'#ef4444'); grad.addColorStop(1,'#a855f7');
-    ctx.fillStyle = grad;
-  } else {
-    ctx.fillStyle = isYou ? 'rgba(60, 45, 10, 0.92)' : 'rgba(10, 16, 30, 0.85)';
-  }
-  const r = 20;
+  ctx.fillStyle = isAdmin ? 'rgba(220, 38, 38, 0.92)' : (isYou ? 'rgba(180, 83, 9, 0.92)' : 'rgba(15, 23, 42, 0.88)');
+  const r = 18;
   ctx.beginPath();
-  ctx.moveTo(r, 0); ctx.lineTo(canvas.width - r, 0);
-  ctx.quadraticCurveTo(canvas.width, 0, canvas.width, r);
-  ctx.lineTo(canvas.width, canvas.height - r);
-  ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - r, canvas.height);
-  ctx.lineTo(r, canvas.height);
-  ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - r);
-  ctx.lineTo(0, r);
-  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.roundRect ? ctx.roundRect(4, 4, 312, 56, r) : ctx.rect(4, 4, 312, 56);
   ctx.fill();
-  ctx.strokeStyle = isAdmin ? 'rgba(255,255,255,1)' : (isYou ? 'rgba(251, 191, 36, 1)' : 'rgba(52, 211, 153, 0.8)');
-  ctx.lineWidth = isAdmin ? 4 : 3; ctx.stroke();
-  ctx.fillStyle = isAdmin ? '#ffffff' : (isYou ? '#fbbf24' : '#ffffff');
-  ctx.font = 'bold 34px system-ui, Arial';
+  ctx.strokeStyle = isAdmin ? '#fde047' : (isYou ? '#fbbf24' : '#34d399');
+  ctx.lineWidth = 3; ctx.stroke();
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 30px system-ui, sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  const label = isAdmin ? '👑 ' + name : name;
-  ctx.fillText(label, canvas.width/2, canvas.height/2 + 2);
+  ctx.fillText(isAdmin ? '👑 ' + name : name, 160, 33);
   const texture = new THREE.CanvasTexture(canvas);
   texture.minFilter = THREE.LinearFilter;
-  const mat = new THREE.SpriteMaterial({ map: texture, transparent: true });
-  const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(2.0, 0.4, 1);
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true }));
+  sprite.scale.set(1.9, 0.38, 1);
   return sprite;
 }
 
-const COLS = 10, ROWS = 5;
-const colSpacing = 2.2, rowSpacing = 2.8;
-const startX = -(COLS-1) * colSpacing / 2, startZ = -10;
-const students = [], npcs = [], monitors = [];
-
 function makePCDesk(snippet, studentIdx) {
   const g = new THREE.Group();
-  const top = new THREE.Mesh(boxGeo(2.0, 0.08, 0.95), M.desk);
+  // Mặt bàn gỗ & khung thép
+  const top = new THREE.Mesh(getBoxGeo(2.0, 0.08, 0.95), M.deskTop);
   top.position.set(0, 1.0, 0); top.castShadow = top.receiveShadow = true; g.add(top);
-  const edge = new THREE.Mesh(boxGeo(2.05, 0.03, 1.0), M.deskLeg);
-  edge.position.set(0, 0.96, 0); g.add(edge);
+
   [[-0.9, -0.4], [0.9, -0.4], [-0.9, 0.4], [0.9, 0.4]].forEach(([lx, lz]) => {
-    const leg = new THREE.Mesh(cylGeo(0.04, 0.04, 1.0, 8), M.deskLeg);
+    const leg = new THREE.Mesh(getBoxGeo(0.06, 1.0, 0.06), M.deskFrame);
     leg.position.set(lx, 0.5, lz); leg.castShadow = true; g.add(leg);
   });
-  const cross = new THREE.Mesh(boxGeo(1.8, 0.04, 0.04), M.deskLeg);
-  cross.position.set(0, 0.25, 0); g.add(cross);
-  const monBase = new THREE.Mesh(cylGeo(0.22, 0.26, 0.04, 12), M.monitor);
-  monBase.position.set(0, 1.06, -0.15); monBase.castShadow = true; g.add(monBase);
-  const monNeck = new THREE.Mesh(cylGeo(0.05, 0.06, 0.3, 8), M.monitor);
-  monNeck.position.set(0, 1.22, -0.15); g.add(monNeck);
-  const monBody = new THREE.Mesh(boxGeo(0.95, 0.6, 0.06), M.monitor);
-  monBody.position.set(0, 1.62, -0.15); monBody.castShadow = true; g.add(monBody);
+
+  // Thùng PC Gaming có dải đèn LED đặt gọn bên phải dưới bàn
+  const pcTower = new THREE.Mesh(getBoxGeo(0.24, 0.52, 0.52), M.pcCase);
+  pcTower.position.set(0.72, 0.28, 0.05); pcTower.castShadow = true; g.add(pcTower);
+  const pcStrip = new THREE.Mesh(getBoxGeo(0.02, 0.44, 0.03), M.pcRgb);
+  pcStrip.position.set(0.6, 0.28, 0.3); g.add(pcStrip);
+
+  // Màn hình viền mỏng
+  const monBase = new THREE.Mesh(getBoxGeo(0.36, 0.03, 0.24), M.monitor);
+  monBase.position.set(0, 1.055, -0.18); g.add(monBase);
+  const monNeck = new THREE.Mesh(getBoxGeo(0.07, 0.3, 0.06), M.monitor);
+  monNeck.position.set(0, 1.2, -0.22); g.add(monNeck);
+  const monBody = new THREE.Mesh(getBoxGeo(1.02, 0.62, 0.05), M.monitor);
+  monBody.position.set(0, 1.62, -0.18); monBody.castShadow = true; g.add(monBody);
+
   const mon = createMonitorCanvas();
   const screenMat = screenMatBase.clone();
   screenMat.map = mon.texture; screenMat.emissiveMap = mon.texture;
-  const screen = new THREE.Mesh(planeGeo(0.88, 0.52), screenMat);
-  screen.position.set(0, 1.62, -0.115); g.add(screen);
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.96, 0.56), screenMat);
+  screen.position.set(0, 1.62, -0.152); g.add(screen);
   monitors.push({ mon, snippet, screen, studentIdx, isOnline: true });
-  const kb = new THREE.Mesh(boxGeo(0.8, 0.03, 0.3), M.metal); kb.position.set(0, 1.06, 0.25); g.add(kb);
-  const mouse = new THREE.Mesh(boxGeo(0.12, 0.04, 0.18), M.metal); mouse.position.set(0.55, 1.07, 0.25); g.add(mouse);
-  const seat = new THREE.Mesh(boxGeo(0.85, 0.12, 0.85), M.chair);
-  seat.position.set(0, 0.72, 0.85); seat.castShadow = seat.receiveShadow = true; g.add(seat);
-  const back = new THREE.Mesh(boxGeo(0.85, 0.85, 0.12), M.chair);
-  back.position.set(0, 1.15, 1.25); back.castShadow = true; g.add(back);
-  const stem = new THREE.Mesh(cylGeo(0.06, 0.06, 0.7, 8), M.deskLeg);
+
+  // Lót chuột, bàn phím cơ & chuột
+  const pad = new THREE.Mesh(getBoxGeo(1.1, 0.01, 0.36), M.mousePad);
+  pad.position.set(0.05, 1.045, 0.24); g.add(pad);
+  const kb = new THREE.Mesh(getBoxGeo(0.72, 0.03, 0.24), M.deskFrame);
+  kb.position.set(-0.08, 1.06, 0.24); g.add(kb);
+  const mouse = new THREE.Mesh(getBoxGeo(0.11, 0.035, 0.17), M.deskFrame);
+  mouse.position.set(0.45, 1.06, 0.24); g.add(mouse);
+
+  // Ghế xoay công thái học
+  const seat = new THREE.Mesh(getBoxGeo(0.84, 0.11, 0.82), M.chair);
+  seat.position.set(0, 0.72, 0.85); seat.castShadow = true; g.add(seat);
+  const back = new THREE.Mesh(getBoxGeo(0.8, 0.9, 0.11), M.chair);
+  back.position.set(0, 1.18, 1.22); back.castShadow = true; g.add(back);
+  const stem = new THREE.Mesh(getBoxGeo(0.09, 0.7, 0.09), M.deskFrame);
   stem.position.set(0, 0.36, 0.85); g.add(stem);
+
   return g;
 }
 
@@ -1271,7 +1172,6 @@ for (let row = 0; row < ROWS; row++) {
   for (let col = 0; col < COLS; col++) {
     const x = startX + col * colSpacing;
     const z = startZ + row * rowSpacing;
-
     const idx = row * COLS + col;
     const snippet = CODE_SNIPPETS[idx % CODE_SNIPPETS.length];
     const deskPC = makePCDesk(snippet, idx);
@@ -1285,68 +1185,48 @@ for (let row = 0; row < ROWS; row++) {
     const npc = new THREE.Group();
     npc.add(built.group);
 
-    const name = isYou ? 'Bạn' : FIRST_NAMES[idx % FIRST_NAMES.length];
-    const seatLabel = `H${row+1}-C${col+1}`;
+    const name = isYou ? 'Bạn' : `Học viên ${idx + 1}`;
+    const seatLabel = `H${row + 1}-C${col + 1}`;
     const nameSprite = makeNameSprite(name, isYou);
-    nameSprite.position.set(0, 2.6, 0);
+    nameSprite.position.set(0, 2.55, 0);
     npc.add(nameSprite);
 
     let youRing = null;
     if (isYou) {
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
-      youRing = new THREE.Mesh(new THREE.RingGeometry(0.4, 0.48, 4), ringMat);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, side: THREE.DoubleSide, transparent: true, opacity: 0.75 });
+      youRing = new THREE.Mesh(new THREE.RingGeometry(0.42, 0.5, 32), ringMat);
       youRing.rotation.x = -Math.PI / 2;
-      youRing.rotation.z = Math.PI / 4;
       youRing.position.y = 0.02;
       npc.add(youRing);
     }
 
     const zzzSprites = [];
     for (let i = 0; i < 3; i++) {
-      const c = document.createElement('canvas');
-      c.width = 64; c.height = 64;
+      const c = document.createElement('canvas'); c.width = 64; c.height = 64;
       const cx = c.getContext('2d');
-      cx.fillStyle = '#aaccff';
-      cx.font = 'bold 56px monospace';
-      cx.textAlign = 'center'; cx.textBaseline = 'middle';
-      cx.fillText('Z', 32, 34);
+      cx.fillStyle = '#93c5fd'; cx.font = 'bold 52px monospace';
+      cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('Z', 32, 34);
       const tex = new THREE.CanvasTexture(c);
-      tex.minFilter = THREE.LinearFilter;
-      const sm = new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.9, depthWrite: false });
-      const sp = new THREE.Sprite(sm);
-      sp.scale.set(0.3, 0.3, 1);
-      sp.visible = false;
-      scene.add(sp);
-      zzzSprites.push(sp);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, opacity: 0.9, depthWrite: false }));
+      sp.scale.set(0.28, 0.28, 1); sp.visible = false;
+      scene.add(sp); zzzSprites.push(sp);
     }
 
     npc.position.set(x, 0, z + 0.85);
     npc.rotation.y = Math.PI;
 
-    const initialOnline = isYou;
-
     npc.userData = {
-      ...built,
-      characterGroup: built.group,
-      nameSprite, seatLabel, isYou, youRing, zzzSprites,
+      ...built, characterGroup: built.group, nameSprite, seatLabel, isYou, youRing, zzzSprites,
       presetKey, presetName: CHARACTER_PRESETS[presetKey].name,
-      target: { headRotX: 0, zzzVisible: !initialOnline },
-      current: { headRotX: 0 },
-      phase: Math.random() * 10,
-      tapSpeed: 6 + Math.random() * 3,
+      target: { headRotX: 0, zzzVisible: !isYou }, current: { headRotX: 0 },
+      phase: Math.random() * 10, tapSpeed: 7 + Math.random() * 3
     };
-
-    if (!initialOnline) {
-      built.headGroup.rotation.x = 0.7;
-      built.headGroup.position.z = 0.1;
-    }
 
     scene.add(npc);
     npcs.push(npc);
     students.push({
       name, seat: seatLabel, npc, deskPC,
-      isOnline: initialOnline, isYou, presetKey,
-      active: isYou,
+      isOnline: isYou, isYou, presetKey, active: isYou,
       uid: isYou ? (localStorage.getItem('classroom_uid') || 'self') : null
     });
     if (!isYou) { npc.visible = false; deskPC.visible = false; }
@@ -1354,66 +1234,48 @@ for (let row = 0; row < ROWS; row++) {
 }
 
 const SEAT_POSITIONS = students.map(s => ({
-  x: s.npc.position.x,
-  z: s.npc.position.z,
-  deskX: s.deskPC ? s.deskPC.position.x : 0,
-  deskZ: s.deskPC ? s.deskPC.position.z : 0,
+  x: s.npc.position.x, z: s.npc.position.z,
+  deskX: s.deskPC.position.x, deskZ: s.deskPC.position.z
 }));
 
+// Cây xanh góc lớp
 function makePlant(x, z) {
   const g = new THREE.Group();
-  const pPot = new THREE.Mesh(cylGeo(0.42, 0.32, 0.55, 12), M.pot);
-  pPot.position.y = 0.28; pPot.castShadow = true; g.add(pPot);
-  const pStem = new THREE.Mesh(cylGeo(0.04, 0.06, 1.4, 8), new THREE.MeshStandardMaterial({ color: 0x3a6a2a }));
-  pStem.position.y = 1.25; g.add(pStem);
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 0.55, 16), M.pot);
+  pot.position.y = 0.28; pot.castShadow = true; g.add(pot);
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 1.3, 8), new THREE.MeshStandardMaterial({ color: 0x365314 }));
+  stem.position.y = 1.1; g.add(stem);
   for (let i = 0; i < 6; i++) {
-    const leaf = new THREE.Mesh(sphGeo(0.3, 8, 6), M.leaf);
-    const a = (i/6) * Math.PI * 2;
-    leaf.position.set(Math.cos(a)*0.35, 1.5 + Math.sin(i)*0.25, Math.sin(a)*0.35);
-    leaf.scale.set(0.9, 0.45, 0.9);
-    g.add(leaf);
+    const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.32, 10, 8), M.leaf);
+    const a = (i / 6) * Math.PI * 2;
+    leaf.position.set(Math.cos(a) * 0.32, 1.45 + (i % 2) * 0.22, Math.sin(a) * 0.32);
+    leaf.scale.set(1, 0.45, 1); g.add(leaf);
   }
   g.position.set(x, 0, z);
   return g;
 }
-scene.add(makePlant(-11, -13));
-scene.add(makePlant(11, -13));
-scene.add(makePlant(-11, 13));
-scene.add(makePlant(11, 13));
+scene.add(makePlant(-11.2, -13.2));
+scene.add(makePlant(11.2, -13.2));
+scene.add(makePlant(-11.2, 13.2));
+scene.add(makePlant(11.2, 13.2));
 
-const dustCount = 120;
-const dustPos = new Float32Array(dustCount * 3);
-for (let i = 0; i < dustCount*3; i += 3) {
-  dustPos[i] = (Math.random()-0.5)*24;
-  dustPos[i+1] = Math.random()*8;
-  dustPos[i+2] = (Math.random()-0.5)*28;
-}
-const dustGeo = new THREE.BufferGeometry();
-dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
-const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
-  size: 0.07, color: 0xaaccff, transparent: true, opacity: 0.3,
-  blending: THREE.AdditiveBlending, depthWrite: false
-}));
-scene.add(dust);
-
-// ==== QUẢN LÝ ĐỒNG BỘ ẨN / BAN / SKIN QUA FIREBASE ====
+/* ===== ĐỒNG BỘ FIREBASE & QUẢN TRỊ ===== */
 let hiddenUids = {};
 let skinByUid = {};
 let _lastVisibleKey = '';
 
-window.syncClassroomUsers = function(users){
-  if(window.__isBanned) return;
+window.syncClassroomUsers = function(users) {
+  if (window.__isBanned) return;
   const selfUid = localStorage.getItem('classroom_uid');
-
   const uniq = new Map();
-  users.forEach(u => { if(u && u.uid && !uniq.has(u.uid)) uniq.set(u.uid, u); });
+  users.forEach(u => { if (u && u.uid && !uniq.has(u.uid)) uniq.set(u.uid, u); });
 
   const youSlot = students.find(s => s.isYou);
-  if(youSlot){
+  if (youSlot) {
     youSlot.uid = selfUid;
     const me = uniq.get(selfUid);
-    if(me){
-      youSlot.name = String(me.name || youSlot.name || 'Bạn').slice(0,20);
+    if (me) {
+      youSlot.name = String(me.name || youSlot.name || 'Bạn').slice(0, 20);
       youSlot.isOnline = !!me.online;
       youSlot.active = true;
       uniq.delete(selfUid);
@@ -1424,453 +1286,366 @@ window.syncClassroomUsers = function(users){
   }
 
   students.forEach(st => {
-    if(st.isYou) return;
-    if(st.uid && !uniq.has(st.uid)){
+    if (st.isYou) return;
+    if (st.uid && !uniq.has(st.uid)) {
       st.active = false; st.uid = null; st.name = '';
       st.npc.visible = false;
-      if(st.deskPC) st.deskPC.visible = false;
+      if (st.deskPC) st.deskPC.visible = false;
     }
   });
 
   const freeSlots = students.filter(st => !st.isYou && !st.active);
   uniq.forEach(u => {
     let st = students.find(s => !s.isYou && s.uid === u.uid);
-    if(!st && freeSlots.length) st = freeSlots.shift();
-    if(!st) return;
+    if (!st && freeSlots.length) st = freeSlots.shift();
+    if (!st) return;
 
-    st.active = true;
-    st.uid = u.uid;
-    st.isYou = false;
+    st.active = true; st.uid = u.uid; st.isYou = false;
     st.isOnline = !!u.online;
     st.name = String(u.name || 'Người dùng').slice(0, 20);
 
     const hide = !!hiddenUids[u.uid];
     st.npc.visible = !hide;
-    if(st.deskPC) st.deskPC.visible = !hide;
+    if (st.deskPC) st.deskPC.visible = !hide;
 
     const old = st.npc.userData.nameSprite;
-    if(old) st.npc.remove(old);
+    if (old) st.npc.remove(old);
     const sp = makeNameSprite(st.name, false, isAdminIdentity(st.name));
-    sp.position.set(0, 2.6, 0);
+    sp.position.set(0, 2.55, 0);
     st.npc.add(sp);
     st.npc.userData.nameSprite = sp;
-    st.npc.userData.isYou = false;
-    if(st.npc.userData.youRing) st.npc.userData.youRing.visible = false;
+    if (st.npc.userData.youRing) st.npc.userData.youRing.visible = false;
 
-    st.npc.userData.target.headRotX = st.isOnline ? 0 : 0.7;
+    st.npc.userData.target.headRotX = st.isOnline ? 0 : 0.65;
     st.npc.userData.target.zzzVisible = !st.isOnline;
-    st.npc.userData.headGroup.rotation.x = st.isOnline ? 0 : 0.7;
-    st.npc.userData.headGroup.position.z = st.isOnline ? 0 : 0.1;
 
-    if(skinByUid[u.uid] && skinByUid[u.uid] !== st.presetKey && CHARACTER_PRESETS[skinByUid[u.uid]]){
+    if (skinByUid[u.uid] && skinByUid[u.uid] !== st.presetKey && CHARACTER_PRESETS[skinByUid[u.uid]]) {
       rebuildStudentSkin(st, skinByUid[u.uid]);
     }
   });
 
-  if(youSlot){
+  if (youSlot) {
     const old = youSlot.npc.userData.nameSprite;
-    if(old) youSlot.npc.remove(old);
+    if (old) youSlot.npc.remove(old);
     const sp = makeNameSprite(youSlot.name, true, isAdminIdentity(youSlot.name));
-    sp.position.set(0, 2.6, 0);
+    sp.position.set(0, 2.55, 0);
     youSlot.npc.add(sp);
     youSlot.npc.userData.nameSprite = sp;
-    youSlot.npc.userData.isYou = true;
-    if(youSlot.npc.userData.youRing) youSlot.npc.userData.youRing.visible = true;
     youSlot.npc.visible = true;
-    if(youSlot.deskPC) youSlot.deskPC.visible = true;
-
-    youSlot.npc.userData.target.headRotX = youSlot.isOnline ? 0 : 0.7;
+    if (youSlot.deskPC) youSlot.deskPC.visible = true;
+    youSlot.npc.userData.target.headRotX = youSlot.isOnline ? 0 : 0.65;
     youSlot.npc.userData.target.zzzVisible = !youSlot.isOnline;
-    youSlot.npc.userData.headGroup.rotation.x = youSlot.isOnline ? 0 : 0.7;
-    youSlot.npc.userData.headGroup.position.z = youSlot.isOnline ? 0 : 0.1;
   }
 
-  renderStudentList(); updateHud();
-  applyHiddenNpcs();
+  renderStudentList(); updateHud(); applyHiddenNpcs();
 };
 
-function applyHiddenNpcs(){
-  if(window.__isBanned) return;
+function applyHiddenNpcs() {
+  if (window.__isBanned) return;
   const selfUid = localStorage.getItem('classroom_uid');
   const visibleSlots = [];
-
   students.forEach(s => {
-    if(!s.active) { s.npc.visible = false; if(s.deskPC) s.deskPC.visible = false; return; }
-    if(s.isYou || s.uid === selfUid || !s.uid || !hiddenUids[s.uid]){
-      visibleSlots.push(s);
-    } else {
-      s.npc.visible = false;
-      if(s.deskPC) s.deskPC.visible = false;
-    }
+    if (!s.active) { s.npc.visible = false; if (s.deskPC) s.deskPC.visible = false; return; }
+    if (s.isYou || s.uid === selfUid || !s.uid || !hiddenUids[s.uid]) visibleSlots.push(s);
+    else { s.npc.visible = false; if (s.deskPC) s.deskPC.visible = false; }
   });
 
   const key = visibleSlots.map(s => s.uid || s.seat).join('|');
-  if(key !== _lastVisibleKey){
+  if (key !== _lastVisibleKey) {
     _lastVisibleKey = key;
     visibleSlots.forEach((s, i) => {
       const pos = SEAT_POSITIONS[i];
-      if(!pos) return;
-      s.npc.position.x = pos.x;
-      s.npc.position.z = pos.z;
-      if(s.deskPC){
-        s.deskPC.position.x = pos.deskX;
-        s.deskPC.position.z = pos.deskZ;
-      }
+      if (!pos) return;
+      s.npc.position.x = pos.x; s.npc.position.z = pos.z;
+      if (s.deskPC) { s.deskPC.position.x = pos.deskX; s.deskPC.position.z = pos.deskZ; }
       s.seat = `H${Math.floor(i / COLS) + 1}-C${(i % COLS) + 1}`;
-      s.npc.visible = true;
-      if(s.deskPC) s.deskPC.visible = true;
-    });
-  } else {
-    visibleSlots.forEach(s => {
-      s.npc.visible = true;
-      if(s.deskPC) s.deskPC.visible = true;
+      s.npc.visible = true; if (s.deskPC) s.deskPC.visible = true;
     });
   }
 }
 
-function rebuildStudentSkin(student, presetKey){
-  if(!CHARACTER_PRESETS[presetKey]) return;
-  if(student.presetKey === presetKey && student.npc.userData.characterGroup) return;
+function rebuildStudentSkin(student, presetKey) {
+  if (!CHARACTER_PRESETS[presetKey]) return;
+  if (student.presetKey === presetKey && student.npc.userData.characterGroup) return;
   const npc = student.npc;
   const oldGroup = npc.userData.characterGroup;
-  if(oldGroup && oldGroup.parent === npc) npc.remove(oldGroup);
+  if (oldGroup && oldGroup.parent === npc) npc.remove(oldGroup);
 
   const built = buildMinecraftCharacter(presetKey);
   npc.add(built.group);
-
   npc.userData = {
-    ...npc.userData,
-    ...built,
-    characterGroup: built.group,
-    presetKey,
-    presetName: CHARACTER_PRESETS[presetKey].name,
-    target: { headRotX: student.isOnline ? 0 : 0.7, zzzVisible: !student.isOnline },
-    current: { headRotX: 0 },
+    ...npc.userData, ...built, characterGroup: built.group,
+    presetKey, presetName: CHARACTER_PRESETS[presetKey].name,
+    target: { headRotX: student.isOnline ? 0 : 0.65, zzzVisible: !student.isOnline },
+    current: { headRotX: 0 }
   };
   student.presetKey = presetKey;
 }
 
 const ADMIN_NAME = 'ADM Nhật';
-const FIREBASE_CFG = {apiKey:"AIzaSyDmCYQi3ue4kPYUhd3AXRF98NwEO7NtYww",authDomain:"anime-f57e6.firebaseapp.com",databaseURL:"https://anime-f57e6-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"anime-f57e6",storageBucket:"anime-f57e6.firebasestorage.app",messagingSenderId:"546284227871",appId:"1:546284227871:web:68e939a098af2211ad342a"};
-let adminDB = null;
-try {
-  let app;
-  try { app = firebase.app('classroomPresence'); }
-  catch(e) { app = firebase.initializeApp(FIREBASE_CFG, 'classroomPresence'); }
-  adminDB = app.database();
-} catch(e){}
+const adminDB = window.__classroomDb;
+let isAdmin = false, allMembers = {}, allMods = {}, allPresence = {};
 
-let isAdmin = false;
-let allMembers = {};
-let allMods = {};
-let allPresence = {};
-
-function myName(){ return (localStorage.getItem('chat_name')||'').trim(); }
-function myDevice(){ return localStorage.getItem('classroom_uid')||''; }
-
-function isAdminIdentity(name){
-  const n = String(name||'').trim();
-  if(n === ADMIN_NAME) return true;
-  const m = allMembers[n] || {};
-  return !!m.isAdmin;
+function myName() { return (localStorage.getItem('chat_name') || '').trim(); }
+function myDevice() { return localStorage.getItem('classroom_uid') || ''; }
+function isAdminIdentity(name) {
+  const n = String(name || '').trim();
+  return n === ADMIN_NAME || !!(allMembers[n] && allMembers[n].isAdmin);
 }
 
-async function checkAdmin(){
-  if(!adminDB) return false;
+async function checkAdmin() {
+  if (!adminDB) return false;
   const name = myName();
-  if(!name) return false;
+  if (!name) return false;
   try {
-    if(name === ADMIN_NAME){
+    if (name === ADMIN_NAME) {
       const snap = await adminDB.ref('rooms/nhom1/adminDevice').once('value');
       const bound = snap.val();
-      if(!bound){
-        await adminDB.ref('rooms/nhom1/adminDevice').set({ device: myDevice(), time: Date.now() });
-        isAdmin = true;
-        return true;
+      if (!bound || bound.device === myDevice()) {
+        if (!bound) await adminDB.ref('rooms/nhom1/adminDevice').set({ device: myDevice(), time: Date.now() });
+        isAdmin = true; return true;
       }
-      if(bound.device === myDevice()){ isAdmin = true; return true; }
       return false;
     }
-    const memberSnap = await adminDB.ref('rooms/nhom1/members/'+name+'/isAdmin').once('value');
+    const memberSnap = await adminDB.ref('rooms/nhom1/members/' + name + '/isAdmin').once('value');
     isAdmin = memberSnap.val() === true;
     return isAdmin;
-  } catch(e){ return false; }
+  } catch (e) { return false; }
 }
 
-// ==== CHECK BANNED: đọc cả UID lẫn TÊN ====
-async function checkBanned(){
-  if(!adminDB) return false;
-  const uid = myDevice();
-  const nm = myName();
-  if(!uid && !nm) return false;
+async function checkBanned() {
+  if (!adminDB) return false;
+  const uid = myDevice(), nm = myName();
+  if (!uid && !nm) return false;
   try {
     let mod = null;
-    if(uid){
-      const snap = await adminDB.ref('rooms/nhom1/moderations/'+uid).once('value');
-      mod = snap.val();
+    if (uid) { const s = await adminDB.ref('rooms/nhom1/moderations/' + uid).once('value'); mod = s.val(); }
+    if ((!mod || (!mod.ban && !mod.kick)) && nm) {
+      const s2 = await adminDB.ref('rooms/nhom1/moderations/' + nm).once('value');
+      if (s2.val() && (s2.val().ban || s2.val().kick)) mod = s2.val();
     }
-    if((!mod || (!mod.ban && !mod.kick)) && nm){
-      const snap2 = await adminDB.ref('rooms/nhom1/moderations/'+nm).once('value');
-      const m2 = snap2.val();
-      if(m2 && (m2.ban || m2.kick)) mod = m2;
-    }
-    if(mod && (mod.ban || mod.kick)){
-      window.__isBanned = true;
-      if(window.__renderBanOverlay) window.__renderBanOverlay(mod);
-      if(window.__presenceHeartbeat) clearInterval(window.__presenceHeartbeat);
-      ['nameModal','studentPanel','panelOpen','wardrobeBtn','renameBtn','leaderboardBtn','adminFab','focusBanner'].forEach(id=>{
-        const el=document.getElementById(id); if(el) el.style.display='none';
-      });
-      document.querySelectorAll('.hud').forEach(el=>el.style.display='none');
+    if (mod && (mod.ban || mod.kick)) {
+      window.__applyBanState(mod);
       return true;
     }
-    if(!mod || (!mod.ban && !mod.kick)){
-      if(window.__hideBanOverlay) window.__hideBanOverlay();
-      window.__isBanned = false;
-    }
-  } catch(e){}
+  } catch (e) {}
   return false;
 }
 
-// ==== ADMIN PANEL ====
-function getPresenceList(){
-  const selfUid = localStorage.getItem('classroom_uid');
-  const selfName = myName();
-  const now = Date.now();
+/* ===== TÍNH NĂNG RESET TOÀN BỘ THÀNH VIÊN VỀ 0 CHO ADMIN ===== */
+window.adminResetAllMembers = async function() {
+  if (!isAdmin || !adminDB) return;
+  const ok = confirm('Xác nhận RESET toàn bộ danh sách thành viên?\n\n- Xóa sạch toàn bộ thành viên cũ, điểm xếp hạng, trang phục đã lưu và danh sách ẩn.\n- Hệ thống sẽ tự động ghi nhận lại từ đầu khi các thành viên truy cập lại.');
+  if (!ok) return;
+
+  const btn = document.getElementById('adminResetAllBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Đang reset...'; }
+
+  try {
+    // 1. Xóa toàn bộ dữ liệu thành viên, hiện diện, điểm số, skin và danh sách ẩn về 0
+    await Promise.all([
+      adminDB.ref('rooms/nhom1/presence').remove(),
+      adminDB.ref('rooms/nhom1/members').remove(),
+      adminDB.ref('rooms/nhom1/learningStats').remove(),
+      adminDB.ref('rooms/nhom1/skins').remove(),
+      adminDB.ref('rooms/nhom1/hidden').remove()
+    ]);
+
+    // 2. Xóa các slot học viên trên giao diện 3D ngoại trừ Admin đang ngồi
+    students.forEach(st => {
+      if (!st.isYou) {
+        st.active = false; st.uid = null; st.name = '';
+        st.npc.visible = false;
+        if (st.deskPC) st.deskPC.visible = false;
+      }
+    });
+    allMembers = {};
+    allPresence = {};
+    hiddenUids = {};
+    skinByUid = {};
+    window.__learningStats = {};
+    _lastVisibleKey = '';
+
+    // 3. Ghi nhận lại Admin vào hệ thống từ đầu
+    const admName = myName();
+    if (admName) {
+      window.startClassroomPresence?.();
+      await adminDB.ref('rooms/nhom1/members/' + admName).set({
+        uid: myDevice(),
+        name: admName,
+        isAdmin: true,
+        online: true,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+
+    renderStudentList();
+    updateHud();
+    renderAdminMembers();
+    if (window.renderLearningLeaderboard) window.renderLearningLeaderboard();
+    alert('✅ Đã reset toàn bộ thành viên về 0! Dữ liệu sẽ được ghi nhận mới từ bây giờ.');
+  } catch (e) {
+    alert('❌ Lỗi khi reset: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🔄 Reset thành viên'; }
+  }
+};
+
+function getPresenceList() {
+  const selfUid = myDevice(), selfName = myName(), now = Date.now();
   const map = new Map();
-
-  Object.values(allPresence).forEach(p => {
-    if(!p || !p.uid) return;
-    if(p.uid === selfUid) return;
-    map.set(p.uid, { ...p });
-  });
-
+  Object.values(allPresence).forEach(p => { if (p && p.uid && p.uid !== selfUid) map.set(p.uid, { ...p }); });
   Object.entries(allMembers).forEach(([n, m]) => {
-    if(!m) return;
-    if(n === selfName) return;
-    const uid = m.uid || ('name:'+n);
-    if(uid === selfUid) return;
-    if(map.has(uid)) return;
+    if (!m || n === selfName) return;
+    const uid = m.uid || ('name:' + n);
+    if (uid === selfUid || map.has(uid)) return;
     const lastSeen = Number(m.lastSeen) || 0;
-    map.set(uid, {
-      uid, name: n,
-      online: m.online === true && (now - lastSeen) < 60000,
-      device: String(m.device || ''),
-      lastSeen
-    });
+    map.set(uid, { uid, name: n, online: m.online === true && (now - lastSeen) < 60000, device: String(m.device || ''), lastSeen });
   });
-
-  Object.entries(allMods).forEach(([uid, mod]) => {
-    if(!mod || !mod.ban) return;
-    if(uid === selfUid) return;
-    if(map.has(uid)) return;
-    map.set(uid, {
-      uid,
-      name: mod.name || 'Ẩn danh',
-      online: false,
-      device: '',
-      lastSeen: 0
-    });
-  });
-
-  return Array.from(map.values()).sort((a,b) => {
-    if(a.online !== b.online) return a.online ? -1 : 1;
-    return a.name.localeCompare(b.name,'vi');
-  });
+  return Array.from(map.values()).sort((a, b) => (a.online !== b.online ? (a.online ? -1 : 1) : a.name.localeCompare(b.name, 'vi')));
 }
 
-function renderAdminMembers(){
-  if(!isAdmin) return;
+function renderAdminMembers() {
+  if (!isAdmin) return;
   const box = document.getElementById('adminMembers');
-  if(!box) return;
+  if (!box) return;
   const list = getPresenceList();
-  if(!list.length){ box.innerHTML = '<div class="admin-empty">Không có thành viên khác</div>'; return; }
+  if (!list.length) { box.innerHTML = '<div class="admin-empty">Hiện chưa có thành viên nào khác</div>'; return; }
   box.innerHTML = list.map(p => {
     const mod = allMods[p.uid] || {};
     const isHidden = !!hiddenUids[p.uid];
     const banned = !!mod.ban;
-    const shortUid = p.uid.length > 12 ? p.uid.slice(0,6)+'…'+p.uid.slice(-4) : p.uid;
-    const deviceShort = p.device ? p.device.replace(/^Mozilla\/5\.0 \(([^)]+)\).*/, '$1').slice(0,28) : '—';
+    const shortUid = p.uid.length > 12 ? p.uid.slice(0, 6) + '…' + p.uid.slice(-4) : p.uid;
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
         <div class="an">${p.name}${p.online ? '' : ' 💤'}</div>
-        <div class="as">${p.online ? '🌞 Đang học' : '🌙 Đang ngủ'}${banned ? ' · đã ban' : ''}${isHidden ? ' · NPC ẩn' : ''}</div>
-        <div class="admin-uid">uid: ${shortUid} · ${deviceShort}</div>
+        <div class="as">${p.online ? '🌞 Đang học' : '🌙 Đang ngủ'}${banned ? ' · đã ban' : ''}${isHidden ? ' · đang ẩn' : ''}</div>
+        <div class="admin-uid">UID: ${shortUid}</div>
       </div>
-      <button class="${isHidden?'show':'hide'}" onclick="adminToggleNpc('${p.uid}')">${isHidden?'Hiện':'Ẩn'}</button>
+      <button class="${isHidden ? 'show' : 'hide'}" onclick="adminToggleNpc('${p.uid}')">${isHidden ? 'Hiện' : 'Ẩn'}</button>
       ${banned
         ? `<button class="unban" onclick="adminUnban('${p.uid}')">Mở ban</button>`
-        : `<button class="ban" onclick="adminBan('${p.uid}','${p.name.replace(/'/g,"\\'")}')">Ban</button>`}
+        : `<button class="ban" onclick="adminBan('${p.uid}','${p.name.replace(/'/g, "\\'")}')">Ban</button>`}
     </div>`;
   }).join('');
 }
 
-function renderAdminBanned(){
-  if(!isAdmin) return;
+function renderAdminBanned() {
+  if (!isAdmin) return;
   const box = document.getElementById('adminBanned');
-  if(!box) return;
+  if (!box) return;
   const banned = Object.keys(allMods).filter(uid => allMods[uid] && allMods[uid].ban);
-  if(!banned.length){ box.innerHTML = '<div class="admin-empty">Chưa có ai bị ban</div>'; return; }
+  if (!banned.length) { box.innerHTML = '<div class="admin-empty">Chưa có thiết bị nào bị chặn</div>'; return; }
   box.innerHTML = banned.map(uid => {
     const mod = allMods[uid] || {};
-    const p = allPresence[uid] || {};
-    const name = p.name || mod.name || 'Ẩn danh';
-    const shortUid = uid.length > 12 ? uid.slice(0,6)+'…'+uid.slice(-4) : uid;
+    const name = (allPresence[uid] && allPresence[uid].name) || mod.name || 'Ẩn danh';
     return `<div class="admin-row">
       <div style="flex:1;min-width:0">
         <div class="an">${name}</div>
-        <div class="as">${mod.reason ? 'Lý do: '+mod.reason : 'Không có lý do'}</div>
-        <div class="admin-uid">uid: ${shortUid}</div>
+        <div class="as">${mod.reason ? 'Lý do: ' + mod.reason : 'Không có lý do'}</div>
       </div>
       <button class="unban" onclick="adminUnban('${uid}')">Mở ban</button>
     </div>`;
   }).join('');
 }
 
-window.adminSwitchTab = function(tab){
-  document.getElementById('tabMembers').classList.toggle('on', tab==='members');
-  document.getElementById('tabBanned').classList.toggle('on', tab==='banned');
-  document.getElementById('adminMembers').style.display = tab==='members' ? 'flex' : 'none';
-  document.getElementById('adminBanned').style.display = tab==='banned' ? 'flex' : 'none';
+window.adminSwitchTab = function(tab) {
+  document.getElementById('tabMembers').classList.toggle('on', tab === 'members');
+  document.getElementById('tabBanned').classList.toggle('on', tab === 'banned');
+  document.getElementById('adminMembers').style.display = tab === 'members' ? 'flex' : 'none';
+  document.getElementById('adminBanned').style.display = tab === 'banned' ? 'flex' : 'none';
 };
 
-window.adminToggleNpc = async function(uid){
-  if(!isAdmin || !adminDB || !uid) return;
-  try {
-    const ref = adminDB.ref('rooms/nhom1/hidden/'+uid);
-    const snap = await ref.once('value');
-    if(snap.exists()) await ref.remove();
-    else await ref.set(true);
-  } catch(e){ alert('Lỗi: '+e.message); }
+window.adminToggleNpc = async function(uid) {
+  if (!isAdmin || !adminDB || !uid) return;
+  const ref = adminDB.ref('rooms/nhom1/hidden/' + uid);
+  const snap = await ref.once('value');
+  if (snap.exists()) await ref.remove(); else await ref.set(true);
 };
 
-// ==== ADMIN BAN: ghi cả UID lẫn TÊN ====
-window.adminBan = async function(uid, name){
-  if(!isAdmin || !adminDB || !uid) return;
-  const reason = prompt('Lý do ban '+(name||uid)+'? (có thể bỏ trống)','') || '';
-  try {
-    await adminDB.ref('rooms/nhom1/moderations/'+uid).update({
-      ban:true, kick:true, mute:true, reason, name: name||'', time:Date.now(), by:myName()
-    });
-    if(name){
-      await adminDB.ref('rooms/nhom1/moderations/'+name).update({
-        ban:true, kick:true, mute:true, reason, name, time:Date.now(), by:myName()
-      }).catch(()=>{});
-    }
-    await adminDB.ref('rooms/nhom1/hidden/'+uid).set(true);
-    await adminDB.ref('rooms/nhom1/presence/'+uid).remove().catch(()=>{});
-  } catch(e){ alert('Lỗi: '+e.message); }
+window.adminBan = async function(uid, name) {
+  if (!isAdmin || !adminDB || !uid) return;
+  const reason = prompt('Lý do chặn ' + (name || uid) + '? (có thể bỏ trống)', '') || '';
+  await adminDB.ref('rooms/nhom1/moderations/' + uid).update({ ban: true, kick: true, mute: true, reason, name: name || '', time: Date.now(), by: myName() });
+  if (name) await adminDB.ref('rooms/nhom1/moderations/' + name).update({ ban: true, kick: true, mute: true, reason, name, time: Date.now(), by: myName() }).catch(() => {});
+  await adminDB.ref('rooms/nhom1/hidden/' + uid).set(true);
+  await adminDB.ref('rooms/nhom1/presence/' + uid).remove().catch(() => {});
 };
 
-// ==== ADMIN UNBAN: xóa cả UID lẫn TÊN ====
-window.adminUnban = async function(uid){
-  if(!isAdmin || !adminDB || !uid) return;
-  try {
-    const snap = await adminDB.ref('rooms/nhom1/moderations/'+uid).once('value');
-    const mod = snap.val() || {};
-    await adminDB.ref('rooms/nhom1/moderations/'+uid).update({
-      ban:false, kick:false, mute:false, reason:'', time:Date.now(), by:myName()
-    });
-    if(mod.name){
-      await adminDB.ref('rooms/nhom1/moderations/'+mod.name).update({
-        ban:false, kick:false, mute:false, reason:'', time:Date.now(), by:myName()
-      }).catch(()=>{});
-    }
-    await adminDB.ref('rooms/nhom1/hidden/'+uid).remove().catch(()=>{});
-  } catch(e){ alert('Lỗi: '+e.message); }
+window.adminUnban = async function(uid) {
+  if (!isAdmin || !adminDB || !uid) return;
+  const snap = await adminDB.ref('rooms/nhom1/moderations/' + uid).once('value');
+  const mod = snap.val() || {};
+  await adminDB.ref('rooms/nhom1/moderations/' + uid).update({ ban: false, kick: false, mute: false, reason: '', time: Date.now(), by: myName() });
+  if (mod.name) await adminDB.ref('rooms/nhom1/moderations/' + mod.name).update({ ban: false, kick: false, mute: false, reason: '', time: Date.now(), by: myName() }).catch(() => {});
+  await adminDB.ref('rooms/nhom1/hidden/' + uid).remove().catch(() => {});
 };
 
-window.syncAdminPresence = function(users){
+window.syncAdminPresence = function(users) {
   allPresence = {};
   const now = Date.now();
   users.forEach(u => {
-    if(!u || !u.uid) return;
+    if (!u || !u.uid) return;
     const lastSeen = Number(u.lastSeen) || 0;
-    const fresh = (now - lastSeen) < 60000;
-    allPresence[u.uid] = {
-      uid: u.uid,
-      name: String(u.name || 'Người dùng'),
-      online: u.online === true && fresh,
-      device: String(u.device || ''),
-      lastSeen
-    };
+    allPresence[u.uid] = { uid: u.uid, name: String(u.name || 'Người dùng'), online: u.online === true && (now - lastSeen) < 60000, device: String(u.device || ''), lastSeen };
   });
-  if(isAdmin) renderAdminMembers();
-  if(window.renderLearningLeaderboard) window.renderLearningLeaderboard();
+  if (isAdmin) renderAdminMembers();
+  if (window.renderLearningLeaderboard) window.renderLearningLeaderboard();
 };
 
-if(adminDB){
-  adminDB.ref('rooms/nhom1/members').on('value', s => { allMembers = s.val()||{}; renderAdminMembers(); if(window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
-  adminDB.ref('rooms/nhom1/learningStats').on('value', s => { window.__learningStats = s.val()||{}; if(window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
+if (adminDB) {
+  adminDB.ref('rooms/nhom1/members').on('value', s => { allMembers = s.val() || {}; renderAdminMembers(); if (window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
+  adminDB.ref('rooms/nhom1/learningStats').on('value', s => { window.__learningStats = s.val() || {}; if (window.renderLearningLeaderboard) window.renderLearningLeaderboard(); });
   adminDB.ref('rooms/nhom1/moderations').on('value', s => {
-    allMods = s.val()||{};
-    renderAdminMembers(); renderAdminBanned();
+    allMods = s.val() || {}; renderAdminMembers(); renderAdminBanned();
     const me = myDevice();
-    if(me && allMods[me] && (allMods[me].ban || allMods[me].kick)) checkBanned();
+    if (me && allMods[me] && (allMods[me].ban || allMods[me].kick)) checkBanned();
   });
-  adminDB.ref('rooms/nhom1/hidden').on('value', s => {
-    hiddenUids = s.val() || {};
-    applyHiddenNpcs();
-    if(isAdmin) renderAdminMembers();
-  });
+  adminDB.ref('rooms/nhom1/hidden').on('value', s => { hiddenUids = s.val() || {}; applyHiddenNpcs(); if (isAdmin) renderAdminMembers(); });
   adminDB.ref('rooms/nhom1/skins').on('value', s => {
     skinByUid = s.val() || {};
     students.forEach(st => {
-      if(st.uid && skinByUid[st.uid] && skinByUid[st.uid] !== st.presetKey && CHARACTER_PRESETS[skinByUid[st.uid]]){
+      if (st.uid && skinByUid[st.uid] && skinByUid[st.uid] !== st.presetKey && CHARACTER_PRESETS[skinByUid[st.uid]]) {
         rebuildStudentSkin(st, skinByUid[st.uid]);
       }
     });
   });
 }
 
-document.getElementById('adminFab').addEventListener('click', ()=>{
+document.getElementById('adminFab').addEventListener('click', () => {
   document.getElementById('adminPanel').classList.add('on');
   renderAdminMembers(); renderAdminBanned();
 });
 
+/* ===== GIAO DIỆN DANH SÁCH & BẢNG XẾP HẠNG ===== */
 const studentPanel = document.getElementById('studentPanel');
 const panelOpenBtn = document.getElementById('panelOpen');
-const listOnline = document.getElementById('listOnline');
-const listOffline = document.getElementById('listOffline');
-const countOnline = document.getElementById('countOnline');
-const countOffline = document.getElementById('countOffline');
-const panelTotal = document.getElementById('panelTotal');
-
-document.getElementById('panelClose').addEventListener('click', () => {
-  studentPanel.classList.add('closed');
-  panelOpenBtn.classList.add('visible');
-});
-panelOpenBtn.addEventListener('click', () => {
-  studentPanel.classList.remove('closed');
-  panelOpenBtn.classList.remove('visible');
-});
+document.getElementById('panelClose').addEventListener('click', () => studentPanel.classList.add('closed'));
+panelOpenBtn.addEventListener('click', () => studentPanel.classList.toggle('closed'));
 
 function renderStudentList() {
-  let nOn = 0, nOff = 0;
-  students.filter(s => s.active).forEach(s => { if (s.isOnline) nOn++; else nOff++; });
-  countOnline.textContent = nOn; countOffline.textContent = nOff;
-  panelTotal.textContent = `${nOn+nOff} người`;
+  const active = students.filter(s => s.active);
+  const onList = active.filter(s => s.isOnline).sort((a, b) => (a.isYou ? -1 : b.isYou ? 1 : 0));
+  const offList = active.filter(s => !s.isOnline);
+  document.getElementById('countOnline').textContent = onList.length;
+  document.getElementById('countOffline').textContent = offList.length;
+  document.getElementById('panelTotal').textContent = `${active.length} thành viên`;
+
+  const listOnline = document.getElementById('listOnline');
+  const listOffline = document.getElementById('listOffline');
   listOnline.innerHTML = ''; listOffline.innerHTML = '';
-  const sortedOnline = [...students.filter(s => s.active && s.isOnline)].sort((a, b) => {
-    if (a.isYou) return -1; if (b.isYou) return 1; return 0;
-  });
-  sortedOnline.forEach(s => {
+
+  onList.forEach(s => {
     const item = document.createElement('div');
-    item.className = 'student-item online' + (s.isYou ? ' you' : '');
-    item.dataset.seat = s.seat;
-    if (focusedStudent === s) item.classList.add('active');
-    const nameClass = s.isYou ? 'student-name you-label' : 'student-name';
-    const nameText = s.isYou ? '⭐ ' + s.name : s.name;
-    const adminTag = isAdminIdentity(s.name) ? ' <span class="admin-badge">👑</span>' : '';
-    item.innerHTML = `<span class="student-dot"></span><span class="${nameClass}">${nameText}${adminTag}</span>`;
+    item.className = 'student-item online' + (s.isYou ? ' you' : '') + (focusedStudent === s ? ' active' : '');
+    item.innerHTML = `<span class="student-dot"></span><span class="student-name ${s.isYou ? 'you-label' : ''}">${s.isYou ? '⭐ ' + s.name : s.name}${isAdminIdentity(s.name) ? '<span class="admin-badge">ADM</span>' : ''}</span>`;
     item.addEventListener('click', () => focusOnStudent(s));
     listOnline.appendChild(item);
   });
-  students.filter(s => s.active && !s.isOnline).forEach(s => {
+
+  offList.forEach(s => {
     const item = document.createElement('div');
-    item.className = 'student-item offline';
-    item.dataset.seat = s.seat;
-    if (focusedStudent === s) item.classList.add('active');
+    item.className = 'student-item offline' + (focusedStudent === s ? ' active' : '');
     item.innerHTML = `<span class="student-dot"></span><span class="student-name">${s.name}</span>`;
     item.addEventListener('click', () => focusOnStudent(s));
     listOffline.appendChild(item);
@@ -1878,359 +1653,232 @@ function renderStudentList() {
 }
 
 function updateHud() {
-  const activeStudents = students.filter(s => s.active);
-  const nOn = activeStudents.filter(s => s.isOnline).length;
-  const nOff = activeStudents.length - nOn;
-  const meName = myName();
-  const star = isAdminIdentity(meName) ? ' <span class="star">⭐</span>' : '';
-  document.getElementById('hudSub').innerHTML = `${nOn} đang học · ${nOff} đang ngủ${star}`;
-  document.getElementById('pulse').style.background = nOn > students.length/2 ? '#34d399' : '#ef4444';
-  document.getElementById('pulse').style.boxShadow = `0 0 14px ${nOn > students.length/2 ? '#34d399' : '#ef4444'}`;
+  const active = students.filter(s => s.active);
+  const nOn = active.filter(s => s.isOnline).length;
+  const nOff = active.length - nOn;
+  const star = isAdminIdentity(myName()) ? '<span class="star">👑</span>' : '';
+  document.getElementById('hudSub').innerHTML = `${nOn} đang học · ${nOff} đang ngủ ${star}`;
 }
-renderStudentList(); updateHud();
 
 const leaderboardPanel = document.getElementById('leaderboardPanel');
-const leaderboardBtn = document.getElementById('leaderboardBtn');
-const leaderboardClose = document.getElementById('leaderboardClose');
-function escapeLeaderboardText(value){
-  return String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-window.renderLearningLeaderboard = function(){
-  if(!leaderboardPanel) return;
-  const statData=window.__learningStats||{};
-  const members=new Map();
-  Object.entries(allMembers||{}).forEach(([name,m])=>{
-    if(!m) return;
-    const id=String(m.uid||('name_'+name));
-    members.set(id,{uid:id,name:String(m.name||name),online:m.online===true});
-  });
-  Object.entries(allPresence||{}).forEach(([id,p])=>{
-    if(!p) return;
-    const old=members.get(id)||{};
-    members.set(id,{...old,uid:id,name:String(p.name||old.name||'Người dùng'),online:p.online===true});
-  });
-  const rows=Array.from(members.values()).map(m=>{
-    const st=statData[m.uid]||{};
-    const correct=Math.max(0,Number(st.correct)||0);
-    const wrong=Math.max(0,Number(st.wrong)||0);
-    const unanswered=Math.max(0,Number(st.unanswered)||0);
-    const attempts=Math.max(0,Number(st.attempts)||0);
-    const answered=correct+wrong;
-    return {...m,correct,wrong,unanswered,attempts,answered,accuracy:answered?Math.round(correct/answered*100):0};
-  }).sort((a,b)=>{
-    if((a.attempts>0)!==(b.attempts>0)) return a.attempts>0?-1:1;
-    return b.accuracy-a.accuracy || b.correct-a.correct || b.attempts-a.attempts || a.name.localeCompare(b.name,'vi');
-  });
-  const totalCorrect=rows.reduce((a,x)=>a+x.correct,0);
-  const activeLearners=rows.filter(x=>x.attempts>0).length;
-  document.getElementById('leaderboardSummary').innerHTML=
-    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">THÀNH VIÊN</div><div class="leaderboard-stat-value">${rows.length}</div></div>`+
-    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">ĐÃ TỪNG LÀM BÀI</div><div class="leaderboard-stat-value">${activeLearners}</div></div>`+
-    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">TỔNG CÂU ĐÚNG</div><div class="leaderboard-stat-value">${totalCorrect.toLocaleString('vi-VN')}</div></div>`;
-  const podium=document.getElementById('leaderboardPodium');
-  const rankedRows=rows.filter(x=>x.attempts>0);
-  const podiumOrder=[rankedRows[1],rankedRows[0],rankedRows[2]];
-  const medals=['🥈','👑','🥉'];
-  podium.innerHTML=podiumOrder.map((m,i)=>m?`<div class="leaderboard-podium-item ${i===1?'first':''}"><div class="leaderboard-medal">${medals[i]}</div><div class="leaderboard-podium-name">${escapeLeaderboardText(m.name)}</div><div class="leaderboard-podium-rate">${m.attempts?m.accuracy+'%':'—'}</div><div class="leaderboard-podium-meta">${m.attempts} lượt · ${m.correct} câu đúng</div></div>`:'<div class="leaderboard-podium-item"><div class="leaderboard-medal">—</div><div class="leaderboard-podium-name">Chưa có</div><div class="leaderboard-podium-rate">—</div><div class="leaderboard-podium-meta">Chưa có thành viên</div></div>').join('');
-  const body=document.getElementById('leaderboardRows');
-  if(!rows.length){body.innerHTML='<tr><td colspan="6" class="leaderboard-empty">Chưa có thành viên trong phòng học.</td></tr>';return;}
-  const myUid=myDevice();
-  body.innerHTML=rows.map((m,i)=>`<tr class="${m.uid===myUid?'me':''}"><td class="leaderboard-rank">${i<3?['🥇','🥈','🥉'][i]:'#'+(i+1)}</td><td class="leaderboard-member">${escapeLeaderboardText(m.name)}${m.uid===myUid?' · Bạn':''}${m.online?' <span style="color:#34d399">●</span>':' <span style="color:#64748b">●</span>'}</td><td class="leaderboard-kda">${m.correct} / ${m.wrong} / ${m.unanswered}</td><td>${m.attempts}</td><td>${m.answered.toLocaleString('vi-VN')}</td><td class="leaderboard-rate">${m.attempts?m.accuracy+'%':'Chưa làm'}</td></tr>`).join('');
-};
-leaderboardBtn.addEventListener('click',()=>{leaderboardPanel.classList.add('on');leaderboardPanel.setAttribute('aria-hidden','false');window.renderLearningLeaderboard();});
-leaderboardClose.addEventListener('click',()=>{leaderboardPanel.classList.remove('on');leaderboardPanel.setAttribute('aria-hidden','true');});
-leaderboardPanel.addEventListener('click',e=>{if(e.target===leaderboardPanel) leaderboardClose.click();});
+function escHtml(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
+window.renderLearningLeaderboard = function() {
+  const statData = window.__learningStats || {};
+  const members = new Map();
+  Object.entries(allMembers || {}).forEach(([name, m]) => {
+    if (!m) return;
+    const id = String(m.uid || ('name_' + name));
+    members.set(id, { uid: id, name: String(m.name || name), online: m.online === true });
+  });
+  Object.entries(allPresence || {}).forEach(([id, p]) => {
+    if (!p) return;
+    const old = members.get(id) || {};
+    members.set(id, { ...old, uid: id, name: String(p.name || old.name || 'Người dùng'), online: p.online === true });
+  });
+
+  const rows = Array.from(members.values()).map(m => {
+    const st = statData[m.uid] || {};
+    const correct = Math.max(0, Number(st.correct) || 0);
+    const wrong = Math.max(0, Number(st.wrong) || 0);
+    const unanswered = Math.max(0, Number(st.unanswered) || 0);
+    const attempts = Math.max(0, Number(st.attempts) || 0);
+    const answered = correct + wrong;
+    return { ...m, correct, wrong, unanswered, attempts, answered, accuracy: answered ? Math.round(correct / answered * 100) : 0 };
+  }).sort((a, b) => (a.attempts > 0) !== (b.attempts > 0) ? (a.attempts > 0 ? -1 : 1) : (b.accuracy - a.accuracy || b.correct - a.correct || b.attempts - a.attempts || a.name.localeCompare(b.name, 'vi')));
+
+  const totalCorrect = rows.reduce((a, x) => a + x.correct, 0);
+  const activeLearners = rows.filter(x => x.attempts > 0).length;
+  document.getElementById('leaderboardSummary').innerHTML =
+    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">THÀNH VIÊN</div><div class="leaderboard-stat-value">${rows.length}</div></div>` +
+    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">ĐÃ LÀM BÀI</div><div class="leaderboard-stat-value">${activeLearners}</div></div>` +
+    `<div class="leaderboard-stat"><div class="leaderboard-stat-label">TỔNG CÂU ĐÚNG</div><div class="leaderboard-stat-value">${totalCorrect.toLocaleString('vi-VN')}</div></div>`;
+
+  const ranked = rows.filter(x => x.attempts > 0);
+  const podiumOrder = [ranked[1], ranked[0], ranked[2]];
+  const medals = ['🥈', '👑', '🥉'];
+  document.getElementById('leaderboardPodium').innerHTML = podiumOrder.map((m, i) => m
+    ? `<div class="leaderboard-podium-item ${i === 1 ? 'first' : ''}"><div class="leaderboard-medal">${medals[i]}</div><div class="leaderboard-podium-name">${escHtml(m.name)}</div><div class="leaderboard-podium-rate">${m.accuracy}%</div><div class="leaderboard-podium-meta">${m.attempts} lượt · ${m.correct} đúng</div></div>`
+    : `<div class="leaderboard-podium-item"><div class="leaderboard-medal">—</div><div class="leaderboard-podium-name">Trống</div><div class="leaderboard-podium-rate">—</div><div class="leaderboard-podium-meta">Chưa có dữ liệu</div></div>`
+  ).join('');
+
+  const body = document.getElementById('leaderboardRows');
+  if (!rows.length) { body.innerHTML = '<tr><td colspan="6" class="leaderboard-empty">Chưa có thành viên nào trong phòng học.</td></tr>'; return; }
+  const myUid = myDevice();
+  body.innerHTML = rows.map((m, i) => `<tr class="${m.uid === myUid ? 'me' : ''}"><td class="leaderboard-rank">${i < 3 ? ['🥇', '🥈', '🥉'][i] : '#' + (i + 1)}</td><td><b>${escHtml(m.name)}</b>${m.uid === myUid ? ' (Bạn)' : ''}</td><td>${m.correct} / ${m.wrong} / ${m.unanswered}</td><td>${m.attempts}</td><td>${m.answered}</td><td class="leaderboard-rate">${m.attempts ? m.accuracy + '%' : 'Chưa làm'}</td></tr>`).join('');
+};
+
+document.getElementById('leaderboardBtn').addEventListener('click', () => { leaderboardPanel.classList.add('on'); window.renderLearningLeaderboard(); });
+document.getElementById('leaderboardClose').addEventListener('click', () => leaderboardPanel.classList.remove('on'));
+leaderboardPanel.addEventListener('click', e => { if (e.target === leaderboardPanel) leaderboardPanel.classList.remove('on'); });
+
+/* ===== TƯƠNG TÁC CLICK CHỌN NHÂN VẬT ===== */
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function handleClick(clientX, clientY) {
-  if(window.__isBanned) return;
+  if (window.__isBanned) return;
   mouse.x = (clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
-  const npcMeshes = [];
+  const meshes = [];
   students.forEach(s => {
-    if(!s.npc.visible) return;
-    s.npc.traverse(child => {
-      if (child.isMesh) {
-        child.userData.ownerNpc = s.npc;
-        npcMeshes.push(child);
-      }
-    });
+    if (!s.npc.visible) return;
+    s.npc.traverse(c => { if (c.isMesh) { c.userData.ownerNpc = s.npc; meshes.push(c); } });
   });
-  const hits = raycaster.intersectObjects(npcMeshes, false);
+  const hits = raycaster.intersectObjects(meshes, false);
   if (hits.length > 0) {
-    const ownerNpc = hits[0].object.userData.ownerNpc;
-    const student = students.find(s => s.npc === ownerNpc);
-    if (student) focusOnStudent(student);
-  } else {
-    if (camMode === 'focus') exitFocus();
-  }
+    const st = students.find(s => s.npc === hits[0].object.userData.ownerNpc);
+    if (st) focusOnStudent(st);
+  } else if (camMode === 'focus') exitFocus();
 }
 
 function focusOnStudent(student) {
-  if(window.__isBanned) return;
-  camMode = 'focus';
-  focusedStudent = student;
-  students.forEach(s => {
-    if (s.npc.userData.highlightRing) s.npc.userData.highlightRing.visible = false;
-  });
-  document.querySelectorAll('.student-item.active').forEach(el => el.classList.remove('active'));
+  camMode = 'focus'; focusedStudent = student;
+  students.forEach(s => s.npc.userData.highlightRing && (s.npc.userData.highlightRing.visible = false));
   if (!student.npc.userData.highlightRing) {
-    const ringMatM = new THREE.MeshBasicMaterial({ color: student.isYou ? 0xfbbf24 : 0x34d399, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
-    const ring = new THREE.Mesh(new THREE.RingGeometry(0.4, 0.48, 4), ringMatM);
-    ring.rotation.x = -Math.PI / 2;
-    ring.rotation.z = Math.PI / 4;
-    ring.position.y = 0.02;
-    student.npc.add(ring);
-    student.npc.userData.highlightRing = ring;
+    const ring = new THREE.Mesh(new THREE.RingGeometry(0.42, 0.5, 32), new THREE.MeshBasicMaterial({ color: student.isYou ? 0xfbbf24 : 0x10b981, side: THREE.DoubleSide }));
+    ring.rotation.x = -Math.PI / 2; ring.position.y = 0.02;
+    student.npc.add(ring); student.npc.userData.highlightRing = ring;
   }
   student.npc.userData.highlightRing.visible = true;
 
-  const npcPos = student.npc.position;
-  targetLookAt.set(npcPos.x, 1.55, npcPos.z);
-  targetAngle = Math.PI / 2;
-  targetPitch = 0.15;
-  targetDist = 2.2;
+  targetLookAt.set(student.npc.position.x, 1.5, student.npc.position.z);
+  targetAngle = Math.PI / 2; targetPitch = 0.16; targetDist = 2.3;
 
   const banner = document.getElementById('focusBanner');
   const focusName = document.getElementById('focusName');
-  if (student.isYou) {
-    focusName.textContent = '⭐ ' + student.name;
-    focusName.classList.add('you-label');
-    banner.classList.add('you');
-  } else {
-    focusName.textContent = student.name;
-    focusName.classList.remove('you-label');
-    banner.classList.remove('you');
-  }
-  const skinName = CHARACTER_PRESETS[student.presetKey].name;
-  document.getElementById('focusStatus').textContent =
-    `${student.seat} · ${student.isOnline ? '🌞 Đang học' : '🌙 Đang ngủ'} · Skin: ${skinName}${student.isYou ? ' · Nhân vật của bạn' : ''}${isAdminIdentity(student.name) ? ' · 👑 ADMIN' : ''}`;
+  focusName.textContent = (student.isYou ? '⭐ ' : '') + student.name;
+  focusName.classList.toggle('you-label', student.isYou);
+  banner.classList.toggle('you', student.isYou);
+  document.getElementById('focusStatus').textContent = `Vị trí ${student.seat} · ${student.isOnline ? '🌞 Đang học' : '🌙 Đang ngủ'} · ${CHARACTER_PRESETS[student.presetKey].name}`;
   banner.classList.add('visible');
-  document.querySelectorAll('.student-item').forEach(el => {
-    if (el.dataset.seat === student.seat) el.classList.add('active');
-  });
+  renderStudentList();
 }
 
 function exitFocus() { resetCamera(); }
 document.getElementById('focusClose').addEventListener('click', exitFocus);
 
+/* ===== NHẬP TÊN & ĐỔI TÊN & TỦ ĐỒ ===== */
 const nameModal = document.getElementById('nameModal');
-const modalTitle = document.getElementById('modalTitle');
-const modalSubtitle = document.getElementById('modalSubtitle');
 const nameInput = document.getElementById('nameInput');
-const nameBtn = document.getElementById('nameBtn');
-let playerName = '';
 const renameNameLabel = document.getElementById('renameNameLabel');
-function refreshRenameNameLabel(){ if(renameNameLabel) renameNameLabel.textContent=getSavedName()||'Đặt tên'; }
+let playerName = '';
 
-function detectDeviceName(){
-  const ua = navigator.userAgent || '';
-  if (/iPhone/i.test(ua)) return 'iPhone';
-  if (/iPad/i.test(ua)) return 'iPad';
-  if (/Android/i.test(ua)) return 'Android';
-  if (/Windows/i.test(ua)) return 'Windows';
-  if (/Macintosh|Mac OS X/i.test(ua)) return 'Mac';
-  if (/Linux/i.test(ua)) return 'Linux';
-  return '';
-}
+function getSavedName() { return localStorage.getItem('chat_name_user_set') === '1' ? (localStorage.getItem('chat_name') || '').trim() : ''; }
+function refreshRenameLabel() { renameNameLabel.textContent = getSavedName() || 'Đặt tên'; }
 
-function getSavedName(){
-  if(localStorage.getItem('chat_name_user_set') !== '1') return '';
-  return (localStorage.getItem('chat_name') || '').trim();
-}
-
-async function handleNameSubmit(){
-  if(window.__isBanned) return;
+async function handleNameSubmit() {
+  if (window.__isBanned) return;
   const val = nameInput.value.trim();
-  if (!val) {
+  if (!val || val.length > 20) {
     nameInput.classList.add('invalid');
-    setTimeout(() => nameInput.classList.remove('invalid'), 500);
-    nameInput.focus();
+    setTimeout(() => nameInput.classList.remove('invalid'), 400);
     return;
   }
-  if (val.length > 20) {
-    nameInput.classList.add('invalid');
-    setTimeout(() => nameInput.classList.remove('invalid'), 500);
-    nameInput.focus();
-    return;
-  }
-
   const oldName = getSavedName();
-
   playerName = val;
   localStorage.setItem('chat_name', playerName);
   localStorage.setItem('chat_name_user_set', '1');
 
-  if(adminDB){
-    const banned = await checkBanned();
-    if(banned){ nameModal.classList.add('hide'); return; }
-    if(oldName && oldName !== val){
-      await adminDB.ref('rooms/nhom1/members/'+oldName).remove().catch(()=>{});
-    }
-    if(window.__watchBanByName) window.__watchBanByName();
+  if (adminDB) {
+    if (await checkBanned()) { nameModal.classList.add('hide'); return; }
+    if (oldName && oldName !== val) await adminDB.ref('rooms/nhom1/members/' + oldName).remove().catch(() => {});
+    if (window.__watchBanByName) window.__watchBanByName();
   }
-
-  if(window.__isBanned) return;
 
   applyPlayerName();
   nameModal.classList.add('hide');
   window.startClassroomPresence?.();
 
-  if(adminDB){
-    await adminDB.ref('rooms/nhom1/members/'+val).update({
-      uid: myDevice(), name: val, online: true, lastSeen: firebase.database.ServerValue.TIMESTAMP
-    }).catch(()=>{});
-  }
-
-  if(val === ADMIN_NAME && adminDB){
-    try {
+  if (adminDB) {
+    await adminDB.ref('rooms/nhom1/members/' + val).update({ uid: myDevice(), name: val, online: true, lastSeen: firebase.database.ServerValue.TIMESTAMP }).catch(() => {});
+    if (val === ADMIN_NAME) {
       const snap = await adminDB.ref('rooms/nhom1/adminDevice').once('value');
       const bound = snap.val();
-      if(!bound || bound.device === myDevice()){
+      if (!bound || bound.device === myDevice()) {
         await adminDB.ref('rooms/nhom1/adminDevice').set({ device: myDevice(), time: Date.now() });
-        await adminDB.ref('rooms/nhom1/members/'+val+'/isAdmin').set(true).catch(()=>{});
-        await adminDB.ref('rooms/nhom1/members/'+val+'/uid').set(myDevice()).catch(()=>{});
+        await adminDB.ref('rooms/nhom1/members/' + val + '/isAdmin').set(true);
         isAdmin = true;
         document.getElementById('adminFab').classList.add('on');
         updateHud();
       }
-    } catch(e){}
-  } else {
-    const ok = await checkAdmin();
-    if(ok){ document.getElementById('adminFab').classList.add('on'); updateHud(); }
+    } else if (await checkAdmin()) {
+      document.getElementById('adminFab').classList.add('on');
+      updateHud();
+    }
   }
 }
-nameBtn.addEventListener('click', handleNameSubmit);
+
+document.getElementById('nameBtn').addEventListener('click', handleNameSubmit);
 nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleNameSubmit(); });
-window.addEventListener('storage', e=>{
-  if(e.key!=='chat_name') return;
-  const next=(localStorage.getItem('chat_name')||'').trim();
-  if(!next)return;
-  playerName=next;localStorage.setItem('chat_name_user_set','1');
-  applyPlayerName();window.startClassroomPresence?.();
-  if(adminDB){adminDB.ref('rooms/nhom1/members/'+next).update({uid:myDevice(),name:next,online:true,lastSeen:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});}
-});
 
 function applyPlayerName() {
-  const youStudent = students.find(s => s.isYou);
-  if (!youStudent) return;
-  youStudent.name = playerName || 'Bạn';
-  const npc = youStudent.npc;
-  const oldSprite = npc.userData.nameSprite;
-  if (oldSprite) npc.remove(oldSprite);
-  const newSprite = makeNameSprite(youStudent.name, true, isAdminIdentity(youStudent.name));
-  newSprite.position.set(0, 2.6, 0);
-  npc.add(newSprite);
-  npc.userData.nameSprite = newSprite;
-  renderStudentList(); updateHud(); refreshRenameNameLabel();
-  if (window.__watchBanByName) window.__watchBanByName();
+  const me = students.find(s => s.isYou);
+  if (!me) return;
+  me.name = playerName || 'Bạn';
+  const old = me.npc.userData.nameSprite;
+  if (old) me.npc.remove(old);
+  const sp = makeNameSprite(me.name, true, isAdminIdentity(me.name));
+  sp.position.set(0, 2.55, 0);
+  me.npc.add(sp); me.npc.userData.nameSprite = sp;
+  renderStudentList(); updateHud(); refreshRenameLabel();
 }
 
-// ====== NÚT ĐỔI TÊN ======
-const renameBtn = document.getElementById('renameBtn');
-renameBtn.addEventListener('click', () => {
-  if(window.__isBanned) return;
+document.getElementById('renameBtn').addEventListener('click', () => {
+  if (window.__isBanned) return;
   const cur = getSavedName();
-  modalTitle.textContent = cur ? 'Đổi tên' : 'Chào mừng đến lớp!';
-  modalSubtitle.textContent = cur ? 'Nhập tên mới của bạn' : 'Nhập tên của bạn để vào phòng máy tính';
-  nameInput.value = cur || '';
+  document.getElementById('modalTitle').textContent = cur ? 'Đổi tên hiển thị' : 'Chào mừng đến lớp!';
+  document.getElementById('modalSubtitle').textContent = cur ? 'Nhập tên mới của bạn (tối đa 20 ký tự)' : 'Nhập tên của bạn để ngồi vào bàn máy tính';
+  nameInput.value = cur;
   nameModal.classList.remove('hide');
-  setTimeout(()=>nameInput.focus(), 100);
-  nameInput.select();
+  setTimeout(() => { nameInput.focus(); nameInput.select(); }, 80);
 });
 
-// ====== TỦ ĐỒ ======
-const wardrobeBtn = document.getElementById('wardrobeBtn');
 const wardrobePanel = document.getElementById('wardrobePanel');
 const skinGrid = document.getElementById('skinGrid');
-
-function buildSkinGrid(){
-  skinGrid.innerHTML = '';
-  PRESET_KEYS.filter(k => !CHARACTER_PRESETS[k].isMob).forEach(k => {
-    const btn = document.createElement('button');
-    btn.className = 'skin-item';
-    btn.textContent = CHARACTER_PRESETS[k].name;
-    btn.addEventListener('click', () => pickSkin(k));
-    skinGrid.appendChild(btn);
+PRESET_KEYS.forEach(k => {
+  const btn = document.createElement('button');
+  btn.className = 'skin-item';
+  btn.textContent = CHARACTER_PRESETS[k].name;
+  btn.addEventListener('click', async () => {
+    const me = students.find(s => s.isYou);
+    if (!me || !me.uid || !adminDB) return;
+    await adminDB.ref('rooms/nhom1/skins/' + me.uid).set(k);
+    rebuildStudentSkin(me, k);
+    updateSkinSelection();
+    wardrobePanel.classList.remove('on');
   });
-  updateSkinGridSelection();
-}
-function updateSkinGridSelection(){
-  const me = students.find(s => s.isYou);
-  const current = me ? me.presetKey : null;
-  const keys = PRESET_KEYS.filter(k => !CHARACTER_PRESETS[k].isMob);
-  Array.from(skinGrid.children).forEach((btn, i) => {
-    btn.classList.toggle('on', keys[i] === current);
-  });
-}
-wardrobeBtn.addEventListener('click', () => {
-  if(window.__isBanned) return;
-  updateSkinGridSelection();
-  wardrobePanel.classList.add('on');
+  skinGrid.appendChild(btn);
 });
-
-async function pickSkin(key){
-  if(window.__isBanned) return;
+function updateSkinSelection() {
   const me = students.find(s => s.isYou);
-  if(!me || !me.uid || !adminDB) return;
-  await adminDB.ref('rooms/nhom1/skins/'+me.uid).set(key);
-  rebuildStudentSkin(me, key);
-  updateSkinGridSelection();
-  wardrobePanel.classList.remove('on');
+  Array.from(skinGrid.children).forEach((btn, i) => btn.classList.toggle('on', PRESET_KEYS[i] === (me && me.presetKey)));
 }
+document.getElementById('wardrobeBtn').addEventListener('click', () => { updateSkinSelection(); wardrobePanel.classList.add('on'); });
 
-buildSkinGrid();
-
-function updateNameInputPlaceholder(){
-  const dev = detectDeviceName();
-  nameInput.placeholder = dev ? `Tên của bạn... (gợi ý: ${dev})` : 'Tên của bạn...';
-}
-
-(async function boot(){
-  if(localStorage.getItem('chat_name_user_set') !== '1' && localStorage.getItem('chat_name')){
-    localStorage.removeItem('chat_name');
+(async function boot() {
+  const saved = getSavedName();
+  refreshRenameLabel();
+  if (saved) {
+    playerName = saved; nameInput.value = saved;
+    if (await checkBanned()) { nameModal.classList.add('hide'); return; }
+    applyPlayerName(); nameModal.classList.add('hide');
+    window.startClassroomPresence?.();
   }
-
-  const savedName = getSavedName();
-  refreshRenameNameLabel();
-  if(savedName){
-    playerName = savedName;
-    nameInput.value = savedName;
-    const banned = await checkBanned();
-    if(banned){
-      nameModal.classList.add('hide');
-      return;
-    }
-    applyPlayerName();
-    nameModal.classList.add('hide');
-    if(!window.__isBanned) window.startClassroomPresence?.();
-  } else {
-    updateNameInputPlaceholder();
-    nameInput.value = '';
-  }
-  const ok = await checkAdmin();
-  if(ok){ document.getElementById('adminFab').classList.add('on'); }
+  if (await checkAdmin()) document.getElementById('adminFab').classList.add('on');
   updateHud();
-  applyHiddenNpcs();
-
-  if(adminDB){
-    const meUid = localStorage.getItem('classroom_uid');
-    adminDB.ref('rooms/nhom1/skins/'+meUid).once('value').then(s => {
-      const k = s.val();
-      const me = students.find(st => st.isYou);
-      if(k && me && k !== me.presetKey && CHARACTER_PRESETS[k]){
-        rebuildStudentSkin(me, k);
-        updateSkinGridSelection();
-      }
+  if (adminDB) {
+    adminDB.ref('rooms/nhom1/skins/' + myDevice()).once('value').then(s => {
+      const k = s.val(), me = students.find(st => st.isYou);
+      if (k && me && CHARACTER_PRESETS[k]) rebuildStudentSkin(me, k);
     });
   }
 })();
 
+/* ===== VÒNG LẶP RENDER 3D ===== */
 const clock = new THREE.Clock();
-let frameCount = 0, listRefreshTimer = 0, hiddenFallbackTimer = 0, adminRefreshTimer = 0;
+let uiTimer = 0;
 
 function animate() {
   requestAnimationFrame(animate);
@@ -2238,97 +1886,55 @@ function animate() {
   const dt = clock.getDelta();
   const now = performance.now();
 
-  listRefreshTimer += dt;
-  if (listRefreshTimer > 2) { listRefreshTimer = 0; if(!window.__isBanned){ renderStudentList(); updateHud(); } }
-
-  hiddenFallbackTimer += dt;
-  if (hiddenFallbackTimer > 0.5) { hiddenFallbackTimer = 0; applyHiddenNpcs(); }
-
-  adminRefreshTimer += dt;
-  if (adminRefreshTimer > 3) { adminRefreshTimer = 0; if(isAdmin && document.getElementById('adminPanel').classList.contains('on')) renderAdminMembers(); }
-
-  const activeStudents = students.filter(s => s.active);
-  const nOn = activeStudents.filter(s => s.isOnline).length;
-  const ratio = nOn / students.length;
-  const targetLightInt = 0.1 + ratio * 0.85;
-  ceilingLights.forEach(l => { l.intensity += (targetLightInt - l.intensity) * 0.04; });
-  ambient.intensity += ((0.15 + ratio * 0.4) - ambient.intensity) * 0.04;
+  uiTimer += dt;
+  if (uiTimer > 2.5) { uiTimer = 0; if (!window.__isBanned) { renderStudentList(); updateHud(); } }
 
   npcs.forEach((npc, i) => {
-    const u = npc.userData;
-    const tg = u.target, cu = u.current;
-    const k = 0.10;
-    cu.headRotX += (tg.headRotX - cu.headRotX) * k;
-    u.headGroup.rotation.x = cu.headRotX;
-
-    const s = students[i];
+    const u = npc.userData, s = students[i];
     if (!s || !s.active) { u.zzzSprites.forEach(sp => sp.visible = false); return; }
-    if (s.isOnline) {
-      if (Math.abs(cu.headRotX) < 0.1) {
-        u.leftElbowGroup.rotation.x = -Math.PI/2 + Math.sin(t * u.tapSpeed + u.phase) * 0.1;
-        u.rightElbowGroup.rotation.x = -Math.PI/2 + Math.sin(t * u.tapSpeed + u.phase + 1.5) * 0.1;
-        u.headGroup.rotation.x = cu.headRotX + Math.sin(t * 1.5 + u.phase) * 0.03;
-      }
+    u.current.headRotX += (u.target.headRotX - u.current.headRotX) * 0.1;
+    u.headGroup.rotation.x = u.current.headRotX;
+
+    if (s.isOnline && Math.abs(u.current.headRotX) < 0.1) {
+      u.leftElbowGroup.rotation.x = -Math.PI / 2 + Math.sin(t * u.tapSpeed + u.phase) * 0.09;
+      u.rightElbowGroup.rotation.x = -Math.PI / 2 + Math.sin(t * u.tapSpeed + u.phase + 1.6) * 0.09;
+      u.headGroup.rotation.y = Math.sin(t * 0.9 + u.phase) * 0.08;
     }
 
-    const showZzz = !s.isOnline && tg.zzzVisible;
-    const headWorldPos = new THREE.Vector3();
-    u.headGroup.getWorldPosition(headWorldPos);
-
+    const headPos = new THREE.Vector3();
+    u.headGroup.getWorldPosition(headPos);
     u.zzzSprites.forEach((sp, zi) => {
-      if (!showZzz) { sp.visible = false; return; }
+      if (s.isOnline) { sp.visible = false; return; }
       sp.visible = true;
-      const cycle = (t * 0.5 + zi * 0.33) % 1;
-      sp.position.set(
-        headWorldPos.x + 0.5 + Math.sin(cycle * 4 + zi) * 0.08,
-        headWorldPos.y + 0.3 + cycle * 0.9,
-        headWorldPos.z + 0.2
-      );
-      sp.material.opacity = (1 - cycle) * 0.9;
-      const sc = 0.2 + cycle * 0.25;
-      sp.scale.set(sc, sc, 1);
+      const cyc = (t * 0.5 + zi * 0.33) % 1;
+      sp.position.set(headPos.x + 0.45 + Math.sin(cyc * 4 + zi) * 0.08, headPos.y + 0.3 + cyc * 0.85, headPos.z + 0.15);
+      sp.material.opacity = (1 - cyc) * 0.85;
     });
 
-    if (u.highlightRing && u.highlightRing.visible) {
-      u.highlightRing.rotation.z = t * 1.5 + Math.PI / 4;
-      u.highlightRing.scale.setScalar(1 + Math.sin(t * 3) * 0.05);
-    }
-    if (u.youRing) u.youRing.rotation.z = -t * 0.8 + Math.PI / 4;
+    if (u.youRing) u.youRing.scale.setScalar(1 + Math.sin(t * 2.5) * 0.04);
   });
 
-  if (!animate._lastMonitorUpdate || now - animate._lastMonitorUpdate > 180) {
-    animate._lastMonitorUpdate = now;
+  if (!animate._lastMon || now - animate._lastMon > 200) {
+    animate._lastMon = now;
     monitors.forEach(m => {
-      const student = students[m.studentIdx];
-      const isOnline = student ? (student.active && student.isOnline) : false;
-      const scrollSpeed = 0.3 + (m.studentIdx % 5) * 0.1;
-      drawCodeScreen(m.mon, m.snippet, t * scrollSpeed * 20, isOnline);
+      const st = students[m.studentIdx];
+      drawCodeScreen(m.mon, m.snippet, t * 14, st ? (st.active && st.isOnline) : false);
       m.mon.texture.needsUpdate = true;
     });
   }
 
-  if (frameCount % 2 === 0) {
-    const dp = dust.geometry.attributes.position.array;
-    for (let i = 1; i < dp.length; i += 3) {
-      dp[i] += 0.003;
-      if (dp[i] > 8) dp[i] = 0;
-    }
-    dust.geometry.attributes.position.needsUpdate = true;
-  }
-  frameCount++;
-
-  const nowDate = new Date();
-  const sec = nowDate.getSeconds() + nowDate.getMilliseconds() / 1000;
-  const min = nowDate.getMinutes() + sec / 60;
-  const hr = (nowDate.getHours() % 12) + min / 60;
+  const d = new Date();
+  const sec = d.getSeconds() + d.getMilliseconds() / 1000;
+  const min = d.getMinutes() + sec / 60;
+  const hr = (d.getHours() % 12) + min / 60;
   secHand.rotation.z = -(sec / 60) * Math.PI * 2;
   minHand.rotation.z = -(min / 60) * Math.PI * 2;
   hourHand.rotation.z = -(hr / 12) * Math.PI * 2;
 
-  camAngle += (targetAngle - camAngle) * 0.08;
-  camPitch += (targetPitch - camPitch) * 0.08;
-  camDist += (targetDist - camDist) * 0.08;
-  camTarget.lerp(targetLookAt, 0.08);
+  camAngle += (targetAngle - camAngle) * 0.09;
+  camPitch += (targetPitch - camPitch) * 0.09;
+  camDist += (targetDist - camDist) * 0.09;
+  camTarget.lerp(targetLookAt, 0.09);
 
   const eye = new THREE.Vector3(
     camTarget.x + Math.cos(camAngle) * camDist * Math.cos(camPitch),
@@ -2343,7 +1949,7 @@ function animate() {
 }
 
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
