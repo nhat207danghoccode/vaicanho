@@ -587,12 +587,22 @@
     padding: 12px 20px;
     display: flex; align-items: center; gap: 16px;
   }
+  /* Biểu tượng học tập dùng chung cho mọi môn */
   .logo{
     width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
-    background: linear-gradient(135deg, var(--c1), var(--c2));
+    background: linear-gradient(145deg, #171525 0%, #080812 72%, #24183c 100%);
     display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 17px;
-    box-shadow: 0 6px 16px -4px var(--c1);
+    color: #e9ddff; font-size: 19px;
+    border: 1px solid rgba(196, 181, 253, .22);
+    box-shadow: 0 6px 16px -4px rgba(76, 29, 149, .48),
+                inset 0 1px 1px rgba(255,255,255,.16),
+                inset 0 -3px 7px rgba(0,0,0,.42);
+  }
+  .logo i{
+    background: linear-gradient(145deg, #ffffff 5%, #d8c5ff 48%, #9b7bea 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.65)) drop-shadow(0 0 5px rgba(167,139,250,.45));
+    transform: translateY(-1px);
   }
   .topbar-title{ flex: 1; min-width: 0; }
   .topbar-title h1{
@@ -968,15 +978,6 @@
     color: var(--c1); font-size: 11px; font-weight: 600; margin: 2px;
   }
 
-  .exam-top{
-    background: var(--surface); border: 1px solid var(--line);
-    border-radius: var(--radius); padding: 18px 20px;
-    box-shadow: var(--shadow-sm);
-  }
-  .exam-top .row{ display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; align-items: center; }
-  .exam-top h3{ font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-  .exam-top h3 i{ color: var(--red); }
-  #examTimer{ font-size: 26px; font-weight: 900; color: var(--amber); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
   .prog-track{ height: 8px; background: var(--line-soft); border-radius: 999px; overflow: hidden; }
   .prog-fill2{ height: 100%; width: 0%; background: linear-gradient(90deg, var(--c1), var(--c2)); border-radius: 999px; transition: .3s; }
   .prog-text{ margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--txt-dim); }
@@ -1888,19 +1889,6 @@
 </div>
 
 
-<div id="gateRoot">
-  <div class="loader-card">
-    <div class="pulse-wrap"><div class="pulse-ring"></div><div class="pulse-ring"></div><div class="pulse-ring"></div><div class="pulse-core"><i class="fas fa-book-open"></i></div></div>
-    <div class="loader-name">Nguyễn Phi Nhật</div>
-    <div class="loader-sub"><i class="fas fa-circle"></i> Đang kết nối hệ thống</div>
-    <div class="ecg"><svg viewBox="0 0 320 60" preserveAspectRatio="none"><defs><linearGradient id="ecgGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="var(--c1)" stop-opacity="0"/><stop offset="50%" stop-color="var(--c2)" stop-opacity="1"/><stop offset="100%" stop-color="var(--c1)" stop-opacity="0"/></linearGradient></defs><path class="ecg-path" d="M0,30 L50,30 L60,30 L65,12 L70,48 L75,30 L90,30 L100,30 L105,22 L110,38 L115,30 L150,30 L160,30 L165,8 L170,52 L175,30 L195,30 L205,30 L210,18 L215,42 L220,30 L260,30 L270,30 L275,12 L280,48 L285,30 L320,30"/></svg></div>
-    <div class="prog-info"><span class="lbl">Đang tải <span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="pct" id="progressText">0%</span></div>
-    <div class="prog-track"><div class="prog-fill" id="progressFill"></div></div>
-    <div class="loader-foot"><i class="fas fa-shield-halved"></i> Phiên bản 2.0 • Sẵn sàng</div>
-  </div>
-</div>
-
-
 <div class="subject-screen" id="subjectSelect">
   <div class="subject-card">
     <div class="subject-head">
@@ -1927,7 +1915,7 @@
 
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="logo"><i class="fas fa-book-open"></i></div>
+      <div class="logo" aria-label="Biểu tượng học tập"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
       <div class="topbar-title">
         <h1 id="subjectTitle">🩺 Môn Pháp luật</h1>
         <p><i class="fas fa-circle"></i> Nguyễn Phi Nhật • Đang hoạt động</p>
@@ -1961,9 +1949,6 @@
       <div class="side-group-label">Công cụ</div>
       <button class="side-btn" data-tab="NOTE" onclick="switchTab('NOTE')">
         <i class="fas fa-pen-to-square"></i> Ghi chú
-      </button>
-      <button class="side-btn" data-tab="EXAM" onclick="switchTab('EXAM')">
-        <i class="fas fa-stopwatch"></i> Thi thử
       </button>
       <button class="side-btn" data-tab="CREATE" onclick="switchTab('CREATE')">
         <i class="fas fa-wand-magic-sparkles"></i> Tạo đề
@@ -2024,25 +2009,7 @@ B. Đúng"></textarea>
         </div>
       </div>
 
-      <div class="exam-top hidden" id="examTop">
-        <div class="row">
-          <div>
-            <h3><i class="fas fa-stopwatch"></i> Thi thử</h3>
-            <div id="examTimer">45:00</div>
-          </div>
-          <div style="flex:1;min-width:180px;">
-            <div class="prog-track"><div class="prog-fill2" id="examProgressBar"></div></div>
-            <div class="prog-text" id="examProgressText">0 / 0 (0%)</div>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button class="qbtn" onclick="filterExam('all')">Tất cả</button>
-            <button class="qbtn" onclick="filterExam('todo')">Chưa làm</button>
-            <button class="qbtn" onclick="filterExam('wrong')">Sai</button>
-            <button class="qbtn" onclick="filterExam('bookmark')">Bookmark</button>
-            <button class="qbtn primary" onclick="finishExam()"><i class="fas fa-paper-plane"></i> Nộp</button>
-          </div>
-        </div>
-      </div>
+
 
       <div class="chips" id="chipsRow">
         <button class="chip on" data-filter="all"><i class="fas fa-list"></i> Tất cả</button>
@@ -2300,36 +2267,15 @@ B. Đúng"></textarea>
 
 <script>
 (function(){
-  let progress = 0;
-  const fill = document.getElementById("progressFill");
-  const label = document.getElementById("progressText");
-  const gate = document.getElementById("gateRoot");
-  const timer = setInterval(() => {
-    progress = Math.min(95, progress + Math.max(1, Math.ceil((95 - progress) * 0.12)));
-    if (fill) fill.style.width = progress + "%";
-    if (label) label.textContent = progress + "%";
-  }, 120);
-  function closeLoader(){
-    clearInterval(timer);
-    if (fill) fill.style.width = "100%";
-    if (label) label.textContent = "100%";
-    setTimeout(() => {
-      gate.classList.add("gate-hidden");
-      setTimeout(() => { gate.style.display = "none"; }, 500);
-    }, 250);
+  const saved = localStorage.getItem("currentSubject");
+  if (saved && typeof SUBJECTS !== "undefined" && SUBJECTS[saved]) {
+    currentSubject = saved;
+    window.currentSubject = saved;
+    if (typeof hideSubjectSelect === "function") hideSubjectSelect();
+    if (typeof loadQuestionFiles === "function") loadQuestionFiles();
+  } else if (typeof showSubjectSelect === "function") {
+    showSubjectSelect();
   }
-  setTimeout(() => {
-    const saved = localStorage.getItem("currentSubject");
-    if (saved && typeof SUBJECTS !== "undefined" && SUBJECTS[saved]) {
-      currentSubject = saved;
-      window.currentSubject = saved;
-      if (typeof hideSubjectSelect === "function") hideSubjectSelect();
-      if (typeof loadQuestionFiles === "function") loadQuestionFiles();
-    } else if (typeof showSubjectSelect === "function") {
-      showSubjectSelect();
-    }
-    closeLoader();
-  }, 1200);
 })();
 </script>
 
@@ -2386,10 +2332,6 @@ let currentSubject = "";
 window.currentSubject = "";
 let subjectLoadToken = 0;
 let parsedQuestionsDS = [];
-let examQuestions = [];
-let examSeconds = 2700;
-let examInterval = null;
-let examFinished = false;
 let currentTab = "";
 let correctCount = 0;
 let bookmarks = JSON.parse(localStorage.getItem("bookmarks")||"[]");
@@ -2743,7 +2685,6 @@ function switchTab(type, skipPartialPrompt){
 
     document.getElementById("noteBox").classList.add("hidden");
     document.getElementById("createBox").classList.add("hidden");
-    document.getElementById("examTop").classList.add("hidden");
 
     document.getElementById("infoStrip").classList.toggle("hidden",type==="TKB");
     document.getElementById("chipsRow").classList.toggle("hidden",type==="TKB");
@@ -2758,7 +2699,6 @@ function switchTab(type, skipPartialPrompt){
     resetChips();
 
     if(type==="TKB"){
-        clearInterval(examInterval);
         window.scrollTo({top:0,behavior:"smooth"});
         return;
     }
@@ -2766,7 +2706,6 @@ function switchTab(type, skipPartialPrompt){
         document.getElementById("noteBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
-        clearInterval(examInterval);
         loadNote();
         return;
     }
@@ -2774,23 +2713,12 @@ function switchTab(type, skipPartialPrompt){
         document.getElementById("createBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
-        clearInterval(examInterval);
-        return;
-    }
-    if(type==="EXAM"){
-        document.getElementById("examTop").classList.remove("hidden");
-        createExam();
-        startExam();
-        buildQuizHTML();
-        buildNavPanel();
-        showActiveContainer();
         return;
     }
     if(type==="HOSPITAL"){
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
         document.getElementById("hospitalBox").classList.remove("hidden");
-        clearInterval(examInterval);
         window.scrollTo({top:0,behavior:"smooth"});
         return;
     }
@@ -2830,66 +2758,7 @@ function confirmClearNote(){
     });
 }
 
-function createExam(){
-    examQuestions = shuffleArray([...parsedQuestionsDS]).slice(0, 80);
-}
-function startExam(){
-    examFinished=false;
-    clearInterval(examInterval);
-    examSeconds=2700;
-    updateExamTimer();
-    examInterval=setInterval(()=>{
-        examSeconds--;
-        updateExamTimer();
-        updateProgress();
-        if(examSeconds<=0){ finishExam(); }
-    },1000);
-}
-function updateExamTimer(){
-    let m=Math.floor(examSeconds/60);
-    let s=examSeconds%60;
-    document.getElementById("examTimer").innerHTML=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
-}
-function updateProgress(){
-    const total=examQuestions.length;
-    let done=document.querySelectorAll("#quiz-container .q-item.answered").length;
-    let pct=total ? done/total*100 : 0;
-    document.getElementById("examProgressBar").style.width=pct+"%";
-    document.getElementById("examProgressText").innerHTML=done+" / "+total+" ("+Math.round(pct)+"%)";
-}
-async function finishExam(){
-    if(examFinished)return;
-    examFinished=true;
-    clearInterval(examInterval);
-    let correct=0, wrong=0, todo=0;
-    cachedQuestionNodes.forEach(q=>{
-        if(!q.classList.contains("answered")){ todo++; return; }
-        if(q.classList.contains("wrong-question")){ wrong++; }else{ correct++; }
-    });
-    const score=(correct/(correct+wrong+todo||1)*10).toFixed(2);
-    if(typeof window.recordStatsSession === "function") window.recordStatsSession(correct, wrong, {total:cachedQuestionNodes.length, unanswered:todo, submitted:true, subject:currentSubject});
-    await showPopup("Kết quả thi thử",
-        `Điểm: ${score}/10\nĐúng: ${correct}\nSai: ${wrong}\nChưa làm: ${todo}`,
-        '<i class="fas fa-trophy" style="color:#fbbf24;"></i>');
-    showAllAnswers();
-}
-function showAllAnswers(){
-    const btns=document.querySelectorAll("#quiz-container .answer-submit");
-    btns.forEach(btn=>{ if(!btn.disabled){ btn.click(); } });
-}
-function filterExam(type){
-    const qs = cachedQuestionNodes;
-    qs.forEach((q)=>{
-        let show = true;
-        if(type==="todo" && q.classList.contains("answered")){ show = false; }
-        if(type==="bookmark" && !bookmarks.includes(q.dataset.questionId)){ show = false; }
-        if(type==="wrong" && !q.classList.contains("wrong-question")){ show = false; }
-        q.classList.toggle("hidden", !show);
-    });
-}
-
 function toggleAllAnswers(){
-    if(currentTab==="EXAM"){ alert("Chức năng này không áp dụng trong phần Thi thử."); return; }
     answersRevealed = !answersRevealed;
     const btn = document.getElementById("showAnswersBtn");
     if(btn){
@@ -3153,8 +3022,7 @@ function buildQuizHTML(){
     document.getElementById("correctAnswer").innerText="0";
 
     let sourceQuestions;
-    if(currentTab==="EXAM"){ sourceQuestions=[...examQuestions]; }
-    else if(currentTab==="TF"){ sourceQuestions=parsedQuestionsDS.filter(q=>q.arr.length===2); }
+    if(currentTab==="TF"){ sourceQuestions=parsedQuestionsDS.filter(q=>q.arr.length===2); }
     else if(currentTab==="MC"){ sourceQuestions=parsedQuestionsDS.filter(q=>q.arr.length>=3); }
     else{ sourceQuestions=[...parsedQuestionsDS]; }
 
@@ -3397,7 +3265,6 @@ function buildQuizHTML(){
 
             updateNavColors();
             updateTopProgress();
-            if(currentTab === "EXAM"){ updateProgress(); }
         };
 
         actionBtns.appendChild(submitBtn);
