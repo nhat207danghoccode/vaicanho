@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -78,7 +78,6 @@
   .tool-btn.icon-only { width: 38px; padding: 0; font-size: 16px; }
   .tool-btn.gold { border-color: rgba(250, 204, 21, 0.35); color: #fde047; }
   .tool-btn.gold:hover { background: rgba(250, 204, 21, 0.15); border-color: #facc15; }
-  .tool-btn.hidden { display: none; }
   .rename-label { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   @media (max-width: 640px) {
@@ -301,7 +300,7 @@
   </div>
 </div>
 
-<!-- THANH TRÊN CÙNG THỐNG NHẤT: KHÔNG BAO GIỜ ĐÈ NHAU -->
+<!-- THANH TRÊN CÙNG THỐNG NHẤT -->
 <div class="top-bar" id="topBar">
   <div class="hud">
     <div class="pulse" id="pulse"></div>
@@ -532,14 +531,14 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure = 1.12;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x090e1a);
-scene.fog = new THREE.FogExp2(0x090e1a, 0.014);
+scene.fog = new THREE.FogExp2(0x090e1a, 0.012);
 
-const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 200);
+const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 220);
 
 const CAM_DEFAULTS = { angle: Math.PI * 0.16, pitch: 0.34, dist: 13.5, target: new THREE.Vector3(0, 1.8, -3.5) };
 let camAngle = CAM_DEFAULTS.angle, camPitch = CAM_DEFAULTS.pitch, camDist = CAM_DEFAULTS.dist;
@@ -621,7 +620,7 @@ function resetCamera() {
   fb.classList.remove('visible', 'you');
 }
 
-/* ===== TEXTURE & MATERIAL CHO NHÂN VẬT & PHÒNG HỌC ===== */
+/* ===== TEXTURE & MATERIAL CHO NHÂN VẬT ===== */
 function createNoiseTexture(width, height, drawFunc) {
   const canvas = document.createElement('canvas');
   canvas.width = width; canvas.height = height;
@@ -755,7 +754,6 @@ function getBoxGeo(w, h, d) {
   return GEO_CACHE[key];
 }
 
-/* ===== XÂY DỰNG NHÂN VẬT 3D TINH CHỈNH (CÓ TAI NGHE GAMING, TÓC 3D, GIÀY) ===== */
 function buildMinecraftCharacter(presetKey) {
   const preset = CHARACTER_PRESETS[presetKey] || CHARACTER_PRESETS.steve;
   const torsoHeight = 0.8, torsoWidth = 0.56, torsoDepth = 0.30;
@@ -787,12 +785,10 @@ function buildMinecraftCharacter(presetKey) {
   headMesh.castShadow = true;
   headGroup.add(headMesh);
 
-  // Lớp tóc 3D nổi khối phía trên đầu
   const hairTop = new THREE.Mesh(getBoxGeo(headSize + 0.04, 0.1, headSize + 0.04), hairMat);
   hairTop.position.set(0, headSize / 2 + 0.02, -0.01);
   headGroup.add(hairTop);
 
-  // Tai nghe Gaming 3D trùm đầu
   const bandTop = new THREE.Mesh(getBoxGeo(headSize + 0.12, 0.05, 0.09), headsetMat);
   bandTop.position.set(0, headSize / 2 + 0.08, 0);
   headGroup.add(bandTop);
@@ -871,7 +867,7 @@ function buildMinecraftCharacter(presetKey) {
   };
 }
 
-/* ===== MÀN HÌNH CODE & ĐỒ HỌA PHÒNG HỌC ===== */
+/* ===== MÀN HÌNH CODE ===== */
 const CODE_SNIPPETS = [
   { lang: 'JavaScript', lines: [
     '<span style="color:#c586c0">async function</span> <span style="color:#dcdcaa">loadClass</span>() {',
@@ -941,7 +937,7 @@ function drawCodeScreen(mon, snippet, scrollY, isOnline) {
   });
 }
 
-/* ===== VẬT LIỆU PHÒNG HỌC HIỆN ĐẠI ===== */
+/* ===== VẬT LIỆU PHÒNG HỌC & CỬA SỔ PHONG CẢNH ===== */
 function createWoodFloorTexture() {
   const c = document.createElement('canvas'); c.width = 256; c.height = 256;
   const ctx = c.getContext('2d');
@@ -964,9 +960,11 @@ const M = {
   floor: new THREE.MeshStandardMaterial({ map: createWoodFloorTexture(), roughness: 0.55, metalness: 0.15 }),
   wall: new THREE.MeshStandardMaterial({ color: 0x1e2536, roughness: 0.85, side: THREE.DoubleSide }),
   wallTrim: new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 }),
+  windowFrame: new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.35, metalness: 0.7 }),
+  windowSill: new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.4 }),
   ceiling: new THREE.MeshStandardMaterial({ color: 0x131826, roughness: 0.9 }),
   ledPanel: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xe0f2fe, emissiveIntensity: 1.4 }),
-  deskTop: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.45, metalness: 0.1 }), // Gỗ ấm sang trọng
+  deskTop: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.45, metalness: 0.1 }),
   deskFrame: new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.7 }),
   chair: new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.5 }),
   monitor: new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.3, metalness: 0.5 }),
@@ -975,7 +973,9 @@ const M = {
   mousePad: new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.9 }),
   pot: new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.75 }),
   leaf: new THREE.MeshStandardMaterial({ color: 0x16a34a, roughness: 0.55 }),
-  windowGlass: new THREE.MeshStandardMaterial({ color: 0x0284c7, transparent: true, opacity: 0.25, roughness: 0.1, metalness: 0.8 })
+  windowGlass: new THREE.MeshPhysicalMaterial({
+    color: 0xbae6fd, transparent: true, opacity: 0.14, roughness: 0.08, metalness: 0.1, side: THREE.DoubleSide
+  })
 };
 
 const screenMatBase = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.15, roughness: 0.2 });
@@ -983,6 +983,11 @@ const screenMatBase = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive
 /* ===== HỆ THỐNG ÁNH SÁNG ===== */
 scene.add(new THREE.HemisphereLight(0xbae6fd, 0x1e293b, 0.65));
 const ambient = new THREE.AmbientLight(0x64748b, 0.45); scene.add(ambient);
+
+// Ánh trăng xanh dịu hắt từ cửa sổ phong cảnh vào lớp học
+const moonWindowLight = new THREE.DirectionalLight(0x7dd3fc, 0.65);
+moonWindowLight.position.set(-28, 12, 0);
+scene.add(moonWindowLight);
 
 const ceilingLights = [];
 [[-6, 8.2, -7], [6, 8.2, -7], [-6, 8.2, 2], [6, 8.2, 2]].forEach((pos, i) => {
@@ -996,7 +1001,6 @@ const ceilingLights = [];
   scene.add(l);
   ceilingLights.push(l);
 
-  // Đèn panel LED âm trần 3D
   const ledMesh = new THREE.Mesh(getBoxGeo(2.8, 0.08, 0.9), M.ledPanel);
   ledMesh.position.set(pos[0], 8.95, pos[2]);
   scene.add(ledMesh);
@@ -1012,7 +1016,6 @@ floor.position.y = -0.15; floor.receiveShadow = true; scene.add(floor);
 const ceiling = new THREE.Mesh(getBoxGeo(ROOM.w, 0.3, ROOM.d), M.ceiling);
 ceiling.position.y = ROOM.h + 0.15; scene.add(ceiling);
 
-// Tường trước (bảng trắng), tường sau, tường phải
 const wb = new THREE.Mesh(getBoxGeo(ROOM.w, ROOM.h, 0.4), M.wall);
 wb.position.set(0, ROOM.h / 2, -HALF_D); wb.receiveShadow = true; scene.add(wb);
 
@@ -1022,23 +1025,204 @@ wf.position.set(0, ROOM.h / 2, HALF_D); scene.add(wf);
 const wr = new THREE.Mesh(getBoxGeo(0.4, ROOM.h, ROOM.d), M.wall);
 wr.position.set(HALF_W, ROOM.h / 2, 0); scene.add(wr);
 
-// Tường trái có 3 ô cửa sổ kính lớn nhìn ra bầu trời đêm
-const wlBottom = new THREE.Mesh(getBoxGeo(0.4, 2.4, ROOM.d), M.wall);
-wlBottom.position.set(-HALF_W, 1.2, 0); scene.add(wlBottom);
-const wlTop = new THREE.Mesh(getBoxGeo(0.4, 2.2, ROOM.d), M.wall);
-wlTop.position.set(-HALF_W, ROOM.h - 1.1, 0); scene.add(wlTop);
-[-11, -3.5, 4, 11.5].forEach(zPillar => {
-  const pillar = new THREE.Mesh(getBoxGeo(0.45, 4.4, 2.4), M.wallTrim);
+/* ===== CỬA SỔ LỚN BÊN TƯỜNG TRÁI & PHONG CẢNH THIÊN NHIÊN BÊN NGOÀI ===== */
+const wlBottom = new THREE.Mesh(getBoxGeo(0.4, 2.3, ROOM.d), M.wall);
+wlBottom.position.set(-HALF_W, 1.15, 0); scene.add(wlBottom);
+
+const wlTop = new THREE.Mesh(getBoxGeo(0.4, 2.1, ROOM.d), M.wall);
+wlTop.position.set(-HALF_W, ROOM.h - 1.05, 0); scene.add(wlTop);
+
+// Bậu cửa sổ trắng chạy dọc theo dãy cửa sổ
+const windowSill = new THREE.Mesh(getBoxGeo(0.65, 0.14, 25), M.windowSill);
+windowSill.position.set(-HALF_W + 0.08, 2.32, 0); scene.add(windowSill);
+
+// 3 ô cửa sổ kính rộng với khung nhôm đen và song chia ô tinh tế
+[-8, 0, 8].forEach(zCenter => {
+  // Khung ngang trên & dưới
+  const topBar = new THREE.Mesh(getBoxGeo(0.24, 0.14, 6.2), M.windowFrame);
+  topBar.position.set(-HALF_W, 6.85, zCenter); scene.add(topBar);
+  const botBar = new THREE.Mesh(getBoxGeo(0.24, 0.14, 6.2), M.windowFrame);
+  botBar.position.set(-HALF_W, 2.42, zCenter); scene.add(botBar);
+
+  // 3 thanh đứng chia ô kính
+  [-3.0, 0, 3.0].forEach(dz => {
+    const vBar = new THREE.Mesh(getBoxGeo(0.24, 4.5, 0.14), M.windowFrame);
+    vBar.position.set(-HALF_W, 4.63, zCenter + dz); scene.add(vBar);
+  });
+
+  // Tấm kính trong suốt
+  const pane = new THREE.Mesh(new THREE.PlaneGeometry(6.0, 4.4), M.windowGlass);
+  pane.rotation.y = Math.PI / 2;
+  pane.position.set(-HALF_W, 4.63, zCenter);
+  scene.add(pane);
+
+  // Chậu hoa nhỏ trang trí trên bậu cửa sổ
+  const miniPot = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.22, 12), M.pot);
+  miniPot.position.set(-HALF_W + 0.2, 2.5, zCenter + 2.2); scene.add(miniPot);
+  const miniBush = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), M.leaf);
+  miniBush.position.set(-HALF_W + 0.2, 2.68, zCenter + 2.2); scene.add(miniBush);
+  const flower = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), new THREE.MeshStandardMaterial({ color: 0xf43f5e, emissive: 0xf43f5e, emissiveIntensity: 0.4 }));
+  flower.position.set(-HALF_W + 0.22, 2.84, zCenter + 2.18); scene.add(flower);
+});
+
+// Các cột tường ngăn cách 3 khung cửa sổ
+[-13, -4.5, 4.5, 13].forEach(zPillar => {
+  const pillar = new THREE.Mesh(getBoxGeo(0.45, 4.6, 2.8), M.wallTrim);
   pillar.position.set(-HALF_W, 4.6, zPillar); scene.add(pillar);
 });
-const glassPane = new THREE.Mesh(getBoxGeo(0.08, 4.4, 24), M.windowGlass);
-glassPane.position.set(-HALF_W, 4.6, 0); scene.add(glassPane);
 
-// Len chân tường chạy quanh phòng
+/* ===== DỰNG PHONG CẢNH THIÊN NHIÊN NGOÀI CỬA SỔ (BẦU TRỜI SAO, TRĂNG, NÚI, HỒ NƯỚC & RỪNG THÔNG) ===== */
+const landscapeGroup = new THREE.Group();
+scene.add(landscapeGroup);
+
+// 1. Bầu trời hoàng hôn chuyển đêm & dải ngân hà lấp lánh
+function createScenicSkyTexture() {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
+  const ctx = c.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 512);
+  grad.addColorStop(0.0, '#040814');
+  grad.addColorStop(0.35, '#0c1938');
+  grad.addColorStop(0.68, '#1e3a6e');
+  grad.addColorStop(0.88, '#3b5998');
+  grad.addColorStop(1.0, '#f59e0b'); // Ánh chân trời vàng cam ấm áp
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1024, 512);
+
+  // Vẽ các ngôi sao lấp lánh
+  for (let i = 0; i < 260; i++) {
+    const sx = Math.random() * 1024;
+    const sy = Math.random() * 340;
+    const r = Math.random() * 1.8 + 0.4;
+    ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + Math.random() * 0.6})`;
+    ctx.beginPath(); ctx.arc(sx, sy, r, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Vẽ ánh trăng tròn sáng dịu & quầng hào quang
+  const mx = 680, my = 140;
+  const moonGlow = ctx.createRadialGradient(mx, my, 10, mx, my, 110);
+  moonGlow.addColorStop(0, 'rgba(254, 249, 195, 0.95)');
+  moonGlow.addColorStop(0.25, 'rgba(186, 230, 253, 0.35)');
+  moonGlow.addColorStop(1, 'rgba(186, 230, 253, 0)');
+  ctx.fillStyle = moonGlow;
+  ctx.beginPath(); ctx.arc(mx, my, 110, 0, Math.PI * 2); ctx.fill();
+
+  ctx.fillStyle = '#fef9c3';
+  ctx.beginPath(); ctx.arc(mx, my, 26, 0, Math.PI * 2); ctx.fill();
+
+  return new THREE.CanvasTexture(c);
+}
+
+const skyBackdrop = new THREE.Mesh(
+  new THREE.PlaneGeometry(110, 52),
+  new THREE.MeshBasicMaterial({ map: createScenicSkyTexture(), fog: false })
+);
+skyBackdrop.rotation.y = Math.PI / 2;
+skyBackdrop.position.set(-58, 14, 0);
+landscapeGroup.add(skyBackdrop);
+
+// 2. Mặt hồ phẳng lặng phản chiếu ánh trăng & ánh hoàng hôn
+const lakeMat = new THREE.MeshStandardMaterial({
+  color: 0x0c2442, emissive: 0x0a1d36, emissiveIntensity: 0.6,
+  roughness: 0.15, metalness: 0.85
+});
+const lakeMesh = new THREE.Mesh(new THREE.PlaneGeometry(46, 110), lakeMat);
+lakeMesh.rotation.x = -Math.PI / 2;
+lakeMesh.position.set(-36, -0.4, 0);
+landscapeGroup.add(lakeMesh);
+
+// Dải ánh trăng phản chiếu lung linh trên mặt hồ
+const moonReflection = new THREE.Mesh(
+  new THREE.PlaneGeometry(34, 4.2),
+  new THREE.MeshBasicMaterial({ color: 0xfef08a, transparent: true, opacity: 0.28 })
+);
+moonReflection.rotation.x = -Math.PI / 2;
+moonReflection.position.set(-35, -0.35, -14);
+landscapeGroup.add(moonReflection);
+
+// 3. Các dãy núi trùng điệp xa gần bên kia hồ
+function addMountainRange(xPos, colorHex, heights, zSpread) {
+  const mat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.9, flatShading: true });
+  heights.forEach((h, idx) => {
+    const zPos = -zSpread / 2 + (idx / (heights.length - 1)) * zSpread;
+    const radius = h * 0.95;
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(radius, h, 7), mat);
+    cone.position.set(xPos, h / 2 - 1.5, zPos);
+    landscapeGroup.add(cone);
+
+    // Chỏm tuyết trắng trên đỉnh núi cao
+    if (h > 16) {
+      const snow = new THREE.Mesh(
+        new THREE.ConeGeometry(radius * 0.34, h * 0.34, 7),
+        new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.6 })
+      );
+      snow.position.set(xPos, h - h * 0.17 - 1.5, zPos);
+      landscapeGroup.add(snow);
+    }
+  });
+}
+// Lớp núi xa (cao, phủ tuyết)
+addMountainRange(-52, 0x1e293b, [18, 24, 15, 22, 19, 25, 17], 84);
+// Lớp đồi núi gần hơn (xanh đậm)
+addMountainRange(-44, 0x0f292e, [10, 14, 9, 13, 11, 15, 10, 12], 76);
+
+// 4. Bờ cỏ & Rừng thông xanh ven cửa sổ tạo cảm giác gần gũi, sống động
+const grassBank = new THREE.Mesh(
+  new THREE.BoxGeometry(10, 1.4, 70),
+  new THREE.MeshStandardMaterial({ color: 0x14532d, roughness: 0.85 })
+);
+grassBank.position.set(-18.5, 0.2, 0);
+landscapeGroup.add(grassBank);
+
+const pineTrunkMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.9 });
+const pineLeafMat1 = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.75 });
+const pineLeafMat2 = new THREE.MeshStandardMaterial({ color: 0x166534, roughness: 0.75 });
+const pineTrees = [];
+
+function createPineTree(x, z, scale) {
+  const tree = new THREE.Group();
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.16 * scale, 0.24 * scale, 1.6 * scale, 7), pineTrunkMat);
+  trunk.position.y = 0.8 * scale;
+  tree.add(trunk);
+
+  for (let layer = 0; layer < 3; layer++) {
+    const r = (1.35 - layer * 0.32) * scale;
+    const h = (1.8 - layer * 0.2) * scale;
+    const crown = new THREE.Mesh(new THREE.ConeGeometry(r, h, 8), layer % 2 === 0 ? pineLeafMat1 : pineLeafMat2);
+    crown.position.y = (2.0 + layer * 1.05) * scale;
+    tree.add(crown);
+  }
+  tree.position.set(x, 0.8, z);
+  landscapeGroup.add(tree);
+  pineTrees.push({ tree, phase: Math.random() * Math.PI * 2 });
+}
+
+for (let i = 0; i < 18; i++) {
+  const z = -26 + i * 3.1 + (Math.random() - 0.5) * 1.2;
+  const x = -16.5 - Math.random() * 4.2;
+  const sc = 0.85 + Math.random() * 0.65;
+  createPineTree(x, z, sc);
+}
+
+// 5. Đom đóm bay lấp lánh ngoài vườn cây bên cửa sổ
+const fireflyCount = 45;
+const fireflyPos = new Float32Array(fireflyCount * 3);
+for (let i = 0; i < fireflyCount; i++) {
+  fireflyPos[i * 3]     = -15.5 - Math.random() * 8;
+  fireflyPos[i * 3 + 1] = 1.8 + Math.random() * 5.2;
+  fireflyPos[i * 3 + 2] = (Math.random() - 0.5) * 32;
+}
+const fireflyGeo = new THREE.BufferGeometry();
+fireflyGeo.setAttribute('position', new THREE.BufferAttribute(fireflyPos, 3));
+const fireflies = new THREE.Points(
+  fireflyGeo,
+  new THREE.PointsMaterial({ color: 0xfef08a, size: 0.16, transparent: true, opacity: 0.85 })
+);
+landscapeGroup.add(fireflies);
+
+/* ===== BẢNG TRẮNG, ĐỒNG HỒ & GIÁ SÁCH ===== */
 const baseFront = new THREE.Mesh(getBoxGeo(ROOM.w, 0.35, 0.08), M.wallTrim);
 baseFront.position.set(0, 0.18, -HALF_D + 0.22); scene.add(baseFront);
 
-// Bảng trắng thông minh phía trước lớp có nội dung bài giảng
 function createWhiteboardTexture() {
   const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
   const ctx = c.getContext('2d');
@@ -1059,7 +1243,6 @@ board.position.set(0, 5.2, -HALF_D + 0.28); scene.add(board);
 const boardFrame = new THREE.Mesh(getBoxGeo(10.8, 4.7, 0.08), M.deskFrame);
 boardFrame.position.set(0, 5.2, -HALF_D + 0.22); scene.add(boardFrame);
 
-// Đồng hồ treo tường
 const clockGroup = new THREE.Group();
 clockGroup.add(new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.06, 32).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xf8fafc })));
 const hourHand = new THREE.Mesh(getBoxGeo(0.06, 0.45, 0.03), M.deskFrame); hourHand.position.z = 0.05; clockGroup.add(hourHand);
@@ -1068,7 +1251,6 @@ const secHand = new THREE.Mesh(getBoxGeo(0.02, 0.76, 0.03), new THREE.MeshStanda
 clockGroup.position.set(HALF_W - 0.25, 6.2, 4); clockGroup.rotation.y = -Math.PI / 2;
 scene.add(clockGroup);
 
-// Giá sách trang trí bên tường phải
 function makeBookshelf(zPos) {
   const g = new THREE.Group();
   const frame = new THREE.Mesh(getBoxGeo(0.5, 3.6, 2.2), M.deskFrame);
@@ -1119,7 +1301,6 @@ function makeNameSprite(name, isYou = false, isAdmin = false) {
 
 function makePCDesk(snippet, studentIdx) {
   const g = new THREE.Group();
-  // Mặt bàn gỗ & khung thép
   const top = new THREE.Mesh(getBoxGeo(2.0, 0.08, 0.95), M.deskTop);
   top.position.set(0, 1.0, 0); top.castShadow = top.receiveShadow = true; g.add(top);
 
@@ -1128,13 +1309,11 @@ function makePCDesk(snippet, studentIdx) {
     leg.position.set(lx, 0.5, lz); leg.castShadow = true; g.add(leg);
   });
 
-  // Thùng PC Gaming có dải đèn LED đặt gọn bên phải dưới bàn
   const pcTower = new THREE.Mesh(getBoxGeo(0.24, 0.52, 0.52), M.pcCase);
   pcTower.position.set(0.72, 0.28, 0.05); pcTower.castShadow = true; g.add(pcTower);
   const pcStrip = new THREE.Mesh(getBoxGeo(0.02, 0.44, 0.03), M.pcRgb);
   pcStrip.position.set(0.6, 0.28, 0.3); g.add(pcStrip);
 
-  // Màn hình viền mỏng
   const monBase = new THREE.Mesh(getBoxGeo(0.36, 0.03, 0.24), M.monitor);
   monBase.position.set(0, 1.055, -0.18); g.add(monBase);
   const monNeck = new THREE.Mesh(getBoxGeo(0.07, 0.3, 0.06), M.monitor);
@@ -1149,7 +1328,6 @@ function makePCDesk(snippet, studentIdx) {
   screen.position.set(0, 1.62, -0.152); g.add(screen);
   monitors.push({ mon, snippet, screen, studentIdx, isOnline: true });
 
-  // Lót chuột, bàn phím cơ & chuột
   const pad = new THREE.Mesh(getBoxGeo(1.1, 0.01, 0.36), M.mousePad);
   pad.position.set(0.05, 1.045, 0.24); g.add(pad);
   const kb = new THREE.Mesh(getBoxGeo(0.72, 0.03, 0.24), M.deskFrame);
@@ -1157,7 +1335,6 @@ function makePCDesk(snippet, studentIdx) {
   const mouse = new THREE.Mesh(getBoxGeo(0.11, 0.035, 0.17), M.deskFrame);
   mouse.position.set(0.45, 1.06, 0.24); g.add(mouse);
 
-  // Ghế xoay công thái học
   const seat = new THREE.Mesh(getBoxGeo(0.84, 0.11, 0.82), M.chair);
   seat.position.set(0, 0.72, 0.85); seat.castShadow = true; g.add(seat);
   const back = new THREE.Mesh(getBoxGeo(0.8, 0.9, 0.11), M.chair);
@@ -1238,7 +1415,6 @@ const SEAT_POSITIONS = students.map(s => ({
   deskX: s.deskPC.position.x, deskZ: s.deskPC.position.z
 }));
 
-// Cây xanh góc lớp
 function makePlant(x, z) {
   const g = new THREE.Group();
   const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 0.55, 16), M.pot);
@@ -1432,7 +1608,6 @@ async function checkBanned() {
   return false;
 }
 
-/* ===== TÍNH NĂNG RESET TOÀN BỘ THÀNH VIÊN VỀ 0 CHO ADMIN ===== */
 window.adminResetAllMembers = async function() {
   if (!isAdmin || !adminDB) return;
   const ok = confirm('Xác nhận RESET toàn bộ danh sách thành viên?\n\n- Xóa sạch toàn bộ thành viên cũ, điểm xếp hạng, trang phục đã lưu và danh sách ẩn.\n- Hệ thống sẽ tự động ghi nhận lại từ đầu khi các thành viên truy cập lại.');
@@ -1442,7 +1617,6 @@ window.adminResetAllMembers = async function() {
   if (btn) { btn.disabled = true; btn.textContent = 'Đang reset...'; }
 
   try {
-    // 1. Xóa toàn bộ dữ liệu thành viên, hiện diện, điểm số, skin và danh sách ẩn về 0
     await Promise.all([
       adminDB.ref('rooms/nhom1/presence').remove(),
       adminDB.ref('rooms/nhom1/members').remove(),
@@ -1451,7 +1625,6 @@ window.adminResetAllMembers = async function() {
       adminDB.ref('rooms/nhom1/hidden').remove()
     ]);
 
-    // 2. Xóa các slot học viên trên giao diện 3D ngoại trừ Admin đang ngồi
     students.forEach(st => {
       if (!st.isYou) {
         st.active = false; st.uid = null; st.name = '';
@@ -1466,7 +1639,6 @@ window.adminResetAllMembers = async function() {
     window.__learningStats = {};
     _lastVisibleKey = '';
 
-    // 3. Ghi nhận lại Admin vào hệ thống từ đầu
     const admName = myName();
     if (admName) {
       window.startClassroomPresence?.();
@@ -1888,6 +2060,18 @@ function animate() {
 
   uiTimer += dt;
   if (uiTimer > 2.5) { uiTimer = 0; if (!window.__isBanned) { renderStudentList(); updateHud(); } }
+
+  // Chuyển động nhẹ nhàng cho phong cảnh ngoài cửa sổ
+  pineTrees.forEach(item => {
+    item.tree.rotation.z = Math.sin(t * 1.1 + item.phase) * 0.025;
+  });
+  moonReflection.material.opacity = 0.22 + Math.sin(t * 2.2) * 0.07;
+
+  const ffArr = fireflies.geometry.attributes.position.array;
+  for (let i = 0; i < fireflyCount; i++) {
+    ffArr[i * 3 + 1] += Math.sin(t * 1.8 + i) * 0.003;
+  }
+  fireflies.geometry.attributes.position.needsUpdate = true;
 
   npcs.forEach((npc, i) => {
     const u = npc.userData, s = students[i];
