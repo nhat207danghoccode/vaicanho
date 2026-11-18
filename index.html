@@ -4513,6 +4513,26 @@ document.addEventListener('keydown',e=>{
   }
 })();
 </script>
+<style id="restore-original-sidebar-form">
+/* Khôi phục đúng form gốc của index (1).html */
+@media (min-width: 901px){
+  .layout{max-width:1200px !important;grid-template-columns:240px 1fr !important;gap:20px !important;padding:20px !important;}
+  .sidebar{display:flex !important;position:sticky !important;top:76px !important;flex-direction:column !important;gap:6px !important;width:auto !important;overflow:visible !important;padding:0 !important;background:transparent !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;}
+  .side-group-label{display:block !important;}
+  .side-btn{flex:initial !important;white-space:normal !important;padding:10px 12px !important;}
+  .side-btn .count{display:block !important;}
+  .main{width:auto !important;min-width:0 !important;}
+}
+@media (max-width: 900px){
+  .layout{grid-template-columns:1fr !important;padding:14px !important;}
+  .sidebar{display:flex !important;position:static !important;flex-direction:row !important;overflow-x:auto !important;overflow-y:hidden !important;gap:8px !important;padding-bottom:4px !important;background:transparent !important;border:0 !important;border-radius:0 !important;box-shadow:none !important;}
+  .sidebar::-webkit-scrollbar{display:none !important;}
+  .side-group-label{display:none !important;}
+  .side-btn{flex-shrink:0 !important;padding:8px 14px 8px 8px !important;background:var(--surface) !important;border:1px solid var(--line) !important;white-space:nowrap !important;}
+  .side-btn::before{display:none !important;}
+  .side-btn .count{display:none !important;}
+}
+</style>
 </body>
 </html>
 
