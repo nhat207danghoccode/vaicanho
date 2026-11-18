@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bản đồ Bệnh viện Đa khoa tỉnh Hà Tĩnh</title>
+<title>Bản đồ 2D & Mô hình 3D - Bệnh viện Đa khoa tỉnh Hà Tĩnh</title>
 
 <!-- Preload ảnh map: load ngay từ đầu, không chờ -->
 <link rel="preload" as="image" href="map.jpg" fetchpriority="high">
+
+<!-- Three.js r128 cho Mô hình 3D tương tác -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,9 +17,9 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
-    --surface:rgba(255,255,255,.82);
+    --surface:rgba(255,255,255,.86);
     --surface-solid:#ffffff;
-    --border:rgba(148,163,184,.2);
+    --border:rgba(148,163,184,.24);
     --text:#0f172a;--muted:#64748b;--subtle:#94a3b8;
     --accent:#3b82f6;--accent-2:#6366f1;
     --success:#10b981;--warning:#f59e0b;--danger:#ef4444;
@@ -95,6 +98,25 @@
   .meta-chip:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
   .meta-chip svg{width:14px;height:14px;stroke:#64748b}
 
+  /* Nút chuyển đổi 2D / 3D nổi bật trên Header */
+  .view-toggle-group{
+    display:inline-flex;align-items:center;
+    background:rgba(226,232,240,.85);padding:4px;border-radius:13px;
+    border:1px solid rgba(148,163,184,.3);box-shadow:var(--shadow-sm);
+  }
+  .view-tab-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:7px 14px;border-radius:10px;border:none;
+    font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;
+    color:#475569;background:transparent;
+    transition:all .22s var(--ease);
+  }
+  .view-tab-btn:hover{color:#0f172a}
+  .view-tab-btn.active{
+    background:linear-gradient(135deg,#0284c7,#4f46e5);
+    color:#fff;box-shadow:0 4px 12px -2px rgba(2,132,199,.45);
+  }
+
   .notice{
     flex:0 0 auto;display:flex;align-items:center;gap:12px;
     background:linear-gradient(135deg,rgba(254,243,199,.65),rgba(253,230,138,.4));
@@ -116,35 +138,40 @@
 
   .layout{
     flex:1 1 auto;min-height:0;
-    display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;
+    display:grid;grid-template-columns:minmax(0,1fr) 365px;gap:14px;
     animation:fadeUp .7s var(--ease) .12s both;
   }
   @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
-  /* ===== MAP CARD — ĐÃ FIX ===== */
+  /* ===== MAP CARD (CHỨA CẢ BẢN ĐỒ 2D VÀ MÔ HÌNH 3D) ===== */
   .map-card{
     position:relative;
-    background:#eef2f8;              /* nền khớp body, không bao giờ trắng chói */
+    background:#eef2f8;
     border-radius:22px;overflow:hidden;
     border:1px solid var(--border);
     box-shadow:var(--shadow-lg);
     height:100%;min-height:0;
     transition:box-shadow .3s var(--ease);
-    /* KHÔNG aspect-ratio cố định vì height đang 100% trong grid */
   }
   .map-card:hover{
     box-shadow:0 28px 60px -18px rgba(15,23,42,.28),0 8px 22px -10px rgba(15,23,42,.12);
   }
   .map-card::before{
-    content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
-    border-radius:22px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.75);
+    content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+    border-radius:22px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.65);
   }
+
+  /* Khung chế độ 2D */
+  .view-2d-wrap{
+    position:relative;width:100%;height:100%;
+    transition:opacity .3s var(--ease);
+  }
+  .view-2d-wrap.hidden-view{display:none}
   .map-card img{
     display:block;
     width:100%;height:100%;
     object-fit:contain;
     user-select:none;-webkit-user-drag:none;
-    /* KHÔNG transition transform/filter — chống nháy khi zoom */
     background:#eef2f8;
   }
 
@@ -153,6 +180,133 @@
     pointer-events:none;z-index:2;
   }
 
+  /* Khung chế độ 3D Three.js Toàn Màn Hình (Full Screen) */
+  .view-3d-wrap{
+    position:fixed;inset:0;width:100vw;height:100vh;z-index:120;
+    background:#8fb2c9;
+    touch-action:none;
+    user-select:none;
+    overflow:hidden;
+  }
+  .view-3d-wrap.hidden-view{display:none}
+  #threeCanvasHost{
+    position:absolute;inset:0;width:100%;height:100%;
+  }
+  #threeCanvasHost canvas{
+    display:block;width:100%;height:100%;
+  }
+
+  /* Nút nổi góc trên phải trong Map Card để chuyển nhanh 2D <-> 3D */
+  .floating-mode-pill{
+    position:absolute;top:14px;right:14px;z-index:12;
+    display:flex;align-items:center;gap:6px;
+    background:rgba(15,23,42,.82);backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    color:#fff;border:1px solid rgba(255,255,255,.22);
+    padding:8px 14px;border-radius:12px;
+    font-family:inherit;font-size:.78rem;font-weight:700;
+    cursor:pointer;box-shadow:0 8px 20px rgba(15,23,42,.28);
+    transition:transform .2s var(--spring),background .2s;
+  }
+  .floating-mode-pill:hover{
+    background:rgba(2,132,199,.95);transform:translateY(-2px);
+  }
+  .floating-mode-pill:active{transform:scale(.96)}
+
+  /* Thanh công cụ điều khiển bên trong giao diện 3D Full Screen */
+  .controls-3d-top{
+    position:absolute;top:14px;left:14px;z-index:130;
+    display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+    max-width:calc(100vw - 340px);
+  }
+  .controls-3d-top-right{
+    position:absolute;top:14px;right:14px;z-index:130;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .brand-3d-pill{
+    background:rgba(15,23,42,.84);backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    color:#fff;border:1px solid rgba(255,255,255,.2);
+    padding:7px 12px;border-radius:11px;
+    font-size:.76rem;font-weight:800;
+    display:inline-flex;align-items:center;gap:6px;
+    box-shadow:0 6px 16px rgba(15,23,42,.22);
+  }
+  .ctrl-3d-btn{
+    background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.8);
+    color:#0f172a;font-family:inherit;font-size:.75rem;font-weight:700;
+    padding:8px 12px;border-radius:11px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:5px;
+    box-shadow:0 4px 14px rgba(15,23,42,.15);
+    transition:all .18s var(--ease);
+  }
+  .ctrl-3d-btn:hover{background:#fff;transform:translateY(-1px)}
+  .ctrl-3d-btn.active{background:#0284c7;color:#fff;border-color:#0284c7}
+  .ctrl-3d-btn.exit-3d{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    color:#fff;border-color:rgba(255,255,255,.25);
+  }
+  .ctrl-3d-btn.exit-3d:hover{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+
+  /* Bảng Chỉ đường & Thông tin Khoa nổi bên phải trong chế độ 3D Full Screen */
+  .drawer-3d{
+    position:absolute;top:60px;right:14px;z-index:128;
+    width:330px;max-width:calc(100vw - 28px);
+    max-height:calc(100vh - 125px);overflow-y:auto;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(18px) saturate(170%);
+    -webkit-backdrop-filter:blur(18px) saturate(170%);
+    border:1px solid rgba(255,255,255,.85);
+    border-radius:18px;padding:14px;
+    box-shadow:0 18px 42px -10px rgba(15,23,42,.32);
+    display:flex;flex-direction:column;gap:10px;
+    transition:transform .28s var(--ease),opacity .25s var(--ease);
+  }
+  .drawer-3d.collapsed{
+    transform:translateX(calc(100% + 24px));
+    opacity:0;pointer-events:none;
+  }
+
+  .controls-3d-bottom{
+    position:absolute;bottom:14px;left:14px;right:14px;z-index:125;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    pointer-events:none;flex-wrap:wrap;
+  }
+  .presets-3d-bar{
+    pointer-events:auto;
+    display:flex;align-items:center;gap:4px;overflow-x:auto;max-width:100%;
+    background:rgba(255,255,255,.9);backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    padding:5px;border-radius:13px;border:1px solid rgba(255,255,255,.8);
+    box-shadow:0 6px 18px rgba(15,23,42,.18);
+  }
+  .preset-3d-btn{
+    padding:6px 11px;border-radius:9px;border:none;background:transparent;
+    font-family:inherit;font-size:.74rem;font-weight:700;color:#334155;
+    cursor:pointer;white-space:nowrap;transition:all .18s;
+  }
+  .preset-3d-btn:hover{background:rgba(226,232,240,.8)}
+  .preset-3d-btn.active{background:#0284c7;color:#fff}
+
+  .hint-3d-badge{
+    pointer-events:auto;
+    background:rgba(15,23,42,.78);backdrop-filter:blur(8px);
+    color:#f1f5f9;font-size:.72rem;font-weight:500;
+    padding:7px 12px;border-radius:11px;
+  }
+
+  /* Tooltip khi di chuột qua tòa nhà 3D */
+  .tooltip-3d{
+    position:fixed;z-index:150;pointer-events:none;display:none;
+    background:rgba(15,23,42,.94);color:#fff;
+    padding:6px 12px;border-radius:10px;font-size:.76rem;font-weight:700;
+    box-shadow:0 8px 20px rgba(0,0,0,.3);white-space:nowrap;
+    transform:translate(-50%,-115%);border:1px solid rgba(255,255,255,.15);
+  }
+
+  /* SVG 2D Markers & Route Styles */
   .hot{pointer-events:auto;cursor:pointer;transform-box:fill-box;transform-origin:center}
   .hot circle{
     fill:#3b82f6;stroke:#fff;stroke-width:2.6;
@@ -189,14 +343,15 @@
   .route-dot{animation:dotIn .45s var(--spring) both}
   @keyframes dotIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 
+  /* ===== SIDEBAR ===== */
   .sidebar{
     background:var(--surface);
     backdrop-filter:blur(22px) saturate(180%);
     -webkit-backdrop-filter:blur(22px) saturate(180%);
-    border-radius:22px;padding:20px;
+    border-radius:22px;padding:18px;
     border:1px solid var(--border);
     box-shadow:var(--shadow-lg);
-    display:flex;flex-direction:column;gap:16px;
+    display:flex;flex-direction:column;gap:14px;
     height:100%;min-height:0;overflow:auto;
   }
   .sidebar::-webkit-scrollbar{width:6px}
@@ -204,12 +359,12 @@
 
   .sidebar-head{
     display:flex;align-items:center;justify-content:space-between;
-    padding-bottom:14px;border-bottom:1px solid var(--border);
+    padding-bottom:12px;border-bottom:1px solid var(--border);
     flex-shrink:0;
   }
   .sidebar-head h2{
     font-family:'Plus Jakarta Sans',sans-serif;
-    font-size:1.08rem;font-weight:800;letter-spacing:-.02em;
+    font-size:1.05rem;font-weight:800;letter-spacing:-.02em;
     display:flex;align-items:center;gap:9px;
   }
   .sidebar-head h2 .icon-wrap{
@@ -235,9 +390,9 @@
 
   .select-wrap{position:relative}
   .field select{
-    width:100%;padding:11px 38px 11px 14px;border-radius:11px;
+    width:100%;padding:10px 36px 10px 12px;border-radius:11px;
     border:1.5px solid var(--border);background:rgba(248,250,252,.92);
-    color:var(--text);font-size:.85rem;font-weight:500;font-family:inherit;
+    color:var(--text);font-size:.83rem;font-weight:500;font-family:inherit;
     cursor:pointer;transition:all .2s var(--ease);appearance:none;
     box-shadow:inset 0 1px 2px rgba(15,23,42,.03);
   }
@@ -247,7 +402,7 @@
     box-shadow:0 0 0 4px rgba(59,130,246,.14),inset 0 1px 2px rgba(15,23,42,.03);
   }
   .select-wrap::after{
-    content:"";position:absolute;right:14px;top:50%;width:12px;height:12px;
+    content:"";position:absolute;right:13px;top:50%;width:12px;height:12px;
     transform:translateY(-50%);pointer-events:none;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-size:contain;background-repeat:no-repeat;
@@ -268,11 +423,11 @@
   .swap-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
   .swap-btn:hover svg{transform:rotate(180deg)}
 
-  .btn-row{display:flex;gap:9px;flex-shrink:0}
+  .btn-row{display:flex;gap:8px;flex-shrink:0}
   .btn{
-    flex:1;padding:12px 16px;border-radius:11px;border:none;font-family:inherit;
-    font-size:.84rem;font-weight:700;cursor:pointer;
-    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    flex:1;padding:11px 14px;border-radius:11px;border:none;font-family:inherit;
+    font-size:.82rem;font-weight:700;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
     transition:transform .18s var(--spring),box-shadow .22s var(--ease),background .22s var(--ease);
     letter-spacing:-.01em;
   }
@@ -293,9 +448,9 @@
   .btn-ghost:hover{background:#e2e8f0;color:var(--text);transform:translateY(-1px)}
 
   .info{
-    background:linear-gradient(135deg,rgba(239,246,255,.9),rgba(240,249,255,.9));
-    border:1px solid rgba(191,219,254,.7);
-    border-radius:14px;padding:15px;min-height:96px;flex-shrink:0;
+    background:linear-gradient(135deg,rgba(239,246,255,.92),rgba(240,249,255,.92));
+    border:1px solid rgba(191,219,254,.75);
+    border-radius:14px;padding:14px;min-height:110px;flex-shrink:0;
     transition:all .3s var(--ease);position:relative;overflow:hidden;
   }
   .info::before{
@@ -304,18 +459,30 @@
     transition:background .3s;
   }
   .info b{
-    display:flex;align-items:center;gap:6px;font-size:.9rem;font-weight:800;
-    color:#1e40af;margin-bottom:7px;letter-spacing:-.01em;
+    display:flex;align-items:center;gap:6px;font-size:.88rem;font-weight:800;
+    color:#1e40af;margin-bottom:6px;letter-spacing:-.01em;
     font-family:'Plus Jakarta Sans',sans-serif;
   }
-  .info .muted{font-size:.81rem;color:#475569;line-height:1.55}
+  .info .muted{font-size:.8rem;color:#475569;line-height:1.5}
   .info .route-meta{
-    margin-top:10px;padding-top:8px;border-top:1px dashed rgba(59,130,246,.25);
-    display:flex;gap:15px;font-size:0.78rem;color:#1e40af;font-weight:600;
+    margin-top:9px;padding-top:8px;border-top:1px dashed rgba(59,130,246,.25);
+    display:flex;gap:14px;font-size:0.77rem;color:#1e40af;font-weight:700;
+  }
+  .floor-list{
+    margin-top:8px;display:flex;flex-direction:column;gap:5px;
+    max-height:175px;overflow-y:auto;padding-right:2px;
+  }
+  .floor-chip{
+    background:#fff;border:1px solid rgba(191,219,254,.8);
+    border-radius:8px;padding:6px 8px;font-size:.75rem;color:#334155;line-height:1.4;
+  }
+  .floor-chip span{
+    display:inline-block;background:#f59e0b;color:#fff;
+    font-weight:800;font-size:.66rem;padding:1px 6px;border-radius:5px;margin-right:5px;
   }
 
   .hint{
-    font-size:.74rem;color:var(--muted);line-height:1.6;padding:12px 14px;
+    font-size:.73rem;color:var(--muted);line-height:1.55;padding:11px 13px;
     background:rgba(248,250,252,.85);border-radius:11px;
     border:1px dashed rgba(148,163,184,.45);flex-shrink:0;
   }
@@ -338,20 +505,24 @@
   @media(max-width:1024px){
     .layout{grid-template-columns:1fr}
     .sidebar{height:auto;overflow:visible;max-height:none}
+    .controls-3d-top{max-width:calc(100vw - 260px)}
   }
   @media(max-width:900px){
     html,body{height:auto;min-height:100%;overflow:auto}
     .app{height:auto;min-height:100vh}
     .layout{display:grid;grid-template-columns:1fr}
-    .map-card{height:auto;aspect-ratio:1280/905;min-height:280px}
+    .map-card{height:auto;aspect-ratio:1280/905;min-height:340px}
   }
   @media(max-width:640px){
     body{padding:10px}
     .brand-icon{width:44px;height:44px;border-radius:14px;font-size:22px}
-    .brand-text h1{font-size:1.1rem}
-    .header-meta{display:none}
+    .brand-text h1{font-size:1.08rem}
+    .meta-chip{display:none}
     .notice-content{flex-direction:column;gap:2px}
-    .sidebar{padding:16px}
+    .sidebar{padding:15px}
+    .hint-3d-badge{display:none}
+    .brand-3d-pill{display:none}
+    .controls-3d-top{max-width:calc(100vw - 220px)}
   }
 </style>
 </head>
@@ -363,14 +534,21 @@
       <div class="brand-icon">🏥</div>
       <div class="brand-text">
         <h1>Bệnh viện Đa khoa tỉnh Hà Tĩnh</h1>
-        <p>Sơ đồ nội khu · Chỉ đường thông minh</p>
+        <p>Sơ đồ nội khu · Chỉ đường thông minh 2D & 3D</p>
       </div>
     </div>
+
     <div class="header-meta">
-      <div class="meta-chip">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span>1280 × 905</span>
+      <!-- Nút chuyển đổi chế độ Xem 2D / Xem 3D -->
+      <div class="view-toggle-group" role="tablist" aria-label="Chế độ hiển thị bản đồ">
+        <button class="view-tab-btn active" id="btnMode2D" type="button">
+          🗺️ Bản đồ 2D
+        </button>
+        <button class="view-tab-btn" id="btnMode3D" type="button">
+          🧊 Mô hình 3D
+        </button>
       </div>
+
       <div class="meta-chip">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
         <span>24 điểm đánh dấu</span>
@@ -382,27 +560,35 @@
     <div class="notice-icon">⚠️</div>
     <div class="notice-content">
       <strong>Sơ đồ chỉ mang tính chất tham khảo</strong>
-      <span>Vị trí các khu có thể hơi lệch so với thực tế. Vui lòng đối chiếu với biển chỉ dẫn tại bệnh viện.</span>
+      <span>Vị trí các khu có thể hơi lệch so với thực tế. Bạn có thể chuyển sang <b>Mô hình 3D</b> để quan sát trực quan các tòa nhà và lối đi.</span>
     </div>
   </div>
 
   <div class="layout">
 
     <div class="map-card" id="mapCard">
-      <!-- ẢNH ĐÃ FIX: khai báo kích thước, load ngay, không lazy -->
-      <img id="mapImage" src="map.jpg"
-           width="1280" height="905"
-           loading="eager" fetchpriority="high" decoding="sync"
-           alt="Sơ đồ bệnh viện Đa khoa tỉnh Hà Tĩnh">
-      <svg id="overlay" viewBox="0 0 1280 905" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#3b82f6"/>
-            <stop offset="100%" stop-color="#6366f1"/>
-          </linearGradient>
-        </defs>
-        <g id="viewport"></g>
-      </svg>
+      <!-- Nút nổi chuyển nhanh 2D <-> 3D ngay trên góc khung bản đồ -->
+      <button class="floating-mode-pill" id="floatingModeBtn" type="button" title="Chuyển đổi giữa Bản đồ 2D và Mô hình 3D">
+        <span id="floatingModeIcon">🧊</span>
+        <span id="floatingModeText">Xem Mô Hình 3D</span>
+      </button>
+
+      <!-- CHẾ ĐỘ 1: BẢN ĐỒ 2D GỐC -->
+      <div class="view-2d-wrap" id="view2dWrap">
+        <img id="mapImage" src="map.jpg"
+             width="1280" height="905"
+             loading="eager" fetchpriority="high" decoding="sync"
+             alt="Sơ đồ bệnh viện Đa khoa tỉnh Hà Tĩnh">
+        <svg id="overlay" viewBox="0 0 1280 905" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#6366f1"/>
+            </linearGradient>
+          </defs>
+          <g id="viewport"></g>
+        </svg>
+      </div>
     </div>
 
     <aside class="sidebar">
@@ -442,16 +628,86 @@
 
       <div class="info" id="info">
         <b>👋 Chào mừng bạn</b>
-        <div class="muted">Bấm vào marker trên bản đồ để xem thông tin, hoặc chọn điểm đi/đến để tìm đường đi ngắn nhất.</div>
+        <div class="muted">Bấm vào marker trên bản đồ 2D hoặc tòa nhà trong <b>Mô hình 3D</b> để xem chi tiết từng tầng và tìm đường đi ngắn nhất.</div>
       </div>
 
       <div class="hint">
-        <strong>💡 Mẹo:</strong> Bấm marker để xem tên khu, bấm nút đổi chiều để hoán đổi điểm đi/đến.
+        <strong>💡 Mẹo:</strong> Bạn có thể tìm đường từ bất kỳ điểm nào đến bất kỳ điểm nào. Đường dẫn sẽ tự động hiển thị trên cả <b>Bản đồ 2D</b> và <b>Mô hình 3D</b>!
       </div>
     </aside>
 
   </div>
 </div>
+
+<!-- CHẾ ĐỘ 2: MÔ HÌNH 3D THREE.JS FULL SCREEN -->
+<div class="view-3d-wrap hidden-view" id="view3dWrap">
+  <div id="threeCanvasHost"></div>
+
+  <!-- Thanh điều khiển nhanh trên góc trái 3D -->
+  <div class="controls-3d-top">
+    <div class="brand-3d-pill">🏥 BVĐK Hà Tĩnh · 3D</div>
+    <button class="ctrl-3d-btn active" id="btn3dLabels" type="button">🏷️ Nhãn 3D</button>
+    <button class="ctrl-3d-btn" id="btn3dTheme" type="button">☀️ Ban ngày</button>
+    <button class="ctrl-3d-btn" id="btn3dReset" type="button">🔄 Góc chuẩn</button>
+  </div>
+
+  <!-- Nút bật/tắt bảng chỉ đường & nút thoát Full Screen 3D về 2D -->
+  <div class="controls-3d-top-right">
+    <button class="ctrl-3d-btn active" id="btn3dToggleDrawer" type="button">🧭 Chỉ đường & Khoa</button>
+    <button class="ctrl-3d-btn exit-3d" id="btnExit3d" type="button">🗺️ Bản đồ 2D</button>
+  </div>
+
+  <!-- Bảng Chỉ đường & Chi tiết Khoa nổi bên phải trong 3D -->
+  <div class="drawer-3d" id="drawer3d">
+    <div class="field">
+      <label class="from"><span class="badge-dot"></span> Điểm xuất phát</label>
+      <div class="select-wrap">
+        <select id="from3d"></select>
+      </div>
+    </div>
+
+    <button class="swap-btn" id="swap3d" title="Đổi chiều">
+      <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+    </button>
+
+    <div class="field">
+      <label class="to"><span class="badge-dot"></span> Điểm đến</label>
+      <div class="select-wrap">
+        <select id="to3d"></select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="go3d">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        Chỉ đường 3D
+      </button>
+      <button class="btn btn-ghost" id="clear3d">Xóa</button>
+    </div>
+
+    <div class="info" id="info3d">
+      <b>🧊 Mô hình 3D Toàn Màn Hình</b>
+      <div class="muted">Nhấp trực tiếp vào tòa nhà bất kỳ để xem chi tiết khoa/phòng theo tầng hoặc chọn điểm đi/đến ở trên.</div>
+    </div>
+  </div>
+
+  <!-- Thanh góc nhìn định sẵn phía dưới 3D -->
+  <div class="controls-3d-bottom">
+    <div class="presets-3d-bar">
+      <button class="preset-3d-btn active" data-preset="isometric" type="button">Toàn cảnh 3D</button>
+      <button class="preset-3d-btn" data-preset="gate1" type="button">Cổng chính</button>
+      <button class="preset-3d-btn" data-preset="fountain" type="button">Đài phun nước</button>
+      <button class="preset-3d-btn" data-preset="a8" type="button">Sản Nhi (A8)</button>
+      <button class="preset-3d-btn" data-preset="top" type="button">Trên cao</button>
+    </div>
+    <div class="hint-3d-badge">
+      🖱️ Kéo trái: Xoay • Kéo phải: Di chuyển • Cuộn: Thu phóng • ESC: Về 2D
+    </div>
+  </div>
+</div>
+
+<!-- Tooltip nổi khi di chuột trên mô hình 3D -->
+<div class="tooltip-3d" id="tooltip3d"></div>
 
 <div class="toast" id="toast">
   <span class="toast-dot"></span>
@@ -459,8 +715,11 @@
 </div>
 
 <script>
-
-// TỌA ĐỘ 
+/**
+ * =========================================================================
+ * 1. DỮ LIỆU TỌA ĐỘ 2D & THÔNG TIN CHI TIẾT TỪNG TẦNG
+ * =========================================================================
+ */
 const P = {
   "10":[580,290],
   "A":[815,480],
@@ -486,7 +745,7 @@ const P = {
   "08":[465,368],
   "09":[525,313],
   
-  // CÁC WAYPOINT 
+  // CÁC WAYPOINT 2D
   "W1":[800, 320],
   "W2":[920, 290],
   "W3":[1000, 270],
@@ -501,16 +760,234 @@ const P = {
 };
 
 const INFO = {
-  "A":"Tòa nhà chính bệnh viện","A1":"Khối A1 · khu khám/điều trị",
-  "A2":"Khối A2 · khoa y học cổ truyền","A3":"Khối A3 · các khoa điều trị",
-  "A4":"Khối A4 · khoa truyền nhiễm","A5":"Khối A5 · khoa nội",
-  "A6":"Khối A6 · phòng vật tư thiết bị y tế / khoa da liễu",
-  "A7":"Khu điều trị phạm nhân","A8":"Trung tâm sản nhi",
-  "B":"Trung tâm xạ trị","C":"Căn tin bệnh viện / khoa dinh dưỡng",
-  "D":"Khối hành chính quản trị","G":"Nhà xe · chỗ để xe",
-  "01":"Bãi đỗ xe ô tô","02":"Cây xanh, thể thao","03":"Đài phun nước",
-  "04":"Hành lang nội bộ","05":"Khu phối hợp bệnh nhân","06":"Khu nhà",
-  "07":"Trạm điện","08":"Nhà tang lễ","09":"Trạm biến áp","10":"Khu xử lý rác thải"
+  "A":"Tòa nhà chính bệnh viện (Khám bệnh & Hành chính)",
+  "A1":"Khối A1 · Ung bướu - Hồi sức - Ngoại",
+  "A2":"Khối A2 · Nội tổng hợp - Nhi - Sản - Mắt - YHCT",
+  "A3":"Khối A3 · Cấp cứu - Tim mạch - Ngoại tiêu hóa",
+  "A4":"Khối A4 · Khoa Truyền nhiễm & Khám yêu cầu",
+  "A5":"Khối A5 · Khoa Nội A Lão học",
+  "A6":"Khối A6 · Phòng vật tư thiết bị y tế / Khoa Da liễu",
+  "A7":"Khu điều trị phạm nhân",
+  "A8":"Trung tâm Sản Nhi (9 tầng)",
+  "B":"Trung tâm Xạ trị",
+  "C":"Căn tin bệnh viện / Khoa Dinh dưỡng",
+  "D":"Khối Hành chính quản trị & CT Xã hội",
+  "G":"Nhà gửi xe Nhân viên / Sinh viên",
+  "01":"Bãi đỗ xe ô tô",
+  "02":"Cây xanh, thể thao & Nhà giữ xe khách",
+  "03":"Đài phun nước trung tâm",
+  "04":"Hành lang nội bộ có mái che",
+  "05":"Khu phơi đồ bệnh nhân",
+  "06":"Nhà khí y tế",
+  "07":"Trạm điện trung tâm",
+  "08":"Nhà tang lễ",
+  "09":"Trạm biến áp",
+  "10":"Khu xử lý rác thải y tế"
+};
+
+// Chi tiết các tầng & vị trí 3D tương ứng từng ID
+const BUILDING_DETAILS = {
+  "A": {
+    code: "NHÀ A",
+    focusPos: { x: 12, y: 8, z: 20 },
+    cameraOffset: { x: -24, y: 28, z: 34 },
+    gateEntry: { x: 20, z: 31 },
+    floors: [
+      { level: "TẦNG 01", desc: "Đón tiếp - Thủ tục xuất nhập viện • Chẩn đoán hình ảnh - Kiểm soát nhiễm khuẩn" },
+      { level: "TẦNG 02", desc: "Khoa khám bệnh - Điều trị theo yêu cầu • Phòng chỉ đạo tuyến - Hội trường" },
+      { level: "TẦNG 03", desc: "Ban Giám đốc - P.KHTH - P.TCKT - P.TCCB • Điều trị theo yêu cầu - Hội trường - Văn thư" },
+      { level: "TẦNG 04", desc: "Khoa thận, cơ xương khớp - Sản yêu cầu (Khoa điều trị theo yêu cầu)" }
+    ]
+  },
+  "A1": {
+    code: "NHÀ A1",
+    focusPos: { x: -6, y: 10, z: -6 },
+    cameraOffset: { x: -32, y: 32, z: 28 },
+    gateEntry: { x: 2, z: 4 },
+    floors: [
+      { level: "TẦNG 01", desc: "Khoa Ung bướu YHHN - Chẩn đoán hình ảnh" },
+      { level: "TẦNG 02", desc: "Khoa Ung bướu YHHN - Khoa Dược" },
+      { level: "TẦNG 03", desc: "Khoa Hồi sức tích cực - Ngoại tổng hợp" },
+      { level: "TẦNG 04", desc: "Khoa Gây mê hồi sức - Khoa Chấn thương" },
+      { level: "TẦNG 05", desc: "Ngoại thần kinh - Huyết học - Hóa sinh • Khoa Vi sinh - Giải phẫu bệnh" }
+    ]
+  },
+  "A2": {
+    code: "NHÀ A2",
+    focusPos: { x: 11, y: 10, z: -18 },
+    cameraOffset: { x: -24, y: 34, z: 34 },
+    gateEntry: { x: 11, z: -8 },
+    floors: [
+      { level: "TẦNG 01", desc: "Y học cổ truyền - Phục hồi chức năng" },
+      { level: "TẦNG 02", desc: "Khoa Nội tổng hợp" },
+      { level: "TẦNG 03", desc: "Khoa Nhi" },
+      { level: "TẦNG 04", desc: "Khoa Sản - Sản gói" },
+      { level: "TẦNG 05", desc: "Khoa Mắt - Khoa Phụ" }
+    ]
+  },
+  "A3": {
+    code: "NHÀ A3",
+    focusPos: { x: 29, y: 10, z: -8 },
+    cameraOffset: { x: -24, y: 32, z: 32 },
+    gateEntry: { x: 22, z: 4 },
+    floors: [
+      { level: "TẦNG 01", desc: "Khoa Cấp cứu chống độc" },
+      { level: "TẦNG 02", desc: "Khoa Nội tiết - Phòng CNTT" },
+      { level: "TẦNG 03", desc: "Khoa Tim mạch" },
+      { level: "TẦNG 04", desc: "Khoa Ngoại tiêu hóa" },
+      { level: "TẦNG 05", desc: "Tai mũi họng - Răng hàm mặt" }
+    ]
+  },
+  "A4": {
+    code: "NHÀ A4",
+    focusPos: { x: -15, y: 6, z: 26 },
+    cameraOffset: { x: -22, y: 24, z: 28 },
+    gateEntry: { x: -12, z: 33 },
+    floors: [
+      { level: "TẦNG 01", desc: "Khám bệnh theo yêu cầu - Truyền nhiễm" },
+      { level: "TẦNG 02", desc: "Khoa Truyền nhiễm" },
+      { level: "TẦNG 03", desc: "Khoa Truyền nhiễm" }
+    ]
+  },
+  "A5": {
+    code: "NHÀ A5",
+    focusPos: { x: -32, y: 6, z: 30 },
+    cameraOffset: { x: -24, y: 24, z: 28 },
+    gateEntry: { x: -25, z: 33 },
+    floors: [
+      { level: "TẦNG 01", desc: "Khám bệnh theo yêu cầu - Nội A lão học" },
+      { level: "TẦNG 02", desc: "Điều trị theo yêu cầu - Nội A lão học" },
+      { level: "TẦNG 03", desc: "Khoa Nội A lão học" }
+    ]
+  },
+  "A6": {
+    code: "NHÀ A6",
+    focusPos: { x: -41, y: 4, z: 12 },
+    cameraOffset: { x: -22, y: 20, z: 22 },
+    gateEntry: { x: -34, z: 12 },
+    floors: [
+      { level: "TẦNG 01", desc: "Phòng Vật tư thiết bị y tế" },
+      { level: "TẦNG 02", desc: "Khoa Da liễu" }
+    ]
+  },
+  "A7": {
+    code: "NHÀ A7",
+    focusPos: { x: -39, y: 3, z: 4 },
+    cameraOffset: { x: -22, y: 20, z: 22 },
+    gateEntry: { x: -33, z: 4 },
+    floors: [{ level: "KHU VỰC", desc: "Khu điều trị phạm nhân (An ninh & cách ly riêng biệt)" }]
+  },
+  "A8": {
+    code: "NHÀ A8",
+    focusPos: { x: -21, y: 16, z: 2 },
+    cameraOffset: { x: -32, y: 34, z: 34 },
+    gateEntry: { x: -12, z: 8 },
+    floors: [{ level: "TÒA A8", desc: "Trung tâm Sản Nhi Tỉnh Hà Tĩnh (Khám, điều trị chuyên sâu Sản khoa & Nhi khoa)" }]
+  },
+  "B": {
+    code: "NHÀ B",
+    focusPos: { x: -27, y: 4, z: 16 },
+    cameraOffset: { x: -22, y: 22, z: 24 },
+    gateEntry: { x: -19, z: 18 },
+    floors: [{ level: "TÒA B", desc: "Trung tâm Xạ trị - Điều trị Ung bướu kỹ thuật cao" }]
+  },
+  "C": {
+    code: "NHÀ C",
+    focusPos: { x: 2, y: 4, z: -32 },
+    cameraOffset: { x: -22, y: 24, z: 24 },
+    gateEntry: { x: 2, z: -26 },
+    floors: [
+      { level: "TẦNG 01", desc: "Căn tin bệnh viện" },
+      { level: "TẦNG 02", desc: "Khoa Dinh dưỡng" }
+    ]
+  },
+  "D": {
+    code: "NHÀ D",
+    focusPos: { x: -37, y: 4, z: -4 },
+    cameraOffset: { x: -22, y: 22, z: 22 },
+    gateEntry: { x: -31, z: -4 },
+    floors: [
+      { level: "TẦNG 01", desc: "Phòng Hành chính quản trị" },
+      { level: "TẦNG 02", desc: "P. QL Chất lượng - CT Xã hội - Điều dưỡng" }
+    ]
+  },
+  "G": {
+    code: "NHÀ XE NV/SV",
+    focusPos: { x: 46.5, y: 3, z: -14 },
+    cameraOffset: { x: -24, y: 24, z: 26 },
+    gateEntry: { x: 41, z: -14 },
+    floors: [{ level: "NHÀ XE", desc: "Nhà gửi xe dành cho Cán bộ Nhân viên & Sinh viên thực tập" }]
+  },
+  "01": {
+    code: "KHU 01",
+    focusPos: { x: -2, y: 2, z: 38 },
+    cameraOffset: { x: -24, y: 26, z: 28 },
+    gateEntry: { x: 10, z: 39 },
+    floors: [{ level: "TIỆN ÍCH 01", desc: "Bãi đỗ xe ô tô mặt tiền đường Hải Thượng Lãn Ông (Cổng 1 & Cổng 2)" }]
+  },
+  "02": {
+    code: "KHU 02",
+    focusPos: { x: 38, y: 2, z: 32 },
+    cameraOffset: { x: -22, y: 24, z: 26 },
+    gateEntry: { x: 30, z: 36 },
+    floors: [{ level: "TIỆN ÍCH 02", desc: "Công viên cây xanh, sân thể thao và Nhà giữ xe khách & bệnh nhân" }]
+  },
+  "03": {
+    code: "KHU 03",
+    focusPos: { x: 11, y: 2, z: 0 },
+    cameraOffset: { x: -22, y: 22, z: 24 },
+    gateEntry: { x: 11, z: 8 },
+    floors: [{ level: "TIỆN ÍCH 03", desc: "Đài phun nước cảnh quan trung tâm giữa khối nhà A – A1 – A2 – A3" }]
+  },
+  "04": {
+    code: "KHU 04",
+    focusPos: { x: 6, y: 3, z: 8 },
+    cameraOffset: { x: -22, y: 24, z: 24 },
+    gateEntry: { x: 11, z: 12 },
+    floors: [{ level: "TIỆN ÍCH 04", desc: "Hệ thống hành lang nội bộ có mái che kết nối liên hoàn các tòa nhà" }]
+  },
+  "05": {
+    code: "KHU 05",
+    focusPos: { x: -6, y: 2, z: -25 },
+    cameraOffset: { x: -20, y: 22, z: 22 },
+    gateEntry: { x: -4, z: -22 },
+    floors: [{ level: "TIỆN ÍCH 05", desc: "Khu phơi đồ thông thoáng phục vụ bệnh nhân điều trị nội trú" }]
+  },
+  "06": {
+    code: "KHU 06",
+    focusPos: { x: -33, y: 2, z: 20 },
+    cameraOffset: { x: -18, y: 18, z: 20 },
+    gateEntry: { x: -26, z: 21 },
+    floors: [{ level: "TIỆN ÍCH 06", desc: "Trạm cung cấp Oxy & khí y tế trung tâm" }]
+  },
+  "07": {
+    code: "KHU 07",
+    focusPos: { x: -37, y: 2, z: -12 },
+    cameraOffset: { x: -18, y: 18, z: 20 },
+    gateEntry: { x: -31, z: -12 },
+    floors: [{ level: "TIỆN ÍCH 07", desc: "Trạm điện trung tâm & máy phát điện dự phòng 24/7" }]
+  },
+  "08": {
+    code: "KHU 08",
+    focusPos: { x: -41, y: 3, z: -33 },
+    cameraOffset: { x: -22, y: 22, z: 22 },
+    gateEntry: { x: -34, z: -30 },
+    floors: [{ level: "TIỆN ÍCH 08", desc: "Nhà tang lễ (Có lối ra riêng tại Cổng số 4 đường Lê Ninh)" }]
+  },
+  "09": {
+    code: "KHU 09",
+    focusPos: { x: -35, y: 2, z: -42 },
+    cameraOffset: { x: -18, y: 18, z: 20 },
+    gateEntry: { x: -32, z: -36 },
+    floors: [{ level: "TIỆN ÍCH 09", desc: "Trạm biến áp hạ thế khu vực phía Bắc" }]
+  },
+  "10": {
+    code: "KHU 10",
+    focusPos: { x: -25, y: 3, z: -40 },
+    cameraOffset: { x: -20, y: 20, z: 20 },
+    gateEntry: { x: -25, z: -34 },
+    floors: [{ level: "TIỆN ÍCH 10", desc: "Khu xử lý chất thải rắn & nước thải y tế đạt chuẩn môi trường" }]
+  }
 };
 
 const E = [
@@ -527,8 +1004,11 @@ const svg = document.getElementById('overlay');
 const viewport = document.getElementById('viewport');
 const mapCard = document.getElementById('mapCard');
 const infoEl = document.getElementById('info');
+const info3dEl = document.getElementById('info3d');
 const fromSel = document.getElementById('from');
 const toSel = document.getElementById('to');
+const from3dSel = document.getElementById('from3d');
+const to3dSel = document.getElementById('to3d');
 const toast = document.getElementById('toast');
 const toastMsg = document.getElementById('toastMsg');
 const routeCount = document.getElementById('routeCount');
@@ -542,12 +1022,87 @@ items.forEach(id=>{
   o1.value=id;o1.textContent=id+' — '+INFO[id];
   fromSel.appendChild(o1);
   toSel.appendChild(o1.cloneNode(true));
+  from3dSel.appendChild(o1.cloneNode(true));
+  to3dSel.appendChild(o1.cloneNode(true));
 });
 fromSel.value='G';
 toSel.value='A';
+from3dSel.value='G';
+to3dSel.value='A';
 
-function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function syncRouteSelects(source) {
+  if (source === '3d') {
+    fromSel.value = from3dSel.value;
+    toSel.value = to3dSel.value;
+  } else {
+    from3dSel.value = fromSel.value;
+    to3dSel.value = toSel.value;
+  }
+}
 
+fromSel.addEventListener('change', () => syncRouteSelects('2d'));
+toSel.addEventListener('change', () => syncRouteSelects('2d'));
+from3dSel.addEventListener('change', () => syncRouteSelects('3d'));
+to3dSel.addEventListener('change', () => syncRouteSelects('3d'));
+
+function setInfoHTML(html) {
+  infoEl.innerHTML = html;
+  if (info3dEl) info3dEl.innerHTML = html;
+}
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+/**
+ * Hiển thị chi tiết khu vực / từng tầng lên bảng Info bên phải (cả 2D và 3D)
+ */
+function renderEntityInfo(id) {
+  const detail = BUILDING_DETAILS[id];
+  const title = INFO[id] || id;
+  if (!detail) {
+    setInfoHTML(`<b>📍 ${esc(id)}</b><div class="muted">${esc(title)}</div>`);
+    return;
+  }
+  const floorsHtml = detail.floors.map(f => `
+    <div class="floor-chip">
+      <span>${esc(f.level)}</span>${esc(f.desc)}
+    </div>
+  `).join('');
+
+  setInfoHTML(`
+    <b>🏢 ${esc(detail.code)} — ${esc(id)}</b>
+    <div class="muted">${esc(title)}</div>
+    <div class="floor-list">${floorsHtml}</div>
+  `);
+}
+
+/**
+ * Hiển thị chi tiết khu vực / từng tầng lên bảng Info bên phải
+ */
+function renderEntityInfo(id) {
+  const detail = BUILDING_DETAILS[id];
+  const title = INFO[id] || id;
+  if (!detail) {
+    infoEl.innerHTML = `<b>📍 ${esc(id)}</b><div class="muted">${esc(title)}</div>`;
+    return;
+  }
+  const floorsHtml = detail.floors.map(f => `
+    <div class="floor-chip">
+      <span>${esc(f.level)}</span>${esc(f.desc)}
+    </div>
+  `).join('');
+
+  infoEl.innerHTML = `
+    <b>🏢 ${esc(detail.code)} — ${esc(id)}</b>
+    <div class="muted">${esc(title)}</div>
+    <div class="floor-list">${floorsHtml}</div>
+  `;
+}
+
+/**
+ * =========================================================================
+ * 2. LOGIC BẢN ĐỒ 2D SVG (GIỮ NGUYÊN & ĐỒNG BỘ VỚI 3D)
+ * =========================================================================
+ */
 function drawMarkers(){
   viewport.querySelectorAll('.hot').forEach(el=>el.remove());
   items.forEach((id, idx)=>{
@@ -570,7 +1125,9 @@ function drawMarkers(){
     g.addEventListener('click',()=>{
       viewport.querySelectorAll('.hot.active').forEach(el=>el.classList.remove('active'));
       g.classList.add('active');
-      infoEl.innerHTML=`<b>📍 ${esc(id)}</b><div class="muted">${esc(INFO[id])}</div>`;
+      toSel.value = id;
+      syncRouteSelects('2d');
+      renderEntityInfo(id);
     });
     viewport.appendChild(g);
   });
@@ -639,6 +1196,8 @@ function showToast(msg){
   toastTimer = setTimeout(()=>toast.classList.remove('show'), 2400);
 }
 
+let activeRoutePair = null;
+
 function drawRoute(){
   viewport.querySelectorAll('.route,.route2,.route-dot').forEach(el=>el.remove());
   const f=fromSel.value,t=toSel.value;
@@ -649,8 +1208,10 @@ function drawRoute(){
   
   if(!r.length){ showToast('Không tìm thấy đường đi'); return; }
 
-  const pts = r.map(k=>P[k].join(',')).join(' ');
+  activeRoutePair = { from: f, to: t };
 
+  // Vẽ đường trên bản đồ 2D
+  const pts = r.map(k=>P[k].join(',')).join(' ');
   const p=document.createElementNS(SVGNS,'polyline');
   p.setAttribute('points',pts);p.classList.add('route');
   viewport.appendChild(p);
@@ -671,34 +1232,1569 @@ function drawRoute(){
     viewport.appendChild(c);
   });
 
-  const meters = Math.round(result.dist * 0.5);
+  // Đồng bộ vẽ đường trên Mô hình 3D nếu đã khởi tạo
+  let meters3D = null;
+  if (threeApp.initialized) {
+    meters3D = threeApp.drawRoute(f, t);
+  }
+
+  const meters = meters3D || Math.round(result.dist * 0.5);
   const minutes = Math.max(1, Math.ceil(meters / 80));
 
-  infoEl.innerHTML=`<b>🧭 Lộ trình</b>
-    <div class="muted" style="margin-bottom:8px">${esc(INFO[f])} → ${esc(INFO[t])}</div>
+  setInfoHTML(`<b>🧭 Lộ trình di chuyển</b>
+    <div class="muted" style="margin-bottom:6px">${esc(INFO[f])} → ${esc(INFO[t])}</div>
     <div class="route-meta">
       <span>📏 ~${meters} m</span>
       <span>🚶 ~${minutes} phút</span>
-    </div>`;
+    </div>`);
   showToast('Đã vẽ đường đi ngắn nhất!');
 }
 
-document.getElementById('go').addEventListener('click',drawRoute);
-document.getElementById('clear').addEventListener('click',()=>{
+function clearAllRoutes() {
+  activeRoutePair = null;
   viewport.querySelectorAll('.route,.route2,.route-dot').forEach(el=>el.remove());
-  infoEl.innerHTML=`<b>👋 Đã xóa đường đi</b>
-    <div class="muted">Bấm marker trên bản đồ hoặc chọn điểm đi/đến để bắt đầu lại.</div>`;
+  if (threeApp.initialized) threeApp.clearRoute();
+  setInfoHTML(`<b>👋 Đã xóa đường đi</b>
+    <div class="muted">Bấm marker trên bản đồ 2D hoặc tòa nhà 3D để xem thông tin và tìm đường.</div>`);
   showToast('Đã xóa đường đi');
-});
+}
 
-document.getElementById('swap').addEventListener('click',()=>{
+function swapRoutePoints() {
   const tmp=fromSel.value;
   fromSel.value=toSel.value;
   toSel.value=tmp;
-  showToast('Đã đổi chiều đi');
-});
+  syncRouteSelects('2d');
+  if (activeRoutePair) drawRoute();
+  else showToast('Đã đổi chiều đi');
+}
+
+document.getElementById('go').addEventListener('click',drawRoute);
+document.getElementById('go3d').addEventListener('click',drawRoute);
+document.getElementById('clear').addEventListener('click',clearAllRoutes);
+document.getElementById('clear3d').addEventListener('click',clearAllRoutes);
+document.getElementById('swap').addEventListener('click',swapRoutePoints);
+document.getElementById('swap3d').addEventListener('click',swapRoutePoints);
 
 drawMarkers();
+
+/**
+ * =========================================================================
+ * 3. MÔ HÌNH 3D THREE.JS TÍCH HỢP TRỰC TIẾP VÀO KHUNG BẢN ĐỒ
+ * =========================================================================
+ */
+const threeApp = (() => {
+  let initialized = false;
+  let isActiveView = false;
+  let scene, camera, renderer, raycaster, mouse;
+  let hemiLight, ambientLight, dirLight;
+  let isEveningMode = false;
+  let showLabels = true;
+  let selectedEntityId = null;
+
+  const interactiveMeshes = [];
+  const entityMeshGroups = {};
+  const labelSprites = [];
+  const windowMaterials = [];
+  const animatedCars = [];
+  let fountainParticles = null;
+  let fountainRing = null;
+  let routeGroup = null;
+  let userLocationMarker = null;
+
+  const camState = {
+    target: new THREE.Vector3(0, 3, 2),
+    desiredTarget: new THREE.Vector3(0, 3, 2),
+    spherical: new THREE.Spherical(122, Math.PI * 0.31, -Math.PI * 0.23),
+    desiredSpherical: new THREE.Spherical(122, Math.PI * 0.31, -Math.PI * 0.23),
+    isDragging: false,
+    dragMode: 'rotate',
+    prevPointer: { x: 0, y: 0 },
+    downPointer: { x: 0, y: 0 },
+    pinchDist: 0
+  };
+
+  const clock = new THREE.Clock();
+
+  function createFacadeTexture(baseColor = '#dde5ed', windowColor = '#0284c7', cols = 8, rows = 4, isEvening = false) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = baseColor;
+    ctx.fillRect(0, 0, 512, 512);
+
+    const rowH = 512 / rows;
+    const colW = 512 / cols;
+
+    for (let r = 0; r < rows; r++) {
+      const y = r * rowH;
+      ctx.fillStyle = 'rgba(14, 116, 144, 0.16)';
+      ctx.fillRect(0, y + rowH * 0.22, 512, rowH * 0.52);
+
+      ctx.fillStyle = 'rgba(71, 85, 105, 0.35)';
+      ctx.fillRect(0, y + rowH - 4, 512, 4);
+
+      for (let c = 0; c < cols; c++) {
+        const x = c * colW;
+        const padX = colW * 0.14;
+        const padY = rowH * 0.26;
+        const w = colW - padX * 2;
+        const h = rowH * 0.44;
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(x + padX - 2, y + padY - 2, w + 4, h + 4);
+
+        const grad = ctx.createLinearGradient(x + padX, y + padY, x + padX + w, y + padY + h);
+        if (isEvening) {
+          grad.addColorStop(0, '#fef08a');
+          grad.addColorStop(1, '#f59e0b');
+        } else {
+          grad.addColorStop(0, '#38bdf8');
+          grad.addColorStop(0.5, windowColor);
+          grad.addColorStop(1, '#075985');
+        }
+        ctx.fillStyle = grad;
+        ctx.fillRect(x + padX, y + padY, w, h);
+
+        ctx.fillStyle = 'rgba(226, 232, 240, 0.45)';
+        ctx.fillRect(x + padX + w * 0.48, y + padY, 2, h);
+      }
+    }
+
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    return tex;
+  }
+
+  function createHospitalSignTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 160;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(0, 0, 1024, 160);
+    ctx.strokeStyle = '#0369a1';
+    ctx.lineWidth = 10;
+    ctx.strokeRect(5, 5, 1014, 150);
+
+    ctx.fillStyle = '#dc2626';
+    ctx.font = '800 44px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('BỆNH VIỆN ĐA KHOA TỈNH HÀ TĨNH', 512, 82);
+
+    return new THREE.CanvasTexture(canvas);
+  }
+
+  function createFloatingLabel(text, subtext = '', styleType = 'building') {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 160;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 512, 160);
+
+    let bg = 'rgba(255, 255, 255, 0.94)';
+    let border = '#0284c7';
+    let fg = '#dc2626';
+
+    if (styleType === 'zone') {
+      bg = 'rgba(239, 68, 68, 0.94)';
+      border = '#ffffff';
+      fg = '#ffffff';
+    } else if (styleType === 'gate') {
+      bg = 'rgba(220, 38, 38, 0.95)';
+      border = '#fef08a';
+      fg = '#ffffff';
+    } else if (styleType === 'street') {
+      bg = 'rgba(15, 23, 42, 0.86)';
+      border = '#38bdf8';
+      fg = '#ffffff';
+    } else if (styleType === 'aux') {
+      bg = 'rgba(255, 247, 237, 0.94)';
+      border = '#ea580c';
+      fg = '#c2410c';
+    }
+
+    ctx.font = '800 38px Inter, sans-serif';
+    const textWidth = ctx.measureText(text).width;
+    const pillW = Math.min(480, Math.max(130, textWidth + 56));
+    const pillH = subtext ? 96 : 68;
+    const px = (512 - pillW) / 2;
+    const py = (160 - pillH) / 2 - 8;
+    const radius = pillH / 2;
+
+    ctx.save();
+    ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 5;
+
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(px, py, pillW, pillH, radius);
+    } else {
+      ctx.rect(px, py, pillW, pillH);
+    }
+    ctx.fillStyle = bg;
+    ctx.fill();
+    ctx.restore();
+
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = border;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(246, py + pillH);
+    ctx.lineTo(266, py + pillH);
+    ctx.lineTo(256, py + pillH + 14);
+    ctx.closePath();
+    ctx.fillStyle = border;
+    ctx.fill();
+
+    ctx.fillStyle = fg;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 256, subtext ? py + 34 : py + pillH / 2 + 1);
+
+    if (subtext) {
+      ctx.font = '600 22px Inter, sans-serif';
+      ctx.fillStyle = styleType === 'building' ? '#0f172a' : '#fef9c3';
+      ctx.fillText(subtext, 256, py + 70);
+    }
+
+    const tex = new THREE.CanvasTexture(canvas);
+    const mat = new THREE.SpriteMaterial({
+      map: tex,
+      transparent: true,
+      depthTest: false
+    });
+    const sprite = new THREE.Sprite(mat);
+    const scaleFactor = styleType === 'zone' ? 9.5 : (styleType === 'street' ? 14 : 11.5);
+    sprite.scale.set(scaleFactor, scaleFactor * (160 / 512), 1);
+    sprite.renderOrder = 10;
+    labelSprites.push(sprite);
+    return sprite;
+  }
+
+  function createBuildingBlock(entityId, parts, roofTrimColor = '#0284c7', wallBaseColor = '#dde5ed', windowTint = '#0284c7') {
+    const group = new THREE.Group();
+    const highlightMeshes = [];
+
+    parts.forEach(part => {
+      const { w, h, d, x, z, y = 0, cols = Math.max(3, Math.round(w / 2.2)), rows = Math.max(1, Math.round(h / 2.4)), isSolid = false } = part;
+
+      let sideMat;
+      if (isSolid) {
+        sideMat = new THREE.MeshStandardMaterial({
+          color: wallBaseColor,
+          roughness: 0.65,
+          metalness: 0.05
+        });
+      } else {
+        const facadeTex = createFacadeTexture(wallBaseColor, windowTint, cols, rows, false);
+        sideMat = new THREE.MeshStandardMaterial({
+          map: facadeTex,
+          roughness: 0.55,
+          metalness: 0.08
+        });
+        windowMaterials.push({ mat: sideMat, wallBaseColor, windowTint, cols, rows });
+      }
+
+      const roofMat = new THREE.MeshStandardMaterial({
+        color: '#cbd5e1',
+        roughness: 0.75
+      });
+
+      const materials = [sideMat, sideMat, roofMat, roofMat, sideMat, sideMat];
+      const geo = new THREE.BoxGeometry(w, h, d);
+      const mesh = new THREE.Mesh(geo, materials);
+      mesh.position.set(x, y + h / 2 + 0.15, z);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      const edges = new THREE.EdgesGeometry(geo);
+      const edgeLines = new THREE.LineSegments(
+        edges,
+        new THREE.LineBasicMaterial({ color: '#475569', transparent: true, opacity: 0.28 })
+      );
+      mesh.add(edgeLines);
+
+      mesh.userData = { entityId };
+      interactiveMeshes.push(mesh);
+      highlightMeshes.push(mesh);
+      group.add(mesh);
+
+      const trim = new THREE.Mesh(
+        new THREE.BoxGeometry(w + 0.35, 0.45, d + 0.35),
+        new THREE.MeshStandardMaterial({ color: roofTrimColor, roughness: 0.5 })
+      );
+      trim.position.set(x, y + h + 0.25, z);
+      trim.castShadow = true;
+      trim.userData = { entityId };
+      interactiveMeshes.push(trim);
+      highlightMeshes.push(trim);
+      group.add(trim);
+
+      if (h >= 6) {
+        const penthouse = new THREE.Mesh(
+          new THREE.BoxGeometry(Math.min(4.5, w * 0.32), 1.4, Math.min(3.5, d * 0.32)),
+          new THREE.MeshStandardMaterial({ color: '#94a3b8', roughness: 0.7 })
+        );
+        penthouse.position.set(x, y + h + 1.0, z);
+        penthouse.castShadow = true;
+        group.add(penthouse);
+      }
+    });
+
+    scene.add(group);
+    if (!entityMeshGroups[entityId]) {
+      entityMeshGroups[entityId] = { group, highlightMeshes };
+    } else {
+      entityMeshGroups[entityId].highlightMeshes.push(...highlightMeshes);
+    }
+    return group;
+  }
+
+  function buildGroundAndRoads() {
+    const outerGround = new THREE.Mesh(
+      new THREE.PlaneGeometry(460, 460),
+      new THREE.MeshStandardMaterial({ color: '#7ca1ba', roughness: 0.95 })
+    );
+    outerGround.rotation.x = -Math.PI / 2;
+    outerGround.position.y = -0.25;
+    scene.add(outerGround);
+
+    const campusBase = new THREE.Mesh(
+      new THREE.BoxGeometry(104, 0.5, 92),
+      new THREE.MeshStandardMaterial({ color: '#64748b', roughness: 0.85 })
+    );
+    campusBase.position.set(0, -0.1, 0);
+    campusBase.receiveShadow = true;
+    scene.add(campusBase);
+
+    const innerPaving = new THREE.Mesh(
+      new THREE.PlaneGeometry(101, 89),
+      new THREE.MeshStandardMaterial({ color: '#9aa8b6', roughness: 0.85 })
+    );
+    innerPaving.rotation.x = -Math.PI / 2;
+    innerPaving.position.y = 0.16;
+    innerPaving.receiveShadow = true;
+    scene.add(innerPaving);
+
+    const wallMat = new THREE.MeshStandardMaterial({ color: '#cbd5e1', roughness: 0.7 });
+    const addWall = (w, h, d, x, z) => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
+      mesh.position.set(x, h / 2 + 0.1, z);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+    };
+    addWall(104, 1.3, 0.6, 0, -45.7);
+    addWall(0.6, 1.3, 92, 51.7, 0);
+    addWall(30, 1.3, 0.6, -37, 45.7);
+    addWall(24, 1.3, 0.6, 3, 45.7);
+    addWall(26, 1.3, 0.6, 39, 45.7);
+    addWall(0.6, 1.3, 18, -51.7, 37);
+    addWall(0.6, 1.3, 34, -51.7, 0);
+    addWall(0.6, 1.3, 18, -51.7, -37);
+
+    const pillarMat = new THREE.MeshStandardMaterial({ color: '#dc2626', roughness: 0.5 });
+    const addGatePillars = (x1, z1, x2, z2) => {
+      [[x1, z1], [x2, z2]].forEach(([px, pz]) => {
+        const p = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2.9, 1.2), pillarMat);
+        p.position.set(px, 1.5, pz);
+        p.castShadow = true;
+        scene.add(p);
+      });
+    };
+    addGatePillars(16, 45.7, 24, 45.7);
+    addGatePillars(-17, 45.7, -11, 45.7);
+    addGatePillars(-51.7, 19, -51.7, 25);
+    addGatePillars(-51.7, -25, -51.7, -19);
+
+    const roadMat = new THREE.MeshStandardMaterial({ color: '#334155', roughness: 0.9 });
+    const roadHTLO = new THREE.Mesh(new THREE.BoxGeometry(132, 0.3, 13), roadMat);
+    roadHTLO.position.set(-6, -0.05, 53);
+    roadHTLO.receiveShadow = true;
+    scene.add(roadHTLO);
+
+    const roadLeNinh = new THREE.Mesh(new THREE.BoxGeometry(13, 0.3, 118), roadMat);
+    roadLeNinh.position.set(-59, -0.05, 0);
+    roadLeNinh.receiveShadow = true;
+    scene.add(roadLeNinh);
+
+    const stripeMat = new THREE.MeshBasicMaterial({ color: '#f8fafc' });
+    for (let x = -64; x <= 54; x += 6) {
+      const s = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.35), stripeMat);
+      s.rotation.x = -Math.PI / 2;
+      s.position.set(x, 0.12, 53);
+      scene.add(s);
+    }
+    for (let z = -54; z <= 54; z += 6) {
+      const s = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 3.2), stripeMat);
+      s.rotation.x = -Math.PI / 2;
+      s.position.set(-59, 0.12, z);
+      scene.add(s);
+    }
+
+    const lblHTLO = createFloatingLabel('ĐƯỜNG HẢI THƯỢNG LÃN ÔNG', '', 'street');
+    lblHTLO.position.set(6, 3.5, 54);
+    scene.add(lblHTLO);
+
+    const lblLeNinh = createFloatingLabel('ĐƯỜNG LÊ NINH', '', 'street');
+    lblLeNinh.position.set(-60, 3.5, 4);
+    scene.add(lblLeNinh);
+
+    const g1 = createFloatingLabel('CỔNG SỐ 1', 'Lối vào chính', 'gate');
+    g1.position.set(20, 6.2, 46);
+    scene.add(g1);
+
+    const g2 = createFloatingLabel('CỔNG SỐ 2', '', 'gate');
+    g2.position.set(-14, 5.2, 46);
+    scene.add(g2);
+
+    const g3 = createFloatingLabel('CỔNG SỐ 3', '', 'gate');
+    g3.position.set(-52, 5.2, 22);
+    scene.add(g3);
+
+    const g4 = createFloatingLabel('CỔNG SỐ 4', '', 'gate');
+    g4.position.set(-52, 5.2, -22);
+    scene.add(g4);
+  }
+
+  function buildAllHospitalBuildings() {
+    // NHÀ A
+    createBuildingBlock('A', [
+      { w: 28, h: 9.6, d: 6.2, x: 12, z: 25, cols: 12, rows: 4 },
+      { w: 6.2, h: 9.6, d: 11, x: 2, z: 17.5, cols: 3, rows: 4 },
+      { w: 6.2, h: 9.6, d: 11, x: 22, z: 17.5, cols: 3, rows: 4 }
+    ], '#38bdf8');
+
+    const signBoard = new THREE.Mesh(
+      new THREE.BoxGeometry(22, 2.2, 0.4),
+      new THREE.MeshStandardMaterial({ map: createHospitalSignTexture(), roughness: 0.4 })
+    );
+    signBoard.position.set(12, 10.6, 28.2);
+    signBoard.castShadow = true;
+    scene.add(signBoard);
+
+    const lblA = createFloatingLabel('NHÀ A', 'Khám bệnh • Ban GĐ', 'building');
+    lblA.position.set(12, 14.5, 24);
+    scene.add(lblA);
+
+    // NHÀ A1
+    createBuildingBlock('A1', [
+      { w: 6.5, h: 12, d: 18, x: -6, z: -8, cols: 3, rows: 5 },
+      { w: 10, h: 12, d: 5.5, x: -3, z: -14, cols: 4, rows: 5 }
+    ], '#0284c7');
+    const lblA1 = createFloatingLabel('NHÀ A1', 'Ung bướu • Hồi sức', 'building');
+    lblA1.position.set(-6, 16.5, -8);
+    scene.add(lblA1);
+
+    // NHÀ A2
+    createBuildingBlock('A2', [
+      { w: 24, h: 12, d: 6.5, x: 11, z: -18, cols: 10, rows: 5 },
+      { w: 6, h: 12.6, d: 4, x: 11, z: -14.2, cols: 2, rows: 5 }
+    ], '#0369a1');
+    const lblA2 = createFloatingLabel('NHÀ A2', 'Nội • Nhi • Sản • Mắt', 'building');
+    lblA2.position.set(11, 17, -18);
+    scene.add(lblA2);
+
+    // NHÀ A3
+    createBuildingBlock('A3', [
+      { w: 6.5, h: 12, d: 18, x: 28, z: -8, cols: 3, rows: 5 },
+      { w: 12, h: 12, d: 6, x: 34, z: -4, cols: 5, rows: 5 }
+    ], '#0ea5e9');
+    const lblA3 = createFloatingLabel('NHÀ A3', 'Cấp cứu • Tim mạch', 'building');
+    lblA3.position.set(30, 16.5, -7);
+    scene.add(lblA3);
+
+    // NHÀ A4
+    createBuildingBlock('A4', [
+      { w: 12, h: 7.2, d: 6, x: -14, z: 26, cols: 6, rows: 3 }
+    ], '#38bdf8');
+    const lblA4 = createFloatingLabel('NHÀ A4', 'Truyền nhiễm', 'building');
+    lblA4.position.set(-14, 11.5, 26);
+    scene.add(lblA4);
+
+    // NHÀ A5
+    createBuildingBlock('A5', [
+      { w: 6, h: 7.2, d: 14, x: -26, z: 29, cols: 3, rows: 3 },
+      { w: 13, h: 7.2, d: 5.5, x: -32, z: 34, cols: 6, rows: 3 },
+      { w: 5.5, h: 7.2, d: 10, x: -37, z: 28, cols: 3, rows: 3 }
+    ], '#38bdf8');
+    const lblA5 = createFloatingLabel('NHÀ A5', 'Nội A Lão học', 'building');
+    lblA5.position.set(-32, 11.5, 30);
+    scene.add(lblA5);
+
+    // NHÀ A6
+    createBuildingBlock('A6', [
+      { w: 12, h: 4.8, d: 5.2, x: -41, z: 12, cols: 5, rows: 2 }
+    ], '#0d9488', '#99f6e4', '#0f766e');
+    const lblA6 = createFloatingLabel('NHÀ A6', 'Da liễu • Vật tư', 'building');
+    lblA6.position.set(-41, 8.8, 12);
+    scene.add(lblA6);
+
+    // NHÀ A7
+    createBuildingBlock('A7', [
+      { w: 10, h: 3.4, d: 4.8, x: -39, z: 4, isSolid: true }
+    ], '#ea580c', '#fed7aa');
+    const lblA7 = createFloatingLabel('NHÀ A7', 'Điều trị phạm nhân', 'building');
+    lblA7.position.set(-39, 7.2, 4);
+    scene.add(lblA7);
+
+    // NHÀ A8 (TRUNG TÂM SẢN NHI)
+    createBuildingBlock('A8', [
+      { w: 16, h: 21.6, d: 8.5, x: -21, z: 2, cols: 8, rows: 9 },
+      { w: 3.2, h: 22.4, d: 9.2, x: -27.5, z: 2, cols: 1, rows: 9, windowTint: '#0369a1' },
+      { w: 3.2, h: 22.4, d: 9.2, x: -14.5, z: 2, cols: 1, rows: 9, windowTint: '#0369a1' }
+    ], '#0284c7');
+    const lblA8 = createFloatingLabel('NHÀ A8', 'TRUNG TÂM SẢN NHI', 'building');
+    lblA8.position.set(-21, 26.5, 2);
+    scene.add(lblA8);
+
+    // NHÀ B (TRUNG TÂM XẠ TRỊ)
+    createBuildingBlock('B', [
+      { w: 13, h: 4.4, d: 7, x: -26, z: 16, isSolid: true }
+    ], '#4f46e5', '#a5b4fc');
+    const lblB = createFloatingLabel('NHÀ B', 'Trung tâm Xạ trị', 'building');
+    lblB.position.set(-26, 8.2, 16);
+    scene.add(lblB);
+
+    // NHÀ C (CĂN TIN & DINH DƯỠNG)
+    createBuildingBlock('C', [
+      { w: 12, h: 4.8, d: 5.5, x: 2, z: -32, cols: 5, rows: 2 }
+    ], '#4f46e5', '#c7d2fe', '#4338ca');
+    const lblC = createFloatingLabel('NHÀ C', 'Căn tin • Dinh dưỡng', 'building');
+    lblC.position.set(2, 8.8, -32);
+    scene.add(lblC);
+
+    // NHÀ D (HÀNH CHÍNH QUẢN TRỊ)
+    createBuildingBlock('D', [
+      { w: 9.5, h: 4.8, d: 5.2, x: -37, z: -4, cols: 4, rows: 2 }
+    ], '#4f46e5', '#c7d2fe', '#4338ca');
+    const lblD = createFloatingLabel('NHÀ D', 'Hành chính • CTXH', 'building');
+    lblD.position.set(-37, 8.8, -4);
+    scene.add(lblD);
+
+    // NHÀ THUỐC (gắn với Khu 01/A mặt tiền)
+    createBuildingBlock('A', [
+      { w: 7.5, h: 3.6, d: 5, x: 28, z: 35, isSolid: true }
+    ], '#db2777', '#fbcfe8');
+    const lblThuoc = createFloatingLabel('NHÀ THUỐC', '', 'aux');
+    lblThuoc.position.set(28, 7.0, 35);
+    scene.add(lblThuoc);
+
+    // NHÀ GIỮ XE KHÁCH (gắn với Khu 02)
+    createBuildingBlock('02', [
+      { w: 10, h: 3.0, d: 6, x: 39, z: 23, isSolid: true }
+    ], '#c2410c', '#fdba74');
+    const lblGiuXe = createFloatingLabel('NHÀ GIỮ XE', 'Khách & Bệnh nhân', 'aux');
+    lblGiuXe.position.set(39, 6.4, 23);
+    scene.add(lblGiuXe);
+
+    // NHÀ GỬI XE NHÂN VIÊN / SINH VIÊN (ID: G)
+    createBuildingBlock('G', [
+      { w: 5.5, h: 2.8, d: 34, x: 46.5, z: -14, isSolid: true },
+      { w: 6.5, h: 3.0, d: 8, x: -46, z: -4, isSolid: true }
+    ], '#c2410c', '#fdba74');
+
+    const lblXeNV1 = createFloatingLabel('NHÀ GỬI XE NV / SV', 'Nhân viên & Sinh viên', 'aux');
+    lblXeNV1.position.set(46.5, 6.2, -14);
+    scene.add(lblXeNV1);
+
+    const lblXeNV2 = createFloatingLabel('NHÀ GỬI XE NV / SV', 'Nhân viên & Sinh viên', 'aux');
+    lblXeNV2.position.set(-46, 6.4, -4);
+    scene.add(lblXeNV2);
+
+    // Các khu chức năng 05 - 10
+    createBuildingBlock('05', [{ w: 7, h: 1.8, d: 5, x: -6, z: -25, isSolid: true }], '#9333ea', '#e9d5ff');
+    createBuildingBlock('06', [
+      { w: 4, h: 2.6, d: 3.5, x: -33, z: 20, isSolid: true },
+      { w: 3.5, h: 2.6, d: 3, x: -29, z: 19, isSolid: true }
+    ], '#db2777', '#fce7f3');
+    createBuildingBlock('07', [{ w: 4.5, h: 2.8, d: 3.8, x: -37, z: -12, isSolid: true }], '#d97706', '#fef3c7');
+    createBuildingBlock('08', [{ w: 11, h: 3.8, d: 7, x: -41, z: -33, isSolid: true }], '#7c3aed', '#ddd6fe');
+    createBuildingBlock('09', [{ w: 4.2, h: 2.5, d: 3.5, x: -35, z: -42, isSolid: true }], '#dc2626', '#fee2e2');
+    createBuildingBlock('10', [{ w: 9, h: 3.2, d: 5.5, x: -25, z: -40, isSolid: true }], '#c026d3', '#fae8ff');
+
+    // Khu 04: Hành lang nội bộ có mái che
+    const corridorMat = new THREE.MeshStandardMaterial({ color: '#cbd5e1', roughness: 0.6 });
+    const corridorRoofMat = new THREE.MeshStandardMaterial({ color: '#38bdf8', roughness: 0.5 });
+    const addCorridor = (w, d, x, z) => {
+      const base = new THREE.Mesh(new THREE.BoxGeometry(w, 3.0, d), corridorMat);
+      base.position.set(x, 1.65, z);
+      base.castShadow = true;
+      base.receiveShadow = true;
+      base.userData = { entityId: '04' };
+      interactiveMeshes.push(base);
+      scene.add(base);
+
+      const roof = new THREE.Mesh(new THREE.BoxGeometry(w + 0.3, 0.35, d + 0.3), corridorRoofMat);
+      roof.position.set(x, 3.25, z);
+      scene.add(roof);
+    };
+    addCorridor(2.6, 12, 2, 7);
+    addCorridor(2.6, 12, 22, 7);
+    addCorridor(24, 2.4, 11, -11);
+    addCorridor(8, 2.4, -11, 2);
+    addCorridor(2.4, 10, -14, 18);
+
+    // Nhãn số tròn 01 - 10
+    const zoneLabels = [
+      { id: '01', pos: [-2, 4.5, 39] },
+      { id: '02', pos: [38, 4.5, 34] },
+      { id: '03', pos: [11, 5.2, 0] },
+      { id: '04', pos: [2, 5.2, 8] },
+      { id: '05', pos: [-6, 4.5, -25] },
+      { id: '06', pos: [-33, 4.8, 20] },
+      { id: '07', pos: [-37, 4.8, -12] },
+      { id: '08', pos: [-41, 6.2, -33] },
+      { id: '09', pos: [-35, 4.8, -42] },
+      { id: '10', pos: [-25, 5.2, -40] }
+    ];
+    zoneLabels.forEach(z => {
+      const sp = createFloatingLabel(z.id, '', 'zone');
+      sp.position.set(z.pos[0], z.pos[1], z.pos[2]);
+      scene.add(sp);
+    });
+  }
+
+  function buildCentralFountainAndParks() {
+    const grassMat = new THREE.MeshStandardMaterial({ color: '#22c55e', roughness: 0.85 });
+
+    // Khu 03: Đài phun nước trung tâm
+    const plazaLawn = new THREE.Mesh(new THREE.BoxGeometry(14, 0.24, 12), grassMat);
+    plazaLawn.position.set(11, 0.22, 0);
+    plazaLawn.receiveShadow = true;
+    plazaLawn.userData = { entityId: '03' };
+    interactiveMeshes.push(plazaLawn);
+    scene.add(plazaLawn);
+
+    const basinOuter = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.8, 4.1, 0.65, 32),
+      new THREE.MeshStandardMaterial({ color: '#e2e8f0', roughness: 0.5 })
+    );
+    basinOuter.position.set(11, 0.55, 0);
+    basinOuter.castShadow = true;
+    basinOuter.receiveShadow = true;
+    basinOuter.userData = { entityId: '03' };
+    interactiveMeshes.push(basinOuter);
+    scene.add(basinOuter);
+
+    const waterPool = new THREE.Mesh(
+      new THREE.CylinderGeometry(3.4, 3.4, 0.15, 32),
+      new THREE.MeshStandardMaterial({ color: '#0284c7', roughness: 0.2, metalness: 0.15 })
+    );
+    waterPool.position.set(11, 0.84, 0);
+    waterPool.userData = { entityId: '03' };
+    interactiveMeshes.push(waterPool);
+    scene.add(waterPool);
+
+    const nozzle = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.45, 0.65, 0.9, 16),
+      new THREE.MeshStandardMaterial({ color: '#cbd5e1', roughness: 0.5 })
+    );
+    nozzle.position.set(11, 1.0, 0);
+    scene.add(nozzle);
+
+    fountainRing = new THREE.Mesh(
+      new THREE.RingGeometry(0.6, 1.0, 32),
+      new THREE.MeshBasicMaterial({ color: '#bae6fd', side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+    );
+    fountainRing.rotation.x = -Math.PI / 2;
+    fountainRing.position.set(11, 0.93, 0);
+    scene.add(fountainRing);
+
+    const particleCount = 140;
+    const pGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const velocities = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.35 + Math.random() * 0.85;
+      velocities.push({
+        vx: Math.cos(angle) * speed,
+        vy: 2.6 + Math.random() * 1.4,
+        vz: Math.sin(angle) * speed,
+        phase: Math.random()
+      });
+      positions[i * 3] = 11;
+      positions[i * 3 + 1] = 1.0;
+      positions[i * 3 + 2] = 0;
+    }
+
+    pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    pGeo.userData = { velocities };
+    const pMat = new THREE.PointsMaterial({
+      color: '#e0f2fe',
+      size: 0.38,
+      transparent: true,
+      opacity: 0.9
+    });
+    fountainParticles = new THREE.Points(pGeo, pMat);
+    scene.add(fountainParticles);
+
+    // Khu 02: Công viên cây xanh
+    const park02 = new THREE.Mesh(new THREE.BoxGeometry(15, 0.25, 13), grassMat);
+    park02.position.set(39, 0.22, 34);
+    park02.receiveShadow = true;
+    park02.userData = { entityId: '02' };
+    interactiveMeshes.push(park02);
+    scene.add(park02);
+
+    // Công viên phía Bắc
+    const northPark = new THREE.Mesh(new THREE.BoxGeometry(34, 0.25, 16), grassMat);
+    northPark.position.set(28, 0.22, -36);
+    northPark.receiveShadow = true;
+    scene.add(northPark);
+
+    const walkRing = new THREE.Mesh(
+      new THREE.RingGeometry(4.2, 5.4, 24),
+      new THREE.MeshStandardMaterial({ color: '#f8fafc', side: THREE.DoubleSide })
+    );
+    walkRing.rotation.x = -Math.PI / 2;
+    walkRing.position.set(26, 0.37, -36);
+    scene.add(walkRing);
+
+    // Khu 01: Bãi đỗ xe ô tô
+    const lot01 = new THREE.Mesh(
+      new THREE.BoxGeometry(36, 0.12, 9),
+      new THREE.MeshStandardMaterial({ color: '#cbd5e1', roughness: 0.85 })
+    );
+    lot01.position.set(-2, 0.18, 39);
+    lot01.receiveShadow = true;
+    lot01.userData = { entityId: '01' };
+    interactiveMeshes.push(lot01);
+    scene.add(lot01);
+  }
+
+  function buildTreesAndVehicles() {
+    const trunkMat = new THREE.MeshStandardMaterial({ color: '#78350f', roughness: 0.9 });
+    const leafMat1 = new THREE.MeshStandardMaterial({ color: '#15803d', roughness: 0.8 });
+    const leafMat2 = new THREE.MeshStandardMaterial({ color: '#22c55e', roughness: 0.75 });
+
+    const addRoundTree = (x, z, scale = 1) => {
+      const g = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22 * scale, 0.32 * scale, 1.8 * scale, 8), trunkMat);
+      trunk.position.y = 0.9 * scale;
+      trunk.castShadow = true;
+      g.add(trunk);
+
+      const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(1.45 * scale, 1), Math.random() > 0.4 ? leafMat1 : leafMat2);
+      crown.position.y = 2.4 * scale;
+      crown.castShadow = true;
+      g.add(crown);
+
+      g.position.set(x, 0.15, z);
+      scene.add(g);
+    };
+
+    const addPalmTree = (x, z) => {
+      const g = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.26, 3.2, 7), trunkMat);
+      trunk.position.y = 1.6;
+      trunk.castShadow = true;
+      g.add(trunk);
+
+      for (let i = 0; i < 6; i++) {
+        const frond = new THREE.Mesh(new THREE.ConeGeometry(0.65, 1.9, 5), leafMat2);
+        frond.position.y = 3.2;
+        frond.rotation.z = Math.PI * 0.36;
+        frond.rotation.y = (i * Math.PI) / 3;
+        frond.castShadow = true;
+        g.add(frond);
+      }
+      g.position.set(x, 0.15, z);
+      scene.add(g);
+    };
+
+    [-18, -11, -4, 3, 10, 15, 25].forEach(x => addPalmTree(x, 42.5));
+    [-15, -7, 1, 9].forEach(x => addPalmTree(x, 34.5));
+
+    const treeCoords = [
+      [34, 31], [43, 30], [35, 38], [44, 38], [47, 33],
+      [15, -32], [21, -31], [32, -31], [38, -33], [18, -41], [27, -42], [36, -41], [41, -37],
+      [5, -4], [17, -4], [5, 5], [17, 5],
+      [-47, 38], [-47, 30], [-47, 12], [-47, -14], [-47, -34], [-47, -42],
+      [-31, -43], [-18, -43], [-10, -42], [-15, -24], [-25, -16], [-13, 14]
+    ];
+    treeCoords.forEach(([x, z]) => addRoundTree(x, z, 0.85 + Math.random() * 0.35));
+
+    const createCarMesh = (bodyColor, isAmbulance = false) => {
+      const car = new THREE.Group();
+      const body = new THREE.Mesh(
+        new THREE.BoxGeometry(2.4, 0.85, 1.3),
+        new THREE.MeshStandardMaterial({ color: bodyColor, roughness: 0.35, metalness: 0.2 })
+      );
+      body.position.y = 0.55;
+      body.castShadow = true;
+      car.add(body);
+
+      const cabin = new THREE.Mesh(
+        new THREE.BoxGeometry(isAmbulance ? 1.8 : 1.3, 0.65, 1.15),
+        new THREE.MeshStandardMaterial({ color: isAmbulance ? '#ffffff' : '#e2e8f0', roughness: 0.25 })
+      );
+      cabin.position.set(isAmbulance ? -0.15 : -0.1, 1.2, 0);
+      cabin.castShadow = true;
+      car.add(cabin);
+
+      if (isAmbulance) {
+        const beacon = new THREE.Mesh(
+          new THREE.BoxGeometry(0.3, 0.22, 0.5),
+          new THREE.MeshBasicMaterial({ color: '#ef4444' })
+        );
+        beacon.position.set(0.3, 1.62, 0);
+        car.add(beacon);
+      }
+      return car;
+    };
+
+    const carColors = ['#ef4444', '#f8fafc', '#3b82f6', '#eab308', '#64748b', '#10b981'];
+    [-16, -12, -8, -3, 1, 5, 9, 13].forEach((x, idx) => {
+      const parked = createCarMesh(carColors[idx % carColors.length]);
+      parked.position.set(x, 0.22, 38.5);
+      parked.rotation.y = Math.PI / 2;
+      scene.add(parked);
+    });
+
+    const amb = createCarMesh('#ffffff', true);
+    amb.position.set(22, 0.22, 29);
+    amb.rotation.y = Math.PI / 2;
+    scene.add(amb);
+
+    const c1 = createCarMesh('#ef4444');
+    c1.position.set(-40, 0.1, 51.2);
+    scene.add(c1);
+    animatedCars.push({ mesh: c1, axis: 'x', dir: 1, speed: 9, min: -66, max: 56 });
+
+    const c2 = createCarMesh('#f8fafc', true);
+    c2.position.set(35, 0.1, 54.8);
+    c2.rotation.y = Math.PI;
+    scene.add(c2);
+    animatedCars.push({ mesh: c2, axis: 'x', dir: -1, speed: 11, min: -66, max: 56 });
+
+    const c3 = createCarMesh('#3b82f6');
+    c3.position.set(-57.2, 0.1, -30);
+    c3.rotation.y = -Math.PI / 2;
+    scene.add(c3);
+    animatedCars.push({ mesh: c3, axis: 'z', dir: 1, speed: 8.5, min: -54, max: 54 });
+  }
+
+  function buildGateMarkersAndCompass() {
+    userLocationMarker = new THREE.Group();
+
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(1.1, 1.7, 32),
+      new THREE.MeshBasicMaterial({ color: '#ef4444', side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.25;
+    userLocationMarker.add(ring);
+
+    const cone = new THREE.Mesh(
+      new THREE.ConeGeometry(0.9, 2.2, 16),
+      new THREE.MeshStandardMaterial({ color: '#ef4444', emissive: '#b91c1c', emissiveIntensity: 0.4 })
+    );
+    cone.rotation.x = Math.PI;
+    cone.position.y = 2.0;
+    userLocationMarker.add(cone);
+
+    const head = new THREE.Mesh(
+      new THREE.SphereGeometry(0.95, 16, 16),
+      new THREE.MeshStandardMaterial({ color: '#ef4444', emissive: '#dc2626', emissiveIntensity: 0.35 })
+    );
+    head.position.y = 3.2;
+    userLocationMarker.add(head);
+
+    userLocationMarker.position.set(20, 0, 42.5);
+    scene.add(userLocationMarker);
+
+    const compassGroup = new THREE.Group();
+    const baseDisc = new THREE.Mesh(
+      new THREE.CylinderGeometry(4.5, 4.5, 0.2, 32),
+      new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.5 })
+    );
+    compassGroup.add(baseDisc);
+
+    const northArrow = new THREE.Mesh(
+      new THREE.ConeGeometry(1.1, 3.8, 4),
+      new THREE.MeshBasicMaterial({ color: '#dc2626' })
+    );
+    northArrow.rotation.x = -Math.PI / 2;
+    northArrow.position.set(0, 0.25, -2.0);
+    compassGroup.add(northArrow);
+
+    const southArrow = new THREE.Mesh(
+      new THREE.ConeGeometry(1.1, 3.8, 4),
+      new THREE.MeshBasicMaterial({ color: '#64748b' })
+    );
+    southArrow.rotation.x = Math.PI / 2;
+    southArrow.position.set(0, 0.25, 2.0);
+    compassGroup.add(southArrow);
+
+    const lblNorth = createFloatingLabel('BẮC (N)', '', 'gate');
+    lblNorth.position.set(0, 2.8, -4.5);
+    compassGroup.add(lblNorth);
+
+    compassGroup.position.set(-46, 0.3, -46);
+    scene.add(compassGroup);
+  }
+
+  /**
+   * Mạng lưới đường nội bộ 3D & Dijkstra tìm đường ngắn nhất Từ -> Đến bất kỳ
+   */
+  const NAV_NODES = {
+    G1: { x: 20, z: 43 }, G2: { x: -14, z: 43 }, G3: { x: -48, z: 22 }, G4: { x: -48, z: -22 },
+    S_E: { x: 34, z: 34 }, S_G1: { x: 20, z: 34 }, S_A: { x: 11, z: 33 }, S_M: { x: -3, z: 33 }, S_G2: { x: -14, z: 34 }, S_W: { x: -25, z: 34 },
+    W_1: { x: -33, z: 22 }, W_2: { x: -33, z: 12 }, W_3: { x: -33, z: 2 }, W_4: { x: -33, z: -6 }, W_5: { x: -33, z: -15 }, W_6: { x: -33, z: -24 }, W_7: { x: -33, z: -34 },
+    C_S: { x: 11, z: 16 }, C_W: { x: 2, z: 8 }, C_E: { x: 22, z: 8 }, C_MID_W: { x: -11, z: 8 },
+    C_N_W: { x: 2, z: -11 }, C_N_M: { x: 11, z: -11 }, C_N_E: { x: 22, z: -11 },
+    N_W: { x: -18, z: -26 }, N_C: { x: 2, z: -26 }, N_E: { x: 38, z: -14 }, E_M: { x: 38, z: 12 }
+  };
+
+  const NAV_EDGES = [
+    ['G1', 'S_G1'], ['G2', 'S_G2'], ['G3', 'W_1'], ['G4', 'W_6'],
+    ['S_E', 'S_G1'], ['S_G1', 'S_A'], ['S_A', 'S_M'], ['S_M', 'S_G2'], ['S_G2', 'S_W'],
+    ['S_W', 'W_1'], ['W_1', 'W_2'], ['W_2', 'W_3'], ['W_3', 'W_4'], ['W_4', 'W_5'], ['W_5', 'W_6'], ['W_6', 'W_7'],
+    ['W_2', 'C_MID_W'], ['W_3', 'C_MID_W'],
+    ['S_G2', 'C_MID_W'], ['C_MID_W', 'C_W'],
+    ['S_A', 'C_S'], ['C_S', 'C_W'], ['C_S', 'C_E'],
+    ['C_W', 'C_N_W'], ['C_E', 'C_N_E'],
+    ['C_N_W', 'C_N_M'], ['C_N_M', 'C_N_E'],
+    ['W_6', 'N_W'], ['N_W', 'N_C'], ['C_N_W', 'N_C'],
+    ['C_N_E', 'N_E'], ['S_E', 'E_M'], ['E_M', 'N_E']
+  ];
+
+  function computeShortestPath3D(startPt, endPt) {
+    const graph = {};
+    const allCoords = { ...NAV_NODES, START: startPt, END: endPt };
+    Object.keys(allCoords).forEach(k => { graph[k] = []; });
+
+    const addBiEdge = (u, v) => {
+      const d = Math.hypot(allCoords[u].x - allCoords[v].x, allCoords[u].z - allCoords[v].z);
+      graph[u].push({ to: v, cost: d });
+      graph[v].push({ to: u, cost: d });
+    };
+
+    NAV_EDGES.forEach(([u, v]) => addBiEdge(u, v));
+
+    const connectNearest = (tempKey, pt) => {
+      Object.keys(NAV_NODES)
+        .map(k => ({ k, dist: Math.hypot(NAV_NODES[k].x - pt.x, NAV_NODES[k].z - pt.z) }))
+        .sort((a, b) => a.dist - b.dist)
+        .slice(0, 2)
+        .forEach(item => addBiEdge(tempKey, item.k));
+    };
+
+    connectNearest('START', startPt);
+    connectNearest('END', endPt);
+
+    if (Math.hypot(startPt.x - endPt.x, startPt.z - endPt.z) < 16) {
+      addBiEdge('START', 'END');
+    }
+
+    const dist = {};
+    const prev = {};
+    const visited = new Set();
+    Object.keys(allCoords).forEach(k => { dist[k] = Infinity; });
+    dist.START = 0;
+
+    while (true) {
+      let u = null;
+      let best = Infinity;
+      for (const k of Object.keys(allCoords)) {
+        if (!visited.has(k) && dist[k] < best) {
+          best = dist[k];
+          u = k;
+        }
+      }
+      if (!u || u === 'END') break;
+      visited.add(u);
+
+      for (const edge of graph[u]) {
+        const alt = dist[u] + edge.cost;
+        if (alt < dist[edge.to]) {
+          dist[edge.to] = alt;
+          prev[edge.to] = u;
+        }
+      }
+    }
+
+    const pathKeys = [];
+    let curr = 'END';
+    while (curr) {
+      pathKeys.unshift(curr);
+      curr = prev[curr];
+    }
+
+    return {
+      points: pathKeys.map(k => new THREE.Vector3(allCoords[k].x, 0.48, allCoords[k].z)),
+      distanceMeters: Math.round(dist.END * 2.5)
+    };
+  }
+
+  function clearRoute() {
+    if (!routeGroup) return;
+    while (routeGroup.children.length > 0) {
+      routeGroup.remove(routeGroup.children[0]);
+    }
+  }
+
+  function drawRoute(startId, endId) {
+    if (!initialized) return null;
+    clearRoute();
+
+    const startDetail = BUILDING_DETAILS[startId];
+    const endDetail = BUILDING_DETAILS[endId];
+    if (!startDetail || !endDetail) return null;
+
+    const { points, distanceMeters } = computeShortestPath3D(startDetail.gateEntry, endDetail.gateEntry);
+    if (points.length < 2) return null;
+
+    const curve = new THREE.CatmullRomCurve3(points, false, 'catmullrom', 0.12);
+    const tubeGeo = new THREE.TubeGeometry(curve, Math.max(48, points.length * 16), 0.45, 10, false);
+    const tubeMat = new THREE.MeshStandardMaterial({
+      color: '#10b981',
+      emissive: '#059669',
+      emissiveIntensity: 0.65,
+      roughness: 0.3
+    });
+    routeGroup.add(new THREE.Mesh(tubeGeo, tubeMat));
+
+    // Mốc xuất phát (Xanh lá)
+    const startPt = points[0];
+    const startRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.1, 1.9, 32),
+      new THREE.MeshBasicMaterial({ color: '#10b981', side: THREE.DoubleSide })
+    );
+    startRing.rotation.x = -Math.PI / 2;
+    startRing.position.set(startPt.x, 0.5, startPt.z);
+    routeGroup.add(startRing);
+
+    const startPin = new THREE.Mesh(
+      new THREE.SphereGeometry(0.9, 16, 16),
+      new THREE.MeshStandardMaterial({ color: '#10b981', emissive: '#059669', emissiveIntensity: 0.5 })
+    );
+    startPin.position.set(startPt.x, 1.6, startPt.z);
+    routeGroup.add(startPin);
+
+    // Mốc đích đến (Đỏ)
+    const destPt = points[points.length - 1];
+    const destRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.2, 2.1, 32),
+      new THREE.MeshBasicMaterial({ color: '#ef4444', side: THREE.DoubleSide })
+    );
+    destRing.rotation.x = -Math.PI / 2;
+    destRing.position.set(destPt.x, 0.5, destPt.z);
+    routeGroup.add(destRing);
+
+    const destPin = new THREE.Mesh(
+      new THREE.ConeGeometry(0.95, 2.2, 16),
+      new THREE.MeshStandardMaterial({ color: '#ef4444', emissive: '#dc2626', emissiveIntensity: 0.5 })
+    );
+    destPin.rotation.x = Math.PI;
+    destPin.position.set(destPt.x, 1.8, destPt.z);
+    routeGroup.add(destPin);
+
+    return distanceMeters;
+  }
+
+  function selectEntity3D(entityId, moveCamera = true) {
+    if (selectedEntityId && entityMeshGroups[selectedEntityId]) {
+      entityMeshGroups[selectedEntityId].highlightMeshes.forEach(m => {
+        if (Array.isArray(m.material)) {
+          m.material.forEach(sub => sub.emissive && sub.emissive.setHex(0x000000));
+        } else if (m.material.emissive) {
+          m.material.emissive.setHex(0x000000);
+        }
+      });
+    }
+
+    selectedEntityId = entityId;
+    const detail = BUILDING_DETAILS[entityId];
+    if (!detail) return;
+
+    if (entityMeshGroups[entityId]) {
+      entityMeshGroups[entityId].highlightMeshes.forEach(m => {
+        if (Array.isArray(m.material)) {
+          m.material.forEach(sub => sub.emissive && sub.emissive.setHex(0x0284c7));
+        } else if (m.material.emissive) {
+          m.material.emissive.setHex(0x0284c7);
+        }
+      });
+    }
+
+    if (moveCamera && detail.focusPos) {
+      camState.desiredTarget.set(detail.focusPos.x, detail.focusPos.y * 0.5, detail.focusPos.z);
+      const offset = new THREE.Vector3(detail.cameraOffset.x, detail.cameraOffset.y, detail.cameraOffset.z);
+      camState.desiredSpherical.setFromVector3(offset);
+    }
+
+    // Đồng bộ chọn vào dropdown Điểm đến và hiện thông tin chi tiết tầng
+    if (INFO[entityId]) {
+      toSel.value = entityId;
+      syncRouteSelects('2d');
+      renderEntityInfo(entityId);
+      const drawer = document.getElementById('drawer3d');
+      const toggleBtn = document.getElementById('btn3dToggleDrawer');
+      if (drawer && drawer.classList.contains('collapsed')) {
+        drawer.classList.remove('collapsed');
+        if (toggleBtn) toggleBtn.classList.add('active');
+      }
+    }
+  }
+
+  function updateCameraTransform(immediate = false) {
+    const lerpFactor = immediate ? 1 : 0.1;
+    camState.target.lerp(camState.desiredTarget, lerpFactor);
+    camState.spherical.radius += (camState.desiredSpherical.radius - camState.spherical.radius) * lerpFactor;
+    camState.spherical.phi += (camState.desiredSpherical.phi - camState.spherical.phi) * lerpFactor;
+    camState.spherical.theta += (camState.desiredSpherical.theta - camState.spherical.theta) * lerpFactor;
+
+    camState.spherical.phi = Math.max(0.12, Math.min(Math.PI * 0.46, camState.spherical.phi));
+    camState.spherical.radius = Math.max(24, Math.min(210, camState.spherical.radius));
+
+    const offset = new THREE.Vector3().setFromSpherical(camState.spherical);
+    camera.position.copy(camState.target).add(offset);
+    camera.lookAt(camState.target);
+  }
+
+  function applyPreset(presetName) {
+    document.querySelectorAll('.preset-3d-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.preset === presetName);
+    });
+
+    if (presetName === 'isometric') {
+      camState.desiredTarget.set(0, 3, 2);
+      camState.desiredSpherical.set(122, Math.PI * 0.31, -Math.PI * 0.23);
+    } else if (presetName === 'gate1') {
+      camState.desiredTarget.set(18, 4, 34);
+      camState.desiredSpherical.set(36, Math.PI * 0.40, Math.PI * 0.14);
+    } else if (presetName === 'fountain') {
+      camState.desiredTarget.set(11, 3, 0);
+      camState.desiredSpherical.set(38, Math.PI * 0.34, -Math.PI * 0.22);
+    } else if (presetName === 'a8') {
+      selectEntity3D('A8', true);
+    } else if (presetName === 'top') {
+      camState.desiredTarget.set(0, 0, 2);
+      camState.desiredSpherical.set(135, 0.14, -Math.PI * 0.23);
+    }
+  }
+
+  function resizeRenderer() {
+    if (!initialized || !renderer || !camera) return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w > 0 && h > 0) {
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+  }
+
+  function panCamera(dx, dy) {
+    const panSpeed = camState.spherical.radius * 0.0012;
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    forward.y = 0;
+    forward.normalize();
+    const right = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
+
+    camState.desiredTarget.addScaledVector(right, -dx * panSpeed);
+    camState.desiredTarget.addScaledVector(forward, dy * panSpeed);
+    camState.desiredTarget.x = Math.max(-55, Math.min(55, camState.desiredTarget.x));
+    camState.desiredTarget.z = Math.max(-50, Math.min(50, camState.desiredTarget.z));
+  }
+
+  function getNormalizedPointer(clientX, clientY) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  }
+
+  function setup3DEvents() {
+    const dom = renderer.domElement;
+    const tooltip = document.getElementById('tooltip3d');
+
+    dom.addEventListener('contextmenu', e => e.preventDefault());
+
+    dom.addEventListener('mousedown', e => {
+      camState.isDragging = true;
+      camState.dragMode = e.button === 2 || e.shiftKey ? 'pan' : 'rotate';
+      camState.prevPointer = { x: e.clientX, y: e.clientY };
+      camState.downPointer = { x: e.clientX, y: e.clientY };
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!isActiveView) {
+        tooltip.style.display = 'none';
+        return;
+      }
+
+      if (camState.isDragging) {
+        const dx = e.clientX - camState.prevPointer.x;
+        const dy = e.clientY - camState.prevPointer.y;
+        camState.prevPointer = { x: e.clientX, y: e.clientY };
+
+        if (camState.dragMode === 'rotate') {
+          camState.desiredSpherical.theta -= dx * 0.0065;
+          camState.desiredSpherical.phi -= dy * 0.0065;
+        } else {
+          panCamera(dx, dy);
+        }
+        tooltip.style.display = 'none';
+        return;
+      }
+
+      if (e.target !== dom) {
+        tooltip.style.display = 'none';
+        return;
+      }
+
+      getNormalizedPointer(e.clientX, e.clientY);
+      raycaster.setFromCamera(mouse, camera);
+      const hits = raycaster.intersectObjects(interactiveMeshes, false);
+
+      if (hits.length > 0) {
+        const entityId = hits[0].object.userData.entityId;
+        if (entityId && INFO[entityId]) {
+          dom.style.cursor = 'pointer';
+          tooltip.style.left = `${e.clientX}px`;
+          tooltip.style.top = `${e.clientY - 10}px`;
+          tooltip.textContent = `${entityId}: ${INFO[entityId]}`;
+          tooltip.style.display = 'block';
+          return;
+        }
+      }
+      dom.style.cursor = 'grab';
+      tooltip.style.display = 'none';
+    });
+
+    window.addEventListener('mouseup', e => {
+      if (!camState.isDragging) return;
+      camState.isDragging = false;
+      const dist = Math.hypot(e.clientX - camState.downPointer.x, e.clientY - camState.downPointer.y);
+      if (dist < 6 && e.target === dom && isActiveView) {
+        getNormalizedPointer(e.clientX, e.clientY);
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(interactiveMeshes, false);
+        if (hits.length > 0) {
+          const entityId = hits[0].object.userData.entityId;
+          if (entityId) selectEntity3D(entityId, true);
+        }
+      }
+    });
+
+    dom.addEventListener('wheel', e => {
+      e.preventDefault();
+      camState.desiredSpherical.radius += e.deltaY * 0.065;
+    }, { passive: false });
+
+    // Hỗ trợ cảm ứng trên điện thoại / máy tính bảng
+    dom.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        camState.isDragging = true;
+        camState.dragMode = 'rotate';
+        camState.prevPointer = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        camState.downPointer = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      } else if (e.touches.length === 2) {
+        camState.isDragging = true;
+        camState.dragMode = 'pinch';
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        camState.pinchDist = Math.hypot(dx, dy);
+        camState.prevPointer = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+        };
+      }
+    }, { passive: false });
+
+    dom.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (e.touches.length === 1 && camState.dragMode === 'rotate') {
+        const dx = e.touches[0].clientX - camState.prevPointer.x;
+        const dy = e.touches[0].clientY - camState.prevPointer.y;
+        camState.prevPointer = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        camState.desiredSpherical.theta -= dx * 0.0075;
+        camState.desiredSpherical.phi -= dy * 0.0075;
+      } else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        if (camState.pinchDist > 0) {
+          camState.desiredSpherical.radius -= (dist - camState.pinchDist) * 0.25;
+        }
+        camState.pinchDist = dist;
+
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        panCamera(midX - camState.prevPointer.x, midY - camState.prevPointer.y);
+        camState.prevPointer = { x: midX, y: midY };
+      }
+    }, { passive: false });
+
+    dom.addEventListener('touchend', e => {
+      if (e.changedTouches.length === 1 && camState.dragMode === 'rotate') {
+        const t = e.changedTouches[0];
+        const dist = Math.hypot(t.clientX - camState.downPointer.x, t.clientY - camState.downPointer.y);
+        if (dist < 10) {
+          getNormalizedPointer(t.clientX, t.clientY);
+          raycaster.setFromCamera(mouse, camera);
+          const hits = raycaster.intersectObjects(interactiveMeshes, false);
+          if (hits.length > 0 && hits[0].object.userData.entityId) {
+            selectEntity3D(hits[0].object.userData.entityId, true);
+          }
+        }
+      }
+      if (e.touches.length === 0) camState.isDragging = false;
+    });
+
+    // Nút điều khiển giao diện 3D
+    document.getElementById('btn3dLabels').addEventListener('click', e => {
+      showLabels = !showLabels;
+      labelSprites.forEach(s => { s.visible = showLabels; });
+      e.currentTarget.classList.toggle('active', showLabels);
+    });
+
+    document.getElementById('btn3dTheme').addEventListener('click', e => {
+      isEveningMode = !isEveningMode;
+      if (isEveningMode) {
+        scene.background = new THREE.Color('#0f172a');
+        scene.fog.color.set('#0f172a');
+        hemiLight.intensity = 0.35;
+        dirLight.color.set('#f97316');
+        dirLight.intensity = 0.55;
+        e.currentTarget.textContent = '🌙 Chiều tối';
+      } else {
+        scene.background = new THREE.Color('#8fb2c9');
+        scene.fog.color.set('#8fb2c9');
+        hemiLight.intensity = 0.62;
+        dirLight.color.set('#fef3c7');
+        dirLight.intensity = 0.82;
+        e.currentTarget.textContent = '☀️ Ban ngày';
+      }
+      windowMaterials.forEach(entry => {
+        if (entry.mat.map) entry.mat.map.dispose();
+        entry.mat.map = createFacadeTexture(entry.wallBaseColor, entry.windowTint, entry.cols, entry.rows, isEveningMode);
+        entry.mat.needsUpdate = true;
+      });
+    });
+
+    document.getElementById('btn3dReset').addEventListener('click', () => applyPreset('isometric'));
+
+    document.querySelectorAll('.preset-3d-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyPreset(btn.dataset.preset));
+    });
+
+    window.addEventListener('resize', resizeRenderer);
+    if (typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(() => resizeRenderer()).observe(mapCard);
+    }
+  }
+
+  function animateLoop() {
+    requestAnimationFrame(animateLoop);
+    if (!isActiveView || !initialized) return;
+
+    const delta = Math.min(clock.getDelta(), 0.05);
+    const elapsed = clock.getElapsedTime();
+
+    updateCameraTransform(false);
+
+    if (fountainParticles) {
+      const posAttr = fountainParticles.geometry.getAttribute('position');
+      const vels = fountainParticles.geometry.userData.velocities;
+      for (let i = 0; i < vels.length; i++) {
+        const v = vels[i];
+        const t = (elapsed * 1.4 + v.phase) % 1.0;
+        const x = 11 + v.vx * t * 2.4;
+        const z = 0 + v.vz * t * 2.4;
+        const y = 0.95 + (v.vy * t - 4.9 * t * t);
+        posAttr.setXYZ(i, x, Math.max(0.95, y), z);
+      }
+      posAttr.needsUpdate = true;
+    }
+
+    if (fountainRing) {
+      const scale = 1 + ((elapsed * 1.2) % 2.2);
+      fountainRing.scale.set(scale, scale, 1);
+      fountainRing.material.opacity = Math.max(0, 0.85 - ((elapsed * 1.2) % 2.2) * 0.38);
+    }
+
+    if (userLocationMarker) {
+      userLocationMarker.children[1].position.y = 2.0 + Math.sin(elapsed * 4) * 0.25;
+      userLocationMarker.children[2].position.y = 3.2 + Math.sin(elapsed * 4) * 0.25;
+      const pulseScale = 1 + ((elapsed * 1.5) % 1.2);
+      userLocationMarker.children[0].scale.set(pulseScale, pulseScale, 1);
+      userLocationMarker.children[0].material.opacity = Math.max(0, 0.9 - ((elapsed * 1.5) % 1.2) * 0.7);
+    }
+
+    animatedCars.forEach(car => {
+      if (car.axis === 'x') {
+        car.mesh.position.x += car.dir * car.speed * delta;
+        if (car.dir > 0 && car.mesh.position.x > car.max) car.mesh.position.x = car.min;
+        if (car.dir < 0 && car.mesh.position.x < car.min) car.mesh.position.x = car.max;
+      } else {
+        car.mesh.position.z += car.dir * car.speed * delta;
+        if (car.dir > 0 && car.mesh.position.z > car.max) car.mesh.position.z = car.min;
+        if (car.dir < 0 && car.mesh.position.z < car.min) car.mesh.position.z = car.max;
+      }
+    });
+
+    renderer.render(scene, camera);
+  }
+
+  function init() {
+    if (initialized) return;
+    const host = document.getElementById('threeCanvasHost');
+    const w = window.innerWidth || 1280;
+    const h = window.innerHeight || 720;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color('#8fb2c9');
+    scene.fog = new THREE.FogExp2('#8fb2c9', 0.0022);
+
+    camera = new THREE.PerspectiveCamera(38, w / h, 1, 600);
+    updateCameraTransform(true);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(w, h);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.90;
+    host.appendChild(renderer.domElement);
+
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+
+    hemiLight = new THREE.HemisphereLight('#f1f5f9', '#64748b', 0.62);
+    hemiLight.position.set(0, 80, 0);
+    scene.add(hemiLight);
+
+    ambientLight = new THREE.AmbientLight('#cbd5e1', 0.28);
+    scene.add(ambientLight);
+
+    dirLight = new THREE.DirectionalLight('#fef3c7', 0.82);
+    dirLight.position.set(-55, 95, 65);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.near = 10;
+    dirLight.shadow.camera.far = 260;
+    const d = 78;
+    dirLight.shadow.camera.left = -d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = -d;
+    dirLight.shadow.bias = -0.0005;
+    scene.add(dirLight);
+
+    buildGroundAndRoads();
+    buildAllHospitalBuildings();
+    buildCentralFountainAndParks();
+    buildTreesAndVehicles();
+    buildGateMarkersAndCompass();
+
+    routeGroup = new THREE.Group();
+    scene.add(routeGroup);
+
+    setup3DEvents();
+    initialized = true;
+    animateLoop();
+  }
+
+  return {
+    get initialized() { return initialized; },
+    setActive(active) {
+      isActiveView = active;
+      if (active) {
+        init();
+        resizeRenderer();
+        if (activeRoutePair) {
+          drawRoute(activeRoutePair.from, activeRoutePair.to);
+        }
+      } else {
+        document.getElementById('tooltip3d').style.display = 'none';
+      }
+    },
+    drawRoute,
+    clearRoute,
+    selectEntity3D
+  };
+})();
+
+/**
+ * =========================================================================
+ * 4. BỘ CHUYỂN ĐỔI CHẾ ĐỘ XEM 2D <-> MÔ HÌNH 3D
+ * =========================================================================
+ */
+let currentMode = '2d';
+
+function switchMapMode(mode) {
+  if (currentMode === mode) return;
+  currentMode = mode;
+
+  const view3d = document.getElementById('view3dWrap');
+  const btn2d = document.getElementById('btnMode2D');
+  const btn3d = document.getElementById('btnMode3D');
+  const floatIcon = document.getElementById('floatingModeIcon');
+  const floatText = document.getElementById('floatingModeText');
+
+  if (mode === '3d') {
+    view3d.classList.remove('hidden-view');
+    btn2d.classList.remove('active');
+    btn3d.classList.add('active');
+    floatIcon.textContent = '🗺️';
+    floatText.textContent = 'Quay lại Bản đồ 2D';
+    // Thu gọn bảng chỉ đường mặc định trên màn hình nhỏ để nhìn toàn cảnh 3D rõ nhất
+    if (window.innerWidth < 768) {
+      document.getElementById('drawer3d').classList.add('collapsed');
+      document.getElementById('btn3dToggleDrawer').classList.remove('active');
+    }
+    threeApp.setActive(true);
+    showToast('Đã mở Mô hình 3D toàn màn hình');
+  } else {
+    view3d.classList.add('hidden-view');
+    btn3d.classList.remove('active');
+    btn2d.classList.add('active');
+    floatIcon.textContent = '🧊';
+    floatText.textContent = 'Xem Mô Hình 3D';
+    threeApp.setActive(false);
+    showToast('Đã quay lại Bản đồ 2D');
+  }
+}
+
+document.getElementById('btnMode2D').addEventListener('click', () => switchMapMode('2d'));
+document.getElementById('btnMode3D').addEventListener('click', () => switchMapMode('3d'));
+document.getElementById('btnExit3d').addEventListener('click', () => switchMapMode('2d'));
+document.getElementById('floatingModeBtn').addEventListener('click', () => {
+  switchMapMode(currentMode === '2d' ? '3d' : '2d');
+});
+
+document.getElementById('btn3dToggleDrawer').addEventListener('click', (e) => {
+  const drawer = document.getElementById('drawer3d');
+  const isCollapsed = drawer.classList.toggle('collapsed');
+  e.currentTarget.classList.toggle('active', !isCollapsed);
+});
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && currentMode === '3d') {
+    switchMapMode('2d');
+  }
+});
+
+// Nếu ảnh map.jpg không tồn tại trong thư mục hiện tại, hiển thị nền thông báo nhẹ nhàng
+document.getElementById('mapImage').addEventListener('error', function () {
+  this.style.opacity = '0.15';
+});
 </script>
 </body>
 </html>
