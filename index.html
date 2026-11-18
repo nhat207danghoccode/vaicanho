@@ -1917,7 +1917,8 @@
   position:relative;
   z-index:2;
   overflow:visible;
-  padding-left:64px;
+  margin-left:64px;
+  width:calc(100% - 64px);
 }
 .info-strip-wrap .info-strip{
   position:relative;
@@ -1927,7 +1928,7 @@
 }
 #quizMascotLeft{
   position:absolute;
-  left:calc(100% + -160px);
+  left:-160px;
   top:30px;
   width:175px;
   max-width:175px;
@@ -1938,8 +1939,12 @@
   user-select:none;
 }
 @media(max-width:640px){
+  .info-strip-wrap{
+    margin-left:64px;
+    width:calc(100% - 64px);
+  }
   #quizMascotLeft{
-    left:calc(100% + -160px);
+    left:-160px;
     top:30px;
     width:175px;
     max-width:175px;
@@ -1947,6 +1952,43 @@
   }
 }
 </style>
+</style>
+
+<style id="mascot-responsive-final">
+  .info-strip-wrap{
+    position:relative;
+    z-index:2;
+    overflow:visible;
+    --mascot-w:clamp(118px,14vw,158px);
+    --mascot-overlap:clamp(8px,1.5vw,15px);
+  }
+  #quizMascotLeft{
+    position:absolute;
+    left:calc(-1 * var(--mascot-w) + var(--mascot-overlap));
+    top:30px;
+    width:var(--mascot-w);
+    max-width:var(--mascot-w);
+    height:auto;
+    transform:none;
+    z-index:1;
+    pointer-events:none;
+    user-select:none;
+  }
+  @media(max-width:640px){
+    .info-strip-wrap{
+      --mascot-w:clamp(96px,30vw,128px);
+      --mascot-overlap:8px;
+    }
+    #quizMascotLeft{
+      left:calc(-1 * var(--mascot-w) + var(--mascot-overlap));
+      top:22px;
+      width:var(--mascot-w);
+      max-width:var(--mascot-w);
+    }
+  }
+  @media(min-width:641px){
+    .info-strip-wrap{margin-left:64px;width:calc(100% - 64px);}
+  }
 </style>
 </head>
 <body>
