@@ -2065,6 +2065,9 @@
 #streakOverlay.tier-4 .streak-title{color:#dfe9f5}
 #streakOverlay.tier-6 .streak-title{color:#00d4ff}
 @media(max-width:520px){#streakOverlay .streak-stage{height:340px}#streakOverlay .streak-label{letter-spacing:4px}}
+
+/* Performance: giảm layout/paint khi có nhiều câu hỏi; không đổi giao diện. */
+.q-item{content-visibility:auto;contain-intrinsic-size:180px;}
 </style>
 
 <style id="custom-button-colors">
@@ -3086,6 +3089,7 @@ async function showTomorrowSchedule(){
 }
 
 function switchTab(type, skipPartialPrompt){
+    // Đổi UI/tab trước; tuyệt đối không build câu hỏi trong cùng call stack.
     currentTab=type;
     document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("activeTab",b.dataset.tab===type));
     const tkbBox=document.getElementById("tkbBox");
@@ -3093,17 +3097,15 @@ function switchTab(type, skipPartialPrompt){
 
     document.getElementById("noteBox").classList.add("hidden");
     document.getElementById("createBox").classList.add("hidden");
-
     document.getElementById("infoStrip").classList.toggle("hidden",type==="TKB");
     document.getElementById("chipsRow").classList.toggle("hidden",type==="TKB");
     const hospitalBox=document.getElementById("hospitalBox");
     if(hospitalBox) hospitalBox.classList.add("hidden");
 
     ["quiz-container","quiz-container-TF","quiz-container-MC"].forEach(id=>{
-        const el = document.getElementById(id);
+        const el=document.getElementById(id);
         if(el) el.classList.add("hidden");
     });
-
     resetChips();
 
     if(type==="TKB"){
@@ -3132,19 +3134,32 @@ function switchTab(type, skipPartialPrompt){
     }
 
     const target=getActiveContainer();
-    if(!target.children.length){
-        buildQuizHTML();
-    }else{
+    const hasQuestions=!!target && target.children.length>0;
+    if(hasQuestions){
         cachedQuestionNodes=Array.from(target.children).filter(el=>el.classList.contains("q-item"));
         originalOrder=[...cachedQuestionNodes];
         document.getElementById("totalQuestion").innerText=cachedQuestionNodes.length;
         correctCount=cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&!q.classList.contains("wrong-question")).length;
         document.getElementById("correctAnswer").innerText=correctCount;
         updateTopProgress();
+        showActiveContainer();
+        buildNavPanel();
+        return;
     }
-    buildNavPanel();
+
+    // Paint tab trước. Hai frame tạo ra một nhịp render thật sự cho browser.
     showActiveContainer();
+    requestAnimationFrame(()=>{
+        if(currentTab!==type) return;
+        requestAnimationFrame(()=>{
+            if(currentTab!==type) return;
+            buildQuizHTML();
+            buildNavPanel();
+            showActiveContainer();
+        });
+    });
 }
+
 function saveNote(){
     localStorage.setItem("nhat_note", document.getElementById("noteArea").value);
     showToast("Đã lưu ghi chú!");
@@ -3424,15 +3439,26 @@ function showCorrectStreak(count){
 }
 
 function buildQuizHTML(){
+    window.__buildingQuiz = true;
     const container=getActiveContainer();
     container.innerHTML="";
     correctCount=0;
     document.getElementById("correctAnswer").innerText="0";
 
     let sourceQuestions;
-    if(currentTab==="TF"){ sourceQuestions=parsedQuestionsDS.filter(q=>q.arr.length===2); }
-    else if(currentTab==="MC"){ sourceQuestions=parsedQuestionsDS.filter(q=>q.arr.length>=3); }
-    else{ sourceQuestions=[...parsedQuestionsDS]; }
+    // Cache phân loại để không filter lại toàn bộ dataset mỗi lần đổi tab/reload.
+    if(!window.__questionTypeCache || window.__questionTypeCache.source!==parsedQuestionsDS){
+        window.__questionTypeCache={
+            source: parsedQuestionsDS,
+            DS: parsedQuestionsDS.slice(),
+            TF: parsedQuestionsDS.filter(q=>q.arr.length===2),
+            MC: parsedQuestionsDS.filter(q=>q.arr.length>=3)
+        };
+    }
+    const typeCache=window.__questionTypeCache;
+    if(currentTab==="TF") sourceQuestions=typeCache.TF;
+    else if(currentTab==="MC") sourceQuestions=typeCache.MC;
+    else sourceQuestions=typeCache.DS;
 
     let questions=sourceQuestions;
     if(shuffleMode){
@@ -3643,17 +3669,17 @@ function buildQuizHTML(){
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Đã trả lời</span>';
 
-            if(userSubmitted){ playAnswerFeedback(allCorrect); }
+            if(userSubmitted && !window.__buildingQuiz){ playAnswerFeedback(allCorrect); }
 
             if(allCorrect){
                 correctCount++;
-                if(userSubmitted){
+                if(userSubmitted && !window.__buildingQuiz){
                     correctStreakCount++;
                     if(correctStreakCount >= 3) showCorrectStreak(correctStreakCount);
                 }
                 document.getElementById("correctAnswer").innerText = correctCount;
             } else {
-                if(userSubmitted) correctStreakCount = 0;
+                if(userSubmitted && !window.__buildingQuiz) correctStreakCount = 0;
                 const streakOverlay = document.getElementById("streakOverlay");
                 if(streakOverlay) streakOverlay.classList.remove("show");
             }
@@ -3667,12 +3693,14 @@ function buildQuizHTML(){
 
             if(!progressData[getSubjectTabKey()]){ progressData[getSubjectTabKey()] = {}; }
             progressData[getSubjectTabKey()][item.id] = true;
-            scheduleSave();
+            if(!window.__buildingQuiz) scheduleSave();
 
             if(!allCorrect){ qBlock.classList.add("wrong-question"); }
 
-            updateNavColors();
-            updateTopProgress();
+            if(!window.__buildingQuiz){
+                updateNavColors();
+                updateTopProgress();
+            }
         };
 
         actionBtns.appendChild(submitBtn);
@@ -3683,14 +3711,19 @@ function buildQuizHTML(){
         fragment.appendChild(qBlock);
 
         if(progressData[getSubjectTabKey()] && progressData[getSubjectTabKey()][item.id]){
-            submitBtn.click();
+            // Khôi phục trạng thái trực tiếp, không dispatch click event.
+            submitBtn.onclick({isTrusted:false});
         }
     });
 
     container.appendChild(fragment);
     cachedQuestionNodes = Array.from(container.children).filter(el => el.classList.contains("q-item"));
     originalOrder = [...cachedQuestionNodes];
+    correctCount = cachedQuestionNodes.filter(q=>q.classList.contains("answered")&&!q.classList.contains("wrong-question")).length;
+    document.getElementById("correctAnswer").innerText = correctCount;
+    window.__buildingQuiz = false;
     updateTopProgress();
+    updateNavColors();
 }
 
 function confirmReload(){
@@ -3724,10 +3757,17 @@ function reloadQuiz(){
         showBtn.innerHTML = '<i class="fas fa-eye"></i> Hiện toàn bộ đáp án';
     }
 
+    // Xóa giao diện cũ ngay lập tức để nút "Làm lại" không bị block.
     clearAllContainers();
-    buildQuizHTML();
-    buildNavPanel();
-    window.scrollTo({top:0,behavior:"smooth"});
+    showActiveContainer();
+
+    requestAnimationFrame(()=>{
+        if(!getActiveContainer()) return;
+        buildQuizHTML();
+        buildNavPanel();
+        showActiveContainer();
+        window.scrollTo({top:0,behavior:"smooth"});
+    });
 }
 
 function toggleShuffle(btn){
