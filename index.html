@@ -5081,33 +5081,7 @@ document.addEventListener('keydown',e=>{
 'use strict';
 const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $$=(q,root=document)=>Array.from(root.querySelectorAll(q));
-let revealObserver=null;
 let mutationTimer=0;
-
-function setupLazyQuestionReveal(){
-  const items=$$('.q-item');
-  if(!items.length)return;
-  if(reduce){
-    items.forEach(el=>el.classList.remove('aui-lazy-reveal'));
-    return;
-  }
-  if(!revealObserver){
-    revealObserver=new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(!entry.isIntersecting)return;
-        const el=entry.target;
-        el.classList.add('aui-visible');
-        revealObserver.unobserve(el);
-      });
-    },{root:null,rootMargin:'120px 0px',threshold:0.01});
-  }
-  items.forEach(el=>{
-    if(el.dataset.auiLazy)return;
-    el.dataset.auiLazy='1';
-    el.classList.add('aui-lazy-reveal');
-    revealObserver.observe(el);
-  });
-}
 
 function revealShell(){
   const selectors=[
@@ -5123,7 +5097,6 @@ function revealShell(){
     el.style.setProperty('--aui-i',Math.min(i++,8));
     el.classList.add('aui-reveal');
   });
-  setupLazyQuestionReveal();
 }
 
 function ripple(){
@@ -5233,8 +5206,7 @@ function observeDynamic(){
     clearTimeout(mutationTimer);
     mutationTimer=setTimeout(()=>{
       requestAnimationFrame(()=>{
-        setupLazyQuestionReveal();
-        ripple();
+              ripple();
         magnetic();
         tabs();
       });
