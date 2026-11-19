@@ -2268,95 +2268,149 @@
   }
 </style>
 
-<style id="animate-ui-premium">
-/* === ANIMATE UI — giữ nguyên layout/chức năng, chỉ thêm motion === */
-:root{--aui-ease:cubic-bezier(.22,1,.36,1)}
-body{overflow-x:hidden;background-image:radial-gradient(circle at 15% 10%,rgba(99,102,241,.07),transparent 28%),radial-gradient(circle at 85% 18%,rgba(56,189,248,.055),transparent 26%)}
-body:before{content:"";position:fixed;inset:-35%;pointer-events:none;z-index:-1;background:conic-gradient(from 0deg,transparent 0 28%,rgba(99,102,241,.035) 35%,transparent 46%,rgba(34,211,238,.028) 58%,transparent 70%);filter:blur(40px);animation:auiOrbit 22s linear infinite}
-@keyframes auiOrbit{to{transform:rotate(360deg)}}
-@keyframes auiIn{from{opacity:0;transform:translateY(18px) scale(.985);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
-@keyframes auiFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes auiGlow{0%,100%{box-shadow:0 0 0 rgba(99,102,241,0),0 8px 30px rgba(15,23,42,.05)}50%{box-shadow:0 0 28px rgba(99,102,241,.13),0 12px 38px rgba(15,23,42,.09)}}
-@keyframes auiShimmer{0%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
-@keyframes auiPulse{0%,100%{opacity:.55;transform:scale(.95)}50%{opacity:1;transform:scale(1.08)}}
-.topbar{position:relative;overflow:hidden}
-.topbar:after{content:"";position:absolute;left:-25%;right:-25%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.55),rgba(56,189,248,.5),transparent);animation:auiShimmer 5s ease-in-out infinite}
-.logo{animation:auiFloat 4s ease-in-out infinite,auiGlow 5s ease-in-out infinite;transition:transform .35s var(--aui-ease),filter .35s}
-.logo:hover{transform:translateY(-3px) rotate(-4deg) scale(1.06);filter:brightness(1.15)}
-.topbar-title{animation:auiIn .7s var(--aui-ease) both}
-.header-widget{animation:auiIn .75s .08s var(--aui-ease) both;position:relative;overflow:hidden;transition:transform .4s var(--aui-ease),filter .4s,box-shadow .4s}
-.header-widget:hover{transform:translateY(-3px) scale(1.015);filter:saturate(1.08)}
-.header-widget:after{content:"";position:absolute;top:-20%;bottom:-20%;left:-35%;width:22%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-18deg);animation:auiShimmer 6s ease-in-out infinite;pointer-events:none}
-.weather-orb{animation:auiFloat 4.5s ease-in-out infinite}
-.weather-orb-glow{animation:auiPulse 2.8s ease-in-out infinite}
-.layout{animation:auiIn .65s .12s var(--aui-ease) both}
-.sidebar{position:relative}
-.sidebar:before{content:"";position:absolute;inset:0 -1px 0 auto;width:1px;background:linear-gradient(180deg,transparent,rgba(99,102,241,.28),transparent);opacity:.8}
-.side-group-label{animation:auiIn .5s .18s var(--aui-ease) both}
-.side-btn{position:relative;overflow:hidden;transition:transform .3s var(--aui-ease),box-shadow .3s,background .3s,color .3s}
-.side-btn:before{content:"";position:absolute;left:0;top:10%;bottom:10%;width:3px;border-radius:0 4px 4px 0;background:currentColor;transform:scaleY(0);transition:transform .3s var(--aui-ease)}
-.side-btn:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.08) 50%,transparent 75%);transform:translateX(-130%);transition:transform .65s var(--aui-ease)}
-.side-btn:hover{transform:translateX(4px);box-shadow:0 8px 22px rgba(15,23,42,.08)}
-.side-btn:hover:before,.side-btn.activeTab:before{transform:scaleY(1)}
-.side-btn:hover:after{transform:translateX(130%)}
-.main>.panel,.main>section,.main>.tabs,.main>.stats-grid,.main>.question-list{animation:auiIn .65s .18s var(--aui-ease) both}
-.panel,.st-card,.tomorrow-card,.loader-card,.subject-card,.profile-name-card{transition:transform .4s var(--aui-ease),box-shadow .4s,border-color .4s}
-.panel:hover,.st-card:hover,.tomorrow-card:hover{transform:translateY(-3px);box-shadow:0 16px 42px rgba(15,23,42,.09)}
-.panel-head .ic{transition:transform .4s var(--aui-ease)}
-.panel:hover .panel-head .ic{transform:rotate(-5deg) scale(1.08)}
-.qbtn,.subject button,.side-btn{transition:all .3s var(--aui-ease)}
-.qbtn:hover{transform:translateY(-2px)}
-.qbtn:active,.side-btn:active{transform:scale(.97)}
-.question-card,.question,.q-item,.quiz-card,.answer-card,.wrong-question{animation:auiIn .55s var(--aui-ease) both;transition:transform .35s var(--aui-ease),box-shadow .35s,border-color .35s}
-.question-card:hover,.question:hover,.q-item:hover,.quiz-card:hover,.answer-card:hover,.wrong-question:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(15,23,42,.075)}
-.badge,.count{transition:transform .25s var(--aui-ease),filter .25s}
-.side-btn:hover .count{transform:scale(1.08);filter:brightness(1.08)}
-.subject-screen{backdrop-filter:blur(10px)}
-.subject-card{animation:auiIn .7s var(--aui-ease) both;box-shadow:0 28px 90px rgba(15,23,42,.18)}
-.subject-card:before,.profile-name-card:before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(120deg,rgba(99,102,241,.45),transparent 35%,rgba(56,189,248,.32),transparent 70%,rgba(168,85,247,.35));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.75}
-#topProgress{transition:width .6s var(--aui-ease);box-shadow:0 0 14px rgba(99,102,241,.45)}
-@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
-</style>
 
 
-<style id="animate-ui-inspired-v2">
-:root{--aui-ease:cubic-bezier(.22,1,.36,1);--aui-spring:cubic-bezier(.16,1,.3,1);--aui-glow:rgba(99,102,241,.42)}
-/* Animate UI inspired motion layer: spring highlights, blur/scale entrances, magnetic hover and glow */
-.aui-highlight{position:absolute;pointer-events:none;z-index:0;border-radius:inherit;background:linear-gradient(135deg,rgba(99,102,241,.18),rgba(56,189,248,.12));box-shadow:0 0 28px rgba(99,102,241,.16),inset 0 0 18px rgba(255,255,255,.035);transition:transform .55s var(--aui-spring),width .45s var(--aui-spring),height .45s var(--aui-spring),opacity .2s ease}
-.aui-motion-in{animation:auiIn .62s var(--aui-spring) both}
-@keyframes auiIn{0%{opacity:0;transform:translateY(18px) scale(.965);filter:blur(8px)}55%{opacity:1;transform:translateY(-2px) scale(1.008);filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
-.aui-pop{animation:auiPop .52s var(--aui-spring) both}
-@keyframes auiPop{0%{opacity:0;transform:scale(.82) rotateX(-10deg);filter:blur(7px)}70%{opacity:1;transform:scale(1.025) rotateX(1deg);filter:blur(0)}100%{transform:scale(1) rotateX(0)}}
-.aui-stagger>*{animation:auiIn .58s var(--aui-spring) both;animation-delay:calc(var(--aui-i,0) * 55ms)}
-.aui-magnetic{transition:transform .38s var(--aui-spring),box-shadow .35s ease}
-.aui-magnetic:hover{transform:translateY(-3px) scale(1.012);box-shadow:0 18px 45px rgba(15,23,42,.14),0 0 0 1px rgba(99,102,241,.12)}
-.aui-shimmer{position:relative;overflow:hidden}
-.aui-shimmer:after{content:"";position:absolute;inset:-120% -40%;pointer-events:none;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.16) 50%,transparent 58%);transform:translateX(-45%);animation:auiShimmer 3.8s ease-in-out infinite}
-@keyframes auiShimmer{0%,55%{transform:translateX(-45%)}75%,100%{transform:translateX(45%)}}
-.aui-ripple{position:relative;overflow:hidden}
-.aui-ripple .aui-ripple-dot{position:absolute;width:8px;height:8px;border-radius:50%;pointer-events:none;background:rgba(255,255,255,.45);transform:translate(-50%,-50%) scale(0);animation:auiRipple .62s ease-out forwards}
-@keyframes auiRipple{to{transform:translate(-50%,-50%) scale(28);opacity:0}}
-.aui-focus-ring:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(99,102,241,.18),0 0 0 6px rgba(99,102,241,.08)}
-/* Tabs: one sliding active surface like Animate UI */
+
+
+
+
+<style id="animate-ui-total">
+:root{
+  --aui-spring:cubic-bezier(.16,1,.3,1);
+  --aui-smooth:cubic-bezier(.22,1,.36,1);
+  --aui-fast:cubic-bezier(.32,.72,0,1);
+}
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+body::before{
+  content:"";position:fixed;inset:-30%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(124,58,237,.07),transparent 24%),
+    radial-gradient(circle at 85% 30%,rgba(236,72,153,.055),transparent 23%),
+    radial-gradient(circle at 45% 90%,rgba(59,130,246,.045),transparent 25%);
+  animation:auiAmbient 18s ease-in-out infinite alternate;
+}
+@keyframes auiAmbient{from{transform:translate3d(-1.5%,-1%,0) scale(1)}to{transform:translate3d(1.5%,1%,0) scale(1.035)}}
+
+/* ---------- page entrance ---------- */
+.aui-reveal{
+  opacity:0;transform:translate3d(0,22px,0) scale(.985);filter:blur(7px);
+  animation:auiReveal .72s var(--aui-spring) forwards;
+  animation-delay:calc(var(--aui-i,0) * 55ms);
+}
+@keyframes auiReveal{to{opacity:1;transform:none;filter:none}}
+
+/* ---------- magnetic cards ---------- */
+.aui-magnetic{transform:translate3d(0,0,0);transition:transform .5s var(--aui-spring),box-shadow .5s var(--aui-spring),border-color .35s ease;will-change:transform}
+.aui-magnetic:hover{transform:translate3d(0,-4px,0)}
+.q-item.aui-magnetic:hover,.panel.aui-magnetic:hover,.st-card.aui-magnetic:hover,.tomorrow-card.aui-magnetic:hover{box-shadow:0 20px 55px -28px rgba(20,20,50,.34)}
+
+/* ---------- interactive buttons ---------- */
+.aui-interactive{position:relative;overflow:hidden;isolation:isolate}
+.aui-interactive::after{
+  content:"";position:absolute;inset:-2px -45%;z-index:-1;
+  background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.28) 50%,transparent 58%);
+  transform:translateX(-70%);opacity:0;pointer-events:none;
+}
+.aui-interactive:hover::after{opacity:1;animation:auiSweep .8s var(--aui-smooth) both}
+@keyframes auiSweep{to{transform:translateX(70%)}}
+.aui-interactive:active{transform:scale(.965)!important;transition-duration:.08s!important}
+
+/* ---------- ripple ---------- */
+.aui-ripple-dot{
+  position:absolute;width:12px;height:12px;border-radius:999px;pointer-events:none;
+  background:rgba(255,255,255,.48);transform:translate(-50%,-50%) scale(0);
+  animation:auiRipple .65s var(--aui-smooth) forwards;
+}
+@keyframes auiRipple{to{transform:translate(-50%,-50%) scale(18);opacity:0}}
+
+/* ---------- sidebar spring highlight ---------- */
+.aui-side-highlight{
+  position:absolute;left:0;right:0;height:42px;top:0;opacity:0;z-index:-1;pointer-events:none;
+  border-radius:12px;
+  background:linear-gradient(100deg,rgba(124,58,237,.13),rgba(236,72,153,.065));
+  box-shadow:inset 0 0 0 1px rgba(124,58,237,.07),0 10px 30px rgba(124,58,237,.08);
+  transition:transform .62s var(--aui-spring),height .45s var(--aui-spring),opacity .25s ease;
+}
+.side-btn{transition:transform .42s var(--aui-spring),background .35s ease,color .35s ease,box-shadow .35s ease}
+.side-btn:hover{transform:translateX(5px)}
+.side-btn i{transition:transform .5s var(--aui-spring),box-shadow .35s ease}
+.side-btn:hover i{transform:scale(1.08) rotate(-5deg)}
+
+/* ---------- tab shared layout animation ---------- */
 .aui-tabs-wrap{position:relative}
-.aui-tab-highlight{position:absolute;z-index:0;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,.22),rgba(14,165,233,.16));box-shadow:0 8px 26px rgba(79,70,229,.12);transition:all .55s var(--aui-spring);pointer-events:none}
-.aui-tab-active-content{animation:auiPanelIn .46s var(--aui-spring) both}
-@keyframes auiPanelIn{from{opacity:0;transform:translateX(22px);filter:blur(5px)}to{opacity:1;transform:none;filter:blur(0)}}
-.aui-panel-exit{animation:auiPanelOut .16s ease-in both}
-@keyframes auiPanelOut{to{opacity:0;transform:translateX(-10px);filter:blur(4px)}}
-/* Dialog-like animation for existing modal layers */
-.modal.show,.modal[style*="display: block"],.modal.active,.overlay.active{animation:auiBackdrop .38s ease both}
-@keyframes auiBackdrop{from{opacity:0;backdrop-filter:blur(0)}to{opacity:1;backdrop-filter:blur(8px)}}
-.modal.show .modal-content,.modal.active .modal-content{animation:auiDialogIn .48s var(--aui-spring) both}
-@keyframes auiDialogIn{from{opacity:0;transform:perspective(700px) rotateX(-12deg) scale(.84);filter:blur(5px)}to{opacity:1;transform:none;filter:blur(0)}}
-/* Sidebar active surface */
-.sidebar,.side-nav,.nav-sidebar,.sidenav{position:relative}
-.aui-side-highlight{position:absolute;left:4px;right:4px;height:42px;border-radius:12px;pointer-events:none;z-index:0;background:linear-gradient(90deg,rgba(99,102,241,.18),rgba(56,189,248,.08));box-shadow:0 0 24px rgba(99,102,241,.13);transition:transform .52s var(--aui-spring),height .4s var(--aui-spring),opacity .2s ease}
-/* Existing weather widget gets a richer motion layer */
-.header-widget{transform:translateZ(0);will-change:transform,filter}
-.header-widget:hover{animation:auiWidgetHover .7s var(--aui-spring)}
-@keyframes auiWidgetHover{0%{transform:translateY(0) scale(1)}55%{transform:translateY(-4px) scale(1.025)}100%{transform:translateY(-2px) scale(1.015)}}
-@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.aui-highlight,.aui-tab-highlight,.aui-side-highlight{transition:none!important}}
+.aui-tab-highlight{
+  position:absolute;pointer-events:none;z-index:0;border-radius:10px;opacity:0;
+  background:linear-gradient(135deg,rgba(124,58,237,.13),rgba(236,72,153,.09));
+  box-shadow:0 6px 22px rgba(124,58,237,.10),inset 0 0 0 1px rgba(124,58,237,.08);
+  transition:transform .58s var(--aui-spring),width .48s var(--aui-spring),height .48s var(--aui-spring),opacity .25s ease;
+}
+.aui-tabs-wrap>*:not(.aui-tab-highlight){position:relative;z-index:1}
+.aui-tab-content-in{animation:auiTabIn .5s var(--aui-spring) both}
+@keyframes auiTabIn{from{opacity:0;transform:translateY(12px) scale(.99);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+
+/* ---------- question answer feedback ---------- */
+.aui-answer-pop{animation:auiAnswerPop .48s var(--aui-spring) both}
+@keyframes auiAnswerPop{
+  0%{opacity:0;transform:scale(.92) translateY(7px);filter:blur(3px)}
+  60%{transform:scale(1.025) translateY(-1px)}
+  100%{opacity:1;transform:none;filter:none}
+}
+.aui-correct-flash{animation:auiCorrect .7s var(--aui-spring)}
+@keyframes auiCorrect{
+  0%{box-shadow:0 0 0 0 rgba(16,185,129,0)}
+  35%{box-shadow:0 0 0 7px rgba(16,185,129,.18),0 0 38px rgba(16,185,129,.18)}
+  100%{box-shadow:none}
+}
+.aui-wrong-shake{animation:auiWrong .46s var(--aui-spring)}
+@keyframes auiWrong{
+  0%,100%{transform:translateX(0)}
+  22%{transform:translateX(-7px)}44%{transform:translateX(6px)}
+  66%{transform:translateX(-3px)}84%{transform:translateX(2px)}
+}
+
+/* ---------- modal / overlay ---------- */
+.aui-overlay-in{animation:auiOverlayIn .42s ease both}
+@keyframes auiOverlayIn{from{opacity:0;backdrop-filter:blur(0)}to{opacity:1;backdrop-filter:blur(12px)}}
+.aui-dialog-in{animation:auiDialogIn .62s var(--aui-spring) both}
+@keyframes auiDialogIn{
+  from{opacity:0;transform:perspective(900px) translateY(24px) rotateX(-7deg) scale(.9);filter:blur(8px)}
+  62%{transform:perspective(900px) translateY(-3px) rotateX(1deg) scale(1.015)}
+  to{opacity:1;transform:none;filter:none}
+}
+
+/* ---------- weather ---------- */
+.header-widget{will-change:transform;transition:transform .55s var(--aui-spring),box-shadow .45s ease,filter .45s ease}
+.header-widget:hover{transform:translateY(-4px) scale(1.025);filter:saturate(1.12)}
+.weather-icon{transition:transform .6s var(--aui-spring),filter .4s ease}
+.header-widget:hover .weather-icon{transform:scale(1.16) rotate(-7deg)}
+.weather-orb{transition:transform .6s var(--aui-spring)}
+.header-widget:hover .weather-orb{transform:rotate(4deg) scale(1.05)}
+
+/* ---------- topbar / logo ---------- */
+.logo{transition:transform .55s var(--aui-spring),filter .4s ease;will-change:transform}
+.logo:hover{transform:translateY(-4px) rotate(-5deg) scale(1.08);filter:brightness(1.13)}
+.topbar-title{animation:auiReveal .7s var(--aui-spring) .05s both}
+
+/* ---------- loading / subject ---------- */
+.loader-card,.login-card,.subject-card,.profile-name-card,.tomorrow-card{animation:auiDialogIn .72s var(--aui-spring) both}
+.subject-screen.on .subj{opacity:0;animation:auiReveal .52s var(--aui-spring) both;animation-delay:calc(var(--subj-i,0) * 55ms + 120ms)}
+.subj{transition:transform .48s var(--aui-spring),border-color .3s ease,box-shadow .3s ease}
+.subj:hover{transform:translateX(7px) scale(1.01);box-shadow:0 10px 30px rgba(124,58,237,.1)}
+.subj .si,.subj .go{transition:transform .48s var(--aui-spring)}
+.subj:hover .si{transform:rotate(-5deg) scale(1.08)}
+.subj:hover .go{transform:translateX(5px)}
+
+/* ---------- progress ---------- */
+.top-progress-fill{transition:width .75s var(--aui-spring);box-shadow:0 0 15px rgba(124,58,237,.5)}
+
+/* ---------- focus ---------- */
+.aui-focus-ring:focus-visible{outline:2px solid rgba(124,58,237,.55);outline-offset:3px}
+
+/* reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}
+}
 </style>
 
 </head>
@@ -5024,60 +5078,125 @@ document.addEventListener('keydown',e=>{
 </script>
 
 
-<script id="animate-ui-engine">
-(function(){
-  const root=document.querySelector('.main');
-  if(!root) return;
-  const selectors=['.main > .panel','.main > section','.main > .tabs','.main > .stats-grid','.main > .question-list','.question-card','.question','.q-item','.quiz-card','.answer-card','.wrong-question','.st-card','.tomorrow-card'];
-  let seq=0;
-  const apply=()=>{
-    document.querySelectorAll(selectors.join(',')).forEach(el=>{
-      if(el.dataset.auiAnimated==='1') return;
-      el.dataset.auiAnimated='1';
-      el.style.animationDelay=Math.min((seq++%10)*45,360)+'ms';
-    });
-  };
-  apply();
-  const ob=new MutationObserver(()=>requestAnimationFrame(apply));
-  ob.observe(root,{childList:true,subtree:true});
-  window.addEventListener('scroll',()=>{
-    document.documentElement.style.setProperty('--aui-scroll',window.scrollY+'px');
-  },{passive:true});
-})();
-</script>
 
 
-<script id="animate-ui-inspired-v2-js">
+
+
+
+
+<script id="animate-ui-total-js">
 (function(){
 'use strict';
-const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
-const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-function addRipple(el){if(el.dataset.auiRipple)return;el.dataset.auiRipple='1';el.classList.add('aui-ripple');el.addEventListener('pointerdown',e=>{if(reduce)return;const r=el.getBoundingClientRect(),d=document.createElement('span');d.className='aui-ripple-dot';d.style.left=(e.clientX-r.left)+'px';d.style.top=(e.clientY-r.top)+'px';el.appendChild(d);d.addEventListener('animationend',()=>d.remove());},{passive:true})}
-function stagger(root){if(!root)return;root.classList.add('aui-stagger');Array.from(root.children).forEach((x,i)=>x.style.setProperty('--aui-i',i));}
-function decorate(){
-  $$('button,a,[role="button"],.btn,.button').forEach(el=>{el.classList.add('aui-focus-ring');addRipple(el);});
-  $$('.card,.question-card,.panel,.stat-card,.glass-card,.menu-card,.feature-card').forEach(el=>{el.classList.add('aui-magnetic');});
-  $$('main > *, .content > *, .page > *, .dashboard > *').slice(0,40).forEach(el=>el.classList.add('aui-motion-in'));
-  $$('ul,ol,.nav-list,.menu-list,.question-list,.cards-grid,.card-grid').forEach(stagger);
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $$=(q,root=document)=>Array.from(root.querySelectorAll(q));
+
+function revealAll(){
+  const selectors=[
+    '.layout > .sidebar','.layout > .main > *',
+    '.panel','.info-strip','.q-item','.st-card','.tomorrow-class',
+    '.chips .chip','.quick-actions .qbtn'
+  ];
+  let i=0;
+  $$(selectors.join(',')).forEach(el=>{
+    if(el.dataset.auiReveal) return;
+    el.dataset.auiReveal='1';
+    el.style.setProperty('--aui-i',Math.min(i++,14));
+    el.classList.add('aui-reveal');
+  });
 }
-function installTabMotion(){
- const groups=$$('.tabs,.tab-list,.nav-tabs,[role="tablist"]');
- groups.forEach(group=>{
-   if(group.dataset.auiTabs)return; group.dataset.auiTabs='1'; group.classList.add('aui-tabs-wrap');
-   const hi=document.createElement('span');hi.className='aui-tab-highlight';group.appendChild(hi);
-   const tabs=()=>Array.from(group.querySelectorAll('[role="tab"],.tab,.tab-btn,.tabs button,.nav-tab'));
-   function move(active){if(!active)return;const gr=group.getBoundingClientRect(),r=active.getBoundingClientRect();hi.style.width=r.width+'px';hi.style.height=r.height+'px';hi.style.transform=`translate(${r.left-gr.left}px,${r.top-gr.top}px)`;hi.style.opacity='1';}
-   function refresh(){let a=tabs().find(x=>x.getAttribute('aria-selected')==='true'||x.classList.contains('active')||x.classList.contains('selected'))||tabs()[0];move(a)}
-   group.addEventListener('click',e=>{const t=e.target.closest('[role="tab"],.tab,.tab-btn,.tabs button,.nav-tab');if(!t)return;requestAnimationFrame(()=>{refresh();t.closest('[role="tabpanel"],.tab-content,.tab-pane,.content')?.classList.add('aui-tab-active-content')})});
-   refresh();addEventListener('resize',refresh);
- });
+function ripple(){
+  if(reduce)return;
+  $$('button,.qbtn,.side-btn,.chip,.subj,.profile-name-trigger').forEach(el=>{
+    if(el.dataset.auiRippleInstalled)return;
+    el.dataset.auiRippleInstalled='1';
+    el.classList.add('aui-interactive');
+    el.addEventListener('pointerdown',e=>{
+      const r=el.getBoundingClientRect(),d=document.createElement('span');
+      d.className='aui-ripple-dot';
+      d.style.left=(e.clientX-r.left)+'px';d.style.top=(e.clientY-r.top)+'px';
+      el.appendChild(d);d.addEventListener('animationend',()=>d.remove());
+    },{passive:true});
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){el.classList.add('aui-press');setTimeout(()=>el.classList.remove('aui-press'),110)}});
+  });
 }
-function installSideMotion(){
- const groups=$$('.sidebar,.side-nav,.nav-sidebar,.sidenav,.sidebar-nav');
- groups.forEach(group=>{if(group.dataset.auiSide)return;group.dataset.auiSide='1';const hi=document.createElement('span');hi.className='aui-side-highlight';group.appendChild(hi);const items=Array.from(group.querySelectorAll('a,button,.nav-item,.menu-item')).filter(x=>x.offsetParent!==null);function move(){const a=items.find(x=>x.classList.contains('active')||x.getAttribute('aria-current')==='page')||items[0];if(!a)return;const gr=group.getBoundingClientRect(),r=a.getBoundingClientRect();hi.style.height=r.height+'px';hi.style.transform=`translateY(${r.top-gr.top}px)`;hi.style.opacity='1'}group.addEventListener('click',e=>{const a=e.target.closest('a,button,.nav-item,.menu-item');if(a){items.forEach(x=>x.classList.remove('active'));a.classList.add('active');requestAnimationFrame(move)}});move();addEventListener('resize',move)});
+function magnetic(){
+  $$('.q-item,.panel,.st-card,.tomorrow-card').forEach(el=>{
+    if(el.dataset.auiMagnetic)return;
+    el.dataset.auiMagnetic='1';el.classList.add('aui-magnetic');
+    if(reduce)return;
+    el.addEventListener('pointermove',e=>{
+      const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      el.style.transform=`perspective(900px) rotateX(${-y*1.6}deg) rotateY(${x*2}deg) translateY(-4px)`;
+    });
+    el.addEventListener('pointerleave',()=>{el.style.transform='';});
+  });
 }
-function observeDynamic(){const ob=new MutationObserver(ms=>{let n=0;for(const m of ms)n+=m.addedNodes.length;if(n)decorate()});ob.observe(document.body,{childList:true,subtree:true});}
-function init(){decorate();installTabMotion();installSideMotion();observeDynamic();}
+function sidebar(){
+  $$('.sidebar').forEach(group=>{
+    if(group.dataset.auiSide)return;
+    group.dataset.auiSide='1';
+    const hi=document.createElement('span');hi.className='aui-side-highlight';group.appendChild(hi);
+    const move=()=>{
+      const items=$$('.side-btn',group).filter(x=>x.offsetParent!==null);
+      const active=items.find(x=>x.classList.contains('activeTab'))||items[0];
+      if(!active)return;
+      const gr=group.getBoundingClientRect(),r=active.getBoundingClientRect();
+      hi.style.height=r.height+'px';
+      hi.style.transform=`translateY(${r.top-gr.top}px)`;
+      hi.style.opacity='1';
+    };
+    group.addEventListener('click',()=>setTimeout(move,20));
+    window.addEventListener('resize',move,{passive:true});move();
+  });
+}
+function tabs(){
+  $$('.tabs,[role="tablist"],.tab-list,.nav-tabs').forEach(group=>{
+    if(group.dataset.auiTabs)return;
+    const candidates=$$('[role="tab"],.tab,.tab-btn,.nav-tab,button',group);
+    if(!candidates.length)return;
+    group.dataset.auiTabs='1';group.classList.add('aui-tabs-wrap');
+    const hi=document.createElement('span');hi.className='aui-tab-highlight';group.appendChild(hi);
+    const move=()=>{
+      const a=candidates.find(x=>x.classList.contains('active')||x.classList.contains('selected')||x.getAttribute('aria-selected')==='true')||candidates[0];
+      if(!a)return;const gr=group.getBoundingClientRect(),r=a.getBoundingClientRect();
+      hi.style.width=r.width+'px';hi.style.height=r.height+'px';
+      hi.style.transform=`translate(${r.left-gr.left}px,${r.top-gr.top}px)`;hi.style.opacity='1';
+    };
+    group.addEventListener('click',e=>{
+      const t=e.target.closest('[role="tab"],.tab,.tab-btn,.nav-tab,button');
+      if(!t)return;setTimeout(move,25);
+    });
+    window.addEventListener('resize',move,{passive:true});move();
+  });
+}
+function observeDynamic(){
+  const root=document.querySelector('.main')||document.body;
+  let timer;
+  const ob=new MutationObserver(()=>{
+    clearTimeout(timer);timer=setTimeout(()=>{revealAll();ripple();magnetic();sidebar();tabs();},40);
+  });
+  ob.observe(root,{childList:true,subtree:true});
+}
+function dialogHooks(){
+  const pairs=[
+    ['#profileNameModal','.profile-name-card'],
+    ['.tomorrow-modal','.tomorrow-card'],
+    ['#subjectSelect','.subject-card']
+  ];
+  pairs.forEach(([ov,card])=>{
+    const el=document.querySelector(ov),c=el&&document.querySelector(card);
+    if(!el||!c)return;
+    const mo=new MutationObserver(()=>{
+      const visible=getComputedStyle(el).display!=='none' && !el.hasAttribute('hidden') && (el.classList.contains('on')||el.classList.contains('open')||el.style.display==='flex');
+      if(visible){el.classList.remove('aui-overlay-in');c.classList.remove('aui-dialog-in');void el.offsetWidth;el.classList.add('aui-overlay-in');c.classList.add('aui-dialog-in');}
+    });
+    mo.observe(el,{attributes:true,attributeFilter:['class','style','hidden']});
+  });
+}
+function init(){
+  revealAll();ripple();magnetic();sidebar();tabs();dialogHooks();observeDynamic();
+  document.querySelectorAll('.subject-list .subj').forEach((x,i)=>x.style.setProperty('--subj-i',i));
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
