@@ -2270,14 +2270,6 @@
     .info-strip-wrap{margin-left:64px;width:calc(100% - 64px);}
   }
 </style>
-<style id="embedFix">
-/* Khi vaicanho chạy trong tab Ôn tập (iframe), thanh điều hướng dưới của trang cha nằm đè lên đáy iframe.
-   Nâng dock (nút đi đến câu...) + nút về đầu trang + popover lên trên thanh đó. */
-html.embedded .dock,html.embedded #backToTop,html.embedded .popover{margin-bottom:72px}
-</style>
-<script>
-(function(){try{if(window.self!==window.top)document.documentElement.classList.add('embedded')}catch(e){document.documentElement.classList.add('embedded')}})();
-</script>
 </head>
 <body>
 
@@ -3895,7 +3887,7 @@ function buildNavPanel(){
         btn.className = "nb";
         btn.innerText = i + 1;
         btn.onclick = function(){
-            jumpToQuestion(q);
+            q.scrollIntoView({behavior:"smooth",block:"center"});
             closeAllPopovers();
         };
         frag.appendChild(btn);
@@ -4166,32 +4158,11 @@ function clearTest(){
     testAnswers = {};
 }
 
-function curScrollY(){
-    return window.pageYOffset || window.scrollY || (document.scrollingElement&&document.scrollingElement.scrollTop) || document.documentElement.scrollTop || document.body.scrollTop || 0;
-}
-function setScrollY(y){
-    try{ window.scrollTo(0,y); }catch(e){}
-    try{ if(document.scrollingElement) document.scrollingElement.scrollTop = y; }catch(e){}
-    document.documentElement.scrollTop = y; document.body.scrollTop = y;
-}
-function scrollToTopSafe(){
-    try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){ setScrollY(0); }
-    setTimeout(()=>{ if(curScrollY()>5) setScrollY(0); }, 600);   // dự phòng nếu cuộn mượt không chạy trong iframe
-}
-function jumpToQuestion(el){
-    try{ el.scrollIntoView({behavior:"smooth",block:"center"}); }catch(e){ try{ el.scrollIntoView(); }catch(_){} }
-    setTimeout(()=>{                                           // dự phòng nếu scrollIntoView không chạy trong iframe
-        const r = el.getBoundingClientRect();
-        const delta = r.top + r.height/2 - window.innerHeight/2;
-        if(Math.abs(delta) > 80) setScrollY(Math.max(0, curScrollY() + delta));
-    }, 700);
-}
 const backBtn = document.getElementById("backToTop");
-function updBackBtn(){ backBtn.style.display = curScrollY() > 300 ? "flex" : "none"; }
-window.addEventListener("scroll", updBackBtn, {passive:true});
-document.addEventListener("scroll", updBackBtn, {capture:true, passive:true});
-if(document.documentElement.classList.contains("embedded")) setInterval(updBackBtn, 400);
-backBtn.onclick = scrollToTopSafe;
+window.addEventListener("scroll", ()=>{
+    backBtn.style.display = window.scrollY > 300 ? "flex" : "none";
+});
+backBtn.onclick = ()=>{ window.scrollTo({top:0,behavior:"smooth"}); };
 
 document.getElementById("editAnswerModal").addEventListener("click", (e)=>{
     if(e.target.id === "editAnswerModal") closeEditModal();
