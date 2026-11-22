@@ -2103,22 +2103,6 @@
 }
 .qbtn[onclick="confirmReload()"] i { color: #ffffff !important; }
 
-/* Nút "Sơ đồ bệnh viện" */
-.qbtn[data-tab="HOSPITAL"] {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  box-shadow: 0 6px 16px -6px rgba(16, 185, 129, 0.55) !important;
-  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
-}
-.qbtn[data-tab="HOSPITAL"]:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 22px -6px rgba(16, 185, 129, 0.7) !important;
-  color: #ffffff !important;
-}
-.qbtn[data-tab="HOSPITAL"] i { color: #ffffff !important; }
-
 /* Nút "Hôm nay học gì?" (gọi showTomorrowSchedule) */
 .qbtn[onclick="showTomorrowSchedule()"] {
   background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%) !important;
@@ -2450,9 +2434,6 @@ B. Đúng"></textarea>
           <button class="qbtn subject-switch" onclick="changeSubject()" aria-label="Đổi môn học">
             <i class="fas fa-book-open"></i> Đổi môn
           </button>
-          <button class="qbtn" data-tab="HOSPITAL" onclick="switchTab('HOSPITAL')">
-            <i class="fas fa-hospital"></i> Sơ đồ bệnh viện
-          </button>
 <button class="qbtn" type="button" onclick="openClassroom3D()" style="background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border-color:transparent;font-weight:800">
   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 9h.01M15 9h.01"/></svg>
   Phòng học
@@ -2480,18 +2461,13 @@ B. Đúng"></textarea>
             <button type="button" class="tomorrow-close" onclick="closeTomorrowSchedule()" aria-label="Đóng">×</button>
           </div>
           <div id="tomorrowScheduleContent" class="tomorrow-content"><div class="tomorrow-loading">Đang tải lịch học…</div></div>
-          <div class="tomorrow-footer"><span>Thông tin lấy trực tiếp từ thời khóa biểu.</span><button type="button" class="qbtn primary" onclick="closeTomorrowSchedule();switchTab('TKB')">Mở thời khóa biểu</button></div>
+          <div class="tomorrow-footer"><span>Thông tin lấy trực tiếp từ thời khóa biểu.</span><button type="button" class="qbtn primary" onclick="closeTomorrowSchedule();window.location.href='https://nhat207danghoccode.github.io/tkbtest/'">Mở thời khóa biểu</button></div>
         </section>
       </div>
 
       <div id="quiz-container"></div>
       <div id="quiz-container-TF" class="hidden"></div>
       <div id="quiz-container-MC" class="hidden"></div>
-
-      <section id="hospitalBox" class="hidden" style="position:fixed;inset:0;z-index:100000;width:100vw;height:100dvh;background:#f8fafc;padding:0;margin:0;overflow:hidden">
-  <button type="button" onclick="switchTab('DS')" aria-label="Đóng sơ đồ bệnh viện" style="position:absolute;right:14px;top:12px;z-index:100002;border:0;border-radius:999px;width:42px;height:42px;background:#0f172a;color:#fff;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 4px 18px #0003">×</button>
-  <iframe id="hospitalFrame" src="bv.html" title="Sơ đồ Bệnh viện Đa khoa tỉnh Hà Tĩnh" loading="lazy" style="display:block;width:100%;height:100%;border:0;background:#f8fafc" allowfullscreen></iframe>
-</section>
 
       <div class="foot">Create @Nhat2007 <i class="fas fa-heart"></i></div>
     </main>
@@ -3099,8 +3075,6 @@ function switchTab(type, skipPartialPrompt){
     document.getElementById("createBox").classList.add("hidden");
     document.getElementById("infoStrip").classList.toggle("hidden",type==="TKB");
     document.getElementById("chipsRow").classList.toggle("hidden",type==="TKB");
-    const hospitalBox=document.getElementById("hospitalBox");
-    if(hospitalBox) hospitalBox.classList.add("hidden");
 
     ["quiz-container","quiz-container-TF","quiz-container-MC"].forEach(id=>{
         const el=document.getElementById(id);
@@ -3123,13 +3097,6 @@ function switchTab(type, skipPartialPrompt){
         document.getElementById("createBox").classList.remove("hidden");
         document.getElementById("infoStrip").classList.add("hidden");
         document.getElementById("chipsRow").classList.add("hidden");
-        return;
-    }
-    if(type==="HOSPITAL"){
-        document.getElementById("infoStrip").classList.add("hidden");
-        document.getElementById("chipsRow").classList.add("hidden");
-        document.getElementById("hospitalBox").classList.remove("hidden");
-        window.scrollTo({top:0,behavior:"smooth"});
         return;
     }
 
