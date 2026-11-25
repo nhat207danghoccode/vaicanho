@@ -4942,13 +4942,75 @@ document.addEventListener('keydown',e=>{
 <script>
 (function(){
   if(!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return;
-  var p=document.createElement('div');
-  p.style.cssText='position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:2147483647;background:#1e293b;color:#fff;font:600 12px/1 system-ui,sans-serif;padding:8px 14px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.3);display:none;pointer-events:none';
-  p.textContent='📴 Đang offline · hiển thị dữ liệu đã lưu';
-  function sync(){p.style.display=navigator.onLine?'none':'block'}
-  addEventListener('online',sync);addEventListener('offline',sync);
+  var st=document.createElement('style');
+  st.textContent=`
+  .ofl-toast{white-space:nowrap;--a1:#fbbf24;--a2:#f97316;--a3:#f43f5e;--glow:rgba(249,115,22,.55);
+    position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:50%;z-index:2147483647;
+    display:flex;align-items:center;gap:12px;min-width:250px;max-width:calc(100vw - 28px);
+    padding:11px 20px 13px 11px;border-radius:20px;overflow:hidden;color:#fff;
+    font-family:"Be Vietnam Pro","Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    border:1px solid transparent;
+    background:linear-gradient(160deg,rgba(30,27,75,.94),rgba(15,23,42,.94)) padding-box,
+               linear-gradient(135deg,var(--a1),var(--a3) 55%,#818cf8) border-box;
+    -webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);
+    box-shadow:0 18px 44px -12px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.04) inset,0 8px 30px -8px var(--glow);
+    pointer-events:none;-webkit-user-select:none;user-select:none;
+    opacity:0;transform:translate(-50%,-26px) scale(.9);filter:blur(4px);
+    transition:opacity .35s ease,transform .6s cubic-bezier(.34,1.56,.64,1),filter .35s ease}
+  .ofl-toast.show{opacity:1;transform:translate(-50%,0) scale(1);filter:blur(0)}
+  .ofl-toast.hide{opacity:0;transform:translate(-50%,-14px) scale(.96);filter:blur(3px);transition:opacity .28s ease,transform .32s ease,filter .28s ease}
+  .ofl-toast.on{--a1:#6ee7b7;--a2:#10b981;--a3:#06b6d4;--glow:rgba(16,185,129,.5)}
+  .ofl-ico{position:relative;flex:none;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+    background:linear-gradient(145deg,var(--a1),var(--a2) 60%,var(--a3));
+    box-shadow:0 6px 16px -4px var(--glow),0 1px 0 rgba(255,255,255,.45) inset}
+  .ofl-ico::after{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--a1);opacity:0;animation:oflRing 2s ease-out .5s infinite}
+  .ofl-ico svg{width:22px;height:22px;overflow:visible;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+  .ofl-arc{opacity:0;animation:oflArc .5s ease forwards}
+  .ofl-arc:nth-of-type(1){animation-delay:.25s}.ofl-arc:nth-of-type(2){animation-delay:.38s}.ofl-arc:nth-of-type(3){animation-delay:.5s}
+  .ofl-slash{stroke-dasharray:30;stroke-dashoffset:30;animation:oflDraw .45s cubic-bezier(.5,0,.2,1) .65s forwards}
+  .ofl-check{stroke-dasharray:26;stroke-dashoffset:26;animation:oflDraw .5s cubic-bezier(.5,0,.2,1) .25s forwards}
+  .ofl-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .ofl-txt b{font-size:14.5px;font-weight:700;line-height:1.2;letter-spacing:.1px;white-space:nowrap}
+  .ofl-txt span{font-size:12px;font-weight:500;line-height:1.3;color:rgba(226,232,240,.74)}
+  .ofl-bar{position:absolute;left:0;bottom:0;height:3px;width:100%;transform-origin:left;
+    background:linear-gradient(90deg,var(--a1),var(--a3));opacity:.9;border-radius:0 3px 3px 0}
+  .ofl-toast.show .ofl-bar{animation:oflBar var(--dur,4s) linear forwards}
+  .ofl-chip{position:fixed;top:calc(env(safe-area-inset-top,0px) + 4px);left:50%;z-index:2147483646;
+    display:flex;align-items:center;gap:5px;padding:2px 9px 2px 7px;border-radius:999px;
+    font:800 9.5px/1.5 "Be Vietnam Pro","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:1.1px;text-transform:uppercase;
+    color:#fff;background:linear-gradient(135deg,rgba(245,158,11,.95),rgba(244,63,94,.95));
+    box-shadow:0 4px 14px -4px rgba(244,63,94,.6),0 0 0 1px rgba(255,255,255,.25) inset;
+    pointer-events:none;opacity:0;transform:translate(-50%,-10px);transition:opacity .3s,transform .4s cubic-bezier(.34,1.56,.64,1)}
+  .ofl-chip.on{opacity:1;transform:translate(-50%,0)}
+  .ofl-chip i{width:6px;height:6px;border-radius:50%;background:#fff;animation:oflBlink 1.6s ease-in-out infinite}
+  @keyframes oflRing{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.55);opacity:0}}
+  @keyframes oflArc{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+  @keyframes oflDraw{to{stroke-dashoffset:0}}
+  @keyframes oflBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+  @keyframes oflBlink{50%{opacity:.25}}
+  @media(prefers-reduced-motion:reduce){.ofl-ico::after,.ofl-chip i,.ofl-arc,.ofl-slash,.ofl-check{animation:none!important;opacity:1;stroke-dashoffset:0}.ofl-toast{transition:opacity .2s}}`;
+  var ICON_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path class="ofl-arc" d="M2.5 9a15 15 0 0 1 19 0"/><path class="ofl-arc" d="M5.6 12.6a10.5 10.5 0 0 1 12.8 0"/><path class="ofl-arc" d="M8.7 16.2a6 6 0 0 1 6.6 0"/><circle cx="12" cy="19.6" r=".6" fill="#fff"/><path class="ofl-slash" d="M3.5 3.5l17 17"/></svg>';
+  var ICON_ON='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="ofl-check" d="M4.5 12.8l5 5L19.5 7"/></svg>';
+  var toast=document.createElement('div'),chip=document.createElement('div'),t1,t2,t3;
+  toast.className='ofl-toast';toast.setAttribute('role','status');toast.setAttribute('aria-live','polite');
+  chip.className='ofl-chip';chip.innerHTML='<i></i>Offline';
+  function show(kind,title,sub,ms){
+    clearTimeout(t1);clearTimeout(t2);
+    toast.className='ofl-toast '+kind;
+    toast.style.setProperty('--dur',ms+'ms');
+    toast.innerHTML='<span class="ofl-ico">'+(kind==='on'?ICON_ON:ICON_OFF)+'</span><span class="ofl-txt"><b>'+title+'</b><span>'+sub+'</span></span><span class="ofl-bar"></span>';
+    void toast.offsetWidth;toast.classList.add('show');
+    t1=setTimeout(function(){toast.classList.add('hide')},ms);
+    t2=setTimeout(function(){toast.className='ofl-toast'},ms+350);
+  }
+  function sync(first){
+    if(!navigator.onLine){chip.classList.remove('on');show('off','Bạn đang offline','Đang dùng dữ liệu đã lưu',4500);clearTimeout(t3);t3=setTimeout(function(){if(!navigator.onLine)chip.classList.add('on')},4800)}
+    else{clearTimeout(t3);chip.classList.remove('on');if(!first)show('on','Đã có mạng trở lại','Đang cập nhật dữ liệu mới…',2800)}
+  }
+  addEventListener('online',function(){sync(false)});
+  addEventListener('offline',function(){sync(false)});
   addEventListener('load',function(){
-    document.body.appendChild(p);sync();
+    document.head.appendChild(st);document.body.appendChild(chip);document.body.appendChild(toast);sync(true);
     navigator.serviceWorker.register('./sw.js').then(function(){return navigator.serviceWorker.ready}).then(function(){
       /* dữ liệu tự lưu khi dùng; file tĩnh đã tải trước trong sw.js */
     }).catch(function(){});
