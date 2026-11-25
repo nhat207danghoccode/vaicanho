@@ -4938,6 +4938,25 @@ document.addEventListener('keydown',e=>{
 })();
 </script>
 
+<!-- OFFLINE-SW:start -->
+<script>
+(function(){
+  if(!('serviceWorker' in navigator)||!/^https?:$/.test(location.protocol))return;
+  var p=document.createElement('div');
+  p.style.cssText='position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:2147483647;background:#1e293b;color:#fff;font:600 12px/1 system-ui,sans-serif;padding:8px 14px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.3);display:none;pointer-events:none';
+  p.textContent='📴 Đang offline · hiển thị dữ liệu đã lưu';
+  function sync(){p.style.display=navigator.onLine?'none':'block'}
+  addEventListener('online',sync);addEventListener('offline',sync);
+  addEventListener('load',function(){
+    document.body.appendChild(p);sync();
+    navigator.serviceWorker.register('./sw.js').then(function(){return navigator.serviceWorker.ready}).then(function(){
+      /* dữ liệu tự lưu khi dùng; file tĩnh đã tải trước trong sw.js */
+    }).catch(function(){});
+  });
+})();
+</script>
+<!-- OFFLINE-SW:end -->
+
 </body>
 </html>
 
